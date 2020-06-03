@@ -1,0 +1,10 @@
+SECRET_KEY="145cqii@)+z$b&9dcmdctpm+&be1#9zslxm+x)0+u*^qf!qz(6"
+DB_NAME="rma"
+DB_USER="rma"
+#
+# For peer authentication via unix domain socket
+# these should be kept empty.
+#
+DB_PASSWORD=""
+DB_HOST=""
+DB_PORT=""
