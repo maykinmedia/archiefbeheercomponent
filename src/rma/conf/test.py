@@ -89,19 +89,6 @@ SECURE_BROWSER_XSS_FILTER = True  # Sets X-XSS-Protection: 1; mode=block
 
 ELASTIC_APM["SERVICE_NAME"] += " " + ENVIRONMENT
 
-# Sentry SDK
-SENTRY_CONFIG = {
-    "dsn": os.getenv("SENTRY_DSN", "https://"),
-    "public_dsn": os.getenv("SENTRY_DSN", "https://"),
-    "release": os.getenv("VERSION_TAG", "VERSION_TAG not set"),
-}
-
-sentry_sdk.init(
-    dsn=SENTRY_CONFIG["dsn"],
-    release=SENTRY_CONFIG["release"],
-    integrations=SENTRY_SDK_INTEGRATIONS,
-    send_default_pii=True,
-)
 
 # APM
 MIDDLEWARE = ["elasticapm.contrib.django.middleware.TracingMiddleware"] + MIDDLEWARE
