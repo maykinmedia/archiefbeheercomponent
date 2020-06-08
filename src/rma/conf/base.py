@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     # django-admin-index
     "ordered_model",
     "django_admin_index",
+    "django_auth_adfs",
+    "django_auth_adfs_db",
     # Optional applications.
     "django.contrib.admin",
     # 'django.contrib.admindocs',
@@ -65,6 +67,7 @@ INSTALLED_APPS = [
     "hijack",
     "compat",  # Part of hijack
     "hijack_admin",
+    "solo",
     # Project applications.
     "rma.accounts",
     "rma.utils",
@@ -254,6 +257,7 @@ AUTHENTICATION_BACKENDS = [
     "axes.backends.AxesBackend",
     "rma.accounts.backends.UserModelEmailBackend",
     "django.contrib.auth.backends.ModelBackend",
+    "django_auth_adfs_db.backends.AdfsAuthCodeBackend",
 ]
 
 #
@@ -267,6 +271,8 @@ SHOW_ALERT = True
 # Library settings
 #
 
+# AUTH-ADFS
+AUTH_ADFS = {"SETTINGS_CLASS": "django_auth_adfs_db.settings.Settings"}
 
 # Django-Admin-Index
 ADMIN_INDEX_SHOW_REMAINING_APPS = True
