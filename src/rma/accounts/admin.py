@@ -19,9 +19,11 @@ class _UserAdmin(UserAdmin, HijackUserAdminMixin):
 class UserInline(admin.TabularInline):
     model = User
     fields = UserAdmin.list_display
-    readonly_fields = UserAdmin.list_display
 
     def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
         return False
 
 
