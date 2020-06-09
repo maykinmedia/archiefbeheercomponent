@@ -1,4 +1,3 @@
-import os
 import warnings
 
 from .base import *
@@ -9,38 +8,6 @@ from .base import *
 
 DEBUG = False
 
-ADMINS = ()
-
-
-def get_db_name(prefix):
-    """
-    get a reasonable name below Postgres' 63 char name limit
-    """
-    job = os.getenv("JOB_NAME", default="").lower().rsplit("/", 1)[-1]
-    build = os.getenv("BUILD_NUMBER", default="0")
-    lim = 63 - 2 - len(prefix) - len(build)
-    return "{}_{}_{}".format(prefix, job[:lim], build)
-
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "rma",
-        # The database account jenkins/jenkins is always present for testing.
-        "USER": "jenkins",
-        "PASSWORD": "jenkins",
-        # Empty for localhost through domain sockets or '127.0.0.1' for
-        # localhost through TCP.
-        "HOST": "",
-        # Empty for the default port. For testing, we use the following ports
-        # for different databases. The default port is set to the latest
-        # Debian stable database version.
-        #
-        # PostgreSQL 9.6: 5432 (default for Jenkins)
-        "PORT": "",
-        "TEST": {"NAME": get_db_name("test_rma")},
-    }
-}
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = "for-testing-purposes-only"
@@ -58,7 +25,7 @@ LOGGING["loggers"].update(
 #
 
 # Show active environment in admin.
-ENVIRONMENT = "jenkins"
+ENVIRONMENT = "ci"
 
 #
 # Django-axes
@@ -76,19 +43,6 @@ CACHES = {
 
 AXES_CACHE = "axes_cache"
 
-ELASTIC_APM["DEBUG"] = True
-
-#
-# Jenkins settings
-#
-INSTALLED_APPS += [
-    "django_jenkins",
-]
-PROJECT_APPS = [app for app in INSTALLED_APPS if app.startswith("rma.")]
-JENKINS_TASKS = (
-    # 'django_jenkins.tasks.run_pylint',  # Pylint < 2.0 does not run on Python 3.7+
-    "django_jenkins.tasks.run_pep8",
-)
 
 # THOU SHALT NOT USE NAIVE DATETIMES
 warnings.filterwarnings(
