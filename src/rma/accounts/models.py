@@ -20,7 +20,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     first_name = models.CharField(_("first name"), max_length=255, blank=True)
     last_name = models.CharField(_("last name"), max_length=255, blank=True)
-    email = models.EmailField(_("email address"), blank=True)
+    email = models.EmailField(_("email address"), unique=True)
     is_staff = models.BooleanField(
         _("staff status"),
         default=False,
@@ -35,6 +35,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         ),
     )
     date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
+    role = models.ForeignKey(
+        "accounts.Role", on_delete=models.SET_NULL, null=True, verbose_name=_("role")
+    )
 
     objects = UserManager()
 
@@ -55,3 +58,40 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         "Returns the short name for the user."
         return self.first_name
+
+
+class Role(models.Model):
+    name = models.CharField(
+        _("name"), max_length=255, unique=True, help_text=_("Name of the role")
+    )
+    organisatie_onderdeel = models.URLField(_("organisatie onderdeel"), blank=True)
+    can_start_destruction = models.BooleanField(
+        _("can start destruction"),
+        default=False,
+        help_text=_(
+            'Designates whether people in this role can create a "vernietigingslijst", which is the '
+            'starting point for the "records destruction" process.'
+        ),
+    )
+    can_review_destruction = models.BooleanField(
+        _("can review destruction"),
+        default=False,
+        help_text=_(
+            "Designates if people in this role can review created record destruction lists and approve/reject them."
+        ),
+    )
+    can_view_case_details = models.BooleanField(
+        _("can view case details"),
+        default=False,
+        help_text=_(
+            "Designates whether people in this role can view the contents of zaken listed on the "
+            "record destruction lists."
+        ),
+    )
+
+    class Meta:
+        verbose_name = _("role")
+        verbose_name_plural = _("roles")
+
+    def __str__(self):
+        return self.name

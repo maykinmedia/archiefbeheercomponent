@@ -16,8 +16,8 @@ Set up my development environment for me!
 project_name = 'rma'
 
 parser = argparse.ArgumentParser(description=description)
-parser.add_argument('target', choices=['production', 'staging', 'test', 'jenkins', 'dev'],
-                    help='production/staging/test/jenkins/dev')
+parser.add_argument('target', choices=['production', 'staging', 'test', 'ci', 'dev'],
+                    help='production/staging/test/ci/dev')
 parser.add_argument('--project', default=project_name,
                     help='Name of the project in your src directory, "%s" by default' % project_name)
 parser.add_argument('--init', action='store_true',
