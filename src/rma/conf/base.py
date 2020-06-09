@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     "hijack_admin",
     "solo",
     "django_fsm",
+    "fsm_admin",
     # Project applications.
     "rma.accounts",
     "rma.destruction",

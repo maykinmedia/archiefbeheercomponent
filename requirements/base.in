@@ -12,6 +12,7 @@ django-admin-index
 django-axes
 django-choices
 django-fsm
+django-fsm-admin
 django-hijack
 django-hijack-admin
 django-redis
