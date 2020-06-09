@@ -69,7 +69,8 @@ class Role(models.Model):
         _("can start destruction"),
         default=False,
         help_text=_(
-            'Designates whether people in this role can create a "vernietigingslijst", which is the starting point for the "records destruction" process.'
+            'Designates whether people in this role can create a "vernietigingslijst", which is the '
+            'starting point for the "records destruction" process.'
         ),
     )
     can_review_destruction = models.BooleanField(
@@ -83,7 +84,8 @@ class Role(models.Model):
         _("can view case details"),
         default=False,
         help_text=_(
-            "Designates whether people in this role can view the contents of zaken listed on the record destruction lists."
+            "Designates whether people in this role can view the contents of zaken listed on the "
+            "record destruction lists."
         ),
     )
 
