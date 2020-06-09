@@ -36,7 +36,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
     role = models.ForeignKey(
-        "accounts.Role", on_delete=models.CASCADE, null=True, verbose_name=_("role")
+        "accounts.Role", on_delete=models.SET_NULL, null=True, verbose_name=_("role")
     )
 
     objects = UserManager()
