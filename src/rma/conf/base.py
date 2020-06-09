@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     "django_fsm",
     # Project applications.
     "rma.accounts",
+    "rma.destruction",
     "rma.utils",
 ]
 
