@@ -37,6 +37,8 @@ urlpatterns = [
     ),
     # Simply show the master template.
     path("", TemplateView.as_view(template_name="demo.html")),
+    # auth backends
+    path("adfs/", include("django_auth_adfs.urls")),
 ]
 
 # NOTE: The staticfiles_urlpatterns also discovers static files (ie. no need to run collectstatic). Both the static
