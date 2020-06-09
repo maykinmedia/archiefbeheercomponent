@@ -100,7 +100,8 @@ class DestructionListItem(models.Model):
         target=ListItemStatus.destroyed,
         on_error=ListItemStatus.failed,
     )
-    def complete(self):
+    def complete(self, request, by):
+        # extra args to make fsm-admin work
         pass
 
 

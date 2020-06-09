@@ -16,62 +16,239 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='DestructionList',
+            name="DestructionList",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200, unique=True, verbose_name='name')),
-                ('created', models.DateTimeField(auto_now=True, verbose_name='created')),
-                ('end', models.DateTimeField(blank=True, null=True, verbose_name='end')),
-                ('status', django_fsm.FSMField(choices=[('in_progress', 'onderhanden'), ('processing', 'wordt uitgevoerd'), ('completed', 'uitgevoerd')], default='in_progress', max_length=80, protected=True, verbose_name='status')),
-                ('assignee', models.ForeignKey(blank=True, help_text='Currently assigned user.', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='assigned_lists', to=settings.AUTH_USER_MODEL, verbose_name='assignee')),
-                ('author', models.ForeignKey(help_text='Creator of destruction list.', on_delete=django.db.models.deletion.CASCADE, related_name='created_lists', to=settings.AUTH_USER_MODEL, verbose_name='author')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(max_length=200, unique=True, verbose_name="name"),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(auto_now=True, verbose_name="created"),
+                ),
+                (
+                    "end",
+                    models.DateTimeField(blank=True, null=True, verbose_name="end"),
+                ),
+                (
+                    "status",
+                    django_fsm.FSMField(
+                        choices=[
+                            ("in_progress", "onderhanden"),
+                            ("processing", "wordt uitgevoerd"),
+                            ("completed", "uitgevoerd"),
+                        ],
+                        default="in_progress",
+                        max_length=80,
+                        protected=True,
+                        verbose_name="status",
+                    ),
+                ),
+                (
+                    "assignee",
+                    models.ForeignKey(
+                        blank=True,
+                        help_text="Currently assigned user.",
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="assigned_lists",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="assignee",
+                    ),
+                ),
+                (
+                    "author",
+                    models.ForeignKey(
+                        help_text="Creator of destruction list.",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="created_lists",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="author",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'destruction list',
-                'verbose_name_plural': 'destruction lists',
+                "verbose_name": "destruction list",
+                "verbose_name_plural": "destruction lists",
             },
         ),
         migrations.CreateModel(
-            name='DestructionListItem',
+            name="DestructionListItem",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('zaak', models.URLField(help_text='URL-reference to the ZAAK (in Zaken API), which is planned to be destroyed.', verbose_name='zaak')),
-                ('status', django_fsm.FSMField(choices=[('suggested', 'suggested for destruction'), ('removed', 'removed from the list during review'), ('processing', 'is currently being destroyed'), ('destroyed', 'successfully destroyed'), ('failed', 'destruction did not succeed')], default='suggested', max_length=80, protected=True, verbose_name='status')),
-                ('destruction_list', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='destruction.DestructionList', verbose_name='destruction list')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "zaak",
+                    models.URLField(
+                        help_text="URL-reference to the ZAAK (in Zaken API), which is planned to be destroyed.",
+                        verbose_name="zaak",
+                    ),
+                ),
+                (
+                    "status",
+                    django_fsm.FSMField(
+                        choices=[
+                            ("suggested", "suggested for destruction"),
+                            ("removed", "removed from the list during review"),
+                            ("processing", "is currently being destroyed"),
+                            ("destroyed", "successfully destroyed"),
+                            ("failed", "destruction did not succeed"),
+                        ],
+                        default="suggested",
+                        max_length=80,
+                        protected=True,
+                        verbose_name="status",
+                    ),
+                ),
+                (
+                    "destruction_list",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="items",
+                        to="destruction.DestructionList",
+                        verbose_name="destruction list",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'destruction list item',
-                'verbose_name_plural': 'destruction list items',
-                'unique_together': {('destruction_list', 'zaak')},
+                "verbose_name": "destruction list item",
+                "verbose_name_plural": "destruction list items",
+                "unique_together": {("destruction_list", "zaak")},
             },
         ),
         migrations.CreateModel(
-            name='DestructionListReview',
+            name="DestructionListReview",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now=True, verbose_name='created')),
-                ('text', models.TextField(blank=True, help_text='Review comments on the destruction list in general', max_length=2000, verbose_name='text')),
-                ('status', models.CharField(blank=True, choices=[('approved', 'approved'), ('changes_requested', 'changes requested')], max_length=80, verbose_name='status')),
-                ('author', models.ForeignKey(help_text='User, who performed review', on_delete=django.db.models.deletion.CASCADE, related_name='reviews', to=settings.AUTH_USER_MODEL, verbose_name='author')),
-                ('destruction_list', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='reviews', to='destruction.DestructionList', verbose_name='destruction list')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(auto_now=True, verbose_name="created"),
+                ),
+                (
+                    "text",
+                    models.TextField(
+                        blank=True,
+                        help_text="Review comments on the destruction list in general",
+                        max_length=2000,
+                        verbose_name="text",
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            ("approved", "approved"),
+                            ("changes_requested", "changes requested"),
+                        ],
+                        max_length=80,
+                        verbose_name="status",
+                    ),
+                ),
+                (
+                    "author",
+                    models.ForeignKey(
+                        help_text="User, who performed review",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reviews",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="author",
+                    ),
+                ),
+                (
+                    "destruction_list",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reviews",
+                        to="destruction.DestructionList",
+                        verbose_name="destruction list",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'destruction list review',
-                'verbose_name_plural': 'destruction list reviews',
+                "verbose_name": "destruction list review",
+                "verbose_name_plural": "destruction list reviews",
             },
         ),
         migrations.CreateModel(
-            name='DestructionListItemReview',
+            name="DestructionListItemReview",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('text', models.TextField(blank=True, help_text='Review comments on the destruction list item', max_length=2000, verbose_name='text')),
-                ('suggestion', models.CharField(blank=True, choices=[('remove', 'remove'), ('change_and_remove', 'change_and_remove')], max_length=80, verbose_name='suggestion')),
-                ('destruction_list_item', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='item_reviews', to='destruction.DestructionListItem', verbose_name='destruction list item')),
-                ('destruction_list_review', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='item_reviews', to='destruction.DestructionListReview', verbose_name='destruction list review')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "text",
+                    models.TextField(
+                        blank=True,
+                        help_text="Review comments on the destruction list item",
+                        max_length=2000,
+                        verbose_name="text",
+                    ),
+                ),
+                (
+                    "suggestion",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            ("remove", "remove"),
+                            ("change_and_remove", "change_and_remove"),
+                        ],
+                        max_length=80,
+                        verbose_name="suggestion",
+                    ),
+                ),
+                (
+                    "destruction_list_item",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="item_reviews",
+                        to="destruction.DestructionListItem",
+                        verbose_name="destruction list item",
+                    ),
+                ),
+                (
+                    "destruction_list_review",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="item_reviews",
+                        to="destruction.DestructionListReview",
+                        verbose_name="destruction list review",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'destruction list item review',
-                'verbose_name_plural': 'destruction list item reviews',
+                "verbose_name": "destruction list item review",
+                "verbose_name_plural": "destruction list item reviews",
             },
         ),
     ]
