@@ -11,6 +11,7 @@ django-auth-adfs-db
 django-admin-index
 django-axes
 django-choices
+django-fsm
 django-hijack
 django-hijack-admin
 django-redis

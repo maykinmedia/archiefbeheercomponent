@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     "compat",  # Part of hijack
     "hijack_admin",
     "solo",
+    "django_fsm",
     # Project applications.
     "rma.accounts",
     "rma.utils",
