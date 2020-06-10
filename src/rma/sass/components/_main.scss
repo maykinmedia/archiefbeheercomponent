@@ -1,0 +1,14 @@
+$main-content-background-color: #fefefe !default;
+$main-content-border-color: #ddd !default;
+
+.main {
+  min-height: 90vh;
+  padding: 0;
+
+  & &__content {
+    background-color: $main-content-background-color;
+    padding: 1em;
+    border: solid 1px $main-content-border-color;
+    box-shadow: 1px 1px 2px 0 rgba(black, 0.2);
+  }
+}
