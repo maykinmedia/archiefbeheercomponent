@@ -1,0 +1,12 @@
+@import "../lib/typography";
+
+.title {
+  @include title;
+  text-align: center;
+  font-size: 1.6rem;
+
+  margin-top: 0;
+  margin-bottom: 1rem;
+
+}
+

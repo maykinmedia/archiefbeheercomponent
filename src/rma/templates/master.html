@@ -18,12 +18,12 @@
 
     <body class="{% block body-class %}{% endblock %}">
         <header>
-            <div class="logo container">
+            <div class="logo">
                 <img class="logo__img" src="{% static 'img/wapen-utrecht-rood.svg' %}">
             </div>
         </header>
         <main class="main">
-            <section class="main__content container">
+            <section class="main__content content-panel">
 
                 {% block content %}
                     Override <code>{% verbatim %}{% block content %}{% endverbatim %}</code>

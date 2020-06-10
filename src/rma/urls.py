@@ -35,10 +35,11 @@ urlpatterns = [
         auth_views.PasswordResetCompleteView.as_view(),
         name="password_reset_complete",
     ),
-    # Simply show the master template.
-    path("", TemplateView.as_view(template_name="demo.html")),
     # auth backends
     path("adfs/", include("django_auth_adfs.urls")),
+    # Simply show the master template.
+    path("", TemplateView.as_view(template_name="demo.html")),
+    path("destruction/", include("rma.destruction.urls")),
 ]
 
 # NOTE: The staticfiles_urlpatterns also discovers static files (ie. no need to run collectstatic). Both the static

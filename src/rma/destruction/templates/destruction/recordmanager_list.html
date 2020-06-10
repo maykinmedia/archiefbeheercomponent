@@ -1,0 +1,26 @@
+{% extends "master.html" %}
+
+{% block content %}
+
+<header>
+    <h1 class="title">Record manager {{ request.user.username }}</h1>
+</header>
+
+<article class="destruction-list">
+    <section class="destruction-list__content content-panel">
+        <h2 class="section-title">Destruction lists</h2>
+        {% for object in object_list %}
+            <div class="list-item {% if object.assignee == request.user %}list-item--important {% endif %}">
+            <a class="list-item__title" href="#">{{ object.name }}</a>
+            <span>{{ object.get_status_display }}</span>
+            </div>
+        {% endfor %}
+    </section>
+
+    <aside class="destruction-list__notif content-panel">
+        <h2 class="section-title">Notifications</h2>
+    </aside>
+
+</article>
+
+{% endblock %}

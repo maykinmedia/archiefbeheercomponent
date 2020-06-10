@@ -1,0 +1,28 @@
+@import "../lib/colors";
+@import "../lib/typography";
+
+
+.list-item{
+  padding: 1em;
+
+
+  &--important {
+    border-left: solid 16px rgba($color-secondary, 0.8);
+    margin-left: -.6em;
+    padding-left: .6em;
+
+  }
+
+  & &__title {
+    display: block;
+    margin-bottom: 1em;
+    color: $color-primary;
+    font-weight: 600;
+    font-size: 1.2rem;
+  }
+
+  & + & {
+    border-top: solid 1px #e5e5e5;
+  }
+
+}
