@@ -27,15 +27,22 @@ class DestructionListReviewInline(admin.TabularInline):
 class DestructionListAdmin(FSMTransitionMixin, admin.ModelAdmin):
     list_display = ("name", "author", "assignee", "status")
     readonly_fields = ("status",)
-    fsm_field = ["status"]
-    inlines = [DestructionListItemInline, DestructionListReviewInline]
+    fsm_field = ("status",)
+    search_fields = ("name",)
+    list_filter = ("status",)
+    date_hierarchy = "created"
+    raw_id_fields = ("author", "assignee")
+    inlines = (DestructionListItemInline, DestructionListReviewInline)
 
 
 @admin.register(DestructionListItem)
 class DestructionListItemAdmin(FSMTransitionMixin, admin.ModelAdmin):
     list_display = ("destruction_list", "zaak")
     readonly_fields = ("status",)
-    fsm_field = ["status"]
+    fsm_field = ("status",)
+    search_fields = ("zaak",)
+    list_filter = ("status",)
+    raw_id_fields = ("destruction_list",)
 
 
 class DestructionListItemReviewInline(admin.TabularInline):
@@ -47,9 +54,14 @@ class DestructionListItemReviewInline(admin.TabularInline):
 @admin.register(DestructionListReview)
 class DestructionListReviewAdmin(admin.ModelAdmin):
     list_display = ("destruction_list", "author")
-    inlines = [DestructionListItemReviewInline]
+    raw_id_fields = ("destruction_list", "author")
+    date_hierarchy = "created"
+    inlines = (DestructionListItemReviewInline,)
 
 
 @admin.register(DestructionListItemReview)
 class DestructionListItemReviewAdmin(admin.ModelAdmin):
     list_display = ("destruction_list_review", "destruction_list_item")
+    raw_id_fields = ("destruction_list_review", "destruction_list_item")
+    list_filter = ("suggestion",)
+    search_fields = ("destruction_list_item__zaak",)
