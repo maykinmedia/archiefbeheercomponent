@@ -5,7 +5,8 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import include, path
-from django.views.generic.base import TemplateView
+
+from rma.destruction.views import EnterView
 
 handler500 = "rma.utils.views.server_error"
 admin.site.site_header = "rma admin"
@@ -38,7 +39,7 @@ urlpatterns = [
     # auth backends
     path("adfs/", include("django_auth_adfs.urls")),
     # Simply show the master template.
-    path("", TemplateView.as_view(template_name="demo.html")),
+    path("", EnterView.as_view()),
     path("destruction/", include("rma.destruction.urls")),
 ]
 
