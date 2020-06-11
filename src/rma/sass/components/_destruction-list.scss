@@ -5,7 +5,22 @@
   display: flex;
   justify-content: space-between;
 
-  & &__content {
+  &__header {
+    display: flex;
+    align-items: center;
+  }
+
+  &__title {
+    flex: 1;
+  }
+
+  &__nav {
+    flex: 1;
+    text-align: right;
+    margin-right: 1.5em;
+  }
+
+  &__content {
     width: 70%;
 
     > .list-item {
@@ -13,7 +28,7 @@
     }
   }
 
-  & &__notif {
+  &__notif {
     width: 30%;
   }
 
