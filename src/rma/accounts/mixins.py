@@ -9,6 +9,6 @@ class RoleRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
             return False
 
         role = self.request.user.role
-        if hasattr(role, self.role_permission):
-            result = getattr(role, self.role_permission)
-            return result
+        if role is None:
+            return False
+        return getattr(role, self.role_permission)
