@@ -1,4 +1,4 @@
-{% load static %}<!DOCTYPE html>
+{% load static hijack_tags %}<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -9,7 +9,6 @@
 
         <link href="https://fonts.googleapis.com/css?family=Fira+Sans:300,400,600|Material+Icons|Material+Icons+Outlined" rel="stylesheet">
 
-{#        <link href="{% static 'css/font-awesome.min.css' %}" media="screen" rel="stylesheet" />#}
         <link href="{% static 'css/screen.css' %}" media="screen" rel="stylesheet" type="text/css" />
         <link href="{% static 'hijack/hijack-styles.css' %}" rel="stylesheet" type="text/css" />
         {% block extra_css %}{% endblock %}
@@ -17,6 +16,7 @@
     </head>
 
     <body class="{% block body-class %}{% endblock %}">
+        {% hijack_notification %}
         <header>
             <div class="logo">
                 <img class="logo__img" src="{% static 'img/wapen-utrecht-rood.svg' %}">

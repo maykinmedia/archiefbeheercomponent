@@ -12,7 +12,7 @@ from .models import DestructionList
 class EnterView(LoginRequiredMixin, RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         role = self.request.user.role
-        if role.can_start_destruction:
+        if role and role.can_start_destruction:
             return reverse("destruction:record-manager-list")
 
         raise PermissionDenied(self.get_permission_denied_message())
