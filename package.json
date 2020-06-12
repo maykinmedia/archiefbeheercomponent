@@ -19,12 +19,15 @@
   "license": "UNLICENSED",
   "homepage": "https://maykinmedia.nl",
   "dependencies": {
-    "microscope-sass": "latest"
+    "microscope-sass": "latest",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   },
   "devDependencies": {
     "@babel/core": "latest",
     "@babel/polyfill": "latest",
     "@babel/preset-env": "latest",
+    "@babel/preset-react": "^7.10.1",
     "autoprefixer": "latest",
     "babel-loader": "latest",
     "chai": "latest",
