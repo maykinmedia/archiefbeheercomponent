@@ -1,0 +1,11 @@
+.destruction-create {
+  display: flex;
+
+  & &__filters {
+    width: 30%;
+  }
+
+  & &__zaken {
+    width: 70%
+  }
+}

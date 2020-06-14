@@ -1,0 +1,26 @@
+{% extends "master.html" %}
+
+{% block content %}
+
+<header>
+    <h1 class="title">Create new destruction list</h1>
+</header>
+
+<article id="content-main">
+
+    {{ zaaktypen|json_script:"zaaktype-choices" }}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+
+        <div class="destruction-create" id="react-destruction-list" data-zaken-url="{% url 'destruction:fetch-zaken' %}">
+{#             empty on purpose - react managed #}
+        </div>
+
+    </form>
+
+
+</article>
+
+{% endblock %}

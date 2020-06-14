@@ -1,12 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
-from django.views.generic import ListView
+from django.views.generic import CreateView, ListView
 from django.views.generic.base import RedirectView
 
 from rma.accounts.mixins import RoleRequiredMixin
 
 from .models import DestructionList
+from .utils import get_zaaktype_choices
 
 
 class EnterView(LoginRequiredMixin, RedirectView):
@@ -26,3 +27,17 @@ class RecordManagerDestructionListView(RoleRequiredMixin, ListView):
 
     def get_queryset(self):
         return DestructionList.objects.filter(author=self.request.user).order_by("-id")
+
+
+class DestructionListCreateView(CreateView):
+    model = DestructionList
+    fields = ("name", "assignee")
+    template_name = "destruction/destructionlist_create.html"
+
+    def get_context_data(self, **kwargs) -> dict:
+        context = super().get_context_data(**kwargs)
+
+        # add zaken
+        context.update({"zaaktypen": get_zaaktype_choices()})
+
+        return context

@@ -10,5 +10,6 @@ $main-content-background-color: #fefefe !default;
     @include container;
 
     background-color: $main-content-background-color;
+    position: relative;
   }
 }
