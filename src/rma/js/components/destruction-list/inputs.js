@@ -1,18 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 
 const Input = (props) => {
-    const { type, id, name, initial, classes } = props;
-    const [value, setValue] = useState(initial || "");
+    const { type, id, name, initial, classes, onBlur, onChange } = props;
     return (
         <input
             type={type}
             name={name}
             id={id}
-            onChange={ (event) => {
-                setValue(event.text);
+            onBlur={ (event) => {
+                if (onBlur) {
+                    onBlur(event.target.value);
+                }
             }}
-            defaultValue={value}
+            onChange={ (event) => {
+                if (onChange) {
+                    onChange(event.target.value);
+                }
+            }}
+            defaultValue={initial || ""}
             className={classes}
         ></input>
     );

@@ -1,10 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { SelectInput } from "./select";
 import { DateInput} from "./inputs";
 import { ZakenTable } from "./zaken-table";
 
 function DestructionForm(props) {
     const { zaaktypen, zakenUrl } = props;
+
+    //filters
+    const [selectedZaaktypen, setSelectedZaaktypen] = useState([]);
+    const [selectedStartdatum, setSelectedStartdatum] = useState(null);
+    const filters = {
+        zaaktypen: selectedZaaktypen,
+        startdatum: selectedStartdatum,
+    };
 
     return (
         <>
@@ -18,6 +26,8 @@ function DestructionForm(props) {
                         id={"id_zaaktypen"}
                         multiple={true}
                         classes="filter-group__select"
+                        onChange={(zaaktypen) => setSelectedZaaktypen(zaaktypen)}
+                        size="10"
                     />
                 </div>
                 <div className="filter-group__item">
@@ -25,23 +35,22 @@ function DestructionForm(props) {
                     <DateInput
                         name={"startdatum"}
                         id={"id_startdatum"}
+                        onBlur={(startdatum) => {
+                            console.log("on blur=", startdatum);
+                            if (startdatum !== selectedStartdatum ) {
+                                setSelectedStartdatum(startdatum);
+                            }
+                        }}
                     />
                 </div>
-                <div className="filter-group__item">
-                    <label htmlFor={"id_einddatum"}>Einddatum</label>
-                    <DateInput
-                        name={"einddatum"}
-                        id={"id_einddatum"}
-                    />
-                </div>
+
             </aside>
 
             <section className="destruction-create__zaken content-panel">
                 <h2 className="section-title section-title--highlight">Zaken</h2>
-                <ZakenTable url={zakenUrl}/>
+                <ZakenTable url={zakenUrl} filters={filters}/>
             </section>
         </>
-
     );
 }
 
