@@ -35,10 +35,10 @@ function DestructionForm(props) {
                     <DateInput
                         name={"startdatum"}
                         id={"id_startdatum"}
-                        onBlur={(startdatum) => {
-                            console.log("on blur=", startdatum);
-                            if (startdatum !== selectedStartdatum ) {
-                                setSelectedStartdatum(startdatum);
+                        onBlur={(e) => {
+                            const eventStartdatum = e.target.value;
+                            if (eventStartdatum !== selectedStartdatum ) {
+                                setSelectedStartdatum(eventStartdatum);
                             }
                         }}
                     />
