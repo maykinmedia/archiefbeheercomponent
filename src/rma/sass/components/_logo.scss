@@ -1,0 +1,11 @@
+@import "../lib/container";
+
+.logo {
+  @include container;
+
+  padding: 1rem 1rem 0;
+
+  &__img {
+    height: 100px;
+  }
+}

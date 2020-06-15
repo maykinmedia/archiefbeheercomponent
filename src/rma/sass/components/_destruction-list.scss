@@ -1,0 +1,40 @@
+@import "../lib/colors";
+
+
+.destruction-list {
+  display: flex;
+  justify-content: space-between;
+
+  &__header {
+    display: flex;
+    align-items: center;
+  }
+
+  &__title {
+    flex: 1;
+  }
+
+  &__nav {
+    flex: 1;
+    text-align: right;
+    margin-right: 1.5em;
+  }
+
+  &__content {
+    width: 70%;
+
+    > .list-item {
+      margin: 1.5em;
+    }
+  }
+
+  &__notif {
+    width: 30%;
+  }
+
+  .section-title {
+    border-left: solid 4px rgba($color-secondary, 0.8);
+    margin-left: -.5em;
+    padding-left: .5em;
+  }
+}

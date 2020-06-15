@@ -1,0 +1,36 @@
+@import "../lib/colors";
+//@import "../lib/typography";
+
+$footer-background-color: $color-primary !default;
+$footer-text-color: #fff !default;
+
+.footer {
+  //@include body;
+
+  margin-top: -2em;
+  padding-top: 4em;
+  padding-bottom: 2em;
+  background: url(../img/bg-footer.svg) top center $footer-background-color;
+  background-size: cover;
+  color: $footer-text-color;
+
+  // center content
+  & &__content {
+    max-width: 74em;
+    margin: 0 auto;
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+
+  & &__column {
+    max-width: 33%;
+  }
+
+  & &__contact-details {
+    display: flex;
+
+    & > * {
+      flex: 1;
+    }
+  }
+}

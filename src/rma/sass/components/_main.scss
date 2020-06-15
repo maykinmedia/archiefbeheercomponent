@@ -1,0 +1,14 @@
+@import "../lib/container";
+
+$main-content-background-color: #fefefe !default;
+
+.main {
+  min-height: 90vh;
+  padding: 0;
+
+  & &__content {
+    @include container;
+
+    background-color: $main-content-background-color;
+  }
+}

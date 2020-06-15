@@ -1,0 +1,22 @@
+@import "../lib/colors";
+
+$btn-background-color: $color-background;
+
+.btn {
+  display: inline-block;
+  padding: 0.5em 1em;
+  background: $btn-background-color;
+
+  font-size: 1.2rem;
+  border: solid 1px transparent;
+  box-shadow: 2px 1px 3px 0 rgba(#000, 0.2);
+  cursor: pointer;
+  outline: none;
+
+  color: $color-text;
+  text-decoration: none;
+
+  &:hover {
+    background: $color-secondary;
+  }
+}
