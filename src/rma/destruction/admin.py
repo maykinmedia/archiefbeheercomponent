@@ -4,6 +4,7 @@ from fsm_admin.mixins import FSMTransitionMixin
 
 from .models import (
     DestructionList,
+    DestructionListAssignee,
     DestructionListItem,
     DestructionListItemReview,
     DestructionListReview,
@@ -23,6 +24,12 @@ class DestructionListReviewInline(admin.TabularInline):
     extra = 1
 
 
+class DestructionListAssigneeInline(admin.TabularInline):
+    model = DestructionListAssignee
+    fields = ("assignee", "order")
+    extra = 1
+
+
 @admin.register(DestructionList)
 class DestructionListAdmin(FSMTransitionMixin, admin.ModelAdmin):
     list_display = ("name", "author", "assignee", "status")
@@ -32,7 +39,11 @@ class DestructionListAdmin(FSMTransitionMixin, admin.ModelAdmin):
     list_filter = ("status",)
     date_hierarchy = "created"
     raw_id_fields = ("author", "assignee")
-    inlines = (DestructionListItemInline, DestructionListReviewInline)
+    inlines = (
+        DestructionListItemInline,
+        DestructionListReviewInline,
+        DestructionListAssigneeInline,
+    )
 
 
 @admin.register(DestructionListItem)
@@ -65,3 +76,9 @@ class DestructionListItemReviewAdmin(admin.ModelAdmin):
     raw_id_fields = ("destruction_list_review", "destruction_list_item")
     list_filter = ("suggestion",)
     search_fields = ("destruction_list_item__zaak",)
+
+
+@admin.register(DestructionListAssignee)
+class DestructionListAssigneeAdmin(admin.ModelAdmin):
+    list_display = ("destruction_list", "assignee")
+    raw_id_fields = ("destruction_list", "assignee")

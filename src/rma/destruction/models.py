@@ -167,3 +167,24 @@ class DestructionListItemReview(models.Model):
 
     def __str__(self):
         return f"({self.destruction_list_review}) - ({self.destruction_list_item})"
+
+
+class DestructionListAssignee(models.Model):
+    destruction_list = models.ForeignKey(
+        DestructionList,
+        on_delete=models.CASCADE,
+        related_name="assignees",
+        verbose_name=_("destruction list"),
+    )
+    assignee = models.ForeignKey(
+        "accounts.User", on_delete=models.CASCADE, verbose_name=_("assignee"),
+    )
+    order = models.PositiveSmallIntegerField(_("order"))
+
+    class Meta:
+        verbose_name = _("destruction list assignee")
+        verbose_name_plural = _("destruction list assignees")
+        unique_together = ("destruction_list", "assignee")
+
+    def __str__(self):
+        return f"{self.destruction_list}: {self.assignee}"
