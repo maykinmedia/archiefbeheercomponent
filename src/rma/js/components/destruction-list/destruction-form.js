@@ -68,7 +68,13 @@ function DestructionForm(props) {
             <header className="destruction-create__header">
                 <h1 className="title destruction-create__title">Vernietigingslijst opstellen</h1>
                 <nav className="title destruction-create__nav">
-                    <button type="button" className="btn" onClick={openModal}>{selectedCount} zaken geselecteerd</button>
+                    <button
+                        type="button"
+                        className="btn"
+                        onClick={openModal}
+                        disabled={!selectedCount}
+                    >{selectedCount} zaken geselecteerd
+                    </button>
                 </nav>
             </header>
             <div className="destruction-create__content">
