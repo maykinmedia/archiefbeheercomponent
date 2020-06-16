@@ -2,7 +2,7 @@ import React from 'react';
 
 
 const SelectInput = (props) => {
-    const { choices, name, id, multiple, classes, onChange, size } = props;
+    const { choices, name, id, multiple, classes, onChange, size, disabled } = props;
 
     const options = choices.map(([value, label], index) => {
         return (
@@ -17,6 +17,7 @@ const SelectInput = (props) => {
             name={name}
             id={id}
             className={classes}
+            disabled={!!disabled}
             onChange={(event) => {
                 const selectedOptions = Array.from(
                     event.target.selectedOptions,

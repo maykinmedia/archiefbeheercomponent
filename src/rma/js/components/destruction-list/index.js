@@ -1,7 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
+
 import { jsonScriptToVar } from '../../utils';
-import {DestructionForm} from "./destruction-form";
+import { DestructionForm } from "./destruction-form";
 
 
 const mount = () => {
@@ -9,11 +10,13 @@ const mount = () => {
     if (!node) return;
 
     const zaaktypen = jsonScriptToVar('zaaktype-choices');
+    const reviewers = jsonScriptToVar('reviewer-choices');
     const { zakenUrl, url, csrftoken } = node.dataset;
 
     ReactDOM.render(
         <DestructionForm
             zaaktypen={zaaktypen}
+            reviewers={reviewers}
             zakenUrl={zakenUrl}
             url={url}
             csrftoken={csrftoken}

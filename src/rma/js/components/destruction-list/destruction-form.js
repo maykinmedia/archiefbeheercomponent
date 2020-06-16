@@ -17,7 +17,7 @@ function getFullUrl(url, filters) {
 
 
 function DestructionForm(props) {
-    const { zaaktypen, zakenUrl, url, csrftoken } = props;
+    const { zaaktypen, reviewers, zakenUrl, url, csrftoken } = props;
 
     //filters
     const [selectedZaaktypen, setSelectedZaaktypen] = useState([]);
@@ -147,6 +147,33 @@ function DestructionForm(props) {
                                 required={true}
                             />
                         </div>
+
+                        <label>Review</label>
+                        <ol>
+                            <li className="filter-group__item">
+                                <SelectInput
+                                    choices={reviewers}
+                                    name={"reviewer_1"}
+                                    id={"id_reviewer_1"}
+                                />
+                            </li>
+                            <li className="filter-group__item">
+                                <SelectInput
+                                    choices={reviewers}
+                                    name={"reviewer_2"}
+                                    id={"id_reviewer_2"}
+                                    // disabled={true}
+                                />
+                            </li>
+                            <li className="filter-group__item">
+                                <SelectInput
+                                    choices={reviewers}
+                                    name={"reviewer_3"}
+                                    id={"id_reviewer_3"}
+                                    // disabled={true}
+                                />
+                            </li>
+                        </ol>
 
                     </section>
                     <button type="submit" className="btn">Bevestig</button>

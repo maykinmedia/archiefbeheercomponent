@@ -6,7 +6,7 @@ from django.views.generic.base import RedirectView
 
 from rma.accounts.mixins import RoleRequiredMixin
 
-from .forms import DestructionListForm, get_zaaktype_choices
+from .forms import DestructionListForm, get_reviewer_choices, get_zaaktype_choices
 from .models import DestructionList
 
 
@@ -40,6 +40,7 @@ class DestructionListCreateView(CreateView):
 
         # add zaaktypen
         context.update({"zaaktypen": get_zaaktype_choices()})
+        context.update({"reviewers": get_reviewer_choices(self.request.user)})
 
         return context
 

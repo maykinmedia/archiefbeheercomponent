@@ -5,6 +5,10 @@
 <article id="content-main">
 
     {{ zaaktypen|json_script:"zaaktype-choices" }}
+    {{ reviewers|json_script:"reviewer-choices" }}
+
+    {{ form.errors }}
+    {{ form.non_field_errors }}
 
         <div class="destruction-create"
              id="react-destruction-list"

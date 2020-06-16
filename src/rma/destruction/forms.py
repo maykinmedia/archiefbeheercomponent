@@ -2,7 +2,9 @@ from typing import List, Tuple
 
 from django import forms
 
-from .models import DestructionList, DestructionListItem
+from rma.accounts.models import User
+
+from .models import DestructionList, DestructionListAssignee, DestructionListItem
 from .service import get_zaaktypen
 
 
@@ -17,20 +19,36 @@ def get_zaaktype_choices() -> List[Tuple[str, str]]:
     return choices
 
 
+def get_reviewer_choices(author=None) -> List[Tuple[str, str]]:
+    reviewers = User.objects.filter(role__can_review_destruction=True).order_by(
+        "role__name", "username"
+    )
+    if author:
+        reviewers.exclude(id=author.id)
+
+    choices = []
+    for reviewer in reviewers:
+        label = f"{reviewer.role.name} - {reviewer.username}"
+        choices.append((reviewer.id, label))
+
+    choices.insert(0, ("", "-----"))
+    return choices
+
+
 class DestructionListForm(forms.ModelForm):
     zaken = forms.CharField()
+    reviewer_1 = forms.CharField()
+    reviewer_2 = forms.CharField(required=False)
+    reviewer_3 = forms.CharField(required=False)
 
     class Meta:
         model = DestructionList
-        fields = ("name", "assignee", "zaken")
+        fields = ("name", "zaken", "reviewer_1", "reviewer_2", "reviewer_3")
 
     def clean_zaken(self):
         return self.cleaned_data["zaken"].split(",")
 
-    def save(self, **kwargs):
-        destruction_list = super().save(**kwargs)
-
-        #  create items with zaak urls
+    def save_items(self, destruction_list):
         zaken = self.cleaned_data["zaken"]
         destruction_list_items = []
         for zaak in zaken:
@@ -38,5 +56,30 @@ class DestructionListForm(forms.ModelForm):
                 DestructionListItem(destruction_list=destruction_list, zaak=zaak)
             )
         DestructionListItem.objects.bulk_create(destruction_list_items)
+
+    def save_assignees(self, destruction_list):
+        assignees = []
+        for i in range(1, 4):
+            reviewer_id = self.cleaned_data[f"reviewer_{i}"]
+            if reviewer_id:
+                assignees.append(
+                    DestructionListAssignee(
+                        destruction_list=destruction_list,
+                        order=i,
+                        assignee_id=reviewer_id,
+                    )
+                )
+        destruction_list_assignees = DestructionListAssignee.objects.bulk_create(
+            assignees
+        )
+        if destruction_list_assignees:
+            destruction_list.assignee = destruction_list_assignees[0].assignee
+            destruction_list.save()
+
+    def save(self, **kwargs):
+        destruction_list = super().save(**kwargs)
+
+        self.save_items(destruction_list)
+        self.save_assignees(destruction_list)
 
         return destruction_list
