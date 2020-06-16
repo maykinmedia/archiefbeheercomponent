@@ -6,8 +6,8 @@ from django.views.generic.base import RedirectView
 
 from rma.accounts.mixins import RoleRequiredMixin
 
+from .forms import DestructionListForm, get_zaaktype_choices
 from .models import DestructionList
-from .utils import get_zaaktype_choices
 
 
 class EnterView(LoginRequiredMixin, RedirectView):
@@ -31,14 +31,14 @@ class RecordManagerDestructionListView(RoleRequiredMixin, ListView):
 
 class DestructionListCreateView(CreateView):
     model = DestructionList
-    fields = ("name", "assignee")
+    form_class = DestructionListForm
     template_name = "destruction/destructionlist_create.html"
     success_url = reverse_lazy("destruction:record-manager-list")
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
 
-        # add zaken
+        # add zaaktypen
         context.update({"zaaktypen": get_zaaktype_choices()})
 
         return context

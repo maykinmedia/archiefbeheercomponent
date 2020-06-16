@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import Modal from 'react-modal';
+
 import { SelectInput } from "./select";
 import { DateInput, TextInput, Input} from "./inputs";
 import { CsrfInput} from "./csrf";
