@@ -25,6 +25,12 @@ const Input = (props) => {
     );
 };
 
+
+const TextInput = (props) => {
+    return <Input type="text" {...props} />;
+};
+
+
 const DateInput = (props) => {
     return <Input type="date" {...props} />;
 };
@@ -33,4 +39,4 @@ const CheckboxInput = (props) => {
     return <Input type="checkbox" {...props} />;
 };
 
-export {Input, DateInput, CheckboxInput};
+export {Input, TextInput, DateInput, CheckboxInput};

@@ -6,7 +6,7 @@
 
     {{ zaaktypen|json_script:"zaaktype-choices" }}
 
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" action="{% url 'destruction:record-manager-create' %}">
         {% csrf_token %}
 
 

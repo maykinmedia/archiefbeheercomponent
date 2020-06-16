@@ -1,4 +1,6 @@
-$main-content-border-color: #ddd !default;
+@import "../lib/colors";
+
+$main-content-border-color: $color-border !default;
 
 .content-panel {
   border: solid 1px $main-content-border-color;
