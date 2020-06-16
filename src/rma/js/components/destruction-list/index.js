@@ -9,10 +9,15 @@ const mount = () => {
     if (!node) return;
 
     const zaaktypen = jsonScriptToVar('zaaktype-choices');
-    const { zakenUrl } = node.dataset;
+    const { zakenUrl, url, csrftoken } = node.dataset;
 
     ReactDOM.render(
-        <DestructionForm zaaktypen={zaaktypen} zakenUrl={zakenUrl}/>,
+        <DestructionForm
+            zaaktypen={zaaktypen}
+            zakenUrl={zakenUrl}
+            url={url}
+            csrftoken={csrftoken}
+        />,
         node
     );
 };

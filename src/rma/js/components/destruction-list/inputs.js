@@ -2,7 +2,7 @@ import React from "react";
 
 
 const Input = (props) => {
-    const { type, id, name, initial, classes, checked, onBlur, onChange } = props;
+    const { type, id, name, initial, classes, checked, onBlur, onChange, required } = props;
     return (
         <input
             type={type}
@@ -21,6 +21,7 @@ const Input = (props) => {
                     onChange(event);
                 }
             }}
+            required={required || false }
         ></input>
     );
 };

@@ -1,8 +1,12 @@
 import React, {useEffect, useState} from "react";
 import Modal from 'react-modal';
 import { SelectInput } from "./select";
-import { DateInput, TextInput} from "./inputs";
+import { DateInput, TextInput, Input} from "./inputs";
+import { CsrfInput} from "./csrf";
 import { ZakenTable } from "./zaken-table";
+
+
+Modal.setAppElement('#react-destruction-list');
 
 
 function getFullUrl(url, filters) {
@@ -12,7 +16,7 @@ function getFullUrl(url, filters) {
 
 
 function DestructionForm(props) {
-    const { zaaktypen, zakenUrl } = props;
+    const { zaaktypen, zakenUrl, url, csrftoken } = props;
 
     //filters
     const [selectedZaaktypen, setSelectedZaaktypen] = useState([]);
@@ -29,10 +33,10 @@ function DestructionForm(props) {
 
     // checkboxes
     const [checkboxes, setCheckboxes] = useState({});
-    console.log("checkboxes=", checkboxes);
     const selectedCount = Object.keys(checkboxes).reduce(
         (acc, key) => checkboxes[key] ? acc + 1 : acc,
     0);
+    const selectedUrls = Object.keys(checkboxes).filter(k=>checkboxes[k]);
 
     // modal
     const [modalIsOpen,setIsOpen] = React.useState(false);
@@ -122,16 +126,27 @@ function DestructionForm(props) {
 
             <Modal isOpen={modalIsOpen} className="modal">
                 <button onClick={closeModal} className="modal__close btn">&times;</button>
-                <form method="post" enctype="multipart/form-data" action="/destruction/record-managers/add">
+                <h1 className="title modal__title">Vernietigingslijst starten - {selectedCount} zaken</h1>
+                <form method="post" encType="multipart/form-data" action={url}>
                     <section className="filter-group">
-                        <h1 className="title modal__title">Vernietigingslijst starten - {selectedCount} zaken</h1>
+                        <CsrfInput csrftoken={csrftoken}/>
+
+                        <Input
+                            type="hidden"
+                            id={"id_zaken"}
+                            name={"zaken"}
+                            initial={selectedUrls}
+                        />
+
                         <div className="filter-group__item">
                             <label htmlFor={"id_name"}>Naam</label>
                             <TextInput
                                 id={"id_name"}
                                 name={"name"}
+                                required={true}
                             />
                         </div>
+
                     </section>
                     <button type="submit" className="btn">Bevestig</button>
                 </form>

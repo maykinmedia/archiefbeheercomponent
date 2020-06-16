@@ -6,15 +6,14 @@
 
     {{ zaaktypen|json_script:"zaaktype-choices" }}
 
-    <form method="post" enctype="multipart/form-data" action="{% url 'destruction:record-manager-create' %}">
-        {% csrf_token %}
-
-
-        <div class="destruction-create" id="react-destruction-list" data-zaken-url="{% url 'destruction:fetch-zaken' %}">
+        <div class="destruction-create"
+             id="react-destruction-list"
+             data-zaken-url="{% url 'destruction:fetch-zaken' %}"
+             data-url="{% url 'destruction:record-manager-create' %}"
+             data-csrftoken="{{ request.COOKIES.csrftoken }}"
+        >
 {#             empty on purpose - react managed #}
         </div>
-
-    </form>
 
 
 </article>

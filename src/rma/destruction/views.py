@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView
 from django.views.generic.base import RedirectView
 
@@ -33,6 +33,7 @@ class DestructionListCreateView(CreateView):
     model = DestructionList
     fields = ("name", "assignee")
     template_name = "destruction/destructionlist_create.html"
+    success_url = reverse_lazy("destruction:record-manager-list")
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
@@ -41,3 +42,8 @@ class DestructionListCreateView(CreateView):
         context.update({"zaaktypen": get_zaaktype_choices()})
 
         return context
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+
+        return super().form_valid(form)
