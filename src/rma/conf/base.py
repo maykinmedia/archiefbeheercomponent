@@ -357,3 +357,9 @@ ELASTIC_APM = {
 
 
 LOGIN_URL = reverse_lazy("admin:login")
+
+# Celery
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://localhost:6379/0")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND", "redis://localhost:6379/0")
+# Add a 10 minutes timeout to all Celery tasks.
+CELERY_TASK_SOFT_TIME_LIMIT = 600
