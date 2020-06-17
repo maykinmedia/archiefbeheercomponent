@@ -52,7 +52,7 @@ function ZakenTable(props) {
                   <tr key={zaak.url}>
                       <td>
                           <CheckboxInput
-                              checked={checkboxes[zaak.url]}
+                              checked={checkboxes[zaak.url] || false}
                               name={zaak.url}
                               onChange={(e) => {
                                   const isChecked = !checkboxes[zaak.url];
