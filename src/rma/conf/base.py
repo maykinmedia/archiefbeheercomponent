@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     "solo",
     "django_fsm",
     "fsm_admin",
+    "timeline_logger",
     "zgw_consumers",
     # Project applications.
     "rma.accounts",

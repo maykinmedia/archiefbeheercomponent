@@ -19,6 +19,7 @@ django-redis
 django-rosetta
 django-solo
 django-sniplates
+django-timeline-logger
 
 # API libraries
 # djangorestframework
