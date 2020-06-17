@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import { CheckboxInput} from "./inputs";
+import React, { useState } from 'react';
+import { CheckboxInput } from "./inputs";
 
 
 function displayZaaktype (zaaktype) {

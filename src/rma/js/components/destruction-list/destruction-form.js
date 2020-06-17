@@ -1,13 +1,10 @@
 import React, {useEffect, useState} from "react";
-import Modal from 'react-modal';
 
-import { SelectInput } from "./select";
-import { DateInput, TextInput, Input} from "./inputs";
-import { CsrfInput} from "./csrf";
+import { SelectMultipleInput } from "./select";
+import { DateInput } from "./inputs";
 import { ZakenTable } from "./zaken-table";
-
-
-Modal.setAppElement('#react-destruction-list');
+import { CreateModal} from "./create-modal";
+import { countObjectKeys } from "../../utils";
 
 
 function getFullUrl(url, filters) {
@@ -34,15 +31,11 @@ function DestructionForm(props) {
 
     // checkboxes
     const [checkboxes, setCheckboxes] = useState({});
-    const selectedCount = Object.keys(checkboxes).reduce(
-        (acc, key) => checkboxes[key] ? acc + 1 : acc,
-    0);
-    const selectedUrls = Object.keys(checkboxes).filter(k=>checkboxes[k]);
+    const selectedCount = countObjectKeys(checkboxes);
 
     // modal
-    const [modalIsOpen,setIsOpen] = React.useState(false);
+    const [modalIsOpen, setIsOpen] = React.useState(false);
     const openModal = () => setIsOpen(true);
-    const closeModal = () => setIsOpen(false);
 
     // fetch zaken
     useEffect(() => {
@@ -87,7 +80,7 @@ function DestructionForm(props) {
                     <h2 className="section-title section-title--highlight">Filters</h2>
                     <div className="filter-group__item">
                         <label htmlFor={"id_zaaktypen"}>Zaaktypen</label>
-                        <SelectInput
+                        <SelectMultipleInput
                             choices={zaaktypen}
                             name={"zaaktypen"}
                             id={"id_zaaktypen"}
@@ -125,63 +118,17 @@ function DestructionForm(props) {
                 </section>
             </div>
 
-            <Modal isOpen={modalIsOpen} className="modal">
-                <button onClick={closeModal} className="modal__close btn">&times;</button>
-                <h1 className="title modal__title">Vernietigingslijst starten - {selectedCount} zaken</h1>
-                <form method="post" encType="multipart/form-data" action={url}>
-                    <section className="filter-group">
-                        <CsrfInput csrftoken={csrftoken}/>
+            <CreateModal
+                checkboxes={checkboxes}
+                modalIsOpen={modalIsOpen}
+                setIsOpen={setIsOpen}
+                reviewers={reviewers}
+                url={url}
+                csrftoken={csrftoken}
+            />
 
-                        <Input
-                            type="hidden"
-                            id={"id_zaken"}
-                            name={"zaken"}
-                            initial={selectedUrls}
-                        />
-
-                        <div className="filter-group__item">
-                            <label htmlFor={"id_name"}>Naam</label>
-                            <TextInput
-                                id={"id_name"}
-                                name={"name"}
-                                required={true}
-                            />
-                        </div>
-
-                        <label>Review</label>
-                        <ol>
-                            <li className="filter-group__item">
-                                <SelectInput
-                                    choices={reviewers}
-                                    name={"reviewer_1"}
-                                    id={"id_reviewer_1"}
-                                />
-                            </li>
-                            <li className="filter-group__item">
-                                <SelectInput
-                                    choices={reviewers}
-                                    name={"reviewer_2"}
-                                    id={"id_reviewer_2"}
-                                    // disabled={true}
-                                />
-                            </li>
-                            <li className="filter-group__item">
-                                <SelectInput
-                                    choices={reviewers}
-                                    name={"reviewer_3"}
-                                    id={"id_reviewer_3"}
-                                    // disabled={true}
-                                />
-                            </li>
-                        </ol>
-
-                    </section>
-                    <button type="submit" className="btn">Bevestig</button>
-                </form>
-
-            </Modal>
         </>
     );
 }
 
-export {DestructionForm};
+export { DestructionForm };

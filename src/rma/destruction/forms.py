@@ -39,11 +39,10 @@ class DestructionListForm(forms.ModelForm):
     zaken = forms.CharField()
     reviewer_1 = forms.CharField()
     reviewer_2 = forms.CharField(required=False)
-    reviewer_3 = forms.CharField(required=False)
 
     class Meta:
         model = DestructionList
-        fields = ("name", "zaken", "reviewer_1", "reviewer_2", "reviewer_3")
+        fields = ("name", "zaken", "reviewer_1", "reviewer_2")
 
     def clean_zaken(self):
         return self.cleaned_data["zaken"].split(",")
@@ -59,7 +58,7 @@ class DestructionListForm(forms.ModelForm):
 
     def save_assignees(self, destruction_list):
         assignees = []
-        for i in range(1, 4):
+        for i in range(1, 3):
             reviewer_id = self.cleaned_data[f"reviewer_{i}"]
             if reviewer_id:
                 assignees.append(

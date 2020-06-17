@@ -4,4 +4,11 @@ const jsonScriptToVar = (id) => {
 };
 
 
-export { jsonScriptToVar };
+const countObjectKeys = (obj) => {
+    return Object.keys(obj).reduce(
+        (acc, key) => obj[key] ? acc + 1 : acc,
+    0);
+};
+
+
+export { jsonScriptToVar, countObjectKeys };
