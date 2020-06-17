@@ -29,11 +29,12 @@ class RecordManagerDestructionListView(RoleRequiredMixin, ListView):
         return DestructionList.objects.filter(author=self.request.user).order_by("-id")
 
 
-class DestructionListCreateView(CreateView):
+class DestructionListCreateView(RoleRequiredMixin, CreateView):
     model = DestructionList
     form_class = DestructionListForm
     template_name = "destruction/destructionlist_create.html"
     success_url = reverse_lazy("destruction:record-manager-list")
+    role_permission = "can_start_destruction"
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
