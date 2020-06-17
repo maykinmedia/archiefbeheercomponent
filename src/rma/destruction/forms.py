@@ -37,8 +37,8 @@ def get_reviewer_choices(author=None) -> List[Tuple[str, str]]:
 
 class DestructionListForm(forms.ModelForm):
     zaken = forms.CharField()
-    reviewer_1 = forms.CharField()
-    reviewer_2 = forms.CharField(required=False)
+    reviewer_1 = forms.ModelChoiceField(queryset=User.objects.all())
+    reviewer_2 = forms.ModelChoiceField(queryset=User.objects.all(), required=False)
 
     class Meta:
         model = DestructionList
@@ -59,13 +59,11 @@ class DestructionListForm(forms.ModelForm):
     def save_assignees(self, destruction_list):
         assignees = []
         for i in range(1, 3):
-            reviewer_id = self.cleaned_data[f"reviewer_{i}"]
-            if reviewer_id:
+            reviewer = self.cleaned_data[f"reviewer_{i}"]
+            if reviewer:
                 assignees.append(
                     DestructionListAssignee(
-                        destruction_list=destruction_list,
-                        order=i,
-                        assignee_id=reviewer_id,
+                        destruction_list=destruction_list, order=i, assignee=reviewer,
                     )
                 )
         destruction_list_assignees = DestructionListAssignee.objects.bulk_create(
