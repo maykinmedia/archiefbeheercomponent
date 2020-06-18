@@ -3,6 +3,12 @@ from zgw_consumers.models import Service
 from zgw_consumers.service import get_paginated_results
 
 
+def _client_from_url(url: str):
+    service = Service.get_service(url)
+    return service.build_client()
+
+
+# ZTC
 def get_zaaktypen() -> list:
     zaaktypen = []
 
@@ -13,6 +19,7 @@ def get_zaaktypen() -> list:
     return zaaktypen
 
 
+# ZRC
 def get_zaken(query_params=None) -> list:
     query_params = query_params or {}
 
@@ -38,3 +45,17 @@ def get_zaken(query_params=None) -> list:
         reverse=True,
     )
     return zaken
+
+
+def fetch_zaak(url) -> dict:
+    client = _client_from_url(url)
+    response = client.retrieve("zaak", url=url)
+    return response
+
+
+def remove_zaak(url):
+    client = _client_from_url(url)
+    response = client.delete("zaak", url=url)
+
+    # TODO
+    return response
