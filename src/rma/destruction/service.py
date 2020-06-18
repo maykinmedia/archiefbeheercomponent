@@ -1,3 +1,4 @@
+from zds_client.client import ClientError
 from zgw_consumers.constants import APITypes
 from zgw_consumers.models import Service
 from zgw_consumers.service import get_paginated_results
@@ -5,6 +6,8 @@ from zgw_consumers.service import get_paginated_results
 
 def _client_from_url(url: str):
     service = Service.get_service(url)
+    if not service:
+        raise ClientError("There is no Service configured for %r" % url)
     return service.build_client()
 
 
@@ -53,9 +56,6 @@ def fetch_zaak(url) -> dict:
     return response
 
 
-def remove_zaak(url):
+def remove_zaak(url) -> None:
     client = _client_from_url(url)
-    response = client.delete("zaak", url=url)
-
-    # TODO
-    return response
+    client.delete("zaak", url=url)

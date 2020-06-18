@@ -8,7 +8,6 @@ from solo.models import SingletonModel
 from timeline_logger.models import TimelineLog
 
 from .constants import ListItemStatus, ListStatus, ReviewStatus, Suggestion
-from .service import remove_zaak
 
 
 class DestructionList(models.Model):
@@ -100,14 +99,16 @@ class DestructionListItem(models.Model):
         pass
 
     @transition(
-        field=status,
-        source=ListItemStatus.processing,
-        target=ListItemStatus.destroyed,
-        on_error=ListItemStatus.failed,
+        field=status, source=ListItemStatus.processing, target=ListItemStatus.destroyed,
     )
-    # extra args to make fsm-admin work
-    def complete(self, request, by):
-        remove_zaak(self.zaak)
+    def complete(self):
+        pass
+
+    @transition(
+        field=status, source=ListItemStatus.processing, target=ListItemStatus.failed,
+    )
+    def fail(self):
+        pass
 
 
 class DestructionListReview(models.Model):
