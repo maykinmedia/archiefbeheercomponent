@@ -57,5 +57,29 @@ def fetch_zaak(url) -> dict:
 
 
 def remove_zaak(url) -> None:
-    client = _client_from_url(url)
-    client.delete("zaak", url=url)
+    zrc_client = _client_from_url(url)
+
+    # find and destroy related besluiten
+    zaak_uuid = url.rstrip("/").split("/")[-1]
+    zaakbesluiten = zrc_client.list("zaakbesluit", zaak_uuid=zaak_uuid)
+
+    for zaakbesluit in zaakbesluiten:
+        besluit_url = zaakbesluit["besluit"]
+        brc_client = _client_from_url(besluit_url)
+        brc_client.delete("besluit", url=besluit_url)
+
+    # destroy zaak
+    zios = zrc_client.list("zaakinformatieobject", query_params={"zaak": url})
+    zrc_client.delete("zaak", url=url)
+
+    # find and destroy related documenten
+    for zio in zios:
+        io_url = zio["informatieobject"]
+
+        drc_client = _client_from_url(io_url)
+        # check if documents have pending relations
+        oios = drc_client.list(
+            "objectinformatieobject", query_params={"informatieobject": io_url}
+        )
+        if not oios:
+            drc_client.delete("enkelvoudiginformatieobject", url=io_url)
