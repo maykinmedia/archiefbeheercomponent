@@ -44,7 +44,7 @@ class DestructionListForm(forms.ModelForm):
         model = DestructionList
         fields = ("name", "zaken", "reviewer_1", "reviewer_2")
 
-    def clean_zaken(self):
+    def clean_zaken(self) -> List[str]:
         return self.cleaned_data["zaken"].split(",")
 
     def save_items(self, destruction_list):

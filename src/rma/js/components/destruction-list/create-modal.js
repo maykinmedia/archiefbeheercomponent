@@ -7,12 +7,11 @@ import { SelectInput } from "./select";
 import { countObjectKeys } from "../../utils";
 
 
-function CreateModal(props) {
-    const { checkboxes, modalIsOpen, setIsOpen, reviewers, url, csrftoken } = props;
+const = CreateModal = ({ checkboxes, modalIsOpen, setIsOpen, reviewers, url, csrftoken }) => {
 
     const closeModal = () => setIsOpen(false);
-    const selectedUrls = Object.keys(checkboxes).filter(k=>checkboxes[k]);
-    const selectedCount = countObjectKeys(checkboxes);
+    const selectedUrls = Object.keys(checkboxes).filter(url => checkboxes[url]);
+    const selectedCount = selectedUrls.length;
 
     // reviewers
     const [disable2, setDisable2] = useState(true);
@@ -62,14 +61,14 @@ function CreateModal(props) {
                                 }}
                             />
                         </li>
-                        <li className="filter-group__item">
+                        {disable2 ? null : <li className="filter-group__item">
                             <SelectInput
                                 choices={reviewers2}
                                 name={"reviewer_2"}
                                 id={"id_reviewer_2"}
                                 disabled={disable2}
                             />
-                        </li>
+                        </li>}
                     </ol>
 
                 </section>

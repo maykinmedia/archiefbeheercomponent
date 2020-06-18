@@ -13,8 +13,7 @@ function getFullUrl(url, filters) {
 }
 
 
-function DestructionForm(props) {
-    const { zaaktypen, reviewers, zakenUrl, url, csrftoken } = props;
+const DestructionForm({ zaaktypen, reviewers, zakenUrl, url, csrftoken }) => {
 
     //filters
     const [selectedZaaktypen, setSelectedZaaktypen] = useState([]);

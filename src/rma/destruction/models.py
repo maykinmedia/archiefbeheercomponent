@@ -177,7 +177,7 @@ class DestructionListAssignee(models.Model):
         verbose_name=_("destruction list"),
     )
     assignee = models.ForeignKey(
-        "accounts.User", on_delete=models.CASCADE, verbose_name=_("assignee"),
+        "accounts.User", on_delete=models.PROTECT, verbose_name=_("assignee"),
     )
     order = models.PositiveSmallIntegerField(_("order"))
 

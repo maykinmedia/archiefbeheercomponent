@@ -14,7 +14,7 @@
              id="react-destruction-list"
              data-zaken-url="{% url 'destruction:fetch-zaken' %}"
              data-url="{% url 'destruction:record-manager-create' %}"
-             data-csrftoken="{{ request.COOKIES.csrftoken }}"
+             data-csrftoken="{{ csrf_token }}"
         >
 {#             empty on purpose - react managed #}
         </div>
