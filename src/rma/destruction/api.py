@@ -1,3 +1,4 @@
+import itertools
 from concurrent import futures
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -32,6 +33,10 @@ class FetchZakenView(LoginRequiredMixin, View):
             with futures.ThreadPoolExecutor() as executor:
                 zaken = list(executor.map(get_zaken, queries))
 
+            # flat the list
+            zaken = list(itertools.chain(*zaken))
+
         else:
             zaken = get_zaken(query_params=query)
+
         return JsonResponse({"zaken": zaken})
