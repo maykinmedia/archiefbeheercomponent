@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     # Project applications.
     "rma.accounts",
     "rma.destruction",
+    "rma.notifications",
     "rma.utils",
 ]
 
