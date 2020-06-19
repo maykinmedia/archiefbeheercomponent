@@ -18,7 +18,7 @@ class CreateDestructionListTests(TestCase):
         super().setUp()
         self.client.force_login(self.user)
 
-    @patch("rma.destruction.forms.process_destruction_list")
+    @patch("rma.destruction.forms.process_destruction_list.delay")
     def test_create_list(self, m):
         reviewers = UserFactory.create_batch(2, role__can_review_destruction=True)
         zaken = [f"http://some.zaken.nl/api/v1/zaken/{i}" for i in range(1, 3)]

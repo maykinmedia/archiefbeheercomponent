@@ -6,6 +6,7 @@ from zds_client.client import ClientError
 
 from rma.notifications.models import Notification
 
+from ..celery import app
 from .constants import ListStatus
 from .models import DestructionList, DestructionListItem
 from .service import remove_zaak
@@ -13,6 +14,7 @@ from .service import remove_zaak
 logger = logging.getLogger(__name__)
 
 
+@app.task
 def process_destruction_list(list_id):
     try:
         destruction_list = DestructionList.objects.get(id=list_id)
