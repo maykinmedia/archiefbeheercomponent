@@ -27,13 +27,14 @@ django-timeline-logger
 # django-filter
 # drf-yasg  # api documentation
 
+# task queue
+celery
+
 # WSGI servers & monitoring - production oriented
 uwsgi
 sentry-sdk  # error monitoring
 elastic-apm  # Elastic APM integration
-
-# task queue
-celery
+flower # task monitoring
 
 # ZGW-related libraries
 zgw-consumers==0.9.0.dev9
