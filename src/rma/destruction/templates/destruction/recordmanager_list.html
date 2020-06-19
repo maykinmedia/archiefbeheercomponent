@@ -9,9 +9,9 @@
 <article class="destruction-list">
     <section class="destruction-list__content content-panel">
         <header class="destruction-list__header">
-            <h2 class="destruction-list__title section-title">Vernietigingslijsten</h2>
+            <h2 class="destruction-list__title section-title section-title--highlight">Vernietigingslijsten</h2>
             <nav class="destruction-list__nav">
-                <a class="btn" href="#">Opstellen</a>
+                <a class="btn" href="{% url 'destruction:record-manager-create' %}">Opstellen</a>
             </nav>
         </header>
 
@@ -25,7 +25,7 @@
     </section>
 
     <aside class="destruction-list__notif content-panel">
-        <h2 class="section-title">Notificaties</h2>
+        <h2 class="section-title section-title--highlight">Notificaties</h2>
         <p>TODO</p>
     </aside>
 

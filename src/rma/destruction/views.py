@@ -1,11 +1,12 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
-from django.urls import reverse
-from django.views.generic import ListView
+from django.urls import reverse, reverse_lazy
+from django.views.generic import CreateView, ListView
 from django.views.generic.base import RedirectView
 
 from rma.accounts.mixins import RoleRequiredMixin
 
+from .forms import DestructionListForm, get_reviewer_choices, get_zaaktype_choices
 from .models import DestructionList
 
 
@@ -26,3 +27,25 @@ class RecordManagerDestructionListView(RoleRequiredMixin, ListView):
 
     def get_queryset(self):
         return DestructionList.objects.filter(author=self.request.user).order_by("-id")
+
+
+class DestructionListCreateView(RoleRequiredMixin, CreateView):
+    model = DestructionList
+    form_class = DestructionListForm
+    template_name = "destruction/destructionlist_create.html"
+    success_url = reverse_lazy("destruction:record-manager-list")
+    role_permission = "can_start_destruction"
+
+    def get_context_data(self, **kwargs) -> dict:
+        context = super().get_context_data(**kwargs)
+
+        # add zaaktypen
+        context.update({"zaaktypen": get_zaaktype_choices()})
+        context.update({"reviewers": get_reviewer_choices(self.request.user)})
+
+        return context
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+
+        return super().form_valid(form)

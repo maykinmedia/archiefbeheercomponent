@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from django_fsm import FSMField, transition
+from solo.models import SingletonModel
 
 from .constants import ListItemStatus, ListStatus, ReviewStatus, Suggestion
 
@@ -167,3 +168,38 @@ class DestructionListItemReview(models.Model):
 
     def __str__(self):
         return f"({self.destruction_list_review}) - ({self.destruction_list_item})"
+
+
+class DestructionListAssignee(models.Model):
+    destruction_list = models.ForeignKey(
+        DestructionList,
+        on_delete=models.CASCADE,
+        related_name="assignees",
+        verbose_name=_("destruction list"),
+    )
+    assignee = models.ForeignKey(
+        "accounts.User", on_delete=models.PROTECT, verbose_name=_("assignee"),
+    )
+    order = models.PositiveSmallIntegerField(_("order"))
+
+    class Meta:
+        verbose_name = _("destruction list assignee")
+        verbose_name_plural = _("destruction list assignees")
+        unique_together = ("destruction_list", "assignee")
+
+    def __str__(self):
+        return f"{self.destruction_list}: {self.assignee}"
+
+
+class ArchiveConfig(SingletonModel):
+    archive_date = models.DateField(
+        _("archive date"),
+        null=True,
+        blank=True,
+        help_text=_(
+            "Only zaken with archiefactiedatum less that this date would be displayed for destruction"
+        ),
+    )
+
+    class Meta:
+        verbose_name = _("archive configuration")

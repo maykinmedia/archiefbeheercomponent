@@ -1,0 +1,25 @@
+{% extends "master.html" %}
+
+{% block content %}
+
+<article id="content-main">
+
+    {{ zaaktypen|json_script:"zaaktype-choices" }}
+    {{ reviewers|json_script:"reviewer-choices" }}
+
+    {{ form.errors }}
+    {{ form.non_field_errors }}
+
+        <div class="destruction-create"
+             id="react-destruction-list"
+             data-zaken-url="{% url 'destruction:fetch-zaken' %}"
+             data-url="{% url 'destruction:record-manager-create' %}"
+             data-csrftoken="{{ csrf_token }}"
+        >
+{#             empty on purpose - react managed #}
+        </div>
+
+
+</article>
+
+{% endblock %}

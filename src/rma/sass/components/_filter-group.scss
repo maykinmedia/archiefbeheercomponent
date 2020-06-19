@@ -1,0 +1,15 @@
+.filter-group {
+
+
+  & &__item {
+    padding-bottom: 1em;
+
+    >label {
+      display: block;
+    }
+  }
+  & &__select {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}

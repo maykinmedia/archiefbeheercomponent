@@ -1,0 +1,19 @@
+@import "../lib/colors";
+
+.modal {
+    position: absolute;
+    top: 20%;
+    left: 20%;
+    right: 20%;
+    border: 1px solid $color-border;
+    box-shadow: 1px 1px 2px 0 rgba(black, 0.2);
+    background: rgb(255, 255, 255);
+    overflow: auto;
+    outline: none;
+    padding: 20px;
+
+  &__close {
+    float: right;
+  }
+
+}

@@ -17,6 +17,7 @@ django-hijack
 django-hijack-admin
 django-redis
 django-rosetta
+django-solo
 django-sniplates
 
 # API libraries
@@ -29,3 +30,6 @@ django-sniplates
 uwsgi
 sentry-sdk  # error monitoring
 elastic-apm  # Elastic APM integration
+
+# ZGW-related libraries
+zgw-consumers==0.9.0.dev9
