@@ -8,6 +8,7 @@ from django.views.generic.base import RedirectView
 from timeline_logger.models import TimelineLog
 
 from rma.accounts.mixins import RoleRequiredMixin
+from rma.notifications.models import Notification
 
 from .forms import DestructionListForm, get_reviewer_choices, get_zaaktype_choices
 from .models import DestructionList
@@ -34,6 +35,15 @@ class RecordManagerDestructionListView(RoleRequiredMixin, ListView):
     def get_queryset(self):
         return DestructionList.objects.filter(author=self.request.user).order_by("-id")
 
+    def get_context_data(self, **kwargs) -> dict:
+        context = super().get_context_data(**kwargs)
+
+        context["notifications"] = (
+            Notification.objects.filter(user=self.request.user).order_by("-id").all()
+        )
+
+        return context
+
 
 class DestructionListCreateView(RoleRequiredMixin, CreateView):
     model = DestructionList
@@ -46,8 +56,12 @@ class DestructionListCreateView(RoleRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
 
         # add zaaktypen
-        context.update({"zaaktypen": get_zaaktype_choices()})
-        context.update({"reviewers": get_reviewer_choices(self.request.user)})
+        context.update(
+            {
+                "zaaktypen": get_zaaktype_choices(),
+                "reviewers": get_reviewer_choices(self.request.user),
+            }
+        )
 
         return context
 

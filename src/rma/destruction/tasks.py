@@ -4,6 +4,8 @@ import traceback
 from timeline_logger.models import TimelineLog
 from zds_client.client import ClientError
 
+from rma.notifications.models import Notification
+
 from .constants import ListStatus
 from .models import DestructionList, DestructionListItem
 from .service import remove_zaak
@@ -33,7 +35,12 @@ def process_destruction_list(list_id):
 
     logger.info("Destruction list %r is processed", destruction_list.id)
 
-    # TODO send make notification
+    # send notification
+    Notification.objects.create(
+        destruction_list=destruction_list,
+        user=destruction_list.author,
+        message="Destruction list has been processed",
+    )
 
 
 def process_destruction_list_item(list_item_id):
