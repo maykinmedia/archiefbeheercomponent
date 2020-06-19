@@ -4,10 +4,9 @@ import Modal from 'react-modal';
 import { CsrfInput } from "./csrf";
 import { Input, TextInput } from "./inputs";
 import { SelectInput } from "./select";
-import { countObjectKeys } from "../../utils";
 
 
-const = CreateModal = ({ checkboxes, modalIsOpen, setIsOpen, reviewers, url, csrftoken }) => {
+const CreateModal = ({ checkboxes, modalIsOpen, setIsOpen, reviewers, url, csrftoken }) => {
 
     const closeModal = () => setIsOpen(false);
     const selectedUrls = Object.keys(checkboxes).filter(url => checkboxes[url]);
@@ -66,7 +65,6 @@ const = CreateModal = ({ checkboxes, modalIsOpen, setIsOpen, reviewers, url, csr
                                 choices={reviewers2}
                                 name={"reviewer_2"}
                                 id={"id_reviewer_2"}
-                                disabled={disable2}
                             />
                         </li>}
                     </ol>

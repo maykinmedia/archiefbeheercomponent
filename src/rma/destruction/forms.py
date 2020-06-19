@@ -20,15 +20,13 @@ def get_zaaktype_choices() -> List[Tuple[str, str]]:
 
 
 def get_reviewer_choices(author=None) -> List[Tuple[str, str]]:
-    reviewers = User.objects.filter(role__can_review_destruction=True).order_by(
-        "role__name", "username"
-    )
+    reviewers = User.objects.reviewers().order_by("role__name", "username")
     if author:
         reviewers.exclude(id=author.id)
 
     choices = []
     for reviewer in reviewers:
-        label = f"{reviewer.role.name} - {reviewer.username}"
+        label = f"{reviewer.role.name} - {reviewer.get_full_name()}"
         choices.append((reviewer.id, label))
 
     choices.insert(0, ("", "-----"))
@@ -37,8 +35,10 @@ def get_reviewer_choices(author=None) -> List[Tuple[str, str]]:
 
 class DestructionListForm(forms.ModelForm):
     zaken = forms.CharField()
-    reviewer_1 = forms.ModelChoiceField(queryset=User.objects.all())
-    reviewer_2 = forms.ModelChoiceField(queryset=User.objects.all(), required=False)
+    reviewer_1 = forms.ModelChoiceField(queryset=User.objects.reviewers().all())
+    reviewer_2 = forms.ModelChoiceField(
+        queryset=User.objects.reviewers().all(), required=False
+    )
 
     class Meta:
         model = DestructionList

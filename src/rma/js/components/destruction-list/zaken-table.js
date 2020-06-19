@@ -7,9 +7,7 @@ function displayZaaktype (zaaktype) {
 }
 
 
-function ZakenTable(props) {
-    const { zaken, isLoaded, error, checkboxes, setCheckboxes } = props;
-
+function ZakenTable({ zaken, isLoaded, error, checkboxes, setCheckboxes }) {
     const [selectAll, setSelectAll] = useState(false);
 
     if (error) {

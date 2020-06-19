@@ -1,8 +1,10 @@
 from django.contrib import admin
 
 from fsm_admin.mixins import FSMTransitionMixin
+from solo.admin import SingletonModelAdmin
 
 from .models import (
+    ArchiveConfig,
     DestructionList,
     DestructionListAssignee,
     DestructionListItem,
@@ -82,3 +84,8 @@ class DestructionListItemReviewAdmin(admin.ModelAdmin):
 class DestructionListAssigneeAdmin(admin.ModelAdmin):
     list_display = ("destruction_list", "assignee")
     raw_id_fields = ("destruction_list", "assignee")
+
+
+@admin.register(ArchiveConfig)
+class ArchiveConfigAdmin(SingletonModelAdmin):
+    pass

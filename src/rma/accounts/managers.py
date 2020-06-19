@@ -32,3 +32,6 @@ class UserManager(BaseUserManager):
             raise ValueError("Superuser must have is_superuser=True.")
 
         return self._create_user(username, email, password, **extra_fields)
+
+    def reviewers(self):
+        return self.select_related("role").filter(role__can_review_destruction=True)

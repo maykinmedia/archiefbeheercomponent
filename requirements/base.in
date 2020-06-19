@@ -17,6 +17,7 @@ django-hijack
 django-hijack-admin
 django-redis
 django-rosetta
+django-solo
 django-sniplates
 
 # API libraries

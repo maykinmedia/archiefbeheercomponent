@@ -30,8 +30,7 @@ class CreateDestructionListTests(TestCase):
 
         response = self.client.post(url, data)
 
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("destruction:record-manager-list"))
+        self.assertRedirects(response, reverse("destruction:record-manager-list"))
 
         destruction_list = DestructionList.objects.get()
 
