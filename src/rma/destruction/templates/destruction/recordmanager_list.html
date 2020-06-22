@@ -26,7 +26,13 @@
 
     <aside class="destruction-list__notif content-panel">
         <h2 class="section-title section-title--highlight">Notificaties</h2>
-        <p>TODO</p>
+
+        {% for notif in notifications %}
+            <div class="list-item">
+                <a href="#">{{ notif.destruction_list.name }}</a> - {{ notif.created }}
+                <p>{{ notif.message }}</p>
+            </div>
+        {% endfor %}
     </aside>
 
 </article>

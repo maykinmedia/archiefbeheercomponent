@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from django.test import TestCase
 from django.urls import reverse
 
@@ -16,7 +18,8 @@ class CreateDestructionListTests(TestCase):
         super().setUp()
         self.client.force_login(self.user)
 
-    def test_create_list(self):
+    @patch("rma.destruction.forms.process_destruction_list.delay")
+    def test_create_list(self, m):
         reviewers = UserFactory.create_batch(2, role__can_review_destruction=True)
         zaken = [f"http://some.zaken.nl/api/v1/zaken/{i}" for i in range(1, 3)]
 
@@ -58,3 +61,5 @@ class CreateDestructionListTests(TestCase):
         timeline_log = destruction_list.logs.get()
         self.assertEqual(timeline_log.user, self.user)
         self.assertEqual(timeline_log.template, "destruction/logs/created.txt")
+
+        m.assert_called_once_with(destruction_list.id)

@@ -99,13 +99,15 @@ class DestructionListItem(models.Model):
         pass
 
     @transition(
-        field=status,
-        source=ListItemStatus.processing,
-        target=ListItemStatus.destroyed,
-        on_error=ListItemStatus.failed,
+        field=status, source=ListItemStatus.processing, target=ListItemStatus.destroyed,
     )
-    def complete(self, request, by):
-        # extra args to make fsm-admin work
+    def complete(self):
+        pass
+
+    @transition(
+        field=status, source=ListItemStatus.processing, target=ListItemStatus.failed,
+    )
+    def fail(self):
         pass
 
 
