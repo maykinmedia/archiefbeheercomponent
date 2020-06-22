@@ -53,3 +53,9 @@ class CreateDestructionListTests(TestCase):
         for i, list_assignee in enumerate(list_assignees):
             self.assertEqual(list_assignee.assignee, reviewers[i])
             self.assertEqual(list_assignee.order, i + 1)
+
+        # check that a log entry was created
+        timeline_log = destruction_list.logs.get()
+        self.assertEqual(timeline_log.user, self.user)
+        self.assertEqual(timeline_log.template, "destruction/logs/created.txt")
+        import bpdb; bpdb.set_trace()

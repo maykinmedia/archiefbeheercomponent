@@ -1,8 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
+from django.db import transaction
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView
 from django.views.generic.base import RedirectView
+
+from timeline_logger.models import TimelineLog
 
 from rma.accounts.mixins import RoleRequiredMixin
 
@@ -45,7 +48,19 @@ class DestructionListCreateView(RoleRequiredMixin, CreateView):
 
         return context
 
+    @transaction.atomic
     def form_valid(self, form):
         form.instance.author = self.request.user
+        response = super().form_valid(form)
 
-        return super().form_valid(form)
+        destruction_list = form.instance
+
+        TimelineLog.log_from_request(
+            self.request,
+            destruction_list,
+            template="destruction/logs/created.txt",
+            n_items=destruction_list.items.count(),
+            reviewers=list(destruction_list.assignees.values("assignee__id", "assignee__username")),
+        )
+
+        return response

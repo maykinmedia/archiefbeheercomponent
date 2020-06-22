@@ -1,9 +1,11 @@
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from django_fsm import FSMField, transition
 from solo.models import SingletonModel
+from timeline_logger.models import TimelineLog
 
 from .constants import ListItemStatus, ListStatus, ReviewStatus, Suggestion
 
@@ -35,6 +37,7 @@ class DestructionList(models.Model):
         protected=True,
         max_length=80,
     )
+    logs = GenericRelation(TimelineLog)
 
     class Meta:
         verbose_name = _("destruction list")

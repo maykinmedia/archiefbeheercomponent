@@ -1,5 +1,3 @@
-from typing import List
-
 from zgw_consumers.constants import APITypes
 from zgw_consumers.models import Service
 from zgw_consumers.service import get_paginated_results
