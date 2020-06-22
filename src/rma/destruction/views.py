@@ -19,6 +19,9 @@ class EnterView(LoginRequiredMixin, RedirectView):
         if role and role.can_start_destruction:
             return reverse("destruction:record-manager-list")
 
+        if self.request.user.is_superuser:
+            return reverse("audit:audit-trail")
+
         raise PermissionDenied(self.get_permission_denied_message())
 
 
@@ -60,7 +63,9 @@ class DestructionListCreateView(RoleRequiredMixin, CreateView):
             destruction_list,
             template="destruction/logs/created.txt",
             n_items=destruction_list.items.count(),
-            reviewers=list(destruction_list.assignees.values("assignee__id", "assignee__username")),
+            reviewers=list(
+                destruction_list.assignees.values("assignee__id", "assignee__username")
+            ),
         )
 
         return response

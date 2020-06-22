@@ -58,4 +58,3 @@ class CreateDestructionListTests(TestCase):
         timeline_log = destruction_list.logs.get()
         self.assertEqual(timeline_log.user, self.user)
         self.assertEqual(timeline_log.template, "destruction/logs/created.txt")
-        import bpdb; bpdb.set_trace()

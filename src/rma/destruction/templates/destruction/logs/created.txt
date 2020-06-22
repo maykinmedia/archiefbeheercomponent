@@ -1,3 +1,11 @@
-{% load i18n %}{% blocktrans trimmed with timestamp=log.timestamp user=log.user|default:_('Anonymous user') object=log.content_object %}
-{{ timestamp }} - {{ user }} created {{ object }}.
-{% endblocktrans %}
+<div class="list-item">
+    <time class="list-item__title" title="{{ log.timestamp.isoformat }}">
+        {{ log.timestamp|timesince }} geleden
+    </time>
+
+    <p>
+        <em>{{ log.user }}</em> heeft de lijst <strong>{{ log.content_object }}</strong>
+        met {{ log.extra_data.n_items }} zaken aangemaakt.
+    </p>
+
+</div>

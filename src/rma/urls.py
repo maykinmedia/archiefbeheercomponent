@@ -41,6 +41,7 @@ urlpatterns = [
     # Simply show the master template.
     path("", EnterView.as_view()),
     path("destruction/", include("rma.destruction.urls")),
+    path("audit/", include("rma.audit.urls")),
 ]
 
 # NOTE: The staticfiles_urlpatterns also discovers static files (ie. no need to run collectstatic). Both the static
