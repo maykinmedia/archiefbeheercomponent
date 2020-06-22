@@ -1,4 +1,5 @@
 {% extends "master.html" %}
+{% load i18n %}
 
 {% block content %}
 
@@ -7,24 +8,51 @@
 </header>
 
 <article class="destruction-list">
-    <section class="destruction-list__content content-panel">
+    <section class="destruction-list__content">
         <header class="destruction-list__header">
-            <h2 class="destruction-list__title section-title section-title--highlight">Vernietigingslijsten</h2>
             <nav class="destruction-list__nav">
                 <a class="btn" href="{% url 'destruction:record-manager-create' %}">Opstellen</a>
             </nav>
         </header>
 
-
         {% for object in object_list %}
-            <div class="list-item {% if object.assignee == request.user %}list-item--important {% endif %}">
-            <a class="list-item__title" href="#">{{ object.name }}</a>
-            <span>{{ object.get_status_display }}</span>
+            <div class="destruction-list-preview destruction-list-preview--status-{{ object.status }} ">
+
+                <a class="destruction-list-preview__title" href="#">{{ object.name }}</a>
+
+                <span class="destruction-list-preview__indicators">
+
+                    <span class="destruction-list-preview__assigned">
+                        {% if object.assignee == request.user %}
+                            <i class="material-icons" title="{% trans 'You are the current assignee!' %}">assignment_ind</i>
+                        {% endif %}
+                    </span>
+
+                    <span class="destruction-list-preview__status" title="{{ object.get_status_display }}">
+                        {% if object.status == "in_progress" %}
+                            <i class="material-icons">rate_review</i>
+                        {% elif object.status == "processing" %}
+                            <i class="material-icons">watch_later</i>
+                        {% elif object.status == "completed" %}
+                            <i class="material-icons">done</i>
+                        {% endif %}
+                    </span>
+
+                </span>
+
+                <div class="destruction-list-preview__details">
+                    <time title="{{ object.created.isoformat }}">
+                        {% blocktrans with since=object.created|timesince trimmed %}
+                            created {{ since }} ago
+                        {% endblocktrans %}
+                    </time>
+                </div>
+
             </div>
         {% endfor %}
     </section>
 
-    <aside class="destruction-list__notif content-panel">
+    <aside class="destruction-list__notif">
         <h2 class="section-title section-title--highlight">Notificaties</h2>
 
         {% for notif in notifications %}
