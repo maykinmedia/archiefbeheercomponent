@@ -2,7 +2,7 @@
 
 set -e
 
-LOGLEVEL=${CELERY_LOGLEVEL:-DEBUG}
+LOGLEVEL=${CELERY_LOGLEVEL:-INFO}
 
 echo "Starting celery worker"
 celery worker \

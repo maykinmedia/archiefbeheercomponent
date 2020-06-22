@@ -1,6 +1,9 @@
 import logging
 import traceback
 
+from django.conf import settings
+
+from celery import chain
 from timeline_logger.models import TimelineLog
 from zds_client.client import ClientError
 
@@ -27,25 +30,16 @@ def process_destruction_list(list_id):
         return
 
     destruction_list.process()
-
-    # TODO separate tasks
-    for list_item in destruction_list.items.all():
-        process_destruction_list_item(list_item.id)
-
-    destruction_list.complete()
     destruction_list.save()
 
-    logger.info("Destruction list %r is processed", destruction_list.id)
-
-    # send notification
-    Notification.objects.create(
-        destruction_list=destruction_list,
-        user=destruction_list.author,
-        message="Destruction list has been processed",
-    )
+    list_item_ids = [list_item.id for list_item in destruction_list.items.all()]
+    chunk_tasks = process_list_item.chunks(zip(list_item_ids), settings.ZAKEN_PER_TASK)
+    notify_task = complete_and_notify.si(list_id)
+    chain(chunk_tasks.group(), notify_task)()
 
 
-def process_destruction_list_item(list_item_id):
+@app.task
+def process_list_item(list_item_id):
     list_item = DestructionListItem.objects.get(id=list_item_id)
     list_item.process()
 
@@ -71,3 +65,21 @@ def process_destruction_list_item(list_item_id):
         )
 
     list_item.save()
+    return list_item.status
+
+
+@app.task
+def complete_and_notify(list_id):
+    destruction_list = DestructionList.objects.get(id=list_id)
+
+    destruction_list.complete()
+    destruction_list.save()
+
+    logger.info("Destruction list %r is processed", destruction_list.id)
+
+    notification = Notification.objects.create(
+        destruction_list=destruction_list,
+        user=destruction_list.author,
+        message="Destruction list has been processed",
+    )
+    return notification.id
