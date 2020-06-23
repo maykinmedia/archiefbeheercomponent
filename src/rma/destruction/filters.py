@@ -12,7 +12,7 @@ class ReviewerListFilter(FilterSet):
         label="lists for reviewer",
         choices=ReviewerDisplay.choices,
         method="filter_reviewed",
-        empty_label="all",
+        empty_label=None,
         widget=forms.RadioSelect,
     )
 
@@ -27,3 +27,10 @@ class ReviewerListFilter(FilterSet):
             return queryset.reviewed_by(self.request.user)
         else:
             return queryset
+
+    def __init__(self, data, *args, **kwargs):
+        data = data or {}
+        if not data.get("reviewed"):
+            data["reviewed"] = ReviewerDisplay.to_review
+
+        super().__init__(data, *args, **kwargs)

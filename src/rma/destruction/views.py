@@ -22,7 +22,7 @@ class EnterView(LoginRequiredMixin, RedirectView):
             return reverse("destruction:record-manager-list")
 
         if role and role.can_review_destruction:
-            return reverse("destruction:reviewer-listlist")
+            return reverse("destruction:reviewer-list")
 
         if self.request.user.is_superuser:
             return reverse("audit:audit-trail")

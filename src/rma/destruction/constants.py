@@ -30,3 +30,4 @@ class Suggestion(DjangoChoices):
 class ReviewerDisplay(DjangoChoices):
     reviewed = ChoiceItem("reviewed", "beoordeeld")
     to_review = ChoiceItem("to_review", "te beoordelen")
+    all = ChoiceItem("all", "alle")
