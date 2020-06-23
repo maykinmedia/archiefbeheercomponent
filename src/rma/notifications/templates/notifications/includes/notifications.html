@@ -1,0 +1,28 @@
+{% load i18n %}
+<ul class="notifications-list">
+    {% for notif in notifications %}
+        <li class="notifications-list__notification">
+            <header class="notifications-list__notif-meta">
+                <time class="notifications-list__notif-timestamp" title="{{ notif.created.isoformat }}">
+                    {% blocktrans with duration=notif.created|timesince trimmed %}
+                        {{ duration }} ago
+                    {% endblocktrans %}
+                </time>
+
+                <a href="#TODO" class="notifications-list__notif-goto">
+                    <i class="material-icons">launch</i>
+                </a>
+            </header>
+
+            <section class="notifications-list__notif-body">
+                <span class="notifications-list__notif-dl">
+                    {{ notif.destruction_list.name }}
+                </span>
+                <p class="notifications-list__notif-content">
+                    {{ notif.message|linebreaksbr }}
+                </p>
+            </section>
+
+        </li>
+    {% endfor %}
+</ul>

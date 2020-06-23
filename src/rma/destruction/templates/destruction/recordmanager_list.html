@@ -1,5 +1,5 @@
 {% extends "master.html" %}
-{% load i18n %}
+{% load i18n notifications %}
 
 {% block content %}
 
@@ -54,13 +54,7 @@
 
     <aside class="destruction-list__notif">
         <h2 class="section-title section-title--highlight">Notificaties</h2>
-
-        {% for notif in notifications %}
-            <div class="list-item">
-                <a href="#">{{ notif.destruction_list.name }}</a> - {{ notif.created }}
-                <p>{{ notif.message }}</p>
-            </div>
-        {% endfor %}
+        {% render_notifications request.user %}
     </aside>
 
 </article>
