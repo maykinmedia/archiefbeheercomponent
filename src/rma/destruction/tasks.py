@@ -12,7 +12,7 @@ from rma.notifications.models import Notification
 from ..celery import app
 from .constants import ListStatus
 from .models import DestructionList, DestructionListItem
-from .service import remove_zaak
+from .service import fetch_zaak, remove_zaak
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +46,24 @@ def process_list_item(list_item_id):
     list_item.process()
 
     try:
+        zaak = fetch_zaak(list_item.zaak)
+    except ClientError as exc:
+        logger.warning(
+            "Destruction list item %r has failed during execution with error: %r",
+            list_item.id,
+            exc,
+            exc_info=True,
+        )
+
+        list_item.fail()
+        TimelineLog.objects.create(
+            content_object=list_item,
+            template="destruction/logs/item_destruction_failed.txt",
+            extra_data={"zaak": None, "error": traceback.format_exc(),},
+        )
+        return
+
+    try:
         remove_zaak(list_item.zaak)
     except ClientError as exc:
         logger.warning(
@@ -58,12 +76,18 @@ def process_list_item(list_item_id):
         list_item.fail()
         TimelineLog.objects.create(
             content_object=list_item,
-            extra_data={"status": list_item.status, "error": traceback.format_exc(),},
+            template="destruction/logs/item_destruction_failed.txt",
+            extra_data={
+                "zaak": zaak["identificatie"],
+                "error": traceback.format_exc(),
+            },
         )
     else:
         list_item.complete()
         TimelineLog.objects.create(
-            content_object=list_item, extra_data={"status": list_item.status}
+            content_object=list_item,
+            template="destruction/logs/item_destruction_succeeded.txt",
+            extra_data={"zaak": zaak["identificatie"]},
         )
 
     list_item.save()
