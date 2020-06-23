@@ -1,0 +1,64 @@
+@import "../lib/bem";
+@import "../lib/colors";
+@import "../lib/typography";
+
+.notifications-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @include element("notification") {
+    display: block;
+    color: $color-text;
+    padding: 0.5em;
+    border-radius: 3px;
+  }
+
+  &__notification + &__notification {
+    margin-top: 0.5em;
+    border-top: solid 1px #ddd;
+  }
+
+  @include element("notif-meta") {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  @include element("notif-title") {
+    font-weight: bold;
+  }
+
+  @include element("notif-timestamp") {
+    @include body-meta;
+    display: block;
+    font-weight: normal;
+  }
+
+  @include element("notif-goto") {
+    text-decoration: none;
+    opacity: 0.75;
+    color: $color-text;
+
+    > .material-icons {
+      font-size: 1.2rem;
+      padding-right: 0.1rem;
+    }
+
+    &:hover {
+      font-size: 1em;
+      opacity: 1;
+      color: $color-primary;
+
+      > .material-icons {
+        font-size: 1.4rem;
+        padding-right: 0;
+      }
+    }
+  }
+
+  @include element("notif-content") {
+    padding: 0;
+    margin: 0.5em 0 0;
+  }
+}

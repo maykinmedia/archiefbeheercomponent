@@ -48,9 +48,8 @@
   }
 
   @include element("details") {
+    @include body-meta;
     width: 100%;
-    font-size: 90%;
-    color: lighten($color-text, 20%);
   }
 
   & + & {

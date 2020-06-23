@@ -4,3 +4,5 @@ $color-secondary: #ffcc00;
 $color-text: #1d1d1c; // asphalt
 $color-background: #f2f2f2;
 $color-border: #ddd;
+
+$color-text--light: lighten($color-text, 20%);
