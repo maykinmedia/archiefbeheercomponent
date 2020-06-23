@@ -1,11 +1,8 @@
-<div class="list-item">
-    <time class="list-item__title" title="{{ log.timestamp.isoformat }}">
-        {{ log.timestamp|timesince }} geleden
-    </time>
+<time class="log-item__title" title="{{ log.timestamp.isoformat }}">
+    {{ log.timestamp|timesince }} geleden
+</time>
 
-    <p>
-        <em>{{ log.user }}</em> heeft de lijst <strong>{{ log.content_object }}</strong>
-        met {{ log.extra_data.n_items }} zaken aangemaakt.
-    </p>
-
+<div class="log-item__body">
+    <span class="log-item__user">{{ log.user }}</span> heeft de lijst <strong>{{ log.content_object }}</strong>
+    met {{ log.extra_data.n_items }} zaken aangemaakt.
 </div>
