@@ -21,6 +21,9 @@ class EnterView(LoginRequiredMixin, RedirectView):
         if role and role.can_start_destruction:
             return reverse("destruction:record-manager-list")
 
+        if role and role.can_review_destruction:
+            return reverse("destruction:reviewer-listlist")
+
         if self.request.user.is_superuser:
             return reverse("audit:audit-trail")
 
@@ -88,18 +91,11 @@ class ReviewerDestructionListView(RoleRequiredMixin, FilterView):
         review_status = DestructionListReview.objects.filter(
             author=self.request.user, destruction_list=models.OuterRef("id")
         ).values("status")
+
         prefiltered_qs = DestructionList.objects.filter(
             assignee=self.request.user
         ) | DestructionList.objects.reviewed_by(self.request.user)
+
         return prefiltered_qs.annotate(
             review_status=models.Subquery(review_status[:1])
         ).order_by("-id")
-
-    def get_context_data(self, **kwargs) -> dict:
-        context = super().get_context_data(**kwargs)
-
-        context["notifications"] = (
-            Notification.objects.filter(user=self.request.user).order_by("-id").all()
-        )
-
-        return context

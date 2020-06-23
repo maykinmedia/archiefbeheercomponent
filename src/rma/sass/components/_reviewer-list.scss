@@ -1,0 +1,21 @@
+@import "../lib/bem";
+
+
+.reviewer-list {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 1em;
+
+  @include element("filters") {
+    width: 15%;
+  }
+  @include element("content") {
+    width: 50%;
+    padding: 1em;
+  }
+
+  @include element("notif") {
+    width: 30%;
+  }
+
+}
