@@ -18,7 +18,7 @@ class CreateDestructionListTests(TestCase):
         super().setUp()
         self.client.force_login(self.user)
 
-    @patch("rma.destruction.forms.process_destruction_list.delay")
+    @patch("rma.destruction.forms.transaction.on_commit")
     def test_create_list(self, m):
         reviewers = UserFactory.create_batch(2, role__can_review_destruction=True)
         zaken = [f"http://some.zaken.nl/api/v1/zaken/{i}" for i in range(1, 3)]
@@ -62,4 +62,5 @@ class CreateDestructionListTests(TestCase):
         self.assertEqual(timeline_log.user, self.user)
         self.assertEqual(timeline_log.template, "destruction/logs/created.txt")
 
-        m.assert_called_once_with(destruction_list.id)
+        # transactoin.on_commit
+        m.assert_called_once()

@@ -40,7 +40,8 @@ class ProcessListTests(TestCase):
 
 class ProcessListItemTests(TestCase):
     @patch("rma.destruction.tasks.remove_zaak")
-    def test_process_list_item(self, mock_remove_zaken):
+    @patch("rma.destruction.tasks.fetch_zaak", return_value={"identificatie": "foobar"})
+    def test_process_list_item(self, mock_fetch_zaak, mock_remove_zaken):
         list_item = DestructionListItemFactory.create()
 
         process_list_item(list_item.id)
@@ -52,7 +53,7 @@ class ProcessListItemTests(TestCase):
         log = TimelineLog.objects.get()
 
         self.assertEqual(log.content_object, list_item)
-        self.assertEqual(log.extra_data, {"status": ListItemStatus.destroyed})
+        self.assertEqual(log.extra_data, {"zaak": "foobar"})
 
         mock_remove_zaken.assert_called_once_with(list_item.zaak)
 
@@ -60,7 +61,8 @@ class ProcessListItemTests(TestCase):
         "rma.destruction.tasks.remove_zaak",
         side_effect=ClientError("something went wrong"),
     )
-    def test_process_list_item_fail(self, mock_remove_zaken):
+    @patch("rma.destruction.tasks.fetch_zaak", return_value={"identificatie": "foobar"})
+    def test_process_list_item_fail(self, mock_fetch_zaak, mock_remove_zaken):
         list_item = DestructionListItemFactory.create()
 
         process_list_item(list_item.id)
@@ -73,7 +75,7 @@ class ProcessListItemTests(TestCase):
 
         self.assertEqual(log.content_object, list_item)
         extra_data = log.extra_data
-        self.assertEqual(extra_data["status"], ListItemStatus.failed)
+        self.assertEqual(extra_data["zaak"], "foobar")
         self.assertTrue("something went wrong" in extra_data["error"])
 
         mock_remove_zaken.assert_called_once_with(list_item.zaak)

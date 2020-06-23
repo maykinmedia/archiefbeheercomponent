@@ -1,0 +1,92 @@
+///
+/// Library to build BEM classnames, with the strict interpretation.
+///
+/// BEM class names in SASS can become unreadable for complex combinations, and often
+/// the composed sass rules do not output specific enough selectors.
+///
+/// These mixins help you in preventing output like:
+///
+///   `.block--modifier {...}`
+///   `.block__element` {...}`
+///
+/// Instead, the correct output is generated:
+///
+///   `.block.block--modifier {...}`
+///   `.block .block__element {...}`
+///
+
+// https://stackoverflow.com/a/42295154
+@function str-split($string, $separator) {
+    // empty array/list
+    $split-arr: ();
+    // first index of separator in string
+    $index : str-index($string, $separator);
+    // loop through string
+    @while $index != null {
+        // get the substring from the first character to the separator
+        $item: str-slice($string, 1, $index - 1);
+        // push item to array
+        $split-arr: append($split-arr, $item);
+        // remove item and separator from string
+        $string: str-slice($string, $index + 1);
+        // find new index of separator
+        $index : str-index($string, $separator);
+    }
+    // add the remaining string to list (the last item)
+    $split-arr: append($split-arr, $string);
+
+    @return $split-arr;
+}
+
+
+/// Output rules for elements within a block.
+///
+/// Ensures the specific `.block .block__element` selector.
+///
+/// @param {string} $element
+///   The element within the block.
+@mixin element($element) {
+  // capture the block, even if there is a modifier on the block
+  $block: nth(simple-selectors(&), 1);
+  $selector: "#{&} #{$block}__#{$element}";
+  @at-root #{$selector} {
+    @content;
+  }
+}
+
+/// Apply a modifier to a block or an element.
+///
+/// @param {string} $modifier
+///   The name of the modifier to apply.
+@mixin modifier($modifier) {
+  $selector: null;
+  $bits: str-split(quote(&), " ");
+
+  @if ( length($bits) == 1 ) {
+    // block
+    $selector: selector-append(&, "#{&}--#{$modifier}");
+  } @else {
+    // block__element
+    $block: nth($bits, 1);  // block, possibly with a modifier
+    $element: nth($bits, 2);
+    $element_with_modifier: selector-append($element, "#{$element}--#{$modifier}");;
+    $selector: "#{$block} #{$element_with_modifier}";
+  }
+
+  @at-root #{$selector} {
+    @content;
+  }
+}
+
+// define shorthands
+@mixin __e($e) {
+  @include element($e) {
+    @content;
+  }
+}
+
+@mixin --m($m) {
+  @include modifier($m) {
+    @content;
+  }
+}

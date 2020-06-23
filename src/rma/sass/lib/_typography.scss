@@ -1,3 +1,5 @@
+@import "./colors";
+
 @mixin body() {
   font-family: 'Fira Sans', 'Helvetica Neue', Arial, sans-serif;
   font-weight: 400;
@@ -17,4 +19,10 @@
   line-height: 1.5;
   font-size: 1rem;
   text-transform: uppercase;
+}
+
+// body text that is meta-details about the actual content, such as timestamps
+@mixin body-meta() {
+  font-size: 90%;
+  color: $color-text--light;
 }

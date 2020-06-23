@@ -56,7 +56,10 @@ def fetch_zaak(url) -> dict:
     return response
 
 
-def remove_zaak(url) -> None:
+def remove_zaak(url: str) -> None:
+    """
+    Destroy the Zaak and related objects identified by the zaak URL.
+    """
     zrc_client = _client_from_url(url)
 
     # find and destroy related besluiten

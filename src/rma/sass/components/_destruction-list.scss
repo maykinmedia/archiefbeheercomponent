@@ -4,10 +4,12 @@
 .destruction-list {
   display: flex;
   justify-content: space-between;
+  padding: 0 1em;
 
   &__header {
     display: flex;
     align-items: center;
+    margin-bottom: 2em;
   }
 
   &__title {
@@ -21,11 +23,8 @@
   }
 
   &__content {
-    width: 70%;
-
-    > .list-item {
-      margin: 1.5em;
-    }
+    width: 65%;
+    padding: 1em;
   }
 
   &__notif {

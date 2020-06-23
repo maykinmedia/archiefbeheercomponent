@@ -1,0 +1,34 @@
+@import "../lib/bem";
+@import "../lib/colors";
+
+.log-item {
+
+  padding: 1em;
+  border-radius: 3px;
+
+  &:hover {
+    background: #fedede;
+  }
+
+  @include element("title") {
+    display: block;
+    margin-bottom: 0.5em;
+    text-decoration: underline;
+  }
+
+  @include element("body") {
+    padding-left: 1em;
+
+    code {
+      display: block;
+      background: #eeeeee;
+      padding: 0.5em;
+    }
+  }
+
+  @include element("user") {
+    font-weight: bold;
+    color: $color-primary;
+  }
+
+}

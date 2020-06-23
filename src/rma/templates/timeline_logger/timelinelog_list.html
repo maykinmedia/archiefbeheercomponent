@@ -2,6 +2,6 @@
 
 {% block timeline %}
     {% for log in object_list %}
-        <div>{{ log.get_message }}</div>
+        <div class="log-item">{{ log.get_message }}</div>
     {% endfor %}
 {% endblock timeline %}

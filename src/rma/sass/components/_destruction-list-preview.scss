@@ -1,0 +1,59 @@
+@import "../lib/bem";
+@import "../lib/colors";
+@import "../lib/typography";
+
+
+.destruction-list-preview {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+
+  background: #eee;
+  padding: 0.5em 1em;
+  border-radius: 3px;
+
+  @include element("title") {
+    color: $color-primary;
+    font-size: 1.1rem;
+  }
+
+  @include element("title") {
+    flex-grow: 3;
+  }
+
+  @include element("indicators") {
+    flex: 1;
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    opacity: 0.75;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  @include element("status") {
+    display: flex;
+    align-items: center;
+  }
+
+  @include element("assigned") {
+    display: flex;
+    align-items: center;
+    color: $color-primary;
+    margin-right: 0.5em;
+  }
+
+  @include element("details") {
+    @include body-meta;
+    width: 100%;
+  }
+
+  & + & {
+    margin-top: 1em;
+  }
+
+}
