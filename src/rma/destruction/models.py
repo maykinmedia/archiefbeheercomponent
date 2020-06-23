@@ -8,6 +8,7 @@ from solo.models import SingletonModel
 from timeline_logger.models import TimelineLog
 
 from .constants import ListItemStatus, ListStatus, ReviewStatus, Suggestion
+from .query import DestructionListQuerySet
 
 
 class DestructionList(models.Model):
@@ -39,6 +40,8 @@ class DestructionList(models.Model):
     )
     logs = GenericRelation(TimelineLog)
 
+    objects = DestructionListQuerySet.as_manager()
+
     class Meta:
         verbose_name = _("destruction list")
         verbose_name_plural = _("destruction lists")
@@ -55,6 +58,7 @@ class DestructionList(models.Model):
     @transition(field=status, source=ListStatus.processing, target=ListStatus.completed)
     def complete(self):
         self.end = timezone.now()
+        self.assignee = None
 
 
 class DestructionListItem(models.Model):

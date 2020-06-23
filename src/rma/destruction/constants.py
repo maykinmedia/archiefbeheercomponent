@@ -25,3 +25,8 @@ class ReviewStatus(DjangoChoices):
 class Suggestion(DjangoChoices):
     remove = ChoiceItem("remove", _("remove"))
     change_and_remove = ChoiceItem("change_and_remove", _("change_and_remove"))
+
+
+class ReviewerDisplay(DjangoChoices):
+    reviewed = ChoiceItem("reviewed", "beoordeeld")
+    to_review = ChoiceItem("to_review", "te beoordelen")
