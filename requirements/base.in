@@ -11,6 +11,7 @@ django-auth-adfs-db
 django-admin-index
 django-axes
 django-choices
+django-filter
 django-fsm
 django-fsm-admin
 django-hijack
@@ -24,7 +25,6 @@ django-timeline-logger
 # API libraries
 # djangorestframework
 # django-extra-fields
-# django-filter
 # drf-yasg  # api documentation
 
 # task queue
