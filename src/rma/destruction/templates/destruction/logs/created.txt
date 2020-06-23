@@ -1,8 +1,14 @@
+{% load i18n %}
 <time class="log-item__title" title="{{ log.timestamp.isoformat }}">
     {{ log.timestamp|timesince }} geleden
 </time>
 
 <div class="log-item__body">
-    <span class="log-item__user">{{ log.user }}</span> heeft de lijst <strong>{{ log.content_object }}</strong>
-    met {{ log.extra_data.n_items }} zaken aangemaakt.
+    {% blocktrans with list=log.content_object user=log.user count counter=log.extra_data.n_items trimmed %}
+        <span class="log-item__user">{{ user }}</span> heeft de lijst <strong>{{ list }}</strong>
+        met {{ counter }} zaak aangemaakt.
+    {% plural %}
+        <span class="log-item__user">{{ user }}</span> heeft de lijst <strong>{{ list }}</strong>
+        met {{ counter }} zaken aangemaakt.
+    {% endblocktrans %}
 </div>
