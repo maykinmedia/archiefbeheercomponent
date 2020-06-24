@@ -41,7 +41,9 @@
 
                 </span>
 
-                <a href="#" class="btn">Beordelen</a>
+                {% if object.assignee == request.user %}
+                    <a href="#" class="destruction-list-preview__btn">Beordelen</a>
+                {% endif %}
 
                 <div class="destruction-list-preview__details">
                     <time title="{{ object.created.isoformat }}">

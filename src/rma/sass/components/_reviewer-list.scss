@@ -8,6 +8,15 @@
 
   @include element("filters") {
     width: 15%;
+    padding-left: 1em;
+
+    ul {
+      padding-inline-start: 0;
+      }
+
+    li {
+      list-style-type: none;
+    }
   }
   @include element("content") {
     width: 50%;
