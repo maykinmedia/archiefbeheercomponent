@@ -9,6 +9,7 @@ from django.views.generic.base import RedirectView
 
 from django_filters.views import FilterView
 from timeline_logger.models import TimelineLog
+from extra_views import CreateWithInlinesView, InlineFormSetFactory
 
 from rma.accounts.mixins import RoleRequiredMixin
 
@@ -19,7 +20,8 @@ from .forms import (
     get_reviewer_choices,
     get_zaaktype_choices,
 )
-from .models import DestructionList, DestructionListReview
+from .constants import ReviewStatus
+from .models import DestructionList, DestructionListReview, DestructionListItemReview
 
 
 class EnterView(LoginRequiredMixin, RedirectView):
@@ -108,9 +110,15 @@ class ReviewerDestructionListView(RoleRequiredMixin, FilterView):
         ).order_by("-created")
 
 
-class ReviewCreateView(RoleRequiredMixin, CreateView):
+class ReviewItemInline(InlineFormSetFactory):
+    model = DestructionListItemReview
+    fields = ["destruction_list_item", "text", "suggestion"]
+
+
+class ReviewCreateView(RoleRequiredMixin, CreateWithInlinesView):
     model = DestructionListReview
     form_class = ReviewForm
+    inlines = [ReviewItemInline]
     template_name = "destruction/review_create.html"
     success_url = reverse_lazy("destruction:reviewer-list")
     role_permission = "can_review_destruction"
