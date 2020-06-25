@@ -6,7 +6,12 @@ from django.db import transaction
 
 from rma.accounts.models import User
 
-from .models import DestructionList, DestructionListAssignee, DestructionListItem
+from .models import (
+    DestructionList,
+    DestructionListAssignee,
+    DestructionListItem,
+    DestructionListReview,
+)
 from .service import get_zaaktypen
 from .tasks import process_destruction_list
 
@@ -91,3 +96,10 @@ class DestructionListForm(forms.ModelForm):
         )
 
         return destruction_list
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = DestructionListReview
+        fields = ("destruction_list", "author", "text", "status")
+        widgets = {"destruction_list": forms.HiddenInput, "author": forms.HiddenInput}

@@ -1,7 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.db import models, transaction
+from django.http import Http404
 from django.urls import reverse, reverse_lazy
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import CreateView, ListView
 from django.views.generic.base import RedirectView
 
@@ -11,7 +13,12 @@ from timeline_logger.models import TimelineLog
 from rma.accounts.mixins import RoleRequiredMixin
 
 from .filters import ReviewerListFilter
-from .forms import DestructionListForm, get_reviewer_choices, get_zaaktype_choices
+from .forms import (
+    DestructionListForm,
+    ReviewForm,
+    get_reviewer_choices,
+    get_zaaktype_choices,
+)
 from .models import DestructionList, DestructionListReview
 
 
@@ -99,3 +106,37 @@ class ReviewerDestructionListView(RoleRequiredMixin, FilterView):
         return prefiltered_qs.annotate(
             review_status=models.Subquery(review_status[:1])
         ).order_by("-created")
+
+
+class ReviewCreateView(RoleRequiredMixin, CreateView):
+    model = DestructionListReview
+    form_class = ReviewForm
+    template_name = "destruction/review_create.html"
+    success_url = reverse_lazy("destruction:reviewer-list")
+    role_permission = "can_review_destruction"
+
+    def get_destruction_list(self):
+        list_id = self.kwargs.get("destruction_list")
+        queryset = DestructionList.objects.filter(id=list_id)
+
+        try:
+            destruction_list = queryset.get()
+        except DestructionList.DoesNotExist:
+            raise Http404(_("No destruction list found matching the query"))
+
+        return destruction_list
+
+    def get_initial(self):
+        destruction_list = self.get_destruction_list()
+
+        return {
+            "author": self.request.user,
+            "destruction_list": destruction_list,
+        }
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        destruction_list = self.get_destruction_list()
+        context.update({"destruction_list": destruction_list})
+        return context

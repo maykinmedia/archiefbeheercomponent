@@ -4,6 +4,7 @@ from .api import FetchZakenView
 from .views import (
     DestructionListCreateView,
     RecordManagerDestructionListView,
+    ReviewCreateView,
     ReviewerDestructionListView,
 )
 
@@ -20,7 +21,12 @@ urlpatterns = [
         DestructionListCreateView.as_view(),
         name="record-manager-create",
     ),
-    path("reviewers/", ReviewerDestructionListView.as_view(), name="reviewer-list",),
+    path("reviewers/", ReviewerDestructionListView.as_view(), name="reviewer-list"),
+    path(
+        "reviewers/<destruction_list>/add",
+        ReviewCreateView.as_view(),
+        name="reviewer-create",
+    ),
     path(
         "_",
         include([path("fetch-zaken", FetchZakenView.as_view(), name="fetch-zaken",),]),
