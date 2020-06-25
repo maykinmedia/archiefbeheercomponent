@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 
-import { DateInput } from "./inputs";
+import { DateInput } from "../../forms/inputs";
 import { ZakenTable } from "./zaken-table";
 import { CreateModal} from "./create-modal";
 import { ZaaktypeSelect} from "./zaaktype-select";
