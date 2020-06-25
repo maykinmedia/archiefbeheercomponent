@@ -5,7 +5,7 @@
 {% block content %}
 <article class="review-create">
     <form action="" method="post">
-        <button type="submit" class="review-create__btn btn" name="approve">Approve</button>
+        <button type="submit" class="review-create__btn btn" name="approve">Submit</button>
         <header class="review-create__header">
             <div>
                 <h1 class="title">Lijst "{{ destruction_list.name }}"</h1>
@@ -24,16 +24,20 @@
         <div>
             {{ form.author }}
             {{ form.destruction_list }}
+        </div>
+
+        <section class="review-items">
+            <h2 class="review-items__header section-title">Zaakdossiers</h2>
 
             <div
                  id="react-review-items"
                  data-items-url="{% url 'destruction:fetch-list-items' destruction_list.id %}"
-                 class="review-items"
             >
     {#             empty on purpose - react managed #}
             </div>
 
-        </div>
+        </section>
+
 
 {#      {% for formset in inlines %}#}
 {#        {{ formset }}#}

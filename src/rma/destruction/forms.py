@@ -91,9 +91,9 @@ class DestructionListForm(forms.ModelForm):
         self.save_assignees(destruction_list)
 
         # TODO put it after reviews creation when reviews start existing
-        transaction.on_commit(
-            lambda: process_destruction_list.delay(destruction_list.id)
-        )
+        # transaction.on_commit(
+        #     lambda: process_destruction_list.delay(destruction_list.id)
+        # )
 
         return destruction_list
 

@@ -35,9 +35,16 @@ const ReviewItemFormset = ({ itemsUrl }) => {
         (data, index) => <ReviewItemForm key={index} index={index} data={data} />
     );
 
+    if (error) {
+        return <div>Error in fetching zaken: {error.message}</div>;
+    }
+
+    if (!isLoaded) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <>
-            <h2 className="review-items__header section-title">Zaakdossiers</h2>
             <ManagementForm
                 prefix={ prefix}
                 initial_forms="0"
@@ -49,10 +56,10 @@ const ReviewItemFormset = ({ itemsUrl }) => {
             <table className="table">
                 <thead>
                     <tr>
-                        <th className="table__header">Item Id</th>
-                        <th className="table__header">Zaak</th>
-                        <th className="table__header">text</th>
-                        <th className="table__header">Suggestion</th>
+                        <th className="table__header">Identificatie</th>
+                        <th className="table__header">Zaaktype</th>
+                        <th className="table__header">Omschrijving</th>
+                        <th className="table__header">Actie</th>
                     </tr>
                 </thead>
                 <tbody>
