@@ -1,0 +1,11 @@
+@import "../lib/bem";
+
+
+.review-items {
+  padding-top: 1em;
+
+  @include element("header") {
+    text-align: center;
+  }
+
+}

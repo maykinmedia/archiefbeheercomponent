@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.utils import timezone
 from django.views import View
 
-from .models import ArchiveConfig
+from .models import ArchiveConfig, DestructionList
 from .service import get_zaken
 
 
@@ -40,3 +40,16 @@ class FetchZakenView(LoginRequiredMixin, View):
             zaken = get_zaken(query_params=query)
 
         return JsonResponse({"zaken": zaken})
+
+
+class FetchListItemsView(View):
+    def get(self, request, list_id):
+        destruction_list = DestructionList.objects.get(id=list_id)
+
+        # TODO what to do with removed items?
+        items = [
+            {"id": item.id, "zaak": item.zaak}
+            for item in destruction_list.items.order_by("id").all()
+        ]
+
+        return JsonResponse({"items": items})

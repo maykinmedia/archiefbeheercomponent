@@ -1,0 +1,46 @@
+{% extends "master.html" %}
+{% load i18n %}
+
+
+{% block content %}
+<article class="review-create">
+    <form action="" method="post">
+        <button type="submit" class="review-create__btn btn" name="approve">Approve</button>
+        <header class="review-create__header">
+            <div>
+                <h1 class="title">Lijst "{{ destruction_list.name }}"</h1>
+                <span>
+                    {% blocktrans with since=destruction_list.created|timesince author=destruction_list.author %}
+                    created {{ since }} ago by {{ author }}
+                    {% endblocktrans %}
+                </span>
+            </div>
+        </header>
+
+        {% csrf_token %}
+        {{ form.errors }}
+        {{ form.non_field_errors }}
+
+        <div>
+            {{ form.author }}
+            {{ form.destruction_list }}
+
+            <div
+                 id="react-review-items"
+                 data-items-url="{% url 'destruction:fetch-list-items' destruction_list.id %}"
+                 class="review-items"
+            >
+    {#             empty on purpose - react managed #}
+            </div>
+
+        </div>
+
+{#      {% for formset in inlines %}#}
+{#        {{ formset }}#}
+{#      {% endfor %}#}
+
+    </form>
+
+</article>
+
+{% endblock %}

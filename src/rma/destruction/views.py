@@ -8,11 +8,12 @@ from django.views.generic import CreateView, ListView
 from django.views.generic.base import RedirectView
 
 from django_filters.views import FilterView
-from timeline_logger.models import TimelineLog
 from extra_views import CreateWithInlinesView, InlineFormSetFactory
+from timeline_logger.models import TimelineLog
 
 from rma.accounts.mixins import RoleRequiredMixin
 
+from .constants import ReviewStatus
 from .filters import ReviewerListFilter
 from .forms import (
     DestructionListForm,
@@ -20,8 +21,7 @@ from .forms import (
     get_reviewer_choices,
     get_zaaktype_choices,
 )
-from .constants import ReviewStatus
-from .models import DestructionList, DestructionListReview, DestructionListItemReview
+from .models import DestructionList, DestructionListItemReview, DestructionListReview
 
 
 class EnterView(LoginRequiredMixin, RedirectView):
@@ -136,11 +136,12 @@ class ReviewCreateView(RoleRequiredMixin, CreateWithInlinesView):
 
     def get_initial(self):
         destruction_list = self.get_destruction_list()
-
-        return {
+        initial = {
             "author": self.request.user,
             "destruction_list": destruction_list,
         }
+
+        return initial
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -148,3 +149,9 @@ class ReviewCreateView(RoleRequiredMixin, CreateWithInlinesView):
         destruction_list = self.get_destruction_list()
         context.update({"destruction_list": destruction_list})
         return context
+
+    def form_valid(self, form):
+        if "approve" in self.request.POST:
+            form.instance.status = ReviewStatus.approved
+
+        return super().form_valid(form)

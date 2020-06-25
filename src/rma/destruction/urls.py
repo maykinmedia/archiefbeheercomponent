@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from .api import FetchZakenView
+from .api import FetchListItemsView, FetchZakenView
 from .views import (
     DestructionListCreateView,
     RecordManagerDestructionListView,
@@ -29,6 +29,15 @@ urlpatterns = [
     ),
     path(
         "_",
-        include([path("fetch-zaken", FetchZakenView.as_view(), name="fetch-zaken",),]),
+        include(
+            [
+                path("fetch-zaken", FetchZakenView.as_view(), name="fetch-zaken",),
+                path(
+                    "fetch-list-items/<list_id>",
+                    FetchListItemsView.as_view(),
+                    name="fetch-list-items",
+                ),
+            ]
+        ),
     ),
 ]
