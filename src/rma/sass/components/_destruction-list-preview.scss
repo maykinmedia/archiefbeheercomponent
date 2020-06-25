@@ -44,12 +44,12 @@
     display: flex;
     align-items: center;
     color: $color-primary;
-    margin-right: 0.5em;
   }
 
   @include element("details") {
     @include body-meta;
     width: 100%;
+    display: flex;
   }
 
   @include element("btn") {
@@ -74,4 +74,7 @@
     margin-top: 1em;
   }
 
+  &__assigned + &__status {
+    margin-left: 0.5em;
+  }
 }

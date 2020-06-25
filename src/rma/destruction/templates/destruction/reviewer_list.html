@@ -31,19 +31,18 @@
                         {% endif %}
                     </span>
 
+                {% if object.review_status %}
                     <span class="destruction-list-preview__status" title="review status" >
-                        {% if object.review_status == approved %}
+                        {% if object.review_status == 'approved' %}
                             <i class="material-icons">done</i>
-                        {% elif object.review_status == changes_requested %}
+                        {% elif object.review_status == 'changes_requested' %}
                             <i class="material-icons">comment</i>
                         {% endif %}
                     </span>
+                {% endif %}
 
                 </span>
 
-                {% if object.assignee == request.user %}
-                    <a href="#" class="destruction-list-preview__btn">Beordelen</a>
-                {% endif %}
 
                 <div class="destruction-list-preview__details">
                     <time title="{{ object.created.isoformat }}">
@@ -51,6 +50,12 @@
                             created {{ since }} ago
                         {% endblocktrans %}
                     </time>
+
+                    <span class="destruction-list-preview__indicators">
+                    {% if object.assignee == request.user %}
+                        <a href="#" class="destruction-list-preview__btn">Beoordelen</a>
+                    {% endif %}
+                    </span>
                 </div>
             </div>
 
