@@ -32,7 +32,7 @@ const ReviewItemFormset = ({ itemsUrl }) => {
 
     //set up forms
     const forms = items.map(
-        (data, index) => <ReviewItemForm key={index} index={index} data={data} />
+        (data, index) => <ReviewItemForm key={data.list_item_id} index={index} data={data} />
     );
 
     if (error) {
@@ -56,6 +56,7 @@ const ReviewItemFormset = ({ itemsUrl }) => {
             <table className="table">
                 <thead>
                     <tr>
+                        <th className="table__hidden">List item id</th>
                         <th className="table__header">Identificatie</th>
                         <th className="table__header">Zaaktype</th>
                         <th className="table__header">Omschrijving</th>

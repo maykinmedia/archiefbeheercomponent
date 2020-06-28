@@ -60,6 +60,6 @@ class FetchListItemsView(LoginRequiredMixin, View):
         for item in destruction_list.items.order_by("id").all():
             zaak = zaken[item.zaak]
             zaak["zaaktype"] = fetched_zaaktypen[zaak["zaaktype"]]
-            items.append({"id": item.id, "zaak": zaak})
+            items.append({"list_item_id": item.id, "zaak": zaak})
 
         return JsonResponse({"items": items})

@@ -26,6 +26,10 @@
             {{ form.destruction_list }}
         </div>
 
+        {% for formset in inlines %}
+            {{ formset.errors }}
+        {% endfor %}
+
         <section class="review-items">
             <h2 class="review-items__header section-title">Zaakdossiers</h2>
 
@@ -37,11 +41,6 @@
             </div>
 
         </section>
-
-
-{#      {% for formset in inlines %}#}
-{#        {{ formset }}#}
-{#      {% endfor %}#}
 
     </form>
 
