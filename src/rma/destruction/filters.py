@@ -20,6 +20,13 @@ class ReviewerListFilter(FilterSet):
         model = DestructionList
         fields = ("reviewed",)
 
+    def __init__(self, data, *args, **kwargs):
+        data = data or {}
+        if not data.get("reviewed"):
+            data["reviewed"] = ReviewerDisplay.to_review
+
+        super().__init__(data, *args, **kwargs)
+
     def filter_reviewed(self, queryset, name, value):
         if value == ReviewerDisplay.to_review:
             return queryset.filter(assignee=self.request.user)
@@ -27,10 +34,3 @@ class ReviewerListFilter(FilterSet):
             return queryset.reviewed_by(self.request.user)
         else:
             return queryset
-
-    def __init__(self, data, *args, **kwargs):
-        data = data or {}
-        if not data.get("reviewed"):
-            data["reviewed"] = ReviewerDisplay.to_review
-
-        super().__init__(data, *args, **kwargs)
