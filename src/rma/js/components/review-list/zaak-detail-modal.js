@@ -9,12 +9,16 @@ const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, setSuggestion, comment,
 
     const { zaakDetailUrl } = useContext(ConstantsContext);
     const closeModal = () => setIsOpen(false);
+    const suggestClose = (suggestion) => {
+        setSuggestion(suggestion);
+        closeModal();
+    };
 
     // load zaak detail
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [zaakDetail, setZaakDetail] = useState({});
-    const { resultaat, documenten, besluiten } = zaakDetail;
+    const {resultaat, documenten, besluiten} = zaakDetail;
 
     // fetch zaak details
     useEffect(() => {
@@ -97,20 +101,20 @@ const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, setSuggestion, comment,
                                 <button
                                     type="button"
                                     className="btn"
-                                    onClick={(e) => {
-                                        setSuggestion("change_and_remove");
-                                        closeModal();
-                                    }}
+                                    onClick={(e) => suggestClose("change_and_remove")}
                                 >Change
                                 </button>
                                 <button
                                     type="button"
                                     className="btn"
-                                    onClick={(e) => {
-                                        setSuggestion("remove");
-                                        closeModal();
-                                    }}
+                                    onClick={(e) => suggestClose("remove")}
                                 >Remove
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn"
+                                    onClick={(e) => suggestClose("")}
+                                >Approve
                                 </button>
                             </div>
 

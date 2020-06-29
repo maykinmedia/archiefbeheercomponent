@@ -24,8 +24,8 @@ const ReviewItemForm = ({ index, data }) => {
     const [ suggestion, setSuggestion ] = useState("");
     const [ comment, setComment ] = useState("");
     const disabled = !!suggestion;
-    console.log("suggestion=", suggestion);
-    console.log("disabled=", disabled);
+
+    const actionIcon = suggestion === "remove" ? "clear": (suggestion === "change_and_remove" ? "create" : "done");
 
     // modal
     const [modalIsOpen, setIsOpen] = React.useState(false);
@@ -45,12 +45,11 @@ const ReviewItemForm = ({ index, data }) => {
                 <td>{`${zaak.zaaktype.omschrijving} (${zaak.zaaktype.versiedatum})`}</td>
                 <td>{ zaak.omschrijving }</td>
                 <td>
-                    <SelectInput
+                    <i className="material-icons">{actionIcon}</i>
+                    <HiddenInput
                         id={id_prefix("suggestion")}
                         name={name_prefix("suggestion")}
-                        selected={suggestion}
-                        choices={ITEM_SUGGESTIONS}
-                        disabled={true}
+                        value={suggestion}
                     />
                 </td>
                 <td className="table__hidden">
