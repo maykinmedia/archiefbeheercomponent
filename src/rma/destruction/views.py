@@ -98,4 +98,4 @@ class ReviewerDestructionListView(RoleRequiredMixin, FilterView):
 
         return prefiltered_qs.annotate(
             review_status=models.Subquery(review_status[:1])
-        ).order_by("-id")
+        ).order_by("-created")
