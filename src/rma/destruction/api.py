@@ -2,12 +2,19 @@ import itertools
 from concurrent import futures
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse
+from django.http import HttpResponseBadRequest, JsonResponse
 from django.utils import timezone
 from django.views import View
 
 from .models import ArchiveConfig, DestructionList
-from .service import fetch_zaak, get_zaaktypen, get_zaken
+from .service import (
+    fetch_zaak,
+    get_besluiten,
+    get_documenten,
+    get_resultaat,
+    get_zaaktypen,
+    get_zaken,
+)
 
 
 class FetchZakenView(LoginRequiredMixin, View):
@@ -49,7 +56,6 @@ class FetchListItemsView(LoginRequiredMixin, View):
         fetched_zaaktypen = {zaaktype["url"]: zaaktype for zaaktype in get_zaaktypen()}
 
         zaak_urls = [item.zaak for item in destruction_list.items.all()]
-        # TODO: async
         with futures.ThreadPoolExecutor() as executor:
             zaken = list(executor.map(fetch_zaak, zaak_urls))
 
@@ -63,3 +69,23 @@ class FetchListItemsView(LoginRequiredMixin, View):
             items.append({"list_item_id": item.id, "zaak": zaak})
 
         return JsonResponse({"items": items})
+
+
+class FetchZaakDetail(LoginRequiredMixin, View):
+    def get(self, request):
+        zaak_url = request.GET.get("zaak_url")
+        if not zaak_url:
+            return HttpResponseBadRequest("zaak_url query parameter must be specified")
+
+        with futures.ThreadPoolExecutor() as executor:
+            resultaat = executor.submit(get_resultaat, zaak_url)
+            documenten = executor.submit(get_documenten, zaak_url)
+            besluiten = executor.submit(get_besluiten, zaak_url)
+
+        result = {
+            "resultaat": resultaat.result(),
+            "documenten": documenten.result(),
+            "besluiten": besluiten.result(),
+        }
+
+        return JsonResponse(result)

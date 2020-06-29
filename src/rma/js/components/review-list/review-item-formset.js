@@ -61,6 +61,7 @@ const ReviewItemFormset = ({ itemsUrl }) => {
                         <th className="table__header">Zaaktype</th>
                         <th className="table__header">Omschrijving</th>
                         <th className="table__header">Actie</th>
+                        <th className="table__hidden">Comment</th>
                     </tr>
                 </thead>
                 <tbody>

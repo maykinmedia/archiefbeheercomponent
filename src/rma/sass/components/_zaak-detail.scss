@@ -1,0 +1,21 @@
+.zaak-detail {
+
+  &__section {
+    display: flex;
+  }
+
+  &__item {
+    flex: 1;
+    width: 50%
+  }
+
+  &__buttons {
+    padding-top: 1em;
+    text-align: center;
+
+    .btn + .btn {
+      margin-left: 1em;
+    }
+  }
+
+}

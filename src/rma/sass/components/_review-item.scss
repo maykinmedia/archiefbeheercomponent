@@ -1,0 +1,11 @@
+@import "../lib/colors";
+
+
+.review-item {
+  cursor: pointer;
+
+  &--disabled {
+    background-color: $color-background;
+    opacity: 0.65;
+  }
+}
