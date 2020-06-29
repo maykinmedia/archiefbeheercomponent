@@ -18,10 +18,12 @@ from .filters import ReviewerListFilter
 from .forms import (
     DestructionListForm,
     ReviewForm,
+    ReviewItemBaseFormset,
     get_reviewer_choices,
     get_zaaktype_choices,
 )
 from .models import DestructionList, DestructionListItemReview, DestructionListReview
+from .tasks import process_destruction_list
 
 
 class EnterView(LoginRequiredMixin, RedirectView):
@@ -113,6 +115,7 @@ class ReviewerDestructionListView(RoleRequiredMixin, FilterView):
 class ReviewItemInline(InlineFormSetFactory):
     model = DestructionListItemReview
     fields = ["destruction_list_item", "text", "suggestion"]
+    formset_class = ReviewItemBaseFormset
 
 
 class ReviewCreateView(RoleRequiredMixin, CreateWithInlinesView):
@@ -155,3 +158,30 @@ class ReviewCreateView(RoleRequiredMixin, CreateWithInlinesView):
             form.instance.status = ReviewStatus.approved
 
         return super().form_valid(form)
+
+    @transaction.atomic
+    def forms_valid(self, form, inlines):
+        response = super().forms_valid(form, inlines)
+
+        # log review
+        list_review = form.instance
+        TimelineLog.log_from_request(
+            self.request,
+            list_review,
+            template="destruction/logs/created.txt",
+            n_items=list_review.items.count(),
+        )
+
+        # process destruction list
+        destruction_list = self.get_destruction_list()
+        destruction_list.assignee = destruction_list.next_assignee(list_review)
+
+        if not destruction_list.assignee:
+            destruction_list.complete()
+
+            # uncomment
+            # process_destruction_list.delay(destruction_list.id)
+
+        destruction_list.save()
+
+        return response

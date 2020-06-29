@@ -60,6 +60,19 @@ class DestructionList(models.Model):
         self.end = timezone.now()
         self.assignee = None
 
+    def next_assignee(self, review):
+        if review.status == ReviewStatus.changes_requested:
+            return self.author
+
+        current_order = self.assignees.get(assignee=review.author).order
+        next_assignee = (
+            self.assignees.filter(order__gt=current_order).order_by("order").first()
+        )
+        if next_assignee:
+            return next_assignee.assignee
+
+        return None
+
 
 class DestructionListItem(models.Model):
     destruction_list = models.ForeignKey(

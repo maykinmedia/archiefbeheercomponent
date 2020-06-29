@@ -3,6 +3,7 @@ from typing import List, Tuple
 
 from django import forms
 from django.db import transaction
+from django.forms.models import BaseInlineFormSet
 
 from rma.accounts.models import User
 
@@ -103,3 +104,13 @@ class ReviewForm(forms.ModelForm):
         model = DestructionListReview
         fields = ("destruction_list", "author", "text", "status")
         widgets = {"destruction_list": forms.HiddenInput, "author": forms.HiddenInput}
+
+
+class ReviewItemBaseFormset(BaseInlineFormSet):
+    def save(self, commit=True):
+        # save only items with suggestions
+        instances = super().save(commit=False)
+
+        for instance in instances:
+            if instance.suggestion:
+                instance.save()
