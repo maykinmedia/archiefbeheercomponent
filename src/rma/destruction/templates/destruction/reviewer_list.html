@@ -1,0 +1,71 @@
+{% extends "master.html" %}
+{% load i18n notifications %}
+
+{% block content %}
+
+<header>
+    <h1 class="title">Vernietigingslijsten</h1>
+</header>
+
+
+<article class="reviewer-list">
+    <section class="reviewer-list__filters">
+        <form action="" method="get">
+            {{ filter.form.reviewed }}
+            <button type="submit" class="btn">Filter</button>
+        </form>
+    </section>
+
+    <section class="reviewer-list__content">
+
+        {% for object in object_list %}
+            <div class="destruction-list-preview">
+
+                <a class="destruction-list-preview__title" href="#">{{ object.name }}</a>
+
+                <span class="destruction-list-preview__indicators">
+
+                    <span class="destruction-list-preview__assigned">
+                        {% if object.assignee == request.user %}
+                            <i class="material-icons" title="{% trans 'You are the current assignee!' %}">assignment_ind</i>
+                        {% endif %}
+                    </span>
+
+                {% if object.review_status %}
+                    <span class="destruction-list-preview__status" title="review status" >
+                        {% if object.review_status == 'approved' %}
+                            <i class="material-icons">done</i>
+                        {% elif object.review_status == 'changes_requested' %}
+                            <i class="material-icons">comment</i>
+                        {% endif %}
+                    </span>
+                {% endif %}
+
+                </span>
+
+
+                <div class="destruction-list-preview__details">
+                    <time title="{{ object.created.isoformat }}">
+                        {% blocktrans with since=object.created|timesince trimmed %}
+                            created {{ since }} ago
+                        {% endblocktrans %}
+                    </time>
+
+                    <span class="destruction-list-preview__indicators">
+                    {% if object.assignee == request.user %}
+                        <a href="#" class="destruction-list-preview__btn">Beoordelen</a>
+                    {% endif %}
+                    </span>
+                </div>
+            </div>
+
+        {% endfor %}
+    </section>
+
+    <aside class="reviewer-list__notif">
+        {% render_notifications request.user %}
+    </aside>
+
+</article>
+
+{% endblock %}

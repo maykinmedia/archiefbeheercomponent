@@ -44,16 +44,37 @@
     display: flex;
     align-items: center;
     color: $color-primary;
-    margin-right: 0.5em;
   }
 
   @include element("details") {
     @include body-meta;
     width: 100%;
+    display: flex;
+  }
+
+  @include element("btn") {
+    display: flex;
+    padding: 0.25em 0.5em;
+    margin-left: 1em;
+    margin-top: 0.25em;
+    background: $color-text--light;
+    border: solid 1px transparent;
+    border-radius: 1em;
+    cursor: pointer;
+    color: #fefefe;
+    text-decoration: none;
+    opacity: 0.75;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 
   & + & {
     margin-top: 1em;
   }
 
+  &__assigned + &__status {
+    margin-left: 0.5em;
+  }
 }

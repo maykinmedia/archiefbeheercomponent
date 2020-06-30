@@ -1,16 +1,18 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
-from django.db import transaction
+from django.db import models, transaction
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView
 from django.views.generic.base import RedirectView
 
+from django_filters.views import FilterView
 from timeline_logger.models import TimelineLog
 
 from rma.accounts.mixins import RoleRequiredMixin
 
+from .filters import ReviewerListFilter
 from .forms import DestructionListForm, get_reviewer_choices, get_zaaktype_choices
-from .models import DestructionList
+from .models import DestructionList, DestructionListReview
 
 
 class EnterView(LoginRequiredMixin, RedirectView):
@@ -18,6 +20,9 @@ class EnterView(LoginRequiredMixin, RedirectView):
         role = self.request.user.role
         if role and role.can_start_destruction:
             return reverse("destruction:record-manager-list")
+
+        if role and role.can_review_destruction:
+            return reverse("destruction:reviewer-list")
 
         if self.request.user.is_superuser:
             return reverse("audit:audit-trail")
@@ -73,3 +78,24 @@ class DestructionListCreateView(RoleRequiredMixin, CreateView):
         )
 
         return response
+
+
+class ReviewerDestructionListView(RoleRequiredMixin, FilterView):
+    """ data for user who can reviewer destruction lists"""
+
+    role_permission = "can_review_destruction"
+    template_name = "destruction/reviewer_list.html"
+    filterset_class = ReviewerListFilter
+
+    def get_queryset(self):
+        review_status = DestructionListReview.objects.filter(
+            author=self.request.user, destruction_list=models.OuterRef("id")
+        ).values("status")
+
+        prefiltered_qs = DestructionList.objects.filter(
+            assignee=self.request.user
+        ) | DestructionList.objects.reviewed_by(self.request.user)
+
+        return prefiltered_qs.annotate(
+            review_status=models.Subquery(review_status[:1])
+        ).order_by("-created")
