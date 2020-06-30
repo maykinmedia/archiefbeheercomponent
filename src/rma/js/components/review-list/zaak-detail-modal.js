@@ -104,19 +104,19 @@ const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, index, comment, setComm
                                     type="button"
                                     className="btn"
                                     onClick={(e) => suggestClose("change_and_remove")}
-                                >Change
+                                >Aanpassen
                                 </button>
                                 <button
                                     type="button"
                                     className="btn"
                                     onClick={(e) => suggestClose("remove")}
-                                >Remove
+                                >Uitzonderen
                                 </button>
                                 <button
                                     type="button"
                                     className="btn"
                                     onClick={(e) => suggestClose("")}
-                                >Approve
+                                >Akkoord
                                 </button>
                             </div>
 

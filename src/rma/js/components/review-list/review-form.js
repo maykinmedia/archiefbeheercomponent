@@ -5,8 +5,8 @@ import {ReviewItemFormset} from "./review-item-formset";
 import {SuggestionContext} from "./context";
 
 const STATUS_TO_BUTTON = {
-    "approved": "Approve",
-    "changes_requested": "Request Changes"
+    "approved": "Accorderen",
+    "changes_requested": "Aanpassen"
 };
 
 
