@@ -89,6 +89,12 @@ class DestructionListCreateView(RoleRequiredMixin, CreateView):
                 destruction_list.assignees.values("assignee__id", "assignee__username")
             ),
         )
+        # send notifications
+        Notification.objects.create(
+            destruction_list=destruction_list,
+            user=destruction_list.author,
+            message=f"Destruction list has been created",
+        )
 
         return response
 
@@ -169,20 +175,27 @@ class ReviewCreateView(RoleRequiredMixin, CreateWithInlinesView):
         TimelineLog.log_from_request(
             self.request,
             list_review,
-            template="destruction/logs/created.txt",
-            n_items=list_review.items.count(),
+            template="destruction/logs/review_created.txt",
+            n_items=list_review.item_reviews.count(),
         )
+        # send notification
+        Notification.objects.create(
+            destruction_list=list_review.destruction_list,
+            user=list_review.destruction_list.author,
+            message=f"Destruction list has been reviewed by {list_review.author}",
+            )
 
-        # process destruction list
-        destruction_list = self.get_destruction_list()
-        destruction_list.assignee = destruction_list.next_assignee(list_review)
-
-        if not destruction_list.assignee:
-            destruction_list.complete()
-
-            # uncomment
-            # process_destruction_list.delay(destruction_list.id)
-
-        destruction_list.save()
+        self.process_destruction_list(list_review)
 
         return response
+
+    def process_destruction_list(self, list_review):
+        destruction_list = self.get_destruction_list()
+        destruction_list.assign(destruction_list.next_assignee(list_review))
+
+        if not destruction_list.assignee:
+            # fixme uncomment
+            # process_destruction_list.delay(destruction_list.id)
+            pass
+
+        destruction_list.save()

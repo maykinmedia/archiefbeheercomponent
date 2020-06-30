@@ -5,7 +5,6 @@ from django import forms
 from django.forms.models import BaseInlineFormSet
 
 from rma.accounts.models import User
-from rma.notifications.models import Notification
 
 from .models import (
     DestructionList,
@@ -86,13 +85,6 @@ class DestructionListForm(forms.ModelForm):
 
     def save(self, **kwargs):
         destruction_list = super().save(**kwargs)
-
-        # send notifications
-        Notification.objects.create(
-            destruction_list=destruction_list,
-            user=destruction_list.author,
-            message=f"Destruction list has been created",
-        )
 
         self.save_items(destruction_list)
         self.save_assignees(destruction_list)

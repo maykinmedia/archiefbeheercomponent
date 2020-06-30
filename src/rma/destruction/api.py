@@ -6,6 +6,8 @@ from django.http import HttpResponseBadRequest, JsonResponse
 from django.utils import timezone
 from django.views import View
 
+from rma.accounts.mixins import RoleRequiredMixin
+
 from .models import ArchiveConfig, DestructionList
 from .service import (
     fetch_zaak,
@@ -71,7 +73,9 @@ class FetchListItemsView(LoginRequiredMixin, View):
         return JsonResponse({"items": items})
 
 
-class FetchZaakDetail(LoginRequiredMixin, View):
+class FetchZaakDetail(RoleRequiredMixin, View):
+    role_permission = "can_view_case_details"
+
     def get(self, request):
         zaak_url = request.GET.get("zaak_url")
         if not zaak_url:
