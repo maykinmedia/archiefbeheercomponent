@@ -12,6 +12,7 @@ from extra_views import CreateWithInlinesView, InlineFormSetFactory
 from timeline_logger.models import TimelineLog
 
 from rma.accounts.mixins import RoleRequiredMixin
+from rma.notifications.models import Notification
 
 from .constants import ReviewStatus
 from .filters import ReviewerListFilter
@@ -78,6 +79,7 @@ class DestructionListCreateView(RoleRequiredMixin, CreateView):
 
         destruction_list = form.instance
 
+        # log
         TimelineLog.log_from_request(
             self.request,
             destruction_list,
@@ -159,7 +161,6 @@ class ReviewCreateView(RoleRequiredMixin, CreateWithInlinesView):
 
         return super().form_valid(form)
 
-    @transaction.atomic
     def forms_valid(self, form, inlines):
         response = super().forms_valid(form, inlines)
 

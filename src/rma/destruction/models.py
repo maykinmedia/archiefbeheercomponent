@@ -7,6 +7,8 @@ from django_fsm import FSMField, transition
 from solo.models import SingletonModel
 from timeline_logger.models import TimelineLog
 
+from rma.notifications.models import Notification
+
 from .constants import ListItemStatus, ListStatus, ReviewStatus, Suggestion
 from .query import DestructionListQuerySet
 
@@ -58,7 +60,7 @@ class DestructionList(models.Model):
     @transition(field=status, source=ListStatus.processing, target=ListStatus.completed)
     def complete(self):
         self.end = timezone.now()
-        self.assignee = None
+        self.assign(None)
 
     def next_assignee(self, review=None):
         first_assignee = self.assignees.order_by("order").first().assignee
@@ -80,7 +82,18 @@ class DestructionList(models.Model):
         if next_assignee:
             return next_assignee.assignee
 
+        #  all reviews have approve status -> list is about to be completed
         return None
+
+    def assign(self, assignee):
+        self.assignee = assignee
+
+        if assignee:
+            Notification.objects.create(
+                destruction_list=self,
+                user=assignee,
+                message=f"You are assigned to the destruction list",
+            )
 
 
 class DestructionListItem(models.Model):

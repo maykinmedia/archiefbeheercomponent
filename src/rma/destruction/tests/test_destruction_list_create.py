@@ -1,9 +1,8 @@
-from unittest.mock import patch
-
 from django.test import TestCase
 from django.urls import reverse
 
 from rma.accounts.tests.factories import UserFactory
+from rma.notifications.models import Notification
 
 from ..constants import ListItemStatus, ListStatus
 from ..models import DestructionList
@@ -18,8 +17,7 @@ class CreateDestructionListTests(TestCase):
         super().setUp()
         self.client.force_login(self.user)
 
-    @patch("rma.destruction.forms.transaction.on_commit")
-    def test_create_list(self, m):
+    def test_create_list(self):
         reviewers = UserFactory.create_batch(2, role__can_review_destruction=True)
         zaken = [f"http://some.zaken.nl/api/v1/zaken/{i}" for i in range(1, 3)]
 
@@ -62,5 +60,13 @@ class CreateDestructionListTests(TestCase):
         self.assertEqual(timeline_log.user, self.user)
         self.assertEqual(timeline_log.template, "destruction/logs/created.txt")
 
-        # transactoin.on_commit
-        m.assert_called_once()
+        # check that notifications were sent
+        notifications = Notification.objects.order_by("id").all()
+        self.assertEqual(notifications.count(), 2)
+        notif_create, notif_assign = notifications
+        self.assertEqual(notif_create.user, destruction_list.author)
+        self.assertEqual(notif_create.message, "Destruction list has been created")
+        self.assertEqual(notif_assign.user, destruction_list.assignee)
+        self.assertEqual(
+            notif_assign.message, "You are assigned to the destruction list"
+        )

@@ -2,10 +2,10 @@ import itertools
 from typing import List, Tuple
 
 from django import forms
-from django.db import transaction
 from django.forms.models import BaseInlineFormSet
 
 from rma.accounts.models import User
+from rma.notifications.models import Notification
 
 from .models import (
     DestructionList,
@@ -14,7 +14,6 @@ from .models import (
     DestructionListReview,
 )
 from .service import get_zaaktypen
-from .tasks import process_destruction_list
 
 
 def get_zaaktype_choices() -> List[Tuple[str, list]]:
@@ -82,19 +81,21 @@ class DestructionListForm(forms.ModelForm):
             assignees
         )
         if destruction_list_assignees:
-            destruction_list.assignee = destruction_list_assignees[0].assignee
+            destruction_list.assign(destruction_list.next_assignee())
             destruction_list.save()
 
     def save(self, **kwargs):
         destruction_list = super().save(**kwargs)
 
+        # send notifications
+        Notification.objects.create(
+            destruction_list=destruction_list,
+            user=destruction_list.author,
+            message=f"Destruction list has been created",
+        )
+
         self.save_items(destruction_list)
         self.save_assignees(destruction_list)
-
-        # TODO put it after reviews creation when reviews start existing
-        # transaction.on_commit(
-        #     lambda: process_destruction_list.delay(destruction_list.id)
-        # )
 
         return destruction_list
 
