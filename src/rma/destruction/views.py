@@ -3,6 +3,7 @@ from django.core.exceptions import PermissionDenied
 from django.db import models, transaction
 from django.http import Http404
 from django.urls import reverse, reverse_lazy
+from django.utils.timesince import timesince
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import CreateView, ListView
 from django.views.generic.base import RedirectView
@@ -158,7 +159,14 @@ class ReviewCreateView(RoleRequiredMixin, CreateWithInlinesView):
         context = super().get_context_data(**kwargs)
 
         destruction_list = self.get_destruction_list()
-        context.update({"destruction_list": destruction_list})
+        context.update({
+            "destruction_list": destruction_list,
+            "destruction_list_json": {
+                "name": destruction_list.name,
+                "author": destruction_list.author.get_full_name(),
+                "created": timesince(destruction_list.created)
+            }
+        })
         return context
 
     def form_valid(self, form):
@@ -183,7 +191,7 @@ class ReviewCreateView(RoleRequiredMixin, CreateWithInlinesView):
             destruction_list=list_review.destruction_list,
             user=list_review.destruction_list.author,
             message=f"Destruction list has been reviewed by {list_review.author}",
-            )
+        )
 
         self.process_destruction_list(list_review)
 

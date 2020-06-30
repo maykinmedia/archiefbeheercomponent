@@ -2,27 +2,29 @@ import React from "react";
 import ReactDOM from "react-dom";
 import Modal from "react-modal";
 
+import { jsonScriptToVar } from '../../utils';
 import { ConstantsContext } from "./context";
-import { ReviewItemFormset } from "./review-item-formset";
+import { ReviewForm } from "./review-form";
 
 
 const mount = () => {
-    const node = document.getElementById('react-review-items');
+    const node = document.getElementById('react-review-create');
     if (!node) return;
 
     const { itemsUrl, zaakDetailUrl } = node.dataset;
+    const destructionList = jsonScriptToVar('destruction-list');
 
     // constants
     const prefix = "item_reviews";
     const constants = { prefix, zaakDetailUrl };
 
-    Modal.setAppElement('#react-review-items');
+    Modal.setAppElement('#react-review-create');
 
     ReactDOM.render(
         <ConstantsContext.Provider value={constants}>
-            <ReviewItemFormset
+            <ReviewForm
                 itemsUrl={itemsUrl}
-                zaakDetailUrl={zaakDetailUrl}
+                destructionList={destructionList}
             />
         </ConstantsContext.Provider>,
         node

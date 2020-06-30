@@ -3,45 +3,29 @@
 
 
 {% block content %}
-<article class="review-create">
-    <form action="" method="post">
-        <button type="submit" class="review-create__btn btn" name="approve">Submit</button>
-        <header class="review-create__header">
-            <div>
-                <h1 class="title">Lijst "{{ destruction_list.name }}"</h1>
-                <span>
-                    {% blocktrans with since=destruction_list.created|timesince author=destruction_list.author %}
-                    created {{ since }} ago by {{ author }}
-                    {% endblocktrans %}
-                </span>
-            </div>
-        </header>
+<article class="review-create" >
+    {{ form.errors }}
 
-        {% csrf_token %}
-        {{ form.errors }}
-        {{ form.non_field_errors }}
-
-        <div>
-            {{ form.author }}
-            {{ form.destruction_list }}
-        </div>
-
-        {% for formset in inlines %}
+    {% for formset in inlines %}
+        {% if formset.errors %}
             {{ formset.errors }}
-        {% endfor %}
+        {% endif %}
+    {% endfor %}
 
-        <section class="review-items">
-            <h2 class="review-items__header section-title">Zaakdossiers</h2>
+    {{ destruction_list_json|json_script:"destruction-list" }}
 
-            <div
-                 id="react-review-items"
-                 data-items-url="{% url 'destruction:fetch-list-items' destruction_list.id %}"
-                 data-zaak-detail-url="{% url 'destruction:fetch-zaak-detail' %}"
-            >
-    {#             empty on purpose - react managed #}
-            </div>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.author }}
+        {{ form.destruction_list }}
 
-        </section>
+        <div
+            id="react-review-create"
+            data-items-url="{% url 'destruction:fetch-list-items' destruction_list.id %}"
+            data-zaak-detail-url="{% url 'destruction:fetch-zaak-detail' %}"
+        >
+        {#             empty on purpose - react managed #}
+        </div>
 
     </form>
 

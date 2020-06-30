@@ -1,31 +1,22 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 
 import { HiddenInput } from "../../forms/inputs";
-import { SelectInput } from "../../forms/select";
 import { ConstantsContext } from "./context";
 import { ZaakDetailModal } from "./zaak-detail-modal";
-import {CreateModal} from "../destruction-list/create-modal";
 
 
-const ITEM_SUGGESTIONS = [
-    ["", "Approve"],
-    ["remove", "Remove"],
-    ["change_and_remove", "Change and remove"]
-];
-
-
-const ReviewItemForm = ({ index, data }) => {
+const ReviewItemForm = ({ index, data, suggestions, setSuggestions }) => {
     const { list_item_id, zaak }  = data;
     const { prefix } = useContext(ConstantsContext);
 
     const id_prefix = (field) => `id_${prefix}-${index}-${field}`;
     const name_prefix = (field) => `${prefix}-${index}-${field}`;
 
-    const [ suggestion, setSuggestion ] = useState("");
     const [ comment, setComment ] = useState("");
+    const suggestion = suggestions[index];
     const disabled = !!suggestion;
 
-    const actionIcon = suggestion === "remove" ? "clear": (suggestion === "change_and_remove" ? "create" : "done");
+    const actionIcon = (suggestion === "remove" ? "clear": (suggestion === "change_and_remove" ? "create" : "done"));
 
     // modal
     const [modalIsOpen, setIsOpen] = React.useState(false);
@@ -65,7 +56,9 @@ const ReviewItemForm = ({ index, data }) => {
                 modalIsOpen={modalIsOpen}
                 setIsOpen={setIsOpen}
                 zaak={zaak}
-                setSuggestion={setSuggestion}
+                index={index}
+                suggestions={suggestions}
+                setSuggestions={setSuggestions}
                 comment={comment}
                 setComment={setComment}
             />

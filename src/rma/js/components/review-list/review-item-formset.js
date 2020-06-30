@@ -1,38 +1,21 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 
 import { ReviewItemForm } from "./review-item-form";
 import { ManagementForm } from "../../forms/management-form";
 
 
-const ReviewItemFormset = ({ itemsUrl }) => {
+const ReviewItemFormset = ({ error, isLoaded, items, suggestions, setSuggestions }) => {
     const prefix = "item_reviews";
-
-    // load list items
-    const [error, setError] = useState(null);
-    const [isLoaded, setIsLoaded] = useState(false);
-    const [items, setItems] = useState([]);
-
-    // fetch list items
-    useEffect(() => {
-        window.fetch(itemsUrl)
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    setIsLoaded(true);
-                    setItems(result.items);
-
-                },
-                (error) => {
-                    setIsLoaded(true);
-                    setError(error);
-                }
-            )
-    }, []);
-
 
     //set up forms
     const forms = items.map(
-        (data, index) => <ReviewItemForm key={data.list_item_id} index={index} data={data} />
+        (data, index) => <ReviewItemForm
+            key={data.list_item_id}
+            index={index}
+            data={data}
+            suggestions={suggestions}
+            setSuggestions={setSuggestions}
+        />
     );
 
     if (error) {
