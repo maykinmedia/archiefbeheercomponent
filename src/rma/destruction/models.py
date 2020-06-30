@@ -60,7 +60,16 @@ class DestructionList(models.Model):
         self.end = timezone.now()
         self.assignee = None
 
-    def next_assignee(self, review):
+    def next_assignee(self, review=None):
+        first_assignee = self.assignees.order_by("order").first().assignee
+
+        #  after author the review must always return to the first assignee
+        if self.assignee == self.author:
+            return first_assignee
+
+        if not review:
+            return first_assignee
+
         if review.status == ReviewStatus.changes_requested:
             return self.author
 

@@ -30,3 +30,12 @@ class DestructionListReviewFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = "destruction.DestructionListReview"
+
+
+class DestructionListAssigneeFactory(factory.django.DjangoModelFactory):
+    destruction_list = factory.SubFactory(DestructionListFactory)
+    assignee = factory.SubFactory(UserFactory)
+    order = factory.Sequence(lambda n: n)
+
+    class Meta:
+        model = "destruction.DestructionListAssignee"
