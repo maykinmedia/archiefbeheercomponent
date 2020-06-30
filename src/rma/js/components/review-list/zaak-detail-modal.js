@@ -1,13 +1,15 @@
 import React, { useState, useContext, useEffect } from "react";
 import Modal from 'react-modal';
 
-import {ConstantsContext} from "./context";
+import {ConstantsContext, SuggestionContext} from "./context";
 import {TextInput} from "../../forms/inputs";
 
 
-const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, index, suggestions, setSuggestions, comment, setComment}) => {
+const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, index, comment, setComment}) => {
 
     const { zaakDetailUrl } = useContext(ConstantsContext);
+    const { suggestions, setSuggestions } = useContext(SuggestionContext);
+
     const closeModal = () => setIsOpen(false);
     const suggestClose = (value) => {
         const newSuggestions = [...suggestions];
@@ -42,11 +44,6 @@ const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, index, suggestions, set
         }
     }, [modalIsOpen, isLoaded]);
 
-    // rendered components
-    const besluitenRendered = besluiten.map((besluit) => <li key={besluit.url}>{ besluit.identificatie} </li>);
-    const documentenRendered = documenten.map((document) => <li key={document.url}>{ document.identificatie }</li>);
-    const resultaatRendered = <span title={ resultaat.toelichting }>{ resultaat.resultaattype.omschrijving }</span>;
-
     return (
         <Modal isOpen={modalIsOpen} className="modal">
             <article className="zaak-detail">
@@ -64,7 +61,11 @@ const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, index, suggestions, set
                                     <h2 className="section-title section-title--highlight">Besluiten</h2>
                                     {!besluiten
                                         ? <span>The zaak doesn't have related besluiten</span>
-                                        : <ul>{ besluitenRendered }</ul>
+                                        : <ul>
+                                            { besluiten.map(
+                                                (besluit) => <li key={besluit.url}>{ besluit.identificatie} </li>
+                                            )}
+                                        </ul>
                                     }
 
                                 </section>
@@ -72,7 +73,7 @@ const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, index, suggestions, set
                                     <h2 className="section-title section-title--highlight">Resultaat</h2>
                                     {!resultaat
                                         ? <span>The zaak doesn't have a resultaat</span>
-                                        : { resultaatRendered }
+                                        : <span title={ resultaat.toelichting }>{ resultaat.resultaattype.omschrijving }</span>
                                     }
                                 </section>
                             </div>
@@ -80,7 +81,11 @@ const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, index, suggestions, set
                                 <h2 className="section-title section-title--highlight">Documenten</h2>
                                 {!documenten
                                     ? <span>The zaak doesn't have related documenten</span>
-                                    : <ul>{ documentenRendered }</ul>
+                                    : <ul>
+                                        { documenten.map(
+                                            (document) => <li key={document.url}>{ document.identificatie }</li>
+                                        )}
+                                    </ul>
                                 }
                             </section>
 

@@ -4,7 +4,7 @@ import { ReviewItemForm } from "./review-item-form";
 import { ManagementForm } from "../../forms/management-form";
 
 
-const ReviewItemFormset = ({ error, isLoaded, items, suggestions, setSuggestions }) => {
+const ReviewItemFormset = ({ error, isLoaded, items }) => {
     const prefix = "item_reviews";
 
     //set up forms
@@ -13,8 +13,6 @@ const ReviewItemFormset = ({ error, isLoaded, items, suggestions, setSuggestions
             key={data.list_item_id}
             index={index}
             data={data}
-            suggestions={suggestions}
-            setSuggestions={setSuggestions}
         />
     );
 

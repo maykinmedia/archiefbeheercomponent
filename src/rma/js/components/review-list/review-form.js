@@ -1,7 +1,8 @@
 import React, {useState, useContext, useEffect} from "react";
 
-import {ReviewItemFormset} from "./review-item-formset";
 import {HiddenInput} from "../../forms/inputs";
+import {ReviewItemFormset} from "./review-item-formset";
+import {SuggestionContext} from "./context";
 
 const STATUS_TO_BUTTON = {
     "approved": "Approve",
@@ -36,7 +37,7 @@ const ReviewForm = ({ itemsUrl, destructionList }) => {
     }, []);
 
     return (
-        <>
+        <SuggestionContext.Provider value={{suggestions, setSuggestions}}>
             <button type="submit" className="review-create__btn btn" >{STATUS_TO_BUTTON[reviewStatus]}</button>
             <header className="review-create__header">
                 <div>
@@ -57,11 +58,9 @@ const ReviewForm = ({ itemsUrl, destructionList }) => {
                     error={error}
                     isLoaded={isLoaded}
                     items={items}
-                    suggestions={suggestions}
-                    setSuggestions={setSuggestions}
                 />
             </section>
-        </>
+        </SuggestionContext.Provider>
     )
 };
 

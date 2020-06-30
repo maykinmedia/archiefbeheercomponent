@@ -1,13 +1,14 @@
 import React, { useState, useContext } from "react";
 
 import { HiddenInput } from "../../forms/inputs";
-import { ConstantsContext } from "./context";
+import { ConstantsContext, SuggestionContext } from "./context";
 import { ZaakDetailModal } from "./zaak-detail-modal";
 
 
-const ReviewItemForm = ({ index, data, suggestions, setSuggestions }) => {
+const ReviewItemForm = ({ index, data }) => {
     const { list_item_id, zaak }  = data;
     const { prefix } = useContext(ConstantsContext);
+    const { suggestions } = useContext(SuggestionContext);
 
     const id_prefix = (field) => `id_${prefix}-${index}-${field}`;
     const name_prefix = (field) => `${prefix}-${index}-${field}`;
@@ -57,8 +58,6 @@ const ReviewItemForm = ({ index, data, suggestions, setSuggestions }) => {
                 setIsOpen={setIsOpen}
                 zaak={zaak}
                 index={index}
-                suggestions={suggestions}
-                setSuggestions={setSuggestions}
                 comment={comment}
                 setComment={setComment}
             />

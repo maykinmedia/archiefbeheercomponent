@@ -159,14 +159,16 @@ class ReviewCreateView(RoleRequiredMixin, CreateWithInlinesView):
         context = super().get_context_data(**kwargs)
 
         destruction_list = self.get_destruction_list()
-        context.update({
-            "destruction_list": destruction_list,
-            "destruction_list_json": {
-                "name": destruction_list.name,
-                "author": destruction_list.author.get_full_name(),
-                "created": timesince(destruction_list.created)
+        context.update(
+            {
+                "destruction_list": destruction_list,
+                "destruction_list_json": {
+                    "name": destruction_list.name,
+                    "author": destruction_list.author.get_full_name(),
+                    "created": timesince(destruction_list.created),
+                },
             }
-        })
+        )
         return context
 
     def form_valid(self, form):

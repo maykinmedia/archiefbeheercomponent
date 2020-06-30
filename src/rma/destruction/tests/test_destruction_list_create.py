@@ -61,12 +61,11 @@ class CreateDestructionListTests(TestCase):
         self.assertEqual(timeline_log.template, "destruction/logs/created.txt")
 
         # check that notifications were sent
-        notifications = Notification.objects.order_by("id").all()
+        notifications = Notification.objects.all()
         self.assertEqual(notifications.count(), 2)
-        notif_create, notif_assign = notifications
-        self.assertEqual(notif_create.user, destruction_list.author)
+        notif_create = notifications.get(user=destruction_list.author)
         self.assertEqual(notif_create.message, "Destruction list has been created")
-        self.assertEqual(notif_assign.user, destruction_list.assignee)
+        notif_assign = notifications.get(user=destruction_list.assignee)
         self.assertEqual(
             notif_assign.message, "You are assigned to the destruction list"
         )

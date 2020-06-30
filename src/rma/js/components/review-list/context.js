@@ -5,5 +5,9 @@ const ConstantsContext = React.createContext({
     zaakDetailUrl: "",
 });
 
+const SuggestionContext = React.createContext({
+    suggestions: [],
+    setSuggestions: undefined,
+});
 
-export { ConstantsContext };
+export { ConstantsContext, SuggestionContext };

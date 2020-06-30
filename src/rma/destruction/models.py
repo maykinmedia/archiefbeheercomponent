@@ -63,7 +63,8 @@ class DestructionList(models.Model):
         self.assign(None)
 
     def next_assignee(self, review=None):
-        first_assignee = self.assignees.order_by("order").first().assignee
+        assignees = self.assignees.order_by("order").all()
+        first_assignee = assignees[0].assignee
 
         #  after author the review must always return to the first assignee
         if self.assignee == self.author:
