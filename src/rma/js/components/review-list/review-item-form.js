@@ -7,7 +7,7 @@ import { ZaakDetailModal } from "./zaak-detail-modal";
 
 const ReviewItemForm = ({ index, data }) => {
     const { list_item_id, zaak }  = data;
-    const { prefix } = useContext(ConstantsContext);
+    const { prefix, zaakDetailPermission } = useContext(ConstantsContext);
     const { suggestions } = useContext(SuggestionContext);
 
     const id_prefix = (field) => `id_${prefix}-${index}-${field}`;
@@ -20,12 +20,20 @@ const ReviewItemForm = ({ index, data }) => {
     const actionIcon = (suggestion === "remove" ? "clear": (suggestion === "change_and_remove" ? "create" : "done"));
 
     // modal
+    const canOpen = zaakDetailPermission === "True";
     const [modalIsOpen, setIsOpen] = React.useState(false);
-    const openModal = () => setIsOpen(true);
+    const openModal = () => {
+        if (canOpen) {
+            setIsOpen(true);
+        }
+    };
 
     return (
         <>
-            <tr onClick={openModal} className={"review-item" + (disabled ? " review-item--disabled" : "")}>
+            <tr
+                onClick={openModal}
+                className={"review-item" + (disabled ? " review-item--disabled" : "") + (canOpen ? " review-item--clickable" : "")}
+            >
                 <td className="table__hidden">
                     <HiddenInput
                         id={id_prefix("destruction_list_item")}

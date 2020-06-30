@@ -23,6 +23,7 @@
             id="react-review-create"
             data-items-url="{% url 'destruction:fetch-list-items' destruction_list.id %}"
             data-zaak-detail-url="{% url 'destruction:fetch-zaak-detail' %}"
+            data-zaak-detail-permission="{{ request.user.role.can_view_case_details }}"
         >
         {#             empty on purpose - react managed #}
         </div>

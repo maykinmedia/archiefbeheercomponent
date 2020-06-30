@@ -11,12 +11,12 @@ const mount = () => {
     const node = document.getElementById('react-review-create');
     if (!node) return;
 
-    const { itemsUrl, zaakDetailUrl } = node.dataset;
+    const { itemsUrl, zaakDetailUrl, zaakDetailPermission } = node.dataset;
     const destructionList = jsonScriptToVar('destruction-list');
 
     // constants
     const prefix = "item_reviews";
-    const constants = { prefix, zaakDetailUrl };
+    const constants = { prefix, zaakDetailUrl, zaakDetailPermission };
 
     Modal.setAppElement('#react-review-create');
 
