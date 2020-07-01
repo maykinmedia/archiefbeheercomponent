@@ -1,4 +1,5 @@
-import React, {useState, useContext, useEffect} from "react";
+import React, {useState, useEffect} from "react";
+import axios from "axios";
 
 import {HiddenInput} from "../../forms/inputs";
 import {ReviewItemFormset} from "./review-item-formset";
@@ -21,8 +22,7 @@ const ReviewForm = ({ itemsUrl, destructionList }) => {
 
     // fetch list items
     useEffect(() => {
-        window.fetch(itemsUrl)
-            .then(res => res.json())
+        axios.get(itemsUrl)
             .then(
                 (result) => {
                     setIsLoaded(true);

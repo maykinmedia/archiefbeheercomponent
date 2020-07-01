@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import Modal from 'react-modal';
+import axios from "axios";
 
 import {ConstantsContext, SuggestionContext} from "./context";
 import {TextInput} from "../../forms/inputs";
@@ -28,9 +29,7 @@ const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, index, comment, setComm
     // fetch zaak details
     useEffect(() => {
         if (modalIsOpen && !isLoaded) {
-            const fullUrl = `${zaakDetailUrl}?zaak_url=${zaak.url}`;
-            window.fetch(fullUrl)
-                .then(res => res.json())
+            axios.get(zaakDetailUrl, {params: {zaak_url: zaak.url}})
                 .then(
                     (result) => {
                         setIsLoaded(true);
