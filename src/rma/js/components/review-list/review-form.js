@@ -26,8 +26,8 @@ const ReviewForm = ({ itemsUrl, destructionList }) => {
             .then(
                 (result) => {
                     setIsLoaded(true);
-                    setItems(result.items);
-                    setSuggestions(new Array(result.items.length).fill(""));
+                    setItems(result.data.items);
+                    setSuggestions(new Array(result.data.items.length).fill(""));
                 },
                 (error) => {
                     setIsLoaded(true);

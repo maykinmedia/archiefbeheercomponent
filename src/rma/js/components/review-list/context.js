@@ -1,7 +1,7 @@
 import React from "react";
 
 const ConstantsContext = React.createContext({
-    prefix: "formset",
+    formsetConfig: {},
     zaakDetailUrl: "",
     zaakDetailPermission: "",
 });

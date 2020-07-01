@@ -1,11 +1,12 @@
-import React from "react";
+import React, {useContext} from "react";
 
+import { ConstantsContext } from "./context";
 import { ReviewItemForm } from "./review-item-form";
 import { ManagementForm } from "../../forms/management-form";
 
 
 const ReviewItemFormset = ({ error, isLoaded, items }) => {
-    const prefix = "item_reviews";
+    const { formsetConfig } = useContext(ConstantsContext);
 
     //set up forms
     const forms = items.map(
@@ -27,11 +28,11 @@ const ReviewItemFormset = ({ error, isLoaded, items }) => {
     return (
         <>
             <ManagementForm
-                prefix={ prefix}
-                initial_forms="0"
+                prefix={ formsetConfig.prefix }
+                initial_forms={ formsetConfig.INITIAL_FORMS }
                 total_forms={ items.length }
-                min_num_forms="0"
-                max_num_forms="1000"
+                min_num_forms={ formsetConfig.MIN_NUM_FORMS }
+                max_num_forms={ formsetConfig.MAX_NUM_FORMS }
             />
 
             <table className="table">

@@ -13,10 +13,10 @@ const mount = () => {
 
     const { itemsUrl, zaakDetailUrl, zaakDetailPermission } = node.dataset;
     const destructionList = jsonScriptToVar('destruction-list');
+    const formsetConfig = jsonScriptToVar('formset-config');
 
     // constants
-    const prefix = "item_reviews";
-    const constants = { prefix, zaakDetailUrl, zaakDetailPermission };
+    const constants = { formsetConfig, zaakDetailUrl, zaakDetailPermission };
 
     Modal.setAppElement('#react-review-create');
 

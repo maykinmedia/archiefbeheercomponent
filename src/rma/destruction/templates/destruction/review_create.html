@@ -13,6 +13,7 @@
     {% endfor %}
 
     {{ destruction_list_json|json_script:"destruction-list" }}
+    {{ formset_config|json_script:"formset-config" }}
 
     <form action="" method="post">
         {% csrf_token %}

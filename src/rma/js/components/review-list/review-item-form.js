@@ -7,9 +7,10 @@ import { ZaakDetailModal } from "./zaak-detail-modal";
 
 const ReviewItemForm = ({ index, data }) => {
     const { list_item_id, zaak }  = data;
-    const { prefix, zaakDetailPermission } = useContext(ConstantsContext);
+    const { formsetConfig, zaakDetailPermission } = useContext(ConstantsContext);
     const { suggestions } = useContext(SuggestionContext);
 
+    const prefix = formsetConfig.prefix;
     const id_prefix = (field) => `id_${prefix}-${index}-${field}`;
     const name_prefix = (field) => `${prefix}-${index}-${field}`;
 

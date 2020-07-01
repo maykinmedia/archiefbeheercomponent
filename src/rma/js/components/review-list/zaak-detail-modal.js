@@ -33,7 +33,7 @@ const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, index, comment, setComm
                 .then(
                     (result) => {
                         setIsLoaded(true);
-                        setZaakDetail(result);
+                        setZaakDetail(result.data);
                     },
                     (error) => {
                         setIsLoaded(true);

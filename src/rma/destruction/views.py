@@ -157,6 +157,7 @@ class ReviewCreateView(RoleRequiredMixin, CreateWithInlinesView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        formset = context["inlines"][0]
 
         destruction_list = self.get_destruction_list()
         context.update(
@@ -166,6 +167,13 @@ class ReviewCreateView(RoleRequiredMixin, CreateWithInlinesView):
                     "name": destruction_list.name,
                     "author": destruction_list.author.get_full_name(),
                     "created": timesince(destruction_list.created),
+                },
+                "formset_config": {
+                    "prefix": formset.prefix,
+                    **{
+                        field.name: int(field.value())
+                        for field in formset.management_form
+                    },
                 },
             }
         )
