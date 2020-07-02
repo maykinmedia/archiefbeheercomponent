@@ -1,25 +1,35 @@
-import React from "react";
+import React, {useState} from "react";
 
 import {CheckboxInput} from "./inputs";
 
 
-const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen}) => {
-    const add = (value) => {
-        if (selectedZaaktypen.includes(value)) {
-            return;
-        }
-        const newSelected = [...selectedZaaktypen];
-        newSelected.push(value);
-        setSelectedZaaktypen(newSelected);
-    };
+const add = (value, arr, setState) => {
+    if (arr.includes(value)) {
+        return;
+    }
+    const newArr = [...arr];
+    newArr.push(value);
 
-    const remove = (value) => {
-        if (!selectedZaaktypen.includes(value)) {
-            return;
-        }
-        const newSelected = selectedZaaktypen.filter(x => x !== value);
-        setSelectedZaaktypen(newSelected);
-    };
+    setState(newArr);
+};
+
+const remove = (value, arr, setState) => {
+    if (!arr.includes(value)) {
+        return;
+    }
+    const newArr = arr.filter(x => x !== value);
+    setState(newArr);
+};
+
+
+const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen}) => {
+    const [selectedGroups, setSelectedGroups] = useState([]);
+
+    const addZaak = (value) => add(value, selectedZaaktypen, setSelectedZaaktypen);
+    const removeZaak = (value) => remove(value, selectedZaaktypen, setSelectedZaaktypen);
+
+    const addGroup = (value) => add(value, selectedGroups, setSelectedGroups);
+    const removeGroup = (value) => remove(value, selectedGroups, setSelectedGroups);
 
     const groups = zaaktypen.map( ([description, choices], index) => {
 
@@ -31,8 +41,12 @@ const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen}) =>
                         name="zaaktype-item"
                         checked={selectedZaaktypen.includes(value)}
                         onChange={(event) => {
-                            const action = event.target.checked ? add: remove;
-                            action(value);
+                            if (event.target.checked){
+                                addZaak(value);
+                            } else {
+                                removeZaak(value);
+                                removeGroup(description);
+                            }
                         }}
                     />
                     {label}
@@ -42,19 +56,26 @@ const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen}) =>
 
         return (
             <li key={index}>
+                <button type="button">+</button>
                 <label>
                     <CheckboxInput
                         initial={description}
                         name="zaaktype-group"
+                        checked={selectedGroups.includes(description)}
                         onChange={(event) => {
-                            const action = event.target.checked ? add: remove;
-                            choices.forEach(([value, label]) => action(value));
+                            if (event.target.checked) {
+                                addGroup(description);
+                                choices.forEach(([value, label]) => addZaak(value));
+                            } else {
+                                removeGroup(description);
+                                choices.forEach(([value, label]) => removeZaak(value));
+                            }
                         }}
                     />
                     {`${description}:`}
                 </label>
 
-                <ul>
+                <ul className="zaaktype-select__items">
                     {checkboxes}
                 </ul>
             </li>
@@ -62,9 +83,11 @@ const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen}) =>
     });
 
     return (
-        <ul className="destruction-create__zaaktype">
-            { groups }
-        </ul>
+        <div className="zaaktype-select">
+            <ul className="zaaktype-select__groups">
+                { groups }
+            </ul>
+        </div>
     );
 }
 

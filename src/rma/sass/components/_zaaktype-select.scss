@@ -1,0 +1,12 @@
+.zaaktype-select {
+  font-size: 0.9rem;
+
+  &__groups {
+    list-style-type: none;
+    padding-inline-start: 0;
+  }
+
+  &__items {
+    list-style-type: none;
+  }
+}
