@@ -210,10 +210,7 @@ class ReviewCreateView(RoleRequiredMixin, CreateWithInlinesView):
     def process_destruction_list(self, list_review):
         destruction_list = self.get_destruction_list()
         destruction_list.assign(destruction_list.next_assignee(list_review))
+        destruction_list.save()
 
         if not destruction_list.assignee:
-            # fixme uncomment
-            # process_destruction_list.delay(destruction_list.id)
-            pass
-
-        destruction_list.save()
+            process_destruction_list.delay(destruction_list.id)

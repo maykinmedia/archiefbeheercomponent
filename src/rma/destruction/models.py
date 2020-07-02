@@ -176,6 +176,8 @@ class DestructionListReview(models.Model):
         _("status"), blank=True, choices=ReviewStatus.choices, max_length=80
     )
 
+    logs = GenericRelation(TimelineLog)
+
     class Meta:
         verbose_name = _("destruction list review")
         verbose_name_plural = _("destruction list reviews")
