@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import { Collapse } from "react-collapse";
 
 import {CheckboxInput} from "./inputs";
 
@@ -24,6 +25,9 @@ const remove = (value, arr, setState) => {
 
 const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen}) => {
     const [selectedGroups, setSelectedGroups] = useState([]);
+    const [expandedGroups, setExpandedGroups] = useState([]);
+
+    console.log("expandedGroups=", expandedGroups);
 
     const addZaak = (value) => add(value, selectedZaaktypen, setSelectedZaaktypen);
     const removeZaak = (value) => remove(value, selectedZaaktypen, setSelectedZaaktypen);
@@ -31,7 +35,11 @@ const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen}) =>
     const addGroup = (value) => add(value, selectedGroups, setSelectedGroups);
     const removeGroup = (value) => remove(value, selectedGroups, setSelectedGroups);
 
+    const expand = (value) => add(value, expandedGroups, setExpandedGroups);
+    const collapse = (value) => remove(value, expandedGroups, setExpandedGroups);
+
     const groups = zaaktypen.map( ([description, choices], index) => {
+        const buttonIcon = (expandedGroups.includes(description) ? "-" : "+");
 
         const checkboxes = choices.map(([value, label], index) => (
             <li key={index}>
@@ -56,7 +64,14 @@ const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen}) =>
 
         return (
             <li key={index}>
-                <button type="button">+</button>
+                <button
+                    type="button"
+                    onClick={(event) => {
+                        const action = expandedGroups.includes(description) ? collapse : expand;
+                        action(description);
+                    }}
+                >{buttonIcon}
+                </button>
                 <label>
                     <CheckboxInput
                         initial={description}
@@ -75,9 +90,11 @@ const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen}) =>
                     {`${description}:`}
                 </label>
 
-                <ul className="zaaktype-select__items">
-                    {checkboxes}
-                </ul>
+                <Collapse isOpened={expandedGroups.includes(description)}>
+                    <ul className="zaaktype-select__items">
+                        {checkboxes}
+                    </ul>
+                </Collapse>
             </li>
         );
     });
