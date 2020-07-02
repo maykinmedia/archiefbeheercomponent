@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
 
-import {HiddenInput} from "../../forms/inputs";
+import {HiddenInput, TextInput} from "../../forms/inputs";
 import {ReviewItemFormset} from "./review-item-formset";
 import {SuggestionContext} from "./context";
 
@@ -12,6 +12,8 @@ const STATUS_TO_BUTTON = {
 
 
 const ReviewForm = ({ itemsUrl, destructionList }) => {
+    const [comment, setComment] = useState("");
+
     // load list items
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -45,6 +47,16 @@ const ReviewForm = ({ itemsUrl, destructionList }) => {
                     <span>{`created ${destructionList.created} ago by ${destructionList.author}`}</span>
                 </div>
             </header>
+
+            <div className="review-create__comment">
+                <label htmlFor="id_text">Comment:</label>
+                <TextInput
+                    id="id_text"
+                    name="text"
+                    initial={comment}
+                    onChange={(event) => setComment(event.target.value)}
+                />
+            </div>
 
             <HiddenInput
                 name="status"

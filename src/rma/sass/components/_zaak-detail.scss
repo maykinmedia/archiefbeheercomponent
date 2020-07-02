@@ -1,15 +1,18 @@
+@import "../lib/bem";
+
+
 .zaak-detail {
 
-  &__section {
+  @include element("section") {
     display: flex;
   }
 
-  &__item {
+  @include element("item") {
     flex: 1;
     width: 50%
   }
 
-  &__buttons {
+  @include element("buttons") {
     padding-top: 1em;
     text-align: center;
 
@@ -18,4 +21,15 @@
     }
   }
 
+  @include element("header") {
+    padding: 1em;
+  }
+
+  @include element("comment") {
+    padding: 1em;
+
+    > label {
+      margin-right: 1em;
+    }
+  }
 }

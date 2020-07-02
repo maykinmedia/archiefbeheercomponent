@@ -47,8 +47,10 @@ const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, index, comment, setComm
         <Modal isOpen={modalIsOpen} className="modal">
             <article className="zaak-detail">
                 <button onClick={closeModal} className="modal__close btn">&times;</button>
-                <h1 className="title modal__title">{zaak.identificatie}</h1>
-                <span>{`${zaak.zaaktype.omschrijving} (${zaak.zaaktype.versiedatum})`}</span>
+                <header className="zaak-detail__header">
+                    <h1 className="title modal__title">{zaak.identificatie}</h1>
+                    <span>{`${zaak.zaaktype.omschrijving} (${zaak.zaaktype.versiedatum})`}</span>
+                </header>
 
                 {error
                     ? <div>Error in fetching zaak details: {error.message}</div>
@@ -88,7 +90,7 @@ const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, index, comment, setComm
                                 }
                             </section>
 
-                            <div>
+                            <div className="zaak-detail__comment">
                                 <label htmlFor="id_comment">Comment:</label>
                                 <TextInput
                                     id="id_comment"
