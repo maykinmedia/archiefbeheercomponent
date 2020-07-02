@@ -4,47 +4,69 @@ import {CheckboxInput} from "./inputs";
 
 
 const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen}) => {
-        const groups = zaaktypen.map( ([description, choices], index) => {
+    const add = (value) => {
+        if (selectedZaaktypen.includes(value)) {
+            return;
+        }
+        const newSelected = [...selectedZaaktypen];
+        newSelected.push(value);
+        setSelectedZaaktypen(newSelected);
+    };
 
-            const checkboxes = choices.map(([value, label], index) => (
-                <li key={index}>
-                    <label>
-                        <CheckboxInput
-                            initial={value}
-                            name="zaaktype-checkbox"
-                            checked={selectedZaaktypen.includes(value)}
-                            onChange={(event) => {
-                                const shouldInclude = event.target.checked;
-                                let newSelected = [...selectedZaaktypen];
-                                if (shouldInclude && !newSelected.includes(value)) {
-                                    newSelected.push(value);
-                                } else if (!shouldInclude && newSelected.includes(value)) {
-                                    newSelected = newSelected.filter(x => x !== value);
-                                }
-                                setSelectedZaaktypen(newSelected);
-                            }}
-                        />
-                        {label}
-                    </label>
-                </li>
-            ));
+    const remove = (value) => {
+        if (!selectedZaaktypen.includes(value)) {
+            return;
+        }
+        const newSelected = selectedZaaktypen.filter(x => x !== value);
+        setSelectedZaaktypen(newSelected);
+    };
 
-            return (
-                <li key={index}>
-                    <span>{`${description}:`}</span>
-                    <ul>
-                        {checkboxes}
-                    </ul>
-                </li>
-            );
-        });
+    const groups = zaaktypen.map( ([description, choices], index) => {
+
+        const checkboxes = choices.map(([value, label], index) => (
+            <li key={index}>
+                <label>
+                    <CheckboxInput
+                        initial={value}
+                        name="zaaktype-item"
+                        checked={selectedZaaktypen.includes(value)}
+                        onChange={(event) => {
+                            const action = event.target.checked ? add: remove;
+                            action(value);
+                        }}
+                    />
+                    {label}
+                </label>
+            </li>
+        ));
 
         return (
-            <ul className="destruction-create__zaaktype">
-                { groups }
-            </ul>
+            <li key={index}>
+                <label>
+                    <CheckboxInput
+                        initial={description}
+                        name="zaaktype-group"
+                        onChange={(event) => {
+                            const action = event.target.checked ? add: remove;
+                            choices.forEach(([value, label]) => action(value));
+                        }}
+                    />
+                    {`${description}:`}
+                </label>
+
+                <ul>
+                    {checkboxes}
+                </ul>
+            </li>
         );
-    }
+    });
+
+    return (
+        <ul className="destruction-create__zaaktype">
+            { groups }
+        </ul>
+    );
+}
 
 
 export { ZaaktypeSelect };
