@@ -27,8 +27,6 @@ const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen}) =>
     const [selectedGroups, setSelectedGroups] = useState([]);
     const [expandedGroups, setExpandedGroups] = useState([]);
 
-    console.log("expandedGroups=", expandedGroups);
-
     const addZaak = (value) => add(value, selectedZaaktypen, setSelectedZaaktypen);
     const removeZaak = (value) => remove(value, selectedZaaktypen, setSelectedZaaktypen);
 
@@ -38,33 +36,38 @@ const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen}) =>
     const expand = (value) => add(value, expandedGroups, setExpandedGroups);
     const collapse = (value) => remove(value, expandedGroups, setExpandedGroups);
 
+    const ZaaktypeItem = ({index, value, label}) => (
+        <li key={index}>
+            <label>
+                <CheckboxInput
+                    initial={value}
+                    name="zaaktype-item"
+                    checked={selectedZaaktypen.includes(value)}
+                    onChange={(event) => {
+                        if (event.target.checked){
+                            addZaak(value);
+                        } else {
+                            removeZaak(value);
+                            removeGroup(description);
+                        }
+                    }}
+                />
+                {label}
+            </label>
+        </li>
+    );
+
     const groups = zaaktypen.map( ([description, choices], index) => {
         const buttonIcon = (expandedGroups.includes(description) ? "-" : "+");
 
         const checkboxes = choices.map(([value, label], index) => (
-            <li key={index}>
-                <label>
-                    <CheckboxInput
-                        initial={value}
-                        name="zaaktype-item"
-                        checked={selectedZaaktypen.includes(value)}
-                        onChange={(event) => {
-                            if (event.target.checked){
-                                addZaak(value);
-                            } else {
-                                removeZaak(value);
-                                removeGroup(description);
-                            }
-                        }}
-                    />
-                    {label}
-                </label>
-            </li>
+            <ZaaktypeItem index={index} value={value} label={label}/>
         ));
 
         return (
             <li key={index}>
                 <button
+                    className="zaaktype-select__btn"
                     type="button"
                     onClick={(event) => {
                         const action = expandedGroups.includes(description) ? collapse : expand;
