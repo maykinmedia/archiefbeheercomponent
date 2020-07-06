@@ -1,8 +1,8 @@
 import itertools
 from concurrent import futures
 
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseBadRequest, JsonResponse
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.http import HttpResponseBadRequest, HttpResponseForbidden, JsonResponse
 from django.utils import timezone
 from django.views import View
 
@@ -51,7 +51,27 @@ class FetchZakenView(LoginRequiredMixin, View):
         return JsonResponse({"zaken": zaken})
 
 
-class FetchListItemsView(LoginRequiredMixin, View):
+NO_DETAIL_ZAAK_ATTRS = ["url", "identificatie", "omschrijving"]
+NO_DETAIL_ZAAKTYPE_ATTRS = ["url", "omschrijving", "versiedatum"]
+
+
+class FetchListItemsView(LoginRequiredMixin, UserPassesTestMixin, View):
+    def test_func(self):
+        if not self.request.user.role:
+            return False
+
+        destruction_list = DestructionList.objects.get(id=self.kwargs["list_id"])
+
+        if (
+            not destruction_list.author == self.request.user
+            and not destruction_list.assignees.filter(
+                assignee=self.request.user
+            ).exists()
+        ):
+            return False
+
+        return True
+
     def get(self, request, list_id):
         destruction_list = DestructionList.objects.get(id=list_id)
 
@@ -66,9 +86,15 @@ class FetchListItemsView(LoginRequiredMixin, View):
         # TODO: what to do with removed items?
         items = []
         for item in destruction_list.items.order_by("id").all():
+            # full data
             zaak = zaken[item.zaak]
-            zaak["zaaktype"] = fetched_zaaktypen[zaak["zaaktype"]]
-            items.append({"list_item_id": item.id, "zaak": zaak})
+            zaaktype = fetched_zaaktypen[zaak["zaaktype"]]
+
+            # return only general information
+            zaak_data = {attr: zaak[attr] for attr in NO_DETAIL_ZAAK_ATTRS}
+            zaaktype_data = {attr: zaaktype[attr] for attr in NO_DETAIL_ZAAKTYPE_ATTRS}
+            zaak_data["zaaktype"] = zaaktype_data
+            items.append({"list_item_id": item.id, "zaak": zaak_data})
 
         return JsonResponse({"items": items})
 
