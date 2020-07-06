@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import { CheckboxInput } from "./inputs";
 
 
-function displayZaaktype (zaaktype) {
-    return `${zaaktype.omschrijving} (${zaaktype.versiedatum}}`;
+const displayZaaktype = (zaaktype) => {
+    return (
+        <span className="zaak-record__zaaktype" title={`versie ${zaaktype.versiedatum}`}>
+            {zaaktype.omschrijving}
+        </span>
+    );
 }
 
 
@@ -47,7 +51,7 @@ function ZakenTable({ zaken, isLoaded, error, checkboxes, setCheckboxes }) {
             </thead>
             <tbody>
                 {zaken.map(zaak => (
-                  <tr key={zaak.url}>
+                  <tr key={zaak.url} className="zaak-record">
                       <td>
                           <CheckboxInput
                               checked={checkboxes[zaak.url] || false}

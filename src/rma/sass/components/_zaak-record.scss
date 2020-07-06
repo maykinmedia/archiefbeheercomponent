@@ -1,0 +1,11 @@
+@import "../lib/bem";
+
+.zaak-record {
+
+  @include element("zaaktype") {
+    display: block;
+    padding: 0.4em 0;
+    line-height: 1.3;
+  }
+
+}
