@@ -1,0 +1,22 @@
+@import "../lib/bem";
+
+$main-content-background-color: #fefefe;
+
+.zaaktype-select {
+  font-size: 0.9rem;
+
+  @include element("groups") {
+    list-style-type: none;
+    padding-inline-start: 0;
+  }
+
+  @include element("items") {
+    list-style-type: none;
+  }
+
+  @include element("btn") {
+    border: none;
+    background-color: $main-content-background-color;
+    cursor: pointer;
+  }
+}

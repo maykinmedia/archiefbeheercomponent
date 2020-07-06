@@ -1,3 +1,4 @@
+import itertools
 from typing import List, Tuple
 
 from django import forms
@@ -10,13 +11,16 @@ from .service import get_zaaktypen
 from .tasks import process_destruction_list
 
 
-def get_zaaktype_choices() -> List[Tuple[str, str]]:
+def get_zaaktype_choices() -> List[Tuple[str, list]]:
     zaaktypen = get_zaaktypen()
     zaaktypen = sorted(zaaktypen, key=lambda x: (x["omschrijving"], x["versiedatum"]))
     choices = []
-    for zaaktype in zaaktypen:
-        label = f"{zaaktype['omschrijving']} ({zaaktype['versiedatum']})"
-        choices.append((zaaktype["url"], label))
+    for key, group in itertools.groupby(zaaktypen, lambda x: x["omschrijving"]):
+        group_choices = [
+            (z["url"], f"Version {z['versiedatum']} - {z['identificatie']}")
+            for z in group
+        ]
+        choices.append((key, group_choices))
 
     return choices
 

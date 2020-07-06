@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 
-import { SelectMultipleInput } from "./select";
 import { DateInput } from "./inputs";
 import { ZakenTable } from "./zaken-table";
 import { CreateModal} from "./create-modal";
+import { ZaaktypeSelect} from "./zaaktype-select";
 import { countObjectKeys } from "../../utils";
 
 
@@ -79,14 +79,10 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, csrftoken }) => 
                     <h2 className="section-title section-title--highlight">Filters</h2>
                     <div className="filter-group__item">
                         <label htmlFor={"id_zaaktypen"}>Zaaktypen</label>
-                        <SelectMultipleInput
-                            choices={zaaktypen}
-                            name={"zaaktypen"}
-                            id={"id_zaaktypen"}
-                            multiple={true}
-                            classes="filter-group__select"
-                            onChange={(zaaktypen) => setSelectedZaaktypen(zaaktypen)}
-                            size="10"
+                        <ZaaktypeSelect
+                            zaaktypen={zaaktypen}
+                            selectedZaaktypen={selectedZaaktypen}
+                            setSelectedZaaktypen={setSelectedZaaktypen}
                         />
                     </div>
                     <div className="filter-group__item">
