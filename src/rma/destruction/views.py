@@ -9,7 +9,11 @@ from django.views.generic import CreateView, ListView
 from django.views.generic.base import RedirectView
 
 from django_filters.views import FilterView
-from extra_views import CreateWithInlinesView, InlineFormSetFactory
+from extra_views import (
+    CreateWithInlinesView,
+    InlineFormSetFactory,
+    UpdateWithInlinesView,
+)
 from timeline_logger.models import TimelineLog
 
 from rma.accounts.mixins import RoleRequiredMixin
@@ -23,7 +27,12 @@ from .forms import (
     get_reviewer_choices,
     get_zaaktype_choices,
 )
-from .models import DestructionList, DestructionListItemReview, DestructionListReview
+from .models import (
+    DestructionList,
+    DestructionListItem,
+    DestructionListItemReview,
+    DestructionListReview,
+)
 from .tasks import process_destruction_list
 
 
@@ -200,3 +209,17 @@ class ReviewCreateView(RoleRequiredMixin, UserPassesTestMixin, CreateWithInlines
             )
 
         return response
+
+
+class DestructionListItemInline(InlineFormSetFactory):
+    model = DestructionListItem
+    fields = ["status"]
+
+
+class DestructionListDetailView(RoleRequiredMixin, UpdateWithInlinesView):
+    model = DestructionList
+    fields = ["status"]
+    inlines = [DestructionListItemInline]
+    template_name = "destruction/destructionlist_detail.html"
+    success_url = reverse_lazy("destruction:record-manager-list")
+    role_permission = "can_start_destruction"

@@ -1,0 +1,30 @@
+{% extends "master.html" %}
+
+{% block content %}
+<article class="destruction-list-detail">
+    <button type="submit" class="destruction-list-detail__btn btn">Submit</button>
+    <header class="destruction-list-detail__header">
+        <h1 class="title">{{ form.instance.name }}</h1>
+        <p>created {{ form.instance.created }}</p>
+        {% if form.instance.last_review %}
+            <p>last review is created by {{ form.instance.last_review.author }} with result {{ form.instance.last_review.status }}</p>
+        {% else %}
+            <p>the destruction list hasn't been reviewed</p>
+        {% endif %}
+    </header>
+
+    <form action="" method="post">
+        {{ form }}
+        {{ form.errors }}
+
+        {% for formset in inlines %}
+            {{ formset }}
+{#            {% if formset.errors %}#}
+{#                {{ formset.errors }}#}
+{#            {% endif %}#}
+        {% endfor %}
+    </form>
+
+</article>
+
+{% endblock %}

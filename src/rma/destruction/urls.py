@@ -3,6 +3,7 @@ from django.urls import include, path
 from .api import FetchListItemsView, FetchZaakDetail, FetchZakenView
 from .views import (
     DestructionListCreateView,
+    DestructionListDetailView,
     RecordManagerDestructionListView,
     ReviewCreateView,
     ReviewerDestructionListView,
@@ -20,6 +21,11 @@ urlpatterns = [
         "record-managers/add",
         DestructionListCreateView.as_view(),
         name="record-manager-create",
+    ),
+    path(
+        "record-managers/<pk>",
+        DestructionListDetailView.as_view(),
+        name="record-manager-detail",
     ),
     path("reviews/", ReviewerDestructionListView.as_view(), name="reviewer-list"),
     path(

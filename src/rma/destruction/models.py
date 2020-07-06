@@ -94,6 +94,9 @@ class DestructionList(models.Model):
                 message=_("You are assigned to the destruction list"),
             )
 
+    def last_review(self):
+        return self.reviews.order_by("-id").first()
+
 
 class DestructionListItem(models.Model):
     destruction_list = models.ForeignKey(
