@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import { Collapse } from "react-collapse";
 
-import {CheckboxInput} from "./inputs";
+import {CheckboxInput} from "../../forms/inputs";
 
 
 const add = (value, arr, setState) => {
