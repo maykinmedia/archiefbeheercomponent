@@ -76,7 +76,7 @@ const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen}) =>
                     }}
                 >{buttonIcon}
                 </button>
-                <label>
+                <label className="zaaktype-select__group">
                     <CheckboxInput
                         initial={description}
                         name="zaaktype-group"
@@ -93,7 +93,7 @@ const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen}) =>
                             }
                         }}
                     />
-                    {`${description}:`}
+                    {`${description}`}
                 </label>
 
                 <Collapse isOpened={expandedGroups.includes(description)}>

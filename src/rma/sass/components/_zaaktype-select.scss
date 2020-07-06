@@ -22,4 +22,9 @@ $main-content-background-color: #fefefe;
     height: 20px;
     text-align: center;
   }
+
+  @include element("group") {
+    display: inline-flex;
+    max-width: calc(100% - 24px);
+  }
 }
