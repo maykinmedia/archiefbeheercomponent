@@ -36,8 +36,8 @@ const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen}) =>
     const expand = (value) => add(value, expandedGroups, setExpandedGroups);
     const collapse = (value) => remove(value, expandedGroups, setExpandedGroups);
 
-    const ZaaktypeItem = ({index, value, label}) => (
-        <li key={index}>
+    const ZaaktypeItem = ({value, label, group}) => (
+        <li>
             <label>
                 <CheckboxInput
                     initial={value}
@@ -48,7 +48,7 @@ const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen}) =>
                             addZaak(value);
                         } else {
                             removeZaak(value);
-                            removeGroup(description);
+                            removeGroup(group);
                         }
                     }}
                 />
@@ -59,9 +59,10 @@ const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen}) =>
 
     const groups = zaaktypen.map( ([description, choices], index) => {
         const buttonIcon = (expandedGroups.includes(description) ? "-" : "+");
+        const choiceValues = choices.map(([value, label]) => value);
 
-        const checkboxes = choices.map(([value, label], index) => (
-            <ZaaktypeItem index={index} value={value} label={label}/>
+        const checkboxes = choices.map(([value, label]) => (
+            <ZaaktypeItem key={value} value={value} label={label} group={description}/>
         ));
 
         return (
@@ -83,10 +84,12 @@ const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen}) =>
                         onChange={(event) => {
                             if (event.target.checked) {
                                 addGroup(description);
-                                choices.forEach(([value, label]) => addZaak(value));
+                                const newZaaktypenSet = new Set([...selectedZaaktypen, ...choiceValues]);
+                                setSelectedZaaktypen([...newZaaktypenSet]);
                             } else {
                                 removeGroup(description);
-                                choices.forEach(([value, label]) => removeZaak(value));
+                                const newZaaktypen = selectedZaaktypen.filter((value)=> !choiceValues.includes(value));
+                                setSelectedZaaktypen(newZaaktypen);
                             }
                         }}
                     />
