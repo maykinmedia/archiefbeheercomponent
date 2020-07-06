@@ -58,7 +58,7 @@ humanize==0.5.1           # via -r requirements/ci.txt, flower
 idna==2.9                 # via -r requirements/ci.txt, requests
 imagesize==1.2.0          # via sphinx
 importlib-metadata==1.6.1  # via -r requirements/ci.txt, flake8, kombu
-isort==4.3.21             # via -r requirements/dev.in
+isort==5.0.3              # via -r requirements/dev.in
 jinja2==2.11.2            # via sphinx
 kombu==4.6.10             # via -r requirements/ci.txt, celery
 lxml==4.5.1               # via -r requirements/ci.txt, pyquery
