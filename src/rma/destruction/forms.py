@@ -106,3 +106,11 @@ class ReviewItemBaseFormset(BaseInlineFormSet):
         for instance in instances:
             if instance.suggestion:
                 instance.save()
+
+
+class ListItemForm(forms.ModelForm):
+    archiefnominatie = forms.CharField(required=False)
+    archiefactiedatum = forms.DateField(required=False)
+
+    class Meta:
+        fields = ("status", "archiefnominatie", "archiefactiedatum")

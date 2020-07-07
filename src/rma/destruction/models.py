@@ -115,7 +115,6 @@ class DestructionListItem(models.Model):
         _("status"),
         default=ListItemStatus.suggested,
         choices=ListItemStatus.choices,
-        protected=True,
         max_length=80,
     )
 

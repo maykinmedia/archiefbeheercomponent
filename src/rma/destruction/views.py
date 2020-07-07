@@ -218,8 +218,25 @@ class DestructionListItemInline(InlineFormSetFactory):
 
 class DestructionListDetailView(RoleRequiredMixin, UpdateWithInlinesView):
     model = DestructionList
-    fields = ["status"]
+    fields = []
     inlines = [DestructionListItemInline]
     template_name = "destruction/destructionlist_detail.html"
     success_url = reverse_lazy("destruction:record-manager-list")
     role_permission = "can_start_destruction"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        formset = context["inlines"][0]
+
+        context.update(
+            {
+                "formset_config": {
+                    "prefix": formset.prefix,
+                    **{
+                        field.name: int(field.value())
+                        for field in formset.management_form
+                    },
+                },
+            }
+        )
+        return context

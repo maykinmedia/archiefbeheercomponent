@@ -2,27 +2,39 @@
 
 {% block content %}
 <article class="destruction-list-detail">
+<form action="" method="post">
+    {% csrf_token %}
     <button type="submit" class="destruction-list-detail__btn btn">Submit</button>
-    <header class="destruction-list-detail__header">
-        <h1 class="title">{{ form.instance.name }}</h1>
-        <p>created {{ form.instance.created }}</p>
+        <header class="destruction-list-detail__header">
+            <h1 class="title">{{ form.instance.name }}</h1>
+            <span>created {{ form.instance.created }}</span>
+        </header>
+
         {% if form.instance.last_review %}
-            <p>last review is created by {{ form.instance.last_review.author }} with result {{ form.instance.last_review.status }}</p>
+            <p>last review is created by <strong>{{ form.instance.last_review.author }}</strong> with result <strong>{{ form.instance.last_review.get_status_display }}</strong></p>
         {% else %}
             <p>the destruction list hasn't been reviewed</p>
         {% endif %}
-    </header>
 
-    <form action="" method="post">
+
         {{ form }}
         {{ form.errors }}
 
         {% for formset in inlines %}
-            {{ formset }}
-{#            {% if formset.errors %}#}
-{#                {{ formset.errors }}#}
-{#            {% endif %}#}
+{#            {{ formset }}#}
+            {% if formset.errors %}
+                {{ formset.errors }}
+            {% endif %}
         {% endfor %}
+
+        {{ formset_config|json_script:"formset-config" }}
+
+        <div
+            id="react-destruction-list-detail"
+            data-items-url="{% url 'destruction:fetch-list-items' form.instance.id %}"
+        >
+        {#             empty on purpose - react managed #}
+        </div>
     </form>
 
 </article>
