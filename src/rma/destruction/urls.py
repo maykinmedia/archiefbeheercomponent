@@ -21,9 +21,9 @@ urlpatterns = [
         DestructionListCreateView.as_view(),
         name="record-manager-create",
     ),
-    path("reviewers/", ReviewerDestructionListView.as_view(), name="reviewer-list"),
+    path("reviews/", ReviewerDestructionListView.as_view(), name="reviewer-list"),
     path(
-        "reviewers/<destruction_list>/add",
+        "reviews/<destruction_list>/add",
         ReviewCreateView.as_view(),
         name="reviewer-create",
     ),
