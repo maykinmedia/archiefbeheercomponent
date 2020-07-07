@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 from django.urls import reverse
 
 from rma.accounts.tests.factories import UserFactory
@@ -22,18 +22,7 @@ MANAGEMENT_FORM_DATA = {
 }
 
 
-class ReviewCreateTests(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        super().setUpTestData()
-
-        cls.user = UserFactory(role__can_review_destruction=True)
-
-    def setUp(self) -> None:
-        super().setUp()
-
-        self.client.force_login(self.user)
-
+class DLMixin:
     def _create_destruction_list(self):
         destruction_list = DestructionListFactory.create()
 
@@ -45,6 +34,19 @@ class ReviewCreateTests(TestCase):
         destruction_list.save()
 
         return destruction_list
+
+
+class ReviewCreateTests(DLMixin, TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+
+        cls.user = UserFactory(role__can_review_destruction=True)
+
+    def setUp(self) -> None:
+        super().setUp()
+
+        self.client.force_login(self.user)
 
     def test_create_review_approve(self):
         destruction_list = self._create_destruction_list()
@@ -202,5 +204,32 @@ class ReviewCreateTests(TestCase):
             notification.message, f"Destruction list has been reviewed by {self.user}"
         )
 
-        #  check task call
+        # NOT called since the test transaction should not commit
+        m.assert_not_called()
+
+
+class TransactionReviewCreateTests(DLMixin, TransactionTestCase):
+    def setUp(self) -> None:
+        super().setUp()
+
+        self.user = UserFactory(role__can_review_destruction=True)
+        self.client.force_login(self.user)
+
+    @patch("rma.destruction.views.process_destruction_list.delay")
+    def test_create_review_approve_last(self, m):
+        destruction_list = self._create_destruction_list()
+
+        url = reverse("destruction:reviewer-create", args=[destruction_list.id])
+
+        data = {
+            **MANAGEMENT_FORM_DATA,
+            "author": self.user.id,
+            "destruction_list": destruction_list.id,
+            "status": ReviewStatus.approved,
+            "text": "some comment",
+        }
+
+        response = self.client.post(url, data=data)
+
+        self.assertRedirects(response, reverse("destruction:reviewer-list"))
         m.assert_called_once_with(destruction_list.id)

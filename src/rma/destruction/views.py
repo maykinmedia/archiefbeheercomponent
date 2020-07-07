@@ -190,14 +190,13 @@ class ReviewCreateView(RoleRequiredMixin, UserPassesTestMixin, CreateWithInlines
             % {"author": list_review.author},
         )
 
-        transaction.on_commit(self.process_destruction_list(list_review))
-
-        return response
-
-    def process_destruction_list(self, list_review):
         destruction_list = self.get_destruction_list()
         destruction_list.assign(destruction_list.next_assignee(list_review))
         destruction_list.save()
 
         if not destruction_list.assignee:
-            process_destruction_list.delay(destruction_list.id)
+            transaction.on_commit(
+                lambda: process_destruction_list.delay(destruction_list.id)
+            )
+
+        return response
