@@ -1,8 +1,10 @@
 from django.conf import settings
 from django.test import TestCase
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 
 from rma.accounts.tests.factories import UserFactory
+
+from .factories import DestructionListAssigneeFactory, DestructionListFactory
 
 
 class AuthCheckMixin:
@@ -48,3 +50,37 @@ class AuthTests(AuthCheckMixin, TestCase):
         self.assertLoginRequired(url)
         self.assertHasPermission(url, reviewer)
         self.assertHasNoPermission(url, other_user)
+
+
+class FetchListItemsTests(AuthCheckMixin, TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.destruction_list = DestructionListFactory.create()
+
+    def setUp(self) -> None:
+        super().setUp()
+
+        self.url = reverse_lazy(
+            "destruction:fetch-list-items", args=[self.destruction_list.id]
+        )
+
+    def test_unauthorized(self):
+        self.assertLoginRequired(self.url)
+
+    def test_without_role(self):
+        user = UserFactory.create(role=None)
+        self.assertHasNoPermission(self.url, user)
+
+    def test_author(self):
+        self.assertHasPermission(self.url, self.destruction_list.author)
+
+    def test_assignee(self):
+        assignee = DestructionListAssigneeFactory.create(
+            destruction_list=self.destruction_list
+        )
+        self.assertHasPermission(self.url, assignee.assignee)
+
+    def test_with_role_no_assignee_no_author(self):
+        user = UserFactory.create()
+        self.assertHasNoPermission(self.url, user)

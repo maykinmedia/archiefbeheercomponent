@@ -1,3 +1,5 @@
+from typing import Optional, Union
+
 from zds_client.client import ClientError
 from zgw_consumers.constants import APITypes
 from zgw_consumers.models import Service
@@ -11,15 +13,34 @@ def _client_from_url(url: str):
     return service.build_client()
 
 
+def _uuid_from_url(url: str):
+    return url.rstrip("/").split("/")[-1]
+
+
 # ZTC
-def get_zaaktypen() -> list:
-    zaaktypen = []
+def get_types_generic(type_name, dict_response=False) -> Union[list, dict]:
+    typen = []
 
     for ztc in Service.objects.filter(api_type=APITypes.ztc):
         client = ztc.build_client()
-        zaaktypen += get_paginated_results(client, "zaaktype")
+        typen += get_paginated_results(client, type_name)
 
-    return zaaktypen
+    if not dict_response:
+        return typen
+
+    return {t["url"]: t for t in typen}
+
+
+def get_zaaktypen(dict_response=False) -> list:
+    return get_types_generic("zaaktype", dict_response)
+
+
+def get_informatieobjecttypen(dict_response=False) -> list:
+    return get_types_generic("informatieobjecttype", dict_response)
+
+
+def get_besluittypen(dict_response=False) -> list:
+    return get_types_generic("besluittype", dict_response)
 
 
 # ZRC
@@ -34,7 +55,7 @@ def get_zaken(query_params=None) -> list:
         )
 
     "resolve zaaktype url"
-    fetched_zaaktypen = {zaaktype["url"]: zaaktype for zaaktype in get_zaaktypen()}
+    fetched_zaaktypen = get_zaaktypen(dict_response=True)
     for zaak in zaken:
         zaak["zaaktype"] = fetched_zaaktypen[zaak["zaaktype"]]
 
@@ -63,7 +84,7 @@ def remove_zaak(url: str) -> None:
     zrc_client = _client_from_url(url)
 
     # find and destroy related besluiten
-    zaak_uuid = url.rstrip("/").split("/")[-1]
+    zaak_uuid = _uuid_from_url(url)
     zaakbesluiten = zrc_client.list("zaakbesluit", zaak_uuid=zaak_uuid)
 
     for zaakbesluit in zaakbesluiten:
@@ -86,3 +107,68 @@ def remove_zaak(url: str) -> None:
         )
         if not oios:
             drc_client.delete("enkelvoudiginformatieobject", url=io_url)
+
+
+def get_resultaat(zaak_url: str) -> Optional[dict]:
+    zaak = fetch_zaak(zaak_url)
+    resultaat_url = zaak["resultaat"]
+
+    if not resultaat_url:
+        return None
+
+    zrc_client = _client_from_url(resultaat_url)
+    resultaat = zrc_client.retrieve("resultaat", url=resultaat_url)
+
+    resultaattype_url = resultaat["resultaattype"]
+    ztc_client = _client_from_url(resultaattype_url)
+    resultaattype = ztc_client.retrieve("resultaattype", url=resultaattype_url)
+
+    resultaat["zaak"] = zaak
+    resultaat["resultaattype"] = resultaattype
+
+    return resultaat
+
+
+# DRC
+def get_documenten(zaak_url: str) -> list:
+    zrc_client = _client_from_url(zaak_url)
+    zios = zrc_client.list("zaakinformatieobject", query_params={"zaak": zaak_url})
+
+    documenten = []
+    #  TODO async
+    for zio in zios:
+        io_url = zio["informatieobject"]
+        drc_client = _client_from_url(io_url)
+        document = drc_client.retrieve("enkelvoudiginformatieobject", url=io_url)
+        documenten.append(document)
+
+    fetched_iotypen = get_informatieobjecttypen(dict_response=True)
+
+    for document in documenten:
+        document["informatieobjecttype"] = fetched_iotypen[
+            document["informatieobjecttype"]
+        ]
+
+    return documenten
+
+
+# BRC
+def get_besluiten(zaak_url: str) -> list:
+    zrc_client = _client_from_url(zaak_url)
+    zaak_uuid = _uuid_from_url(zaak_url)
+    zaakbesluiten = zrc_client.list("zaakbesluit", zaak_uuid=zaak_uuid)
+
+    # TODO async
+    besluiten = []
+    for zaakbesluit in zaakbesluiten:
+        besluit_url = zaakbesluit["besluit"]
+        brc_client = _client_from_url(besluit_url)
+        besluit = brc_client.retrieve("besluit", url=besluit_url)
+        besluiten.append(besluit)
+
+    fetched_besluittypen = get_besluittypen(dict_response=True)
+
+    for besluit in besluiten:
+        besluit["besluittype"] = fetched_besluittypen[besluit["besluittype"]]
+
+    return besluiten

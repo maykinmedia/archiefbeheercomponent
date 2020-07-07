@@ -2,13 +2,17 @@ import itertools
 from typing import List, Tuple
 
 from django import forms
-from django.db import transaction
+from django.forms.models import BaseInlineFormSet
 
 from rma.accounts.models import User
 
-from .models import DestructionList, DestructionListAssignee, DestructionListItem
+from .models import (
+    DestructionList,
+    DestructionListAssignee,
+    DestructionListItem,
+    DestructionListReview,
+)
 from .service import get_zaaktypen
-from .tasks import process_destruction_list
 
 
 def get_zaaktype_choices() -> List[Tuple[str, list]]:
@@ -76,7 +80,7 @@ class DestructionListForm(forms.ModelForm):
             assignees
         )
         if destruction_list_assignees:
-            destruction_list.assignee = destruction_list_assignees[0].assignee
+            destruction_list.assign(destruction_list.next_assignee())
             destruction_list.save()
 
     def save(self, **kwargs):
@@ -85,9 +89,20 @@ class DestructionListForm(forms.ModelForm):
         self.save_items(destruction_list)
         self.save_assignees(destruction_list)
 
-        # TODO put it after reviews creation when reviews start existing
-        transaction.on_commit(
-            lambda: process_destruction_list.delay(destruction_list.id)
-        )
-
         return destruction_list
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = DestructionListReview
+        fields = ("text", "status")
+
+
+class ReviewItemBaseFormset(BaseInlineFormSet):
+    def save(self, commit=True):
+        # save only items with suggestions
+        instances = super().save(commit=False)
+
+        for instance in instances:
+            if instance.suggestion:
+                instance.save()

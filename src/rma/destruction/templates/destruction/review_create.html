@@ -1,0 +1,36 @@
+{% extends "master.html" %}
+{% load i18n %}
+
+
+{% block content %}
+<article class="review-create" >
+    {{ form.errors }}
+
+    {% for formset in inlines %}
+        {% if formset.errors %}
+            {{ formset.errors }}
+        {% endif %}
+    {% endfor %}
+
+    {{ destruction_list_json|json_script:"destruction-list" }}
+    {{ formset_config|json_script:"formset-config" }}
+
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.author }}
+        {{ form.destruction_list }}
+
+        <div
+            id="react-review-create"
+            data-items-url="{% url 'destruction:fetch-list-items' destruction_list.id %}"
+            data-zaak-detail-url="{% url 'destruction:fetch-zaak-detail' %}"
+            data-zaak-detail-permission="{{ request.user.role.can_view_case_details }}"
+        >
+        {#             empty on purpose - react managed #}
+        </div>
+
+    </form>
+
+</article>
+
+{% endblock %}

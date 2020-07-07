@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 
 const SelectInput = (props) => {
-    const { choices, name, id, classes, onChange, disabled } = props;
+    const { choices, name, id, classes, onChange, disabled, selected } = props;
 
+    // const [selected, setSelected] = useState(initial);
     const options = choices.map(([value, label], index) => {
         return (
             <option key={index} value={value}>{label}</option>
@@ -16,7 +17,9 @@ const SelectInput = (props) => {
             id={id}
             className={classes}
             disabled={!!disabled}
+            value={selected}
             onChange={(event) => {
+                // setSelected(event.target.value);
                 if (onChange) {
                     onChange(event.target.value)
                 }

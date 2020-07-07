@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import Modal from 'react-modal';
 
-import { CsrfInput } from "./csrf";
-import { Input, TextInput } from "./inputs";
-import { SelectInput } from "./select";
+import { CsrfInput } from "../../forms/csrf";
+import { Input, TextInput } from "../../forms/inputs";
+import { SelectInput } from "../../forms/select";
 
 
 const CreateModal = ({ checkboxes, modalIsOpen, setIsOpen, reviewers, url, csrftoken }) => {

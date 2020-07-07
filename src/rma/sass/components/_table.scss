@@ -20,4 +20,8 @@ $table-head-border-color: $color-secondary !default;
     padding: 0.3em 0.5em 0.3em 0;
     border-bottom: solid 1px $table-head-border-color;
   }
+
+  &__hidden {
+    display: none;
+  }
 }

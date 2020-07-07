@@ -7,6 +7,8 @@ from django_fsm import FSMField, transition
 from solo.models import SingletonModel
 from timeline_logger.models import TimelineLog
 
+from rma.notifications.models import Notification
+
 from .constants import ListItemStatus, ListStatus, ReviewStatus, Suggestion
 from .query import DestructionListQuerySet
 
@@ -20,7 +22,7 @@ class DestructionList(models.Model):
         verbose_name=_("author"),
         help_text=_("Creator of destruction list."),
     )
-    created = models.DateTimeField(_("created"), auto_now=True)
+    created = models.DateTimeField(_("created"), default=timezone.now)
     end = models.DateTimeField(_("end"), blank=True, null=True)
     assignee = models.ForeignKey(
         "accounts.User",
@@ -58,7 +60,39 @@ class DestructionList(models.Model):
     @transition(field=status, source=ListStatus.processing, target=ListStatus.completed)
     def complete(self):
         self.end = timezone.now()
-        self.assignee = None
+        self.assign(None)
+
+    def next_assignee(self, review=None):
+        assignees = self.assignees.order_by("order").all()
+        first_assignee = assignees[0].assignee
+
+        #  after author the review must always return to the first assignee
+        if self.assignee == self.author:
+            return first_assignee
+
+        if not review:
+            return first_assignee
+
+        if review.status == ReviewStatus.changes_requested:
+            return self.author
+
+        current_order = self.assignees.get(assignee=review.author).order
+        next_assignee = assignees.filter(order__gt=current_order).first()
+        if next_assignee:
+            return next_assignee.assignee
+
+        #  all reviews have approve status -> list is about to be completed
+        return None
+
+    def assign(self, assignee):
+        self.assignee = assignee
+
+        if assignee:
+            Notification.objects.create(
+                destruction_list=self,
+                user=assignee,
+                message=_("You are assigned to the destruction list"),
+            )
 
 
 class DestructionListItem(models.Model):
@@ -129,7 +163,7 @@ class DestructionListReview(models.Model):
         verbose_name=_("author"),
         help_text=_("User, who performed review"),
     )
-    created = models.DateTimeField(_("created"), auto_now=True)
+    created = models.DateTimeField(_("created"), default=timezone.now)
     text = models.TextField(
         _("text"),
         max_length=2000,
@@ -139,6 +173,8 @@ class DestructionListReview(models.Model):
     status = models.CharField(
         _("status"), blank=True, choices=ReviewStatus.choices, max_length=80
     )
+
+    logs = GenericRelation(TimelineLog)
 
     class Meta:
         verbose_name = _("destruction list review")

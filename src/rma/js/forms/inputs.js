@@ -40,4 +40,10 @@ const CheckboxInput = (props) => {
     return <Input type="checkbox" {...props} />;
 };
 
-export {Input, TextInput, DateInput, CheckboxInput};
+
+const HiddenInput = ({name, value}) => {
+    return <input type="hidden" name={name} defaultValue={value} />
+}
+
+
+export {Input, TextInput, DateInput, CheckboxInput, HiddenInput};

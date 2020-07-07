@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     "compat",  # Part of hijack
     "django_fsm",
     "django_filters",
+    "extra_views",
     "fsm_admin",
     "hijack",
     "hijack_admin",
