@@ -95,8 +95,7 @@ class DestructionListForm(forms.ModelForm):
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = DestructionListReview
-        fields = ("destruction_list", "author", "text", "status")
-        widgets = {"destruction_list": forms.HiddenInput, "author": forms.HiddenInput}
+        fields = ("text", "status")
 
 
 class ReviewItemBaseFormset(BaseInlineFormSet):

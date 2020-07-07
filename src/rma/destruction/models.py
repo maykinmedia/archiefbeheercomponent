@@ -22,7 +22,7 @@ class DestructionList(models.Model):
         verbose_name=_("author"),
         help_text=_("Creator of destruction list."),
     )
-    created = models.DateTimeField(_("created"), auto_now=True)
+    created = models.DateTimeField(_("created"), default=timezone.now)
     end = models.DateTimeField(_("end"), blank=True, null=True)
     assignee = models.ForeignKey(
         "accounts.User",
@@ -77,9 +77,7 @@ class DestructionList(models.Model):
             return self.author
 
         current_order = self.assignees.get(assignee=review.author).order
-        next_assignee = (
-            self.assignees.filter(order__gt=current_order).order_by("order").first()
-        )
+        next_assignee = assignees.filter(order__gt=current_order).first()
         if next_assignee:
             return next_assignee.assignee
 
@@ -93,7 +91,7 @@ class DestructionList(models.Model):
             Notification.objects.create(
                 destruction_list=self,
                 user=assignee,
-                message=f"You are assigned to the destruction list",
+                message=_("You are assigned to the destruction list"),
             )
 
 
@@ -165,7 +163,7 @@ class DestructionListReview(models.Model):
         verbose_name=_("author"),
         help_text=_("User, who performed review"),
     )
-    created = models.DateTimeField(_("created"), auto_now=True)
+    created = models.DateTimeField(_("created"), default=timezone.now)
     text = models.TextField(
         _("text"),
         max_length=2000,

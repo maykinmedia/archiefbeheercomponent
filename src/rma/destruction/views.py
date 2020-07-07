@@ -1,7 +1,7 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.db import models, transaction
-from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.utils.timesince import timesince
 from django.utils.translation import ugettext_lazy as _
@@ -15,7 +15,6 @@ from timeline_logger.models import TimelineLog
 from rma.accounts.mixins import RoleRequiredMixin
 from rma.notifications.models import Notification
 
-from .constants import ReviewStatus
 from .filters import ReviewerListFilter
 from .forms import (
     DestructionListForm,
@@ -90,12 +89,6 @@ class DestructionListCreateView(RoleRequiredMixin, CreateView):
                 destruction_list.assignees.values("assignee__id", "assignee__username")
             ),
         )
-        # send notifications
-        Notification.objects.create(
-            destruction_list=destruction_list,
-            user=destruction_list.author,
-            message=f"Destruction list has been created",
-        )
 
         return response
 
@@ -127,7 +120,7 @@ class ReviewItemInline(InlineFormSetFactory):
     formset_class = ReviewItemBaseFormset
 
 
-class ReviewCreateView(RoleRequiredMixin, CreateWithInlinesView):
+class ReviewCreateView(RoleRequiredMixin, UserPassesTestMixin, CreateWithInlinesView):
     model = DestructionListReview
     form_class = ReviewForm
     inlines = [ReviewItemInline]
@@ -135,25 +128,17 @@ class ReviewCreateView(RoleRequiredMixin, CreateWithInlinesView):
     success_url = reverse_lazy("destruction:reviewer-list")
     role_permission = "can_review_destruction"
 
+    def test_func(self):
+        destruction_list = self.get_destruction_list()
+        if not destruction_list.assignees.filter(assignee=self.request.user).exists():
+            return False
+
+        return True
+
     def get_destruction_list(self):
         list_id = self.kwargs.get("destruction_list")
-        queryset = DestructionList.objects.filter(id=list_id)
 
-        try:
-            destruction_list = queryset.get()
-        except DestructionList.DoesNotExist:
-            raise Http404(_("No destruction list found matching the query"))
-
-        return destruction_list
-
-    def get_initial(self):
-        destruction_list = self.get_destruction_list()
-        initial = {
-            "author": self.request.user,
-            "destruction_list": destruction_list,
-        }
-
-        return initial
+        return get_object_or_404(DestructionList, pk=int(list_id))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -180,11 +165,12 @@ class ReviewCreateView(RoleRequiredMixin, CreateWithInlinesView):
         return context
 
     def form_valid(self, form):
-        if "approve" in self.request.POST:
-            form.instance.status = ReviewStatus.approved
+        form.instance.author = self.request.user
+        form.instance.destruction_list = self.get_destruction_list()
 
         return super().form_valid(form)
 
+    @transaction.atomic
     def forms_valid(self, form, inlines):
         response = super().forms_valid(form, inlines)
 
@@ -200,10 +186,11 @@ class ReviewCreateView(RoleRequiredMixin, CreateWithInlinesView):
         Notification.objects.create(
             destruction_list=list_review.destruction_list,
             user=list_review.destruction_list.author,
-            message=f"Destruction list has been reviewed by {list_review.author}",
+            message=_("Destruction list has been reviewed by %(author)s")
+            % {"author": list_review.author},
         )
 
-        self.process_destruction_list(list_review)
+        transaction.on_commit(self.process_destruction_list(list_review))
 
         return response
 

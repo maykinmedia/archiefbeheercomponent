@@ -2,7 +2,7 @@ import itertools
 from concurrent import futures
 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.http import HttpResponseBadRequest, HttpResponseForbidden, JsonResponse
+from django.http import HttpResponseBadRequest, JsonResponse
 from django.utils import timezone
 from django.views import View
 
