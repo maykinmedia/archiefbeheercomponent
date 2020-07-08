@@ -6,16 +6,18 @@
     {% csrf_token %}
     <button type="submit" class="destruction-list-detail__btn btn">Submit</button>
         <header class="destruction-list-detail__header">
-            <h1 class="title">{{ form.instance.name }}</h1>
+            <h1 class="title">Lijst "{{ form.instance.name }}"</h1>
             <span>created {{ form.instance.created }}</span>
         </header>
 
-        {% if form.instance.last_review %}
-            <p>last review is created by <strong>{{ form.instance.last_review.author }}</strong> with result <strong>{{ form.instance.last_review.get_status_display }}</strong></p>
-        {% else %}
-            <p>the destruction list hasn't been reviewed</p>
-        {% endif %}
 
+        <p class="destruction-list-detail__comment">
+            {% if form.instance.last_review %}
+                Last review is created by <strong>{{ form.instance.last_review.author }}</strong> with result <strong>{{ form.instance.last_review.get_status_display }}</strong>
+            {% else %}
+                The destruction list hasn't been reviewed
+            {% endif %}
+        </p>
 
         {{ form }}
         {{ form.errors }}

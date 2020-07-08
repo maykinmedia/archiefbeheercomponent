@@ -3,18 +3,25 @@ import axios from "axios";
 
 import { ListItemForm } from "./list-item-form";
 import { ManagementForm } from "../../forms/management-form";
-import { FormsetConfigContext} from "./context";
+import { FormsetConfigContext } from "./context";
 
 
 const ListItemFormset = ({itemsUrl}) => {
     const formsetConfig = useContext(FormsetConfigContext);
 
-    console.log("formsetConfig=", formsetConfig);
-
     // load list items
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [items, setItems] = useState([]);
+
+    //set up forms
+    const forms = items.map(
+        (data, index) => <ListItemForm
+            key={data.listItem.id}
+            index={index}
+            data={data}
+        />
+    );
 
     // fetch list items
     useEffect(() => {
@@ -30,15 +37,6 @@ const ListItemFormset = ({itemsUrl}) => {
                 }
             )
     }, []);
-
-    //set up forms
-    const forms = items.map(
-        (data, index) => <ListItemForm
-            key={data.list_item_id}
-            index={index}
-            data={data}
-        />
-    );
 
     if (error) {
         return <div>Error in fetching zaken: {error.message}</div>;

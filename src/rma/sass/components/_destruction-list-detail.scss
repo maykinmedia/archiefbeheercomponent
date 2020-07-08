@@ -12,4 +12,8 @@
     right: 1em;
   }
 
+  @include element("comment") {
+    padding-left: 1em;
+  }
+
 }
