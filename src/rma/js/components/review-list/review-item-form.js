@@ -33,7 +33,7 @@ const ReviewItemForm = ({ index, data }) => {
         <>
             <tr
                 onClick={openModal}
-                className={"review-item" + (disabled ? " review-item--disabled" : "") + (canOpen ? " review-item--clickable" : "")}
+                className={"list-item" + (disabled ? " list-item--disabled" : "") + (canOpen ? " list-item--clickable" : "")}
             >
                 <td className="table__hidden">
                     <HiddenInput

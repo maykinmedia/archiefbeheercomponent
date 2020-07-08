@@ -49,7 +49,9 @@ const ListItemFormset = ({itemsUrl}) => {
     }
 
     return (
-        <>
+        <section className="list-items">
+            <h2 className="list-items__header section-title">Zaakdossiers</h2>
+
             <ManagementForm
                 prefix={ formsetConfig.prefix }
                 initial_forms={ formsetConfig.INITIAL_FORMS }
@@ -73,7 +75,7 @@ const ListItemFormset = ({itemsUrl}) => {
                     { forms }
                 </tbody>
             </table>
-        </>
+        </section>
     );
 
 };
