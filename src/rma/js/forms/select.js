@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
+
+import {RadioInput} from "./inputs";
 
 
 const SelectInput = (props) => {
@@ -60,4 +62,37 @@ const SelectMultipleInput = (props) => {
     );
 };
 
-export {SelectInput, SelectMultipleInput};
+
+const RadioSelect = (props) => {
+    const { choices, name, onChange, initialValue } = props;
+
+    const radios = choices.map( ([value, label], index) => {
+        return (
+            <li key={index}>
+                <label>
+                    <RadioInput
+                        name={name}
+                        initial={value}
+                        label={label}
+                        checked={value === initialValue}
+                        onChange={ (event) => {
+                            if (onChange) {
+                                onChange(event.target.value);
+                            }
+                        }}
+                    />
+                    {label}
+                </label>
+            </li>
+        );
+    });
+
+    return (
+        <ul>
+            { radios }
+        </ul>
+    )
+};
+
+
+export {SelectInput, SelectMultipleInput, RadioSelect};

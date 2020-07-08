@@ -14,8 +14,11 @@ const ListItemForm = ({ index, data }) => {
     const name_prefix = (field) => `${prefix}-${index}-${field}`;
 
     // modal
-    const [modalIsOpen, setIsOpen] = React.useState(false);
+    const [modalIsOpen, setIsOpen] = useState(false);
     const openModal = () => setIsOpen(true);
+
+    // archive inputs
+    const [archiefnominatie, setArchiefnominatie] = useState("");
 
     return (
         <>
@@ -43,6 +46,8 @@ const ListItemForm = ({ index, data }) => {
                 setIsOpen={setIsOpen}
                 listItem={listItem}
                 zaak={zaak}
+                archiefnominatie={archiefnominatie}
+                setArchiefnominatie={setArchiefnominatie}
             />
         </>
     );
