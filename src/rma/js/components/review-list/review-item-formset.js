@@ -11,7 +11,7 @@ const ReviewItemFormset = ({ error, isLoaded, items }) => {
     //set up forms
     const forms = items.map(
         (data, index) => <ReviewItemForm
-            key={data.list_item_id}
+            key={data.listItem.id}
             index={index}
             data={data}
         />

@@ -6,7 +6,7 @@ import { ZaakDetailModal } from "./zaak-detail-modal";
 
 
 const ReviewItemForm = ({ index, data }) => {
-    const { list_item_id, zaak }  = data;
+    const { listItem, zaak }  = data;
     const { formsetConfig, zaakDetailPermission } = useContext(ConstantsContext);
     const { suggestions } = useContext(SuggestionContext);
 
@@ -39,7 +39,7 @@ const ReviewItemForm = ({ index, data }) => {
                     <HiddenInput
                         id={id_prefix("destruction_list_item")}
                         name={name_prefix("destruction_list_item")}
-                        value={list_item_id}
+                        value={listItem.id}
                     />
                 </td>
                 <td>{ zaak.identificatie }</td>

@@ -74,6 +74,7 @@ class FetchListItemsView(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def get(self, request, list_id):
         destruction_list = DestructionList.objects.get(id=list_id)
+        last_review = destruction_list.last_review()
 
         fetched_zaaktypen = {zaaktype["url"]: zaaktype for zaaktype in get_zaaktypen()}
 
@@ -86,7 +87,21 @@ class FetchListItemsView(LoginRequiredMixin, UserPassesTestMixin, View):
         # TODO: what to do with removed items?
         items = []
         for item in destruction_list.items.order_by("id").all():
-            # full data
+            # list item data
+            list_item_data = {"id": item.id, "status": item.status}
+            if (
+                last_review
+                and last_review.item_reviews.filter(destruction_list_item=item).exists()
+            ):
+                item_review = last_review.item_reviews.get(destruction_list_item=item)
+                list_item_data.update(
+                    {
+                        "review_text": item_review.text,
+                        "review_suggestion": item_review.suggestion,
+                    }
+                )
+
+            # full zaak data
             zaak = zaken[item.zaak]
             zaaktype = fetched_zaaktypen[zaak["zaaktype"]]
 
@@ -94,7 +109,7 @@ class FetchListItemsView(LoginRequiredMixin, UserPassesTestMixin, View):
             zaak_data = {attr: zaak[attr] for attr in NO_DETAIL_ZAAK_ATTRS}
             zaaktype_data = {attr: zaaktype[attr] for attr in NO_DETAIL_ZAAKTYPE_ATTRS}
             zaak_data["zaaktype"] = zaaktype_data
-            items.append({"list_item_id": item.id, "zaak": zaak_data})
+            items.append({"listItem": list_item_data, "zaak": zaak_data})
 
         return JsonResponse({"items": items})
 
