@@ -77,7 +77,7 @@ const RadioSelect = (props) => {
                         checked={value === initialValue}
                         onChange={ (event) => {
                             if (onChange) {
-                                onChange(event.target.value);
+                                onChange(event);
                             }
                         }}
                     />

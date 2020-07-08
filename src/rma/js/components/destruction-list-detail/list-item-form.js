@@ -17,8 +17,11 @@ const ListItemForm = ({ index, data }) => {
     const [modalIsOpen, setIsOpen] = useState(false);
     const openModal = () => setIsOpen(true);
 
+    const [status, setStatus] = useState(listItem.status);
     // archive inputs
-    const [archiefnominatie, setArchiefnominatie] = useState("");
+    const [archiefnominatie, setArchiefnominatie] = useState(zaak.archiefnominatie);
+    const [archiefactiedatum, setArchiefactiedatum] = useState(zaak.archiefactiedatum);
+    const archiveInputs = {archiefnominatie, setArchiefnominatie, archiefactiedatum, setArchiefactiedatum};
 
     return (
         <>
@@ -36,9 +39,24 @@ const ListItemForm = ({ index, data }) => {
                 <td>{ zaak.identificatie }</td>
                 <td>{`${zaak.zaaktype.omschrijving} (${zaak.zaaktype.versiedatum})`}</td>
                 <td>{ zaak.omschrijving }</td>
-                <td>{ listItem.status }</td>
+                <td>{ status }
+                    <HiddenInput
+                        id={id_prefix("status")}
+                        name={name_prefix("status")}
+                        value={status}
+                    />
+                </td>
                 <td className="table__hidden">
-
+                    <HiddenInput
+                        id={id_prefix("archiefnominatie")}
+                        name={name_prefix("archiefnominatie")}
+                        value={archiefnominatie}
+                    />
+                    <HiddenInput
+                        id={id_prefix("archiefactiedatum")}
+                        name={name_prefix("archiefactiedatum")}
+                        value={archiefactiedatum}
+                    />
                 </td>
             </tr>
             <ListItemModal
@@ -46,8 +64,9 @@ const ListItemForm = ({ index, data }) => {
                 setIsOpen={setIsOpen}
                 listItem={listItem}
                 zaak={zaak}
-                archiefnominatie={archiefnominatie}
-                setArchiefnominatie={setArchiefnominatie}
+                status={status}
+                setStatus={setStatus}
+                archiveInputs={archiveInputs}
             />
         </>
     );

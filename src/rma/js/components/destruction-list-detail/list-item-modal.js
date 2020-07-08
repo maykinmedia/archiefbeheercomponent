@@ -17,11 +17,16 @@ const ARCHIEFNOMINATIE_CHOICES = [
 ];
 
 
-const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, archiefnominatie, setArchiefnominatie}) => {
+const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, status, setStatus, archiveInputs}) => {
+    const {archiefnominatie, setArchiefnominatie, archiefactiedatum, setArchiefactiedatum} = archiveInputs;
     const closeModal = () => setIsOpen(false);
-    console.log("archiefnominatie=", archiefnominatie);
 
     const title = SUGGESTION_TO_TITLE[listItem.review_suggestion || "no"];
+    const button = (
+        archiefnominatie !== zaak.archiefnominatie || archiefactiedatum !== zaak.archiefactiedatum
+            ? "Change and remove"
+            : "Remove"
+    );
 
     return (
         <Modal isOpen={modalIsOpen} className="modal">
@@ -45,18 +50,28 @@ const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, archiefnominatie
                                 name="archiefnominatie"
                                 choices={ARCHIEFNOMINATIE_CHOICES}
                                 initialValue={archiefnominatie}
-                                onChange={(value) => setArchiefnominatie(value)}
+                                onChange={(e) => setArchiefnominatie(e.target.value)}
                             />
                         </label>
 
                         <label>Archiefactiedatum
-                            <DateInput name="archiefactiedatum"/>
+                            <DateInput
+                                name="archiefactiedatum"
+                                initial={archiefactiedatum}
+                                onChange={(e) => setArchiefactiedatum(e.target.value)}
+                            />
                         </label>
 
                     </section>
 
-                    <button onClick={closeModal} className="btn">Remove</button>
-                    <button onClick={closeModal} className="btn">Change and remove</button>
+                    <button
+                        onClick={(e) => {
+                            setStatus("remove");
+                            closeModal();
+                        }}
+                        className="btn"
+                    >{button}
+                    </button>
                 </div>
             </article>
         </Modal>

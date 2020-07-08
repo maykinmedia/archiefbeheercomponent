@@ -51,7 +51,13 @@ class FetchZakenView(LoginRequiredMixin, View):
         return JsonResponse({"zaken": zaken})
 
 
-NO_DETAIL_ZAAK_ATTRS = ["url", "identificatie", "omschrijving"]
+NO_DETAIL_ZAAK_ATTRS = [
+    "url",
+    "identificatie",
+    "omschrijving",
+    "archiefnominatie",
+    "archiefactiedatum",
+]
 NO_DETAIL_ZAAKTYPE_ATTRS = ["url", "omschrijving", "versiedatum"]
 
 
