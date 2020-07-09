@@ -18,7 +18,9 @@ const ListItemForm = ({ index, data }) => {
     const [modalIsOpen, setIsOpen] = useState(false);
     const openModal = () => setIsOpen(true);
 
-    const [action, setAction] = useState("approve");
+    const [action, setAction] = useState("");
+    const extraClasses = action ? " list-item--disabled" : (listItem.review_suggestion ? " list-item--highlighted" : "");
+
     // archive inputs
     const [archiefnominatie, setArchiefnominatie] = useState(zaak.archiefnominatie);
     const [archiefactiedatum, setArchiefactiedatum] = useState(zaak.archiefactiedatum);
@@ -27,7 +29,7 @@ const ListItemForm = ({ index, data }) => {
     return (
         <>
             <tr
-                className="list-item list-item--clickable"
+                className={"list-item list-item--clickable" + extraClasses}
                 onClick={openModal}
             >
                 <td className="table__hidden">

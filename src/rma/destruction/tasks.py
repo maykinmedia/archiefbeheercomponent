@@ -10,9 +10,9 @@ from zds_client.client import ClientError
 from rma.notifications.models import Notification
 
 from ..celery import app
-from .constants import ListStatus
+from .constants import ListItemStatus, ListStatus
 from .models import DestructionList, DestructionListItem
-from .service import fetch_zaak, remove_zaak
+from .service import fetch_zaak, remove_zaak, update_zaak
 
 logger = logging.getLogger(__name__)
 
@@ -109,3 +109,51 @@ def complete_and_notify(list_id):
         message="Destruction list has been processed",
     )
     return notification.id
+
+
+def update_zaken(update_data: list):
+    if not update_data:
+        return
+
+    #     todo do chunks
+    for list_item_data in update_data:
+        update_zaak_from_list_item(list_item_data)
+
+
+def update_zaak_from_list_item(list_item_data):
+    list_item_id, archive_data = list_item_data
+
+    try:
+        list_item = DestructionListItem.objects.get(id=list_item_id)
+    except DestructionListItem.DoesNotExist:
+        logger.warning("Destruction list item %r can not be retrieved", list_item_id)
+        return
+
+    if list_item.status != ListItemStatus.removed:
+        logger.warning(
+            "Destruction list item %r has been already processed", list_item_id
+        )
+        return
+
+    try:
+        zaak = update_zaak(list_item.zaak, archive_data)
+    except ClientError as exc:
+        logger.warning(
+            "Destruction list item %r has failed during execution with error: %r",
+            list_item.id,
+            exc,
+            exc_info=True,
+        )
+
+        list_item.fail()
+        TimelineLog.objects.create(
+            content_object=list_item,
+            template="destruction/logs/item_update_failed.txt",
+            extra_data={"zaak": None, "error": traceback.format_exc()},
+        )
+    else:
+        TimelineLog.objects.create(
+            content_object=list_item,
+            template="destruction/logs/item_update_succeeded.txt",
+            extra_data={"zaak": zaak["identificatie"]},
+        )

@@ -8,6 +8,7 @@ from django.views import View
 
 from rma.accounts.mixins import RoleRequiredMixin
 
+from .constants import ListItemStatus
 from .models import ArchiveConfig, DestructionList
 from .service import (
     fetch_zaak,
@@ -90,9 +91,12 @@ class FetchListItemsView(LoginRequiredMixin, UserPassesTestMixin, View):
 
         zaken = {zaak["url"]: zaak for zaak in zaken}
 
-        # TODO: what to do with removed items?
         items = []
-        for item in destruction_list.items.order_by("id").all():
+        for item in (
+            destruction_list.items.exclude(status=ListItemStatus.removed)
+            .order_by("id")
+            .all()
+        ):
             # list item data
             list_item_data = {"id": item.id, "status": item.status}
             if (

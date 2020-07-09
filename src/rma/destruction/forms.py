@@ -6,6 +6,7 @@ from django.forms.models import BaseInlineFormSet
 
 from rma.accounts.models import User
 
+from .constants import Suggestion
 from .models import (
     DestructionList,
     DestructionListAssignee,
@@ -109,8 +110,20 @@ class ReviewItemBaseFormset(BaseInlineFormSet):
 
 
 class ListItemForm(forms.ModelForm):
+    action = forms.ChoiceField(required=False, choices=Suggestion.choices)
     archiefnominatie = forms.CharField(required=False)
-    archiefactiedatum = forms.DateField(required=False)
+    # used charfield for easy conversion into json
+    archiefactiedatum = forms.CharField(required=False)
 
     class Meta:
         fields = ("action", "archiefnominatie", "archiefactiedatum")
+
+    def save(self, commit=True):
+        list_item = super().save(commit)
+        action = self.cleaned_data.get("action")
+
+        if action:
+            list_item.remove()
+            list_item.save()
+
+        return list_item
