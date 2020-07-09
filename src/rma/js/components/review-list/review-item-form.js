@@ -3,6 +3,7 @@ import React, { useState, useContext } from "react";
 import { HiddenInput } from "../../forms/inputs";
 import { ConstantsContext, SuggestionContext } from "./context";
 import { ZaakDetailModal } from "./zaak-detail-modal";
+import { ActionIcon } from "../../forms/action-icon";
 
 
 const ReviewItemForm = ({ index, data }) => {
@@ -17,8 +18,6 @@ const ReviewItemForm = ({ index, data }) => {
     const [ comment, setComment ] = useState("");
     const suggestion = suggestions[index];
     const disabled = !!suggestion;
-
-    const actionIcon = (suggestion === "remove" ? "clear": (suggestion === "change_and_remove" ? "create" : "done"));
 
     // modal
     const canOpen = zaakDetailPermission === "True";
@@ -46,7 +45,7 @@ const ReviewItemForm = ({ index, data }) => {
                 <td>{`${zaak.zaaktype.omschrijving} (${zaak.zaaktype.versiedatum})`}</td>
                 <td>{ zaak.omschrijving }</td>
                 <td>
-                    <i className="material-icons">{actionIcon}</i>
+                    <ActionIcon action={suggestion}/>
                     <HiddenInput
                         id={id_prefix("suggestion")}
                         name={name_prefix("suggestion")}

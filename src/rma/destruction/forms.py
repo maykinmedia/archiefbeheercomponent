@@ -113,4 +113,4 @@ class ListItemForm(forms.ModelForm):
     archiefactiedatum = forms.DateField(required=False)
 
     class Meta:
-        fields = ("status", "archiefnominatie", "archiefactiedatum")
+        fields = ("action", "archiefnominatie", "archiefactiedatum")

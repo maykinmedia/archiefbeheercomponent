@@ -6,7 +6,6 @@ import {RadioSelect} from "../../forms/select";
 
 
 const SUGGESTION_TO_TITLE = {
-    "no": "No",
     "remove": "Remove",
     "change_and_remove": "Change and remove"
 };
@@ -71,11 +70,22 @@ const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, setAction, archi
                 <div className="modal__buttons">
                     <button
                         onClick={(e) => {
-                            setStatus("remove");
+                            setAction(currentAction);
                             closeModal();
                         }}
                         className="btn"
-                    >{button}
+                    >{SUGGESTION_TO_TITLE[currentAction]}
+                    </button>
+
+                    <button
+                        onClick={(e) => {
+                            setAction("");
+                            setArchiefnominatie(zaak.archiefnominatie);
+                            setArchiefactiedatum(zaak.archiefactiedatum);
+                            closeModal();
+                        }}
+                        className="btn"
+                    >Keep item
                     </button>
                 </div>
 

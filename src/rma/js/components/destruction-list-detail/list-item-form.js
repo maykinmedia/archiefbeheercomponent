@@ -3,6 +3,7 @@ import React, {useContext, useState} from "react";
 import {HiddenInput} from "../../forms/inputs";
 import {FormsetConfigContext} from "./context";
 import {ListItemModal} from "./list-item-modal";
+import {ActionIcon} from "../../forms/action-icon";
 
 
 const ListItemForm = ({ index, data }) => {
@@ -17,7 +18,7 @@ const ListItemForm = ({ index, data }) => {
     const [modalIsOpen, setIsOpen] = useState(false);
     const openModal = () => setIsOpen(true);
 
-    const [status, setStatus] = useState(listItem.status);
+    const [action, setAction] = useState("approve");
     // archive inputs
     const [archiefnominatie, setArchiefnominatie] = useState(zaak.archiefnominatie);
     const [archiefactiedatum, setArchiefactiedatum] = useState(zaak.archiefactiedatum);
@@ -39,11 +40,12 @@ const ListItemForm = ({ index, data }) => {
                 <td>{ zaak.identificatie }</td>
                 <td>{`${zaak.zaaktype.omschrijving} (${zaak.zaaktype.versiedatum})`}</td>
                 <td>{ zaak.omschrijving }</td>
-                <td>{ status }
+                <td>
+                    <ActionIcon action={action}/>
                     <HiddenInput
-                        id={id_prefix("status")}
-                        name={name_prefix("status")}
-                        value={status}
+                        id={id_prefix("action")}
+                        name={name_prefix("action")}
+                        value={action}
                     />
                 </td>
                 <td className="table__hidden">
@@ -64,8 +66,7 @@ const ListItemForm = ({ index, data }) => {
                 setIsOpen={setIsOpen}
                 listItem={listItem}
                 zaak={zaak}
-                status={status}
-                setStatus={setStatus}
+                setAction={setAction}
                 archiveInputs={archiveInputs}
             />
         </>
