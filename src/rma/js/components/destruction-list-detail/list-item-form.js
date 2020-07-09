@@ -42,6 +42,7 @@ const ListItemForm = ({ index, data }) => {
                 <td>{ zaak.identificatie }</td>
                 <td>{`${zaak.zaaktype.omschrijving} (${zaak.zaaktype.versiedatum})`}</td>
                 <td>{ zaak.omschrijving }</td>
+                <td>{ listItem.status }</td>
                 <td>
                     <ActionIcon action={action}/>
                     <HiddenInput

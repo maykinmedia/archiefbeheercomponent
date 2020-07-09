@@ -52,6 +52,7 @@ class RecordManagerTests(WebTest):
                 user=self.user,
                 message=f"notification {i}",
                 destruction_list__name=f"dl {i}",
+                destruction_list__author__role__name=f"role {i}",
             )
 
         response = self.app.get(

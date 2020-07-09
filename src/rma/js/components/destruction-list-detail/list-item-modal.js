@@ -1,11 +1,11 @@
-import React, {useContext, useState} from "react";
+import React from "react";
 import Modal from 'react-modal';
 
 import {DateInput} from "../../forms/inputs";
 import {RadioSelect} from "../../forms/select";
 
 
-const SUGGESTION_TO_TITLE = {
+const SUGGESTION_DISPLAY = {
     "remove": "Remove",
     "change_and_remove": "Change and remove"
 };
@@ -20,7 +20,6 @@ const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, setAction, archi
     const {archiefnominatie, setArchiefnominatie, archiefactiedatum, setArchiefactiedatum} = archiveInputs;
     const closeModal = () => setIsOpen(false);
 
-    const title = SUGGESTION_TO_TITLE[listItem.review_suggestion] || "No";
     const currentAction = (
         archiefnominatie !== zaak.archiefnominatie || archiefactiedatum !== zaak.archiefactiedatum
             ? "change_and_remove"
@@ -35,17 +34,21 @@ const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, setAction, archi
 
                 <div className="modal__section">
                     <section className="content-panel modal__item">
-                        <h2 className="section-title section-title--highlight">Remarks</h2>
+                        <h2 className="section-title section-title--highlight">Review</h2>
 
+                        <h3>Suggestion</h3>
+                        <p>{SUGGESTION_DISPLAY[listItem.review_suggestion] || "No"}</p>
+
+                        <h3>Remarks</h3>
                         <p>
                             { listItem.review_text ? listItem.review_text : "No comment"}
                         </p>
                     </section>
                     <section className="content-panel modal__item">
-                        <h2 className="section-title section-title--highlight">Suggestion: { title }</h2>
+                        <h2 className="section-title section-title--highlight">Change data</h2>
 
                         <div className="list-item-modal__archiefnominatie">
-                        <label>Archiefnominatie
+                            <label><strong>Archiefnominatie</strong>
                             <RadioSelect
                                 name="archiefnominatie"
                                 choices={ARCHIEFNOMINATIE_CHOICES}
@@ -56,7 +59,7 @@ const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, setAction, archi
                         </div>
 
                         <div className="list-item-modal__archiefactiedatum">
-                            <label>Archiefactiedatum
+                            <label><strong>Archiefactiedatum</strong>
                                 <DateInput
                                     name="archiefactiedatum"
                                     initial={archiefactiedatum}
@@ -74,7 +77,7 @@ const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, setAction, archi
                             closeModal();
                         }}
                         className="btn"
-                    >{SUGGESTION_TO_TITLE[currentAction]}
+                    >{SUGGESTION_DISPLAY[currentAction]}
                     </button>
 
                     <button
