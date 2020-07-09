@@ -57,8 +57,8 @@ const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, index, comment, setComm
                     : !isLoaded
                         ? <div>Loading...</div>
                         : <>
-                            <div className="zaak-detail__section">
-                                <section className="content-panel zaak-detail__item">
+                            <div className="modal__section">
+                                <section className="content-panel modal__item">
                                     <h2 className="section-title section-title--highlight">Besluiten</h2>
                                     {!besluiten
                                         ? <span>The zaak doesn't have related besluiten</span>
@@ -70,7 +70,7 @@ const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, index, comment, setComm
                                     }
 
                                 </section>
-                                <section className="content-panel zaak-detail__item">
+                                <section className="content-panel modal__item">
                                     <h2 className="section-title section-title--highlight">Resultaat</h2>
                                     {!resultaat
                                         ? <span>The zaak doesn't have a resultaat</span>
@@ -100,7 +100,7 @@ const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, index, comment, setComm
                                 />
                             </div>
 
-                            <div className="zaak-detail__buttons">
+                            <div className="modal__buttons">
                                 <button
                                     type="button"
                                     className="btn"

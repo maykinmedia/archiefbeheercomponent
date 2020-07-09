@@ -1,0 +1,21 @@
+@import "../lib/bem";
+
+
+.list-item-modal {
+
+  @include element("archiefnominatie") {
+    ul {
+      list-style-type: none;
+      padding-inline-start: 0;
+    }
+  }
+
+  @include element("archiefactiedatum") {
+    padding: 0.5em 0;
+
+    input {
+      display: block;
+      margin: 0.5em 0;
+    }
+  }
+}

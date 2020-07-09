@@ -17,34 +17,35 @@ const ARCHIEFNOMINATIE_CHOICES = [
 ];
 
 
-const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, status, setStatus, archiveInputs}) => {
+const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, setAction, archiveInputs}) => {
     const {archiefnominatie, setArchiefnominatie, archiefactiedatum, setArchiefactiedatum} = archiveInputs;
     const closeModal = () => setIsOpen(false);
 
-    const title = SUGGESTION_TO_TITLE[listItem.review_suggestion || "no"];
-    const button = (
+    const title = SUGGESTION_TO_TITLE[listItem.review_suggestion] || "No";
+    const currentAction = (
         archiefnominatie !== zaak.archiefnominatie || archiefactiedatum !== zaak.archiefactiedatum
-            ? "Change and remove"
-            : "Remove"
+            ? "change_and_remove"
+            : "remove"
     );
 
     return (
         <Modal isOpen={modalIsOpen} className="modal">
-            <article>
+            <article className="list-item-modal">
                 <button onClick={closeModal} className="modal__close btn">&times;</button>
                 <h1 className="title modal__title">{zaak.identificatie}</h1>
 
-                <div>
-                    <section className="content-panel">
+                <div className="modal__section">
+                    <section className="content-panel modal__item">
                         <h2 className="section-title section-title--highlight">Remarks</h2>
 
                         <p>
                             { listItem.review_text ? listItem.review_text : "No comment"}
                         </p>
                     </section>
-                    <section className="content-panel">
+                    <section className="content-panel modal__item">
                         <h2 className="section-title section-title--highlight">Suggestion: { title }</h2>
 
+                        <div className="list-item-modal__archiefnominatie">
                         <label>Archiefnominatie
                             <RadioSelect
                                 name="archiefnominatie"
@@ -53,17 +54,21 @@ const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, status, setStatu
                                 onChange={(e) => setArchiefnominatie(e.target.value)}
                             />
                         </label>
+                        </div>
 
-                        <label>Archiefactiedatum
-                            <DateInput
-                                name="archiefactiedatum"
-                                initial={archiefactiedatum}
-                                onChange={(e) => setArchiefactiedatum(e.target.value)}
-                            />
-                        </label>
-
+                        <div className="list-item-modal__archiefactiedatum">
+                            <label>Archiefactiedatum
+                                <DateInput
+                                    name="archiefactiedatum"
+                                    initial={archiefactiedatum}
+                                    onChange={(e) => setArchiefactiedatum(e.target.value)}
+                                />
+                            </label>
+                        </div>
                     </section>
+                </div>
 
+                <div className="modal__buttons">
                     <button
                         onClick={(e) => {
                             setStatus("remove");
@@ -73,6 +78,7 @@ const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, status, setStatu
                     >{button}
                     </button>
                 </div>
+
             </article>
         </Modal>
     );
