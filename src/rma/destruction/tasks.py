@@ -145,7 +145,6 @@ def update_zaak_from_list_item(list_item_data):
             exc_info=True,
         )
 
-        list_item.fail()
         TimelineLog.objects.create(
             content_object=list_item,
             template="destruction/logs/item_update_failed.txt",
