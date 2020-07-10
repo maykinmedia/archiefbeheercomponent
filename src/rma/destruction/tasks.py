@@ -111,17 +111,19 @@ def complete_and_notify(list_id):
     return notification.id
 
 
+@app.task
 def update_zaken(update_data: list):
     if not update_data:
         return
 
-    #     todo do chunks
-    for list_item_data in update_data:
-        update_zaak_from_list_item(list_item_data)
+    chunk_tasks = update_zaak_from_list_item.chunks(
+        update_data, settings.ZAKEN_PER_TASK
+    )
+    chunk_tasks.group()()
 
 
-def update_zaak_from_list_item(list_item_data):
-    list_item_id, archive_data = list_item_data
+@app.task
+def update_zaak_from_list_item(list_item_id: str, archive_data: dict):
 
     try:
         list_item = DestructionListItem.objects.get(id=list_item_id)

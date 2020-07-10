@@ -10,7 +10,13 @@ from rma.notifications.models import Notification
 
 from ..constants import ListItemStatus, ListStatus
 from ..models import DestructionList, DestructionListItem
-from ..tasks import complete_and_notify, process_destruction_list, process_list_item
+from ..tasks import (
+    complete_and_notify,
+    process_destruction_list,
+    process_list_item,
+    update_zaak_from_list_item,
+    update_zaken,
+)
 from .factories import DestructionListFactory, DestructionListItemFactory
 
 
@@ -98,3 +104,64 @@ class NotifyTests(TestCase):
         self.assertEqual(notification.destruction_list, destruction_list)
         self.assertEqual(notification.user, destruction_list.author)
         self.assertEqual(notification.message, "Destruction list has been processed")
+
+
+@patch("rma.destruction.tasks.update_zaak_from_list_item.chunks")
+class UpdateZakenTests(TestCase):
+    def test_update_zaken(self, mock_update_zaak):
+        destruction_list = DestructionListFactory.create()
+        list_items = DestructionListItemFactory.create_batch(
+            3, destruction_list=destruction_list, status=ListItemStatus.removed
+        )
+        archive_data = {
+            "archiefnominatie": "blijvend_bewaren",
+            "archiefactiedatum": "2020-06-17",
+        }
+        data = [[list_item.id, archive_data] for list_item in list_items]
+
+        update_zaken(data)
+
+        mock_update_zaak.assert_called_once_with(data, settings.ZAKEN_PER_TASK)
+
+
+class UpdateZaakTests(TestCase):
+    @patch(
+        "rma.destruction.tasks.update_zaak", return_value={"identificatie": "foobar"}
+    )
+    def test_update_zaak_from_list_item(self, mock_update_zaak):
+        list_item = DestructionListItemFactory.create(status=ListItemStatus.removed)
+        archive_data = {
+            "archiefnominatie": "blijvend_bewaren",
+            "archiefactiedatum": "2020-06-17",
+        }
+
+        update_zaak_from_list_item(list_item.id, archive_data)
+
+        log = TimelineLog.objects.get()
+        self.assertEqual(log.content_object, list_item)
+        self.assertEqual(log.extra_data, {"zaak": "foobar"})
+        self.assertEqual(log.template, "destruction/logs/item_update_succeeded.txt")
+
+        mock_update_zaak.assert_called_once_with(list_item.zaak, archive_data)
+
+    @patch(
+        "rma.destruction.tasks.update_zaak",
+        side_effect=ClientError("something went wrong"),
+    )
+    def test_update_zaak_from_list_item_fail(self, mock_update_zaak):
+        list_item = DestructionListItemFactory.create(status=ListItemStatus.removed)
+        archive_data = {
+            "archiefnominatie": "blijvend_bewaren",
+            "archiefactiedatum": "2020-06-17",
+        }
+
+        update_zaak_from_list_item(list_item.id, archive_data)
+
+        log = TimelineLog.objects.get()
+        self.assertEqual(log.content_object, list_item)
+        extra_data = log.extra_data
+        self.assertEqual(extra_data["zaak"], None)
+        self.assertTrue("something went wrong" in extra_data["error"])
+        self.assertEqual(log.template, "destruction/logs/item_update_failed.txt")
+
+        mock_update_zaak.assert_called_once_with(list_item.zaak, archive_data)

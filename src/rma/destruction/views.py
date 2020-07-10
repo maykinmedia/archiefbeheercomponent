@@ -243,7 +243,7 @@ class DestructionListDetailView(RoleRequiredMixin, UpdateWithInlinesView):
         )
         return context
 
-    # fixme @transaction.atomic
+    @transaction.atomic
     def forms_valid(self, form, inlines):
         response = super().forms_valid(form, inlines)
 
@@ -279,6 +279,6 @@ class DestructionListDetailView(RoleRequiredMixin, UpdateWithInlinesView):
                 update_data.append((list_item.id, archive_data))
 
         if update_data:
-            update_zaken(update_data)
+            transaction.on_commit(lambda: update_zaken.delay(update_data))
 
         return response

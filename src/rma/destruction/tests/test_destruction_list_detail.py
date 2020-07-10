@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 from django.urls import reverse
 
 from timeline_logger.models import TimelineLog
@@ -25,19 +25,14 @@ MANAGEMENT_FORM_DATA = {
 }
 
 
-class DestructionListDetailTests(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        super().setUpTestData()
-
-        cls.user = UserFactory(role__can_start_destruction=True)
-
+class DestructionListDetailTests(TransactionTestCase):
     def setUp(self) -> None:
         super().setUp()
 
+        self.user = UserFactory(role__can_start_destruction=True)
         self.client.force_login(self.user)
 
-    @patch("rma.destruction.views.update_zaken")
+    @patch("rma.destruction.views.update_zaken.delay")
     def test_update_destruction_list(self, m):
         destruction_list = DestructionListFactory.create(
             author=self.user, assignee=self.user
