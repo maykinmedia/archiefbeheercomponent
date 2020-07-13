@@ -66,6 +66,7 @@ RUN mkdir /app/media
 # copy backend build deps
 COPY --from=backend-build /usr/local/lib/python3.8 /usr/local/lib/python3.8
 COPY --from=backend-build /usr/local/bin/uwsgi /usr/local/bin/uwsgi
+COPY --from=backend-build /usr/local/bin/celery /usr/local/bin/celery
 COPY --from=backend-build /app/src/ /app/src/
 
 # copy frontend build statics
