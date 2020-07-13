@@ -48,5 +48,23 @@ jobs:
       before_script: skip
       script: black --check src --diff
 
+    - stage: "Docker image"
+      name: Docker image build
+      services:
+        - docker
+      install: skip
+      script: docker build .
+      deploy:
+        - provider: script
+          script: bin/docker_push.sh latest
+          on:
+            branch: master
+
+        - provider: script
+          script: bin/docker_push.sh $TRAVIS_TAG
+          on:
+            tags: true
+
+
 after_success:
   - codecov
