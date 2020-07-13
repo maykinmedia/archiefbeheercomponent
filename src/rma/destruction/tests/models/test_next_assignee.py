@@ -19,7 +19,9 @@ class NextAssigneeTests(TestCase):
     def test_after_first_approve_review(self):
         destruction_list, assignees = self.create_list_with_assignees()
         review = DestructionListReviewFactory.create(
-            status=ReviewStatus.approved, author=assignees[0].assignee
+            status=ReviewStatus.approved,
+            author=assignees[0].assignee,
+            destruction_list=destruction_list,
         )
 
         next_assignee = destruction_list.next_assignee(review)
@@ -29,7 +31,9 @@ class NextAssigneeTests(TestCase):
     def test_after_last_approve_review(self):
         destruction_list, assignees = self.create_list_with_assignees()
         review = DestructionListReviewFactory.create(
-            status=ReviewStatus.approved, author=assignees[1].assignee
+            status=ReviewStatus.approved,
+            author=assignees[1].assignee,
+            destruction_list=destruction_list,
         )
 
         next_assignee = destruction_list.next_assignee(review)
@@ -39,7 +43,9 @@ class NextAssigneeTests(TestCase):
     def test_after_change_review(self):
         destruction_list, assignees = self.create_list_with_assignees()
         review = DestructionListReviewFactory.create(
-            status=ReviewStatus.changes_requested, author=assignees[0].assignee
+            status=ReviewStatus.changes_requested,
+            author=assignees[0].assignee,
+            destruction_list=destruction_list,
         )
 
         next_assignee = destruction_list.next_assignee(review)

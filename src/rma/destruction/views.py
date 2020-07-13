@@ -9,22 +9,33 @@ from django.views.generic import CreateView, ListView
 from django.views.generic.base import RedirectView
 
 from django_filters.views import FilterView
-from extra_views import CreateWithInlinesView, InlineFormSetFactory
+from extra_views import (
+    CreateWithInlinesView,
+    InlineFormSetFactory,
+    UpdateWithInlinesView,
+)
 from timeline_logger.models import TimelineLog
 
 from rma.accounts.mixins import RoleRequiredMixin
 from rma.notifications.models import Notification
 
+from .constants import ListItemStatus, Suggestion
 from .filters import ReviewerListFilter
 from .forms import (
     DestructionListForm,
+    ListItemForm,
     ReviewForm,
     ReviewItemBaseFormset,
     get_reviewer_choices,
     get_zaaktype_choices,
 )
-from .models import DestructionList, DestructionListItemReview, DestructionListReview
-from .tasks import process_destruction_list
+from .models import (
+    DestructionList,
+    DestructionListItem,
+    DestructionListItemReview,
+    DestructionListReview,
+)
+from .tasks import process_destruction_list, update_zaken
 
 
 class EnterView(LoginRequiredMixin, RedirectView):
@@ -198,5 +209,76 @@ class ReviewCreateView(RoleRequiredMixin, UserPassesTestMixin, CreateWithInlines
             transaction.on_commit(
                 lambda: process_destruction_list.delay(destruction_list.id)
             )
+
+        return response
+
+
+class DestructionListItemInline(InlineFormSetFactory):
+    model = DestructionListItem
+    form_class = ListItemForm
+
+
+class DestructionListDetailView(RoleRequiredMixin, UpdateWithInlinesView):
+    model = DestructionList
+    fields = []
+    inlines = [DestructionListItemInline]
+    template_name = "destruction/destructionlist_detail.html"
+    success_url = reverse_lazy("destruction:record-manager-list")
+    role_permission = "can_start_destruction"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        formset = context["inlines"][0]
+
+        context.update(
+            {
+                "formset_config": {
+                    "prefix": formset.prefix,
+                    **{
+                        field.name: int(field.value())
+                        for field in formset.management_form
+                    },
+                },
+            }
+        )
+        return context
+
+    @transaction.atomic
+    def forms_valid(self, form, inlines):
+        response = super().forms_valid(form, inlines)
+
+        destruction_list = form.instance
+
+        # log
+        TimelineLog.log_from_request(
+            self.request,
+            destruction_list,
+            template="destruction/logs/updated.txt",
+            n_items=destruction_list.items.filter(
+                status=ListItemStatus.removed
+            ).count(),
+        )
+
+        # assign a reviewer
+        destruction_list.assign(destruction_list.next_assignee())
+        destruction_list.save()
+
+        # update zaken
+        update_data = []
+        list_item_formset = inlines[0]
+        for list_item_form in list_item_formset:
+            list_item = list_item_form.instance
+            action = list_item_form.cleaned_data.get("action")
+            if action == Suggestion.change_and_remove:
+                archive_data = {
+                    "archiefnominatie": list_item_form.cleaned_data["archiefnominatie"],
+                    "archiefactiedatum": list_item_form.cleaned_data[
+                        "archiefactiedatum"
+                    ],
+                }
+                update_data.append((list_item.id, archive_data))
+
+        if update_data:
+            transaction.on_commit(lambda: update_zaken.delay(update_data))
 
         return response

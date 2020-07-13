@@ -40,10 +40,13 @@ const CheckboxInput = (props) => {
     return <Input type="checkbox" {...props} />;
 };
 
+const RadioInput = (props) => {
+    return <Input type="radio" {...props} />;
+};
 
 const HiddenInput = ({name, value}) => {
     return <input type="hidden" name={name} defaultValue={value} />
 }
 
 
-export {Input, TextInput, DateInput, CheckboxInput, HiddenInput};
+export {Input, TextInput, DateInput, CheckboxInput, RadioInput, HiddenInput};

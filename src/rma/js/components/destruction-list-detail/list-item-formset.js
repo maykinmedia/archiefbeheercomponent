@@ -1,21 +1,42 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect, useState} from "react";
+import axios from "axios";
 
-import { ConstantsContext } from "./context";
-import { ReviewItemForm } from "./review-item-form";
+import { ListItemForm } from "./list-item-form";
 import { ManagementForm } from "../../forms/management-form";
+import { FormsetConfigContext } from "./context";
 
 
-const ReviewItemFormset = ({ error, isLoaded, items }) => {
-    const { formsetConfig } = useContext(ConstantsContext);
+const ListItemFormset = ({itemsUrl}) => {
+    const formsetConfig = useContext(FormsetConfigContext);
+
+    // load list items
+    const [error, setError] = useState(null);
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [items, setItems] = useState([]);
 
     //set up forms
     const forms = items.map(
-        (data, index) => <ReviewItemForm
+        (data, index) => <ListItemForm
             key={data.listItem.id}
             index={index}
             data={data}
         />
     );
+
+    // fetch list items
+    useEffect(() => {
+        axios.get(itemsUrl)
+            .then(
+                (result) => {
+                    setIsLoaded(true);
+                    setItems(result.data.items);
+                },
+                (error) => {
+                    setIsLoaded(true);
+                    setError(error);
+                }
+            )
+    }, []);
 
     if (error) {
         return <div>Error in fetching zaken: {error.message}</div>;
@@ -26,7 +47,9 @@ const ReviewItemFormset = ({ error, isLoaded, items }) => {
     }
 
     return (
-        <>
+        <section className="list-items">
+            <h2 className="list-items__header section-title">Zaakdossiers</h2>
+
             <ManagementForm
                 prefix={ formsetConfig.prefix }
                 initial_forms={ formsetConfig.INITIAL_FORMS }
@@ -42,18 +65,19 @@ const ReviewItemFormset = ({ error, isLoaded, items }) => {
                         <th className="table__header">Identificatie</th>
                         <th className="table__header">Zaaktype</th>
                         <th className="table__header">Omschrijving</th>
+                        <th className="table__header">Status</th>
                         <th className="table__header">Actie</th>
-                        <th className="table__hidden">Comment</th>
+                        <th className="table__hidden">Archief</th>
                     </tr>
                 </thead>
                 <tbody>
                     { forms }
                 </tbody>
             </table>
-        </>
+        </section>
     );
 
 };
 
 
-export { ReviewItemFormset };
+export { ListItemFormset };

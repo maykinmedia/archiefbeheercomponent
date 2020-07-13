@@ -71,9 +71,15 @@ def get_zaken(query_params=None) -> list:
     return zaken
 
 
-def fetch_zaak(url) -> dict:
+def fetch_zaak(url: str) -> dict:
     client = _client_from_url(url)
     response = client.retrieve("zaak", url=url)
+    return response
+
+
+def update_zaak(url: str, data: dict) -> dict:
+    client = _client_from_url(url)
+    response = client.partial_update("zaak", url=url, data=data)
     return response
 
 

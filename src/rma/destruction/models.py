@@ -94,6 +94,9 @@ class DestructionList(models.Model):
                 message=_("You are assigned to the destruction list"),
             )
 
+    def last_review(self):
+        return self.reviews.order_by("-id").first()
+
 
 class DestructionListItem(models.Model):
     destruction_list = models.ForeignKey(
@@ -210,6 +213,7 @@ class DestructionListItemReview(models.Model):
     class Meta:
         verbose_name = _("destruction list item review")
         verbose_name_plural = _("destruction list item reviews")
+        unique_together = ("destruction_list_review", "destruction_list_item")
 
     def __str__(self):
         return f"({self.destruction_list_review}) - ({self.destruction_list_item})"

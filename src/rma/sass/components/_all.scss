@@ -13,14 +13,16 @@
 @import "log-item";
 
 @import "destruction-list";
+@import "destruction-list-detail";
 @import "destruction-list-preview";
 @import "destruction-create";
 @import "filter-group";
+@import "list-item";
+@import "list-item-modal";
+@import "list-items";
 @import "notifications-list";
 @import "reviewer-list";
 @import "review-create";
-@import "review-item";
-@import "review-items";
 @import "zaaktype-select";
 @import "zaak-detail";
 @import "zaak-record";

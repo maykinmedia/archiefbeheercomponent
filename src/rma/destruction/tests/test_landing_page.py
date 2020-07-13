@@ -34,7 +34,9 @@ class RecordManagerTests(WebTest):
             user=self.user, message="foo!", destruction_list__name="dl 1"
         )
         # notification for other user
-        NotificationFactory.create(message="bar!", destruction_list__name="dl 2")
+        NotificationFactory.create(
+            message="bar!", destruction_list__name="dl 2", user__role__name="other role"
+        )
 
         response = self.app.get(
             reverse("destruction:record-manager-list"), user=self.user
@@ -50,6 +52,7 @@ class RecordManagerTests(WebTest):
                 user=self.user,
                 message=f"notification {i}",
                 destruction_list__name=f"dl {i}",
+                destruction_list__author__role__name=f"role {i}",
             )
 
         response = self.app.get(

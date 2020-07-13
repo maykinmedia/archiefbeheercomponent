@@ -18,7 +18,7 @@
         {% for object in object_list %}
             <div class="destruction-list-preview destruction-list-preview--status-{{ object.status }} ">
 
-                <a class="destruction-list-preview__title" href="#">{{ object.name }}</a>
+                <a class="destruction-list-preview__title" href="{% url 'destruction:record-manager-detail' object.id %}">{{ object.name }}</a>
 
                 <span class="destruction-list-preview__indicators">
 

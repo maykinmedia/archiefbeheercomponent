@@ -1,0 +1,19 @@
+@import "../lib/bem";
+
+
+.destruction-list-detail {
+
+  @include element("header") {
+    text-align: center;
+  }
+
+  @include element("btn") {
+    position: absolute;
+    right: 1em;
+  }
+
+  @include element("review") {
+    padding-left: 1em;
+  }
+
+}

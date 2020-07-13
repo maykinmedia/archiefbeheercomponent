@@ -3,10 +3,11 @@ import React, { useState, useContext } from "react";
 import { HiddenInput } from "../../forms/inputs";
 import { ConstantsContext, SuggestionContext } from "./context";
 import { ZaakDetailModal } from "./zaak-detail-modal";
+import { ActionIcon } from "../../forms/action-icon";
 
 
 const ReviewItemForm = ({ index, data }) => {
-    const { list_item_id, zaak }  = data;
+    const { listItem, zaak }  = data;
     const { formsetConfig, zaakDetailPermission } = useContext(ConstantsContext);
     const { suggestions } = useContext(SuggestionContext);
 
@@ -17,8 +18,6 @@ const ReviewItemForm = ({ index, data }) => {
     const [ comment, setComment ] = useState("");
     const suggestion = suggestions[index];
     const disabled = !!suggestion;
-
-    const actionIcon = (suggestion === "remove" ? "clear": (suggestion === "change_and_remove" ? "create" : "done"));
 
     // modal
     const canOpen = zaakDetailPermission === "True";
@@ -33,20 +32,20 @@ const ReviewItemForm = ({ index, data }) => {
         <>
             <tr
                 onClick={openModal}
-                className={"review-item" + (disabled ? " review-item--disabled" : "") + (canOpen ? " review-item--clickable" : "")}
+                className={"list-item" + (disabled ? " list-item--disabled" : "") + (canOpen ? " list-item--clickable" : "")}
             >
                 <td className="table__hidden">
                     <HiddenInput
                         id={id_prefix("destruction_list_item")}
                         name={name_prefix("destruction_list_item")}
-                        value={list_item_id}
+                        value={listItem.id}
                     />
                 </td>
                 <td>{ zaak.identificatie }</td>
                 <td>{`${zaak.zaaktype.omschrijving} (${zaak.zaaktype.versiedatum})`}</td>
                 <td>{ zaak.omschrijving }</td>
                 <td>
-                    <i className="material-icons">{actionIcon}</i>
+                    <ActionIcon action={suggestion}/>
                     <HiddenInput
                         id={id_prefix("suggestion")}
                         name={name_prefix("suggestion")}

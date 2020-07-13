@@ -3,7 +3,7 @@ import factory.fuzzy
 
 from rma.accounts.tests.factories import UserFactory
 
-from ..constants import ReviewStatus
+from ..constants import ReviewStatus, Suggestion
 
 
 class DestructionListFactory(factory.django.DjangoModelFactory):
@@ -30,6 +30,16 @@ class DestructionListReviewFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = "destruction.DestructionListReview"
+
+
+class DestructionListItemReviewFactory(factory.django.DjangoModelFactory):
+    destruction_list_item = factory.SubFactory(DestructionListItemFactory)
+    destruction_list_review = factory.SubFactory(DestructionListReviewFactory)
+    text = factory.Faker("text")
+    suggestion = factory.fuzzy.FuzzyChoice(choices=Suggestion.values)
+
+    class Meta:
+        model = "destruction.DestructionListItemReview"
 
 
 class DestructionListAssigneeFactory(factory.django.DjangoModelFactory):

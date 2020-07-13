@@ -63,8 +63,8 @@ const ReviewForm = ({ itemsUrl, destructionList }) => {
                 value={reviewStatus}
             />
 
-            <section className="review-items">
-                <h2 className="review-items__header section-title">Zaakdossiers</h2>
+            <section className="list-items">
+                <h2 className="list-items__header section-title">Zaakdossiers</h2>
 
                 <ReviewItemFormset
                     error={error}

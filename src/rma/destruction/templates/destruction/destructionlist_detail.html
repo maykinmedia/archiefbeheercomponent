@@ -1,0 +1,48 @@
+{% extends "master.html" %}
+
+{% block content %}
+<article class="destruction-list-detail">
+<form action="" method="post">
+    {% csrf_token %}
+    <button type="submit" class="destruction-list-detail__btn btn">Submit</button>
+        <header class="destruction-list-detail__header">
+            <h1 class="title">Lijst "{{ form.instance.name }}"</h1>
+            <span>created {{ form.instance.created }}</span>
+        </header>
+
+
+        <div class="destruction-list-detail__review">
+
+            <h2 class="section-title">Last review</h2>
+            {% if form.instance.last_review %}
+                <p>Author: {{ form.instance.last_review.author.get_full_name }}</p>
+                <p>Result: {{ form.instance.last_review.get_status_display }}
+                <p>Comment: {{ form.instance.last_review.text|default:"No commment" }}</p>
+            {% else %}
+                <p>The destruction list hasn't been reviewed</p>
+            {% endif %}
+
+        </div>
+
+        {{ form }}
+        {{ form.errors }}
+
+        {% for formset in inlines %}
+            {% if formset.errors %}
+                {{ formset.errors }}
+            {% endif %}
+        {% endfor %}
+
+        {{ formset_config|json_script:"formset-config" }}
+
+        <div
+            id="react-destruction-list-detail"
+            data-items-url="{% url 'destruction:fetch-list-items' form.instance.id %}"
+        >
+        {#             empty on purpose - react managed #}
+        </div>
+    </form>
+
+</article>
+
+{% endblock %}

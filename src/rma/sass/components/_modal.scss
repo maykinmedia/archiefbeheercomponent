@@ -1,3 +1,4 @@
+@import "../lib/bem";
 @import "../lib/colors";
 
 .modal {
@@ -12,8 +13,26 @@
     outline: none;
     padding: 20px;
 
-  &__close {
+  @include element("close") {
     float: right;
+  }
+
+  @include element("section") {
+    display: flex;
+  }
+
+  @include element("item") {
+    flex: 1;
+    width: 50%
+  }
+
+  @include element("buttons") {
+    padding-top: 1em;
+    text-align: center;
+
+    .btn + .btn {
+      margin-left: 1em;
+    }
   }
 
 }
