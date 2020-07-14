@@ -1,8 +1,9 @@
 from unittest.mock import patch
 
-from django.test import TestCase, TransactionTestCase
+from django.test import TestCase
 from django.urls import reverse
 
+from django_capture_on_commit_callbacks import capture_on_commit_callbacks
 from timeline_logger.models import TimelineLog
 
 from rma.accounts.tests.factories import UserFactory
@@ -25,7 +26,7 @@ MANAGEMENT_FORM_DATA = {
 }
 
 
-class DestructionListDetailTests(TransactionTestCase):
+class DestructionListDetailTests(TestCase):
     def setUp(self) -> None:
         super().setUp()
 
@@ -64,7 +65,8 @@ class DestructionListDetailTests(TransactionTestCase):
         }
         data.update(MANAGEMENT_FORM_DATA)
 
-        response = self.client.post(url, data=data)
+        with capture_on_commit_callbacks(execute=True) as callbacks:
+            response = self.client.post(url, data=data)
 
         self.assertRedirects(response, reverse("destruction:record-manager-list"))
 
@@ -96,6 +98,7 @@ class DestructionListDetailTests(TransactionTestCase):
         )
 
         # check starting update task
+        self.assertEqual(len(callbacks), 1)
         m.assert_called_once_with(
             [
                 (
