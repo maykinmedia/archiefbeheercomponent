@@ -32,6 +32,12 @@ system actions.
 
 The RMA supports all backends implementing the 1.0.x `API's voor Zaakgericht Werken`_.
 
+.. toctree::
+    :maxdepth: 3
+
+    configuration
+
+
 Indices and tables
 ==================
 
