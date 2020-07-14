@@ -79,7 +79,10 @@ def fetch_zaak(url: str) -> dict:
 
 def update_zaak(url: str, data: dict) -> dict:
     client = _client_from_url(url)
-    response = client.partial_update("zaak", url=url, data=data)
+    headers = {"X-Audit-Toelichting": "Update in RMA for destruction list"}
+    response = client.partial_update(
+        "zaak", url=url, data=data, request_kwargs={"headers": headers}
+    )
     return response
 
 
