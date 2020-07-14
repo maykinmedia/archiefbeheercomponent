@@ -32,7 +32,7 @@ class AuthCheckMixin:
         self.client.logout()
 
 
-class AuthTests(AuthCheckMixin, TestCase):
+class LandingTests(AuthCheckMixin, TestCase):
     def test_record_manager_landing_page(self):
         url = reverse("destruction:record-manager-list")
         record_manager = UserFactory.create(role__can_start_destruction=True)
@@ -82,5 +82,35 @@ class FetchListItemsTests(AuthCheckMixin, TestCase):
         self.assertHasPermission(self.url, assignee.assignee)
 
     def test_with_role_no_assignee_no_author(self):
+        user = UserFactory.create()
+        self.assertHasNoPermission(self.url, user)
+
+
+class DestructionListDetailTests(AuthCheckMixin, TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.destruction_list = DestructionListFactory.create()
+
+    def setUp(self) -> None:
+        super().setUp()
+
+        self.url = reverse_lazy(
+            "destruction:record-manager-detail", args=[self.destruction_list.id]
+        )
+
+    def test_unauthorized(self):
+        self.assertLoginRequired(self.url)
+
+    def test_author(self):
+        self.assertHasPermission(self.url, self.destruction_list.author)
+
+    def test_assignee(self):
+        assignee = DestructionListAssigneeFactory.create(
+            destruction_list=self.destruction_list
+        )
+        self.assertHasPermission(self.url, assignee.assignee)
+
+    def test_no_assignee_no_author(self):
         user = UserFactory.create()
         self.assertHasNoPermission(self.url, user)

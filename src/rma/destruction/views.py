@@ -16,7 +16,7 @@ from extra_views import (
 )
 from timeline_logger.models import TimelineLog
 
-from rma.accounts.mixins import RoleRequiredMixin
+from rma.accounts.mixins import AuthorOrAssigneeRequiredMixin, RoleRequiredMixin
 from rma.notifications.models import Notification
 
 from .constants import ListItemStatus, Suggestion
@@ -142,6 +142,10 @@ class ReviewCreateView(RoleRequiredMixin, UserPassesTestMixin, CreateWithInlines
     role_permission = "can_review_destruction"
 
     def test_func(self):
+        allowed = super().test_func()
+        if allowed is False:
+            return allowed
+
         destruction_list = self.get_destruction_list()
         if not destruction_list.assignees.filter(assignee=self.request.user).exists():
             return False
@@ -220,17 +224,20 @@ class DestructionListItemInline(InlineFormSetFactory):
     form_class = ListItemForm
 
 
-class DestructionListDetailView(RoleRequiredMixin, UpdateWithInlinesView):
+class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlinesView):
     model = DestructionList
     fields = []
     inlines = [DestructionListItemInline]
     template_name = "destruction/destructionlist_detail.html"
     success_url = reverse_lazy("destruction:record-manager-list")
-    role_permission = "can_start_destruction"
+
+    def get_destruction_list(self):
+        return self.get_object()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         formset = context["inlines"][0]
+        dl = self.get_object()
 
         context.update(
             {

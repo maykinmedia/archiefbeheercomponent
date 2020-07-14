@@ -1,13 +1,13 @@
 import itertools
 
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.utils import timezone
 from django.views import View
 
 from zgw_consumers.concurrent import parallel
 
-from rma.accounts.mixins import RoleRequiredMixin
+from rma.accounts.mixins import AuthorOrAssigneeRequiredMixin, RoleRequiredMixin
 
 from .constants import ListItemStatus
 from .models import ArchiveConfig, DestructionList
@@ -63,22 +63,9 @@ NO_DETAIL_ZAAK_ATTRS = [
 NO_DETAIL_ZAAKTYPE_ATTRS = ["url", "omschrijving", "versiedatum"]
 
 
-class FetchListItemsView(LoginRequiredMixin, UserPassesTestMixin, View):
-    def test_func(self):
-        if not self.request.user.role:
-            return False
-
-        destruction_list = DestructionList.objects.get(id=self.kwargs["list_id"])
-
-        if (
-            not destruction_list.author == self.request.user
-            and not destruction_list.assignees.filter(
-                assignee=self.request.user
-            ).exists()
-        ):
-            return False
-
-        return True
+class FetchListItemsView(AuthorOrAssigneeRequiredMixin, View):
+    def get_destruction_list(self):
+        return DestructionList.objects.get(id=self.kwargs["list_id"])
 
     def get(self, request, list_id):
         destruction_list = DestructionList.objects.get(id=list_id)
