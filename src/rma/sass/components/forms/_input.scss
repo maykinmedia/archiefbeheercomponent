@@ -105,4 +105,8 @@
 .input__label .label {
   font-size: 0.9rem;
   color: $color-text--light;
+
+  &--optional {
+    margin-left: 0.2em;
+  }
 }

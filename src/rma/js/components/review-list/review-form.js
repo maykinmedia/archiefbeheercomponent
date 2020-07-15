@@ -44,16 +44,18 @@ const ReviewForm = ({ itemsUrl, destructionList }) => {
             <header className="review-create__header">
                 <div>
                     <h1 className="title">{`Lijst "${destructionList.name}"`}</h1>
-                    <span>{`created ${destructionList.created} ago by ${destructionList.author}`}</span>
+                    <span className="review-create__list-details">
+                        {`${destructionList.created} geleden aangemaakt door ${destructionList.author}`}
+                    </span>
                 </div>
             </header>
 
             <div className="review-create__comment">
-                <label htmlFor="id_text">Comment:</label>
                 <TextInput
-                    id="id_text"
                     name="text"
+                    id="id_text"
                     initial={comment}
+                    label="Feedback"
                     onChange={(event) => setComment(event.target.value)}
                 />
             </div>
