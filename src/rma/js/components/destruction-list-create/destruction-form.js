@@ -64,18 +64,18 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, csrftoken }) => 
         <>
             <header className="destruction-create__header">
                 <h1 className="title destruction-create__title">Vernietigingslijst opstellen</h1>
-                <nav className="title destruction-create__nav">
+                <nav className="destruction-create__nav">
                     <button
                         type="button"
                         className="btn"
                         onClick={openModal}
                         disabled={!selectedCount}
-                    >{selectedCount} zaken geselecteerd
-                    </button>
+                    >Aanmaken</button>
+                    <div>{selectedCount} zaken geselecteerd</div>
                 </nav>
             </header>
             <div className="destruction-create__content">
-                <aside className="destruction-create__filters content-panel filter-group">
+                <aside className="destruction-create__filters filter-group">
                     <h2 className="section-title section-title--highlight">Filters</h2>
                     <div className="filter-group__item">
                         <label htmlFor={"id_zaaktypen"}>Zaaktypen</label>
@@ -101,7 +101,7 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, csrftoken }) => 
 
                 </aside>
 
-                <section className="destruction-create__zaken content-panel">
+                <section className="destruction-create__zaken">
                     <h2 className="section-title section-title--highlight">Zaakdossiers</h2>
                     <ZakenTable
                         zaken={zaken}

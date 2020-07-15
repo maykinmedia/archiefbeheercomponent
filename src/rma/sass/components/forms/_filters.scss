@@ -1,0 +1,25 @@
+$filters-background: rgba(#eee, 0.5) !default;
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+
+  background: $filters-background;
+  padding: 1em;
+
+  // TODO: could be improved a lot;
+  // max-height: 20vh;
+  // overflow: hidden;
+  // &:hover {
+  //   max-height: none;
+  // }
+
+  & &__group {
+    flex: 1;
+  }
+
+  & &__submit {
+    width: 100%;
+    text-align: right;
+  }
+}

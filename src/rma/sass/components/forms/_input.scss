@@ -1,0 +1,108 @@
+@import "../../lib/bem";
+@import "../../lib/colors";
+
+.input {
+  border: 0;
+  margin-bottom: 1em;
+  padding: 0;
+  position: relative;
+
+  @include element('control') {
+    border: 0;
+    box-shadow: none;
+    display: inline-block;
+    font-size: 1.1rem;
+    margin-right: 2rem;
+    min-width: 0;
+    width: 100%;
+
+    @include modifier('text') {
+      background: #fff;
+      border: solid 1px #eee;
+      border-radius: 0;
+      color: $color-text;
+      font-size: 1.4rem;
+      overflow: visible;
+      padding: 0.5rem 1rem;
+
+      &:focus {
+        box-shadow: none;
+        outline: 2px solid $color-secondary;
+      }
+    }
+
+    @include modifier('textarea') {
+      border: solid 1px #eee;
+      padding: 0.3rem 0.4rem;
+
+      &:focus {
+        outline: 2px solid $color-secondary;
+      }
+    }
+
+    @include modifier('select') {
+      background: #fff url(data:image/svg+xml;base64,PHN2ZyBpZD0iTGFhZ18xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9Ii03MDcgMTQ4OSAyNCAyNCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij48c3R5bGU+LnN0MHtmaWxsOm5vbmV9LnN0MXtmaWxsOiMyYjJiMmJ9PC9zdHlsZT48cGF0aCBjbGFzcz0ic3QwIiBkPSJNLTcwNyAxNDg5aDI0djI0aC0yNHoiIGlkPSJfeDMyXzRweF9Cb3hlcyIvPjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0tNjg5LjkgMTQ5OC4zYy4xLjEuMi4zLjIuNXMtLjEuMy0uMi41bC00LjUgNC41Yy0uMS4xLS4zLjItLjUuMnMtLjMtLjEtLjUtLjJsLTQuNS00LjVjLS4xLS4xLS4yLS4zLS4yLS41cy4xLS4zLjItLjVjLjEtLjEuMy0uMi41LS4yaDljLjIgMCAuMy4xLjUuMnoiLz48L3N2Zz4=) no-repeat 100%;
+      background-size: 25px auto;
+      padding: 0 10px;
+      padding-right: 35px;
+      border: 1px solid #c8cacc;
+      border-radius: 0;
+      color: $color-text;
+      height: 44px;
+      -webkit-appearance: none;
+
+      &:focus {
+        outline: 2px solid $color-secondary;
+      }
+    }
+
+    @include modifier('file') {
+      border: 0;
+      clip: rect(0, 0, 0, 0);
+      height: 1px;
+      overflow: hidden;
+      padding: 0;
+      position: absolute !important;
+      white-space: nowrap;
+      width: 1px;
+
+      & + label {
+        display: inline-block;
+        margin: 0;
+        border: none;
+
+        &:focus {
+          outline: 2px solid $color-secondary;
+        }
+      }
+    }
+  }
+
+  @include element('error') {
+    color: #ff0000;
+    display: none;
+    font-weight: bold;
+    margin-bottom: 0.4rem;
+    margin-top: -0.8rem;
+  }
+
+  @include element('hint') {
+    color: lighten($color-text, 20%);
+    display: block;
+    font-style: italic;
+    margin-bottom: 0.4em;
+    margin-top: 0.2rem;
+  }
+
+  @include element('label') {
+    display: block;
+    margin-bottom: 0.4em;
+    font-size: 1.1rem;
+    height: 25px;
+  }
+}
+
+.input__label .label {
+  font-size: 0.9rem;
+  color: $color-text--light;
+}

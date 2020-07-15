@@ -1,27 +1,27 @@
 import React from 'react';
 
-import {RadioInput} from "./inputs";
+import { RadioInput } from './inputs';
+import { Help } from './help';
+import { Label } from './label';
+import { ErrorList, Wrapper } from './wrapper';
 
 
-const SelectInput = (props) => {
-    const { choices, name, id, classes, onChange, disabled, selected } = props;
-
-    // const [selected, setSelected] = useState(initial);
+const SelectInput = ({ name, label='', required=false, choices=[], id='', helpText='', classes=null, onChange, disabled=false, selected='' }) => {
+    const classNames = classes ?? 'input__control input__control--select';
     const options = choices.map(([value, label], index) => {
         return (
             <option key={index} value={value}>{label}</option>
         );
     });
 
-    return (
+    const select = (
         <select
             name={name}
             id={id}
-            className={classes}
+            className={classNames}
             disabled={!!disabled}
             value={selected}
             onChange={(event) => {
-                // setSelected(event.target.value);
                 if (onChange) {
                     onChange(event.target.value)
                 }
@@ -29,6 +29,15 @@ const SelectInput = (props) => {
         >
             { options }
         </select>
+    );
+
+    return (
+        <Wrapper>
+            <Label label={label} required={required} />
+            <Help helpText={helpText} />
+            <ErrorList />
+            { select }
+        </Wrapper>
     );
 };
 

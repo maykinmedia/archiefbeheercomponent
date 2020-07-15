@@ -1,16 +1,20 @@
 import React from "react";
 
+import { Help } from './help';
+import { Label } from './label';
+import { ErrorList, Wrapper } from './wrapper';
 
-const Input = (props) => {
-    const { type, id, name, initial, classes, checked, onBlur, onChange, required } = props;
+
+const Input = ({ type='text', id='', name='', initial, classes=null, checked=false, onBlur, onChange, required=false }) => {
+    const classNames = classes ??`input__control input__control--${type}`;
     return (
         <input
-            type={type}
             name={name}
+            type={type}
             id={id}
-            defaultValue={initial || ""}
+            defaultValue={initial || ''}
             checked={checked}
-            className={classes}
+            className={classNames}
             onBlur={ (event) => {
                 if (onBlur) {
                     onBlur(event);
@@ -21,14 +25,23 @@ const Input = (props) => {
                     onChange(event);
                 }
             }}
-            required={required || false }
+            required={required}
         ></input>
     );
 };
 
 
 const TextInput = (props) => {
-    return <Input type="text" {...props} />;
+    const { label, helpText, id, required } = props;
+
+    return (
+        <Wrapper>
+            <Label label={label} required={required} idForLabel={id} />
+            <Help helpText={helpText} idForLabel={id} />
+            <ErrorList />
+            <Input type="text" {...props} />
+        </Wrapper>
+    );
 };
 
 

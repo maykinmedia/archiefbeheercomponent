@@ -1,0 +1,61 @@
+@import "../../lib/bem";
+@import "../../lib/colors";
+
+$form-centered-width--normal: 40vw !default;
+
+.form {
+  display: block;
+
+  @include modifier("centered") {
+    width: $form-centered-width--normal;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  @include modifier("centered-content") {
+    text-align: center;
+  }
+
+  @include modifier("large") {
+    .input__label,
+    .input__control {
+      font-size: 1.4rem;
+    }
+  }
+
+  @include element("group-title") {
+    font-size: 1.2rem;
+
+    &:after {
+      content: " ";
+      display: block;
+      width: 75%;
+      border: solid 1px $color-primary;
+    }
+  }
+
+  @include element("field-group") {
+    display: flex;
+
+    margin: 1em 0;
+    padding: 0;
+    border: none;
+
+    @include modifier("vertical-align") {
+      align-items: center;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    > * {
+      flex: 1;
+      padding-right: 1em;
+    }
+  }
+
+  @include element("submit-row") {
+    text-align: right;
+  }
+}

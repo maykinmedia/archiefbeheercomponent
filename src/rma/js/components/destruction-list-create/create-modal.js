@@ -23,54 +23,66 @@ const CreateModal = ({ checkboxes, modalIsOpen, setIsOpen, reviewers, url, csrft
         }
     };
 
+    const [reviewer1, setReviewer1] = useState('');
+    const [reviewer2, setReviewer2] = useState('');
+
     return (
         <Modal isOpen={modalIsOpen} className="modal">
             <button onClick={closeModal} className="modal__close btn">&times;</button>
             <h1 className="title modal__title">Vernietigingslijst starten - {selectedCount} zaken</h1>
-            <form method="post" encType="multipart/form-data" action={url}>
-                <section className="filter-group">
-                    <CsrfInput csrftoken={csrftoken}/>
+            <form method="post" encType="multipart/form-data" action={url} className="form">
+                <CsrfInput csrftoken={csrftoken}/>
+                <Input
+                    type="hidden"
+                    id={"id_zaken"}
+                    name={"zaken"}
+                    initial={selectedUrls}
+                />
 
-                    <Input
-                        type="hidden"
-                        id={"id_zaken"}
-                        name={"zaken"}
-                        initial={selectedUrls}
+                <div className="form__field-group">
+                    <TextInput
+                        label="Naam"
+                        id={"id_name"}
+                        name={"name"}
+                        required={true}
+                        helpText="Geef de vernietigingslijst een herkenbare naam"
                     />
 
-                    <div className="filter-group__item">
-                        <label htmlFor={"id_name"}>Naam</label>
-                        <TextInput
-                            id={"id_name"}
-                            name={"name"}
+                    <div>
+                        <SelectInput
+                            name="reviewer_1"
+                            selected={reviewer1}
+                            label="Eerste reviewer"
+                            helpText="Kies de eerste medewerker om de lijst te beoordelen"
+                            choices={reviewers}
+                            id={"id_reviewer_1"}
                             required={true}
+                            onChange={ (value) => {
+                                setReviewer1(value);
+                                setDisable2(!value);
+                                setReviewers2(changedReviewers2(value));
+                            }}
                         />
-                    </div>
-
-                    <label>Review</label>
-                    <ol>
-                        <li className="filter-group__item">
+                        { disable2 ? null :
                             <SelectInput
-                                choices={reviewers}
-                                name={"reviewer_1"}
-                                id={"id_reviewer_1"}
-                                onChange={value => {
-                                    setDisable2(!value);
-                                    setReviewers2(changedReviewers2(value));
+                                name={"reviewer_2"}
+                                selected={reviewer2}
+                                label="Tweede reviewer"
+                                choices={reviewers2}
+                                id={"id_reviewer_2"}
+                                required={false}
+                                onChange={ (value) => {
+                                    setReviewer2(value);
                                 }}
                             />
-                        </li>
-                        {disable2 ? null : <li className="filter-group__item">
-                            <SelectInput
-                                choices={reviewers2}
-                                name={"reviewer_2"}
-                                id={"id_reviewer_2"}
-                            />
-                        </li>}
-                    </ol>
+                        }
+                    </div>
 
-                </section>
-                <button type="submit" className="btn">Bevestig</button>
+                </div>
+
+                <div className="form__submit-row">
+                    <button type="submit" className="btn">Bevestig</button>
+                </div>
             </form>
 
         </Modal>

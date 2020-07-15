@@ -10,6 +10,7 @@
 
   &__nav {
     text-align: right;
+    margin-top: 1rem;
     margin-right: 0.3em;
   }
 
@@ -19,9 +20,18 @@
 
   &__filters {
     width: 30%;
+    padding: 0 1em;
+
+    position: sticky;
+    top: 1em;
+    align-self: flex-start;
+
+    border-right: dashed 1px $color-border;
   }
 
   &__zaken {
-    width: 70%
+    width: 70%;
+    padding: 0 1em;
+    align-self: flex-start;
   }
 }
