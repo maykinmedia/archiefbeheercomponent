@@ -111,6 +111,7 @@ class ReviewerDestructionListView(RoleRequiredMixin, FilterView):
     role_permission = "can_review_destruction"
     template_name = "destruction/reviewer_list.html"
     filterset_class = ReviewerListFilter
+    paginate_by = 20
 
     def get_queryset(self):
         review_status = DestructionListReview.objects.filter(
