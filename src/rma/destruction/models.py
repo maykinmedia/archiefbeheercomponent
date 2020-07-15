@@ -107,6 +107,7 @@ class DestructionListItem(models.Model):
     )
     zaak = models.URLField(
         _("zaak"),
+        db_index=True,
         help_text=_(
             "URL-reference to the ZAAK (in Zaken API), which is planned to be destroyed."
         ),
