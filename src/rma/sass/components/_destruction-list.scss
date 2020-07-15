@@ -1,5 +1,7 @@
 @import "../lib/colors";
 
+$scrollbar-width: 6px;
+$scrollbar-color: darken($color-primary, 10%);
 
 .destruction-list {
   display: flex;
@@ -18,7 +20,7 @@
 
   &__nav {
     flex: 1;
-    text-align: right;
+    text-align: left;
     margin-right: 1.5em;
   }
 
@@ -29,5 +31,23 @@
 
   &__notif {
     width: 30%;
+    max-height: 70vh;
+    overflow-y: scroll;
+
+    // best effort - see https://caniuse.com/#feat=css-scrollbar
+    scrollbar-width: $scrollbar-width;
+    scrollbar-color: $scrollbar-color #eee;
+
+    &::-webkit-scrollbar {
+      width: $scrollbar-width;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #eee;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: $scrollbar-color;
+    }
   }
 }
