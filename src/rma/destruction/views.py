@@ -58,6 +58,7 @@ class RecordManagerDestructionListView(RoleRequiredMixin, ListView):
 
     role_permission = "can_start_destruction"
     template_name = "destruction/recordmanager_list.html"
+    paginate_by = 20
 
     def get_queryset(self):
         return DestructionList.objects.filter(author=self.request.user).order_by("-id")
