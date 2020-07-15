@@ -11,7 +11,7 @@ from zgw_consumers.concurrent import parallel
 from rma.accounts.mixins import AuthorOrAssigneeRequiredMixin, RoleRequiredMixin
 
 from .constants import ListItemStatus
-from .models import ArchiveConfig, DestructionList
+from .models import ArchiveConfig, DestructionList, DestructionListItem
 from .service import (
     fetch_zaak,
     get_besluiten,
@@ -23,7 +23,7 @@ from .service import (
 
 
 class FetchZakenView(LoginRequiredMixin, View):
-    def get(self, request):
+    def fetch_zaken(self, startdatum, zaaktypen):
         config = ArchiveConfig.get_solo()
         current_date = config.archive_date or timezone.now().date()
         #  default params for archived zaken
@@ -31,9 +31,6 @@ class FetchZakenView(LoginRequiredMixin, View):
             "archiefnominatie": "vernietigen",
             "archiefactiedatum__lt": current_date.isoformat(),
         }
-
-        startdatum = request.GET.get("startdatum")
-        zaaktypen = request.GET.get("zaaktypen")
 
         if startdatum:
             query["startdatum__gte"] = startdatum
@@ -50,6 +47,27 @@ class FetchZakenView(LoginRequiredMixin, View):
 
         else:
             zaken = get_zaken(query_params=query)
+
+        return zaken
+
+    def get(self, request):
+        startdatum = request.GET.get("startdatum")
+        zaaktypen = request.GET.get("zaaktypen")
+
+        zaken = self.fetch_zaken(startdatum, zaaktypen)
+
+        # check if selected zaken are used in other DLs:
+        zaak_urls = [zaak["url"] for zaak in zaken]
+        selected_zaken = (
+            DestructionListItem.objects.filter(
+                status__in=[ListItemStatus.suggested, ListItemStatus.processing]
+            )
+            .filter(zaak__in=zaak_urls)
+            .values_list("zaak", flat=True)
+        )
+
+        for zaak in zaken:
+            zaak["available"] = zaak["url"] not in selected_zaken
 
         return JsonResponse({"zaken": zaken})
 

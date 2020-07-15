@@ -5,8 +5,7 @@ import { Label } from './label';
 import { ErrorList, Wrapper } from './wrapper';
 
 
-const Input = ({ type='text', id='', name='', initial, classes=null, checked=false, onBlur, onChange, required=false }) => {
-    const classNames = classes ??`input__control input__control--${type}`;
+const Input = ({ type='text', id='', name='', initial, classes=null, checked=false, onBlur, onChange, required=false, disabled=false }) => {
     return (
         <input
             name={name}
@@ -14,7 +13,7 @@ const Input = ({ type='text', id='', name='', initial, classes=null, checked=fal
             id={id}
             defaultValue={initial || ''}
             checked={checked}
-            className={classNames}
+            className={classes}
             onBlur={ (event) => {
                 if (onBlur) {
                     onBlur(event);
@@ -26,6 +25,7 @@ const Input = ({ type='text', id='', name='', initial, classes=null, checked=fal
                 }
             }}
             required={required}
+            disabled={disabled}
         ></input>
     );
 };
