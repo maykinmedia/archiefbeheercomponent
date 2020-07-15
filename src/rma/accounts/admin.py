@@ -3,6 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext_lazy as _
 
 from hijack_admin.admin import HijackUserAdminMixin
+from ordered_model.admin import OrderedModelAdmin
 
 from .models import Role, User
 
@@ -28,11 +29,12 @@ class UserInline(admin.TabularInline):
 
 
 @admin.register(Role)
-class RoleAdmin(admin.ModelAdmin):
+class RoleAdmin(OrderedModelAdmin):
     list_display = (
         "name",
         "can_start_destruction",
         "can_review_destruction",
         "can_view_case_details",
+        "move_up_down_links",
     )
     inlines = [UserInline]

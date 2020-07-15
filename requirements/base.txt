@@ -25,7 +25,7 @@ django-fsm==2.7.0         # via -r requirements/base.in, django-fsm-admin
 django-hijack-admin==2.1.10  # via -r requirements/base.in
 django-hijack==2.1.10     # via -r requirements/base.in, django-hijack-admin
 django-ipware==2.1.0      # via django-axes
-django-ordered-model==3.4.1  # via django-admin-index
+django-ordered-model==3.4.1  # via -r requirements/base.in, django-admin-index
 django-redis==4.12.1      # via -r requirements/base.in
 django-relativedelta==1.1.1  # via zgw-consumers
 django-rosetta==0.9.4     # via -r requirements/base.in

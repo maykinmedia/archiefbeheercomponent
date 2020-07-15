@@ -3,6 +3,8 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+from ordered_model.models import OrderedModel
+
 from .managers import UserManager
 
 
@@ -63,8 +65,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         "Returns the short name for the user."
         return self.first_name
 
+    def as_reviewer_display(self) -> str:
+        name = self.get_full_name() or self.email or self.username
+        return _("{name} ({role})").format(name=name, role=self.role.name)
 
-class Role(models.Model):
+
+class Role(OrderedModel):
     name = models.CharField(
         _("name"), max_length=255, unique=True, help_text=_("Name of the role")
     )
@@ -93,7 +99,7 @@ class Role(models.Model):
         ),
     )
 
-    class Meta:
+    class Meta(OrderedModel.Meta):
         verbose_name = _("role")
         verbose_name_plural = _("roles")
 
