@@ -236,8 +236,10 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         formset = context["inlines"][0]
         dl = self.get_object()
+        can_update = self.request.user == dl.assignee == dl.author
 
         context.update(
             {
@@ -248,6 +250,7 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
                         for field in formset.management_form
                     },
                 },
+                "can_update": can_update,
             }
         )
         return context
