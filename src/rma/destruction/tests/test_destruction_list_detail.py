@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from django_capture_on_commit_callbacks import capture_on_commit_callbacks
+from django_webtest import WebTest
 from timeline_logger.models import TimelineLog
 
 from rma.accounts.tests.factories import UserFactory
@@ -26,7 +27,7 @@ MANAGEMENT_FORM_DATA = {
 }
 
 
-class DestructionListDetailTests(TestCase):
+class DestructionListUpdateTests(TestCase):
     def setUp(self) -> None:
         super().setUp()
 
@@ -110,3 +111,58 @@ class DestructionListDetailTests(TestCase):
                 )
             ]
         )
+
+
+class DestructionListDetailTests(WebTest):
+    """
+    check that the user can update DL if they are the author and the current assignee of DL
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+
+        cls.user = UserFactory(role__can_start_destruction=True)
+
+    def setUp(self) -> None:
+        super().setUp()
+
+        self.app.set_user(self.user)
+
+    def test_can_update(self):
+        destruction_list = DestructionListFactory.create(
+            author=self.user, assignee=self.user
+        )
+        url = reverse("destruction:record-manager-detail", args=[destruction_list.id])
+
+        response = self.app.get(url)
+
+        self.assertEqual(response.status_code, 200)
+
+        submit_btn = response.html.find("button", type="submit")
+        self.assertIsNotNone(submit_btn)
+
+    def test_author_can_not_update(self):
+        destruction_list = DestructionListFactory.create(author=self.user)
+        url = reverse("destruction:record-manager-detail", args=[destruction_list.id])
+
+        response = self.app.get(url)
+
+        self.assertEqual(response.status_code, 200)
+
+        submit_btn = response.html.find("button", type="submit")
+        self.assertIsNone(submit_btn)
+
+    def test_assignee_can_not_update(self):
+        destruction_list = DestructionListFactory.create()
+        DestructionListAssigneeFactory.create(
+            destruction_list=destruction_list, assignee=self.user
+        )
+        url = reverse("destruction:record-manager-detail", args=[destruction_list.id])
+
+        response = self.app.get(url)
+
+        self.assertEqual(response.status_code, 200)
+
+        submit_btn = response.html.find("button", type="submit")
+        self.assertIsNone(submit_btn)
