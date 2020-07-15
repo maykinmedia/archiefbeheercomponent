@@ -1,3 +1,4 @@
+import copy
 from datetime import date
 from unittest.mock import patch
 
@@ -7,6 +8,7 @@ from django.urls import reverse_lazy
 from rma.accounts.tests.factories import UserFactory
 
 from ..models import ArchiveConfig
+from .factories import DestructionListItemFactory
 
 ZAAKTYPE = "https://some.catalogi.nl/api/v1/zaaktypen/aaa"
 ZAKEN = [
@@ -25,7 +27,7 @@ ZAKEN = [
 ]
 
 
-@patch("rma.destruction.api.get_zaken", return_value=ZAKEN)
+@patch("rma.destruction.api.get_zaken", return_value=copy.deepcopy(ZAKEN))
 class FetchZakenTests(TestCase):
     url = reverse_lazy("destruction:fetch-zaken")
 
@@ -45,12 +47,15 @@ class FetchZakenTests(TestCase):
             "archiefnominatie": "vernietigen",
             "archiefactiedatum__lt": self.config.archive_date.isoformat(),
         }
+        self.zaken_available = [
+            dict(list(zaak.items()) + [["available", True]]) for zaak in ZAKEN
+        ]
 
     def test_fetch_zaken_no_filters(self, m):
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"zaken": ZAKEN})
+        self.assertEqual(response.json(), {"zaken": self.zaken_available})
 
         m.assert_called_once_with(query_params=self.default_query)
 
@@ -58,7 +63,7 @@ class FetchZakenTests(TestCase):
         response = self.client.get(self.url, {"zaaktypen": ZAAKTYPE})
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"zaken": ZAKEN})
+        self.assertEqual(response.json(), {"zaken": self.zaken_available})
 
         query = self.default_query.copy()
         query["zaaktype"] = ZAAKTYPE
@@ -68,8 +73,19 @@ class FetchZakenTests(TestCase):
         response = self.client.get(self.url, {"startdatum": "2020-02-02"})
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"zaken": ZAKEN})
+        self.assertEqual(response.json(), {"zaken": self.zaken_available})
 
         query = self.default_query.copy()
         query["startdatum__gte"] = "2020-02-02"
         m.assert_called_once_with(query_params=query)
+
+    def test_fetch_zaken_used_in_other_dl(self, m):
+        DestructionListItemFactory.create(zaak="https://some.zaken.nl/api/v1/zaken/1")
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        zaak1, zaak2 = response.json()["zaken"]
+
+        self.assertFalse(zaak1["available"])
+        self.assertTrue(zaak2["available"])
