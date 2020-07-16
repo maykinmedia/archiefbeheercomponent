@@ -1,10 +1,11 @@
 import itertools
-from concurrent import futures
 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.utils import timezone
 from django.views import View
+
+from zgw_consumers.concurrent import parallel
 
 from rma.accounts.mixins import RoleRequiredMixin
 
@@ -40,7 +41,7 @@ class FetchZakenView(LoginRequiredMixin, View):
             zaaktypen = zaaktypen.split(",")
             queries = [dict(query, **{"zaaktype": zaaktype}) for zaaktype in zaaktypen]
             # TODO: async
-            with futures.ThreadPoolExecutor() as executor:
+            with parallel() as executor:
                 zaken = list(executor.map(get_zaken, queries))
 
             # flat the list
@@ -86,7 +87,7 @@ class FetchListItemsView(LoginRequiredMixin, UserPassesTestMixin, View):
         fetched_zaaktypen = {zaaktype["url"]: zaaktype for zaaktype in get_zaaktypen()}
 
         zaak_urls = [item.zaak for item in destruction_list.items.all()]
-        with futures.ThreadPoolExecutor() as executor:
+        with parallel() as executor:
             zaken = list(executor.map(fetch_zaak, zaak_urls))
 
         zaken = {zaak["url"]: zaak for zaak in zaken}
@@ -132,7 +133,7 @@ class FetchZaakDetail(RoleRequiredMixin, View):
         if not zaak_url:
             return HttpResponseBadRequest("zaak_url query parameter must be specified")
 
-        with futures.ThreadPoolExecutor() as executor:
+        with parallel() as executor:
             resultaat = executor.submit(get_resultaat, zaak_url)
             documenten = executor.submit(get_documenten, zaak_url)
             besluiten = executor.submit(get_besluiten, zaak_url)
