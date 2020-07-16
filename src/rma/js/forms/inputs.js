@@ -6,6 +6,7 @@ import { ErrorList, Wrapper } from './wrapper';
 
 
 const Input = ({ type='text', id='', name='', initial, classes=null, checked=false, onBlur, onChange, required=false, disabled=false }) => {
+    const classNames = classes ??`input__control input__control--${type}`;
     return (
         <input
             name={name}
@@ -13,7 +14,7 @@ const Input = ({ type='text', id='', name='', initial, classes=null, checked=fal
             id={id}
             defaultValue={initial || ''}
             checked={checked}
-            className={classes}
+            className={classNames}
             onBlur={ (event) => {
                 if (onBlur) {
                     onBlur(event);
