@@ -255,11 +255,32 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
         )
         return context
 
+    def abort_destruction_list(self, destruction_list):
+        list_items = destruction_list.items.filter(status=ListItemStatus.suggested)
+        for list_item in list_items:
+            list_item.remove()
+            list_item.save()
+
+        destruction_list.process()
+        destruction_list.complete()
+        destruction_list.save()
+
+        TimelineLog.log_from_request(
+            self.request,
+            destruction_list,
+            template="destruction/logs/aborted.txt",
+            n_items=destruction_list.items.count(),
+        )
+
     @transaction.atomic
     def forms_valid(self, form, inlines):
         response = super().forms_valid(form, inlines)
 
         destruction_list = form.instance
+
+        if "abort" in self.request.POST:
+            self.abort_destruction_list(destruction_list)
+            return response
 
         # log
         TimelineLog.log_from_request(

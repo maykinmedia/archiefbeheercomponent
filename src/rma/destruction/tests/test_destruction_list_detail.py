@@ -10,7 +10,7 @@ from timeline_logger.models import TimelineLog
 from rma.accounts.tests.factories import UserFactory
 from rma.notifications.models import Notification
 
-from ..constants import ListItemStatus, Suggestion
+from ..constants import ListItemStatus, ListStatus, Suggestion
 from ..models import DestructionList, DestructionListItem
 from .factories import (
     DestructionListAssigneeFactory,
@@ -27,6 +27,7 @@ MANAGEMENT_FORM_DATA = {
 }
 
 
+@patch("rma.destruction.views.update_zaken.delay")
 class DestructionListUpdateTests(TestCase):
     def setUp(self) -> None:
         super().setUp()
@@ -34,7 +35,6 @@ class DestructionListUpdateTests(TestCase):
         self.user = UserFactory(role__can_start_destruction=True)
         self.client.force_login(self.user)
 
-    @patch("rma.destruction.views.update_zaken.delay")
     def test_update_destruction_list(self, m):
         destruction_list = DestructionListFactory.create(
             author=self.user, assignee=self.user
@@ -111,6 +111,49 @@ class DestructionListUpdateTests(TestCase):
                 )
             ]
         )
+
+    def test_abort_destruction_list(self, m):
+        destruction_list = DestructionListFactory.create(
+            author=self.user, assignee=self.user
+        )
+        list_items = DestructionListItemFactory.create_batch(
+            3, destruction_list=destruction_list
+        )
+        url = reverse("destruction:record-manager-detail", args=[destruction_list.id])
+        data = {"abort": "abort"}
+        data.update(MANAGEMENT_FORM_DATA)
+        for i, list_item in enumerate(list_items):
+            data.update(
+                {
+                    f"items-{i}-id": list_item.id,
+                    f"items-{i}-action": "",
+                    f"items-{i}-archiefnominatie": "blijvend_bewaren",
+                    f"items-{i}-archiefactiedatum": "2020-06-17",
+                }
+            )
+
+        # with capture_on_commit_callbacks(execute=True) as callbacks:
+        response = self.client.post(url, data=data)
+
+        self.assertRedirects(response, reverse("destruction:record-manager-list"))
+
+        # can't refresh_from_db because of fsm protection
+        destruction_list = DestructionList.objects.get(id=destruction_list.id)
+        self.assertEqual(destruction_list.assignee, None)
+        self.assertEqual(destruction_list.status, ListStatus.completed)
+
+        # check items statuses
+        for item in list_items:
+            list_item = DestructionListItem.objects.get(id=item.id)
+            self.assertEqual(list_item.status, ListItemStatus.removed)
+
+        # check log
+        timeline_log = TimelineLog.objects.get()
+        self.assertEqual(timeline_log.user, self.user)
+        self.assertEqual(timeline_log.template, "destruction/logs/aborted.txt")
+
+        # check no zaken update
+        m.assert_not_called()
 
 
 class DestructionListDetailTests(WebTest):
