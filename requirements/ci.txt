@@ -47,7 +47,6 @@ future==0.18.2            # via -r requirements/base.txt, celery
 gemma-zds-client==0.13.1  # via -r requirements/base.txt, zgw-consumers
 humanize==0.5.1           # via -r requirements/base.txt, flower
 idna==2.9                 # via -r requirements/base.txt, requests
-importlib-metadata==1.6.1  # via -r requirements/base.txt, kombu
 kombu==4.6.10             # via -r requirements/base.txt, celery
 lxml==4.5.1               # via pyquery
 pillow==7.1.2             # via -r requirements/base.txt
@@ -77,5 +76,4 @@ vine==1.3.0               # via -r requirements/base.txt, amqp, celery
 waitress==1.4.4           # via webtest
 webob==1.8.6              # via webtest
 webtest==2.0.35           # via django-webtest
-zgw-consumers==0.9.0.dev9  # via -r requirements/base.txt
-zipp==3.1.0               # via -r requirements/base.txt, importlib-metadata
+zgw-consumers==0.10.1     # via -r requirements/base.txt
