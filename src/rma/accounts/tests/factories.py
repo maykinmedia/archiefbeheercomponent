@@ -2,7 +2,7 @@ import factory
 
 
 class RoleFactory(factory.django.DjangoModelFactory):
-    name = factory.Faker("word")
+    name = factory.Sequence(lambda n: f"role-{n}")
 
     class Meta:
         model = "accounts.Role"
