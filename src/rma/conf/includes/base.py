@@ -55,7 +55,7 @@ DATABASES = {
         "PASSWORD": config("DB_PASSWORD", "rma"),
         "HOST": config("DB_HOST", "localhost"),
         "PORT": config("DB_PORT", 5432),
-        "CONN_MAX_AGE": 60,  # Lifetime of a database connection for performance.
+        # "CONN_MAX_AGE": 60,  # Lifetime of a database connection for performance.
     },
 }
 
