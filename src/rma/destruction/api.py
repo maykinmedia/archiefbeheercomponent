@@ -2,6 +2,7 @@ import itertools
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseBadRequest, JsonResponse
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views import View
 
@@ -65,7 +66,7 @@ NO_DETAIL_ZAAKTYPE_ATTRS = ["url", "omschrijving", "versiedatum"]
 
 class FetchListItemsView(AuthorOrAssigneeRequiredMixin, View):
     def get_destruction_list(self):
-        return DestructionList.objects.get(id=self.kwargs["list_id"])
+        return get_object_or_404(DestructionList, id=self.kwargs["list_id"])
 
     def get(self, request, list_id):
         destruction_list = DestructionList.objects.get(id=list_id)

@@ -33,7 +33,7 @@ class ServiceTests(TestCase):
             "archiefactiedatum": "2020-06-17",
         }
 
-        zaak = update_zaak(ZAAK_URL, data)
+        zaak = update_zaak(ZAAK_URL, data, "Change archive params")
 
         self.assertEqual(zaak["url"], ZAAK_URL)
         self.assertEqual(m.last_request.url, ZAAK_URL)
@@ -41,6 +41,4 @@ class ServiceTests(TestCase):
         self.assertEqual(m.last_request.json(), data)
 
         headers = m.last_request.headers
-        self.assertEqual(
-            headers["X-Audit-Toelichting"], "Update in RMA for destruction list"
-        )
+        self.assertEqual(headers["X-Audit-Toelichting"], "[RMA] Change archive params")

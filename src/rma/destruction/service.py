@@ -77,9 +77,9 @@ def fetch_zaak(url: str) -> dict:
     return response
 
 
-def update_zaak(url: str, data: dict) -> dict:
+def update_zaak(url: str, data: dict, audit_comment: Optional[str]) -> dict:
     client = _client_from_url(url)
-    headers = {"X-Audit-Toelichting": "Update in RMA for destruction list"}
+    headers = {"X-Audit-Toelichting": f"[RMA] {audit_comment}"}
     response = client.partial_update(
         "zaak", url=url, data=data, request_kwargs={"headers": headers}
     )
