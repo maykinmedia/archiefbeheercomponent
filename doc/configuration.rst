@@ -13,6 +13,8 @@ without any configuration.
 The configuration interface is available on ``https://example.com/admin/``, where
 ``example.com`` should be replaced by your actual domain.
 
+.. _configuraton_permissions:
+
 Accounts, roles and permissions
 ===============================
 
