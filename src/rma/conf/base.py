@@ -328,6 +328,9 @@ HIJACK_REGISTER_ADMIN = False
 # See: http://django-hijack.readthedocs.io/en/latest/configuration/#allowing-get-method-for-hijack-views
 HIJACK_ALLOW_GET_REQUESTS = True
 
+HIJACK_AUTHORIZE_STAFF = True
+HIJACK_AUTHORIZE_STAFF_TO_HIJACK_STAFF = True
+
 # Sentry SDK
 SENTRY_DSN = os.getenv("SENTRY_DSN")
 
