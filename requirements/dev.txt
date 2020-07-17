@@ -110,7 +110,7 @@ vine==1.3.0               # via -r requirements/ci.txt, amqp, celery
 waitress==1.4.4           # via -r requirements/ci.txt, webtest
 webob==1.8.6              # via -r requirements/ci.txt, webtest
 webtest==2.0.35           # via -r requirements/ci.txt, django-webtest
-zgw-consumers==0.10.1     # via -r requirements/ci.txt
+zgw-consumers==0.10.2     # via -r requirements/ci.txt
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
