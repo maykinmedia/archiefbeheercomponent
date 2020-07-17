@@ -1,4 +1,5 @@
 @import "../lib/bem";
+@import "../lib/colors";
 
 
 .review-create {
@@ -13,11 +14,10 @@
   }
 
   @include element("comment") {
-    padding: 1em;
-
-    > label {
-      margin-right: 1em;
-    }
+    padding: 0 1em;
   }
 
+  @include element("list-details") {
+    color: $color-text--light;
+  }
 }

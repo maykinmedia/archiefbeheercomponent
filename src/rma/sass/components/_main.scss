@@ -1,3 +1,4 @@
+@import "../lib/bem";
 @import "../lib/container";
 
 $main-content-background-color: #fefefe !default;
@@ -6,10 +7,20 @@ $main-content-background-color: #fefefe !default;
   min-height: 90vh;
   padding: 0;
 
-  & &__content {
+  @include element("content") {
     @include container;
 
     background-color: $main-content-background-color;
     position: relative;
+  }
+
+  @include element("links") {
+    padding: 1em;
+    border-top: solid 1px #eee;
+    text-align: right;
+
+    &:empty {
+      display: none;
+    }
   }
 }

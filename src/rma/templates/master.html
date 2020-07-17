@@ -1,5 +1,6 @@
-{% load static hijack_tags %}<!DOCTYPE html>
-<html lang="en">
+{% load static i18n hijack_tags %}<!DOCTYPE html>
+{% get_current_language as lang %}
+<html lang="{{ lang|slice:':2' }}">
     <head>
         <meta charset="utf-8">
         <title>{% block title %}Record management application{% endblock %}</title>
@@ -30,7 +31,16 @@
                     to get some actual content.
                 {% endblock %}
 
+                {% spaceless %}
+                <nav class="main__links">
+                    {% if user.is_staff %}
+                        <a href="{% url 'admin:index' %}" class="link">{% trans "Admin" %}</a>
+                    {% endif %}
+                </nav>
+                {% endspaceless %}
+
             </section>
+
         </main>
 
         <footer class="footer">

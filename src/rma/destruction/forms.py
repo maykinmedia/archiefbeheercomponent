@@ -31,14 +31,15 @@ def get_zaaktype_choices() -> List[Tuple[str, list]]:
 
 
 def get_reviewer_choices(author=None) -> List[Tuple[str, str]]:
-    reviewers = User.objects.reviewers().order_by("role__name", "username")
+    reviewers = User.objects.reviewers().order_by(
+        "role__order", "last_name", "first_name", "username",
+    )
     if author:
         reviewers.exclude(id=author.id)
 
     choices = []
-    for reviewer in reviewers:
-        label = f"{reviewer.role.name} - {reviewer.get_full_name()}"
-        choices.append((reviewer.id, label))
+    for user in reviewers:
+        choices.append((user.id, user.as_reviewer_display()))
 
     choices.insert(0, ("", "-----"))
     return choices
