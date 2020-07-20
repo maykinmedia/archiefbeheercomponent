@@ -43,8 +43,9 @@ class NotificationLinkTests(WebTest):
         # assigning creates the notification
         self.destruction_list.assign(self.user2)
         self.destruction_list.save()
+        self.app.set_user(self.user2)
         # from landing page, 'click' the link of the notification
-        response = self.app.get(self.start_url, auto_follow=True, user=self.user2)
+        response = self.app.get(self.start_url, auto_follow=True)
         link = response.pyquery(
             ".notifications-list .notifications-list__notif-goto:first"
         )
@@ -65,7 +66,8 @@ class NotificationLinkTests(WebTest):
         self.destruction_list.assign(self.user3)
         self.destruction_list.save()
         # from landing page, 'click' the link of the notification
-        response = self.app.get(self.start_url, auto_follow=True, user=self.user3)
+        self.app.set_user(self.user3)
+        response = self.app.get(self.start_url, auto_follow=True)
         link = response.pyquery(
             ".notifications-list .notifications-list__notif-goto:first"
         )
@@ -86,7 +88,8 @@ class NotificationLinkTests(WebTest):
         self.destruction_list.assign(self.user1)
         self.destruction_list.save()
         # from landing page, 'click' the link of the notification
-        response = self.app.get(self.start_url, auto_follow=True, user=self.user1)
+        self.app.set_user(self.user1)
+        response = self.app.get(self.start_url, auto_follow=True)
         link = response.pyquery(
             ".notifications-list .notifications-list__notif-goto:first"
         )
@@ -109,7 +112,8 @@ class NotificationLinkTests(WebTest):
         self.destruction_list.assign(self.user3)
         self.destruction_list.save()
         # from landing page, 'click' the link of the notification
-        response = self.app.get(self.start_url, auto_follow=True, user=self.user2)
+        self.app.set_user(self.user2)
+        response = self.app.get(self.start_url, auto_follow=True)
         link = response.pyquery(
             ".notifications-list .notifications-list__notif-goto:first"
         )
