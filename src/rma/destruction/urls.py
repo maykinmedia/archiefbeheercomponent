@@ -14,27 +14,27 @@ app_name = "destruction"
 
 urlpatterns = [
     path(
-        "record-managers/",
+        "lijsten/",
         RecordManagerDestructionListView.as_view(),
         name="record-manager-list",
     ),
     path(
-        "record-managers/add",
+        "lijsten/toevoegen",
         DestructionListCreateView.as_view(),
         name="record-manager-create",
     ),
     path(
-        "record-managers/<int:pk>",
+        "lijsten/<int:pk>/",
         DestructionListDetailView.as_view(),
         name="record-manager-detail",
     ),
     path("reviews/", ReviewerDestructionListView.as_view(), name="reviewer-list"),
     path(
-        "reviews/<int:destruction_list>/add",
+        "reviews/<int:destruction_list>/toevoegen",
         ReviewCreateView.as_view(),
         name="reviewer-create",
     ),
-    path("<int:pk>/", DestructionListRedirectView.as_view(), name="dl-redirect"),
+    path("lijst/<int:pk>/", DestructionListRedirectView.as_view(), name="dl-redirect"),
     path(
         "_",
         include(
