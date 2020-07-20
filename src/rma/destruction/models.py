@@ -94,6 +94,7 @@ class DestructionList(models.Model):
             else:
                 message = _("There is a review to process.")
 
+            # TODO: this should only go through if the object is saved!
             Notification.objects.create(
                 destruction_list=self, user=assignee, message=message,
             )

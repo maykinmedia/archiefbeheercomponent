@@ -13,7 +13,7 @@
                     </time>
                 </span>
 
-                <a href="#TODO" class="notifications-list__notif-goto" title="{% trans 'View destruction list' %}">
+                <a href="{% url 'destruction:dl-redirect' pk=notif.destruction_list.pk %}" class="notifications-list__notif-goto" title="{% trans 'View destruction list' %}">
                     <i class="material-icons">launch</i>
                 </a>
             </header>
