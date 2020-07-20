@@ -47,7 +47,7 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, csrftoken }) => 
                     setZaken(result.zaken);
 
                     // refresh checkboxes and deselect them
-                    const refreshedCheckboxes = result.zaken.reduce((result, zaak) => {
+                    const refreshedCheckboxes = result.zaken.filter(zaak => zaak.available).reduce((result, zaak) => {
                             return {...result, [zaak.url]: false};
                         }, {});
                     setCheckboxes(refreshedCheckboxes);

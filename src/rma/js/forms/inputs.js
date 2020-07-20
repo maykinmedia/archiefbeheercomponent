@@ -5,7 +5,7 @@ import { Label } from './label';
 import { ErrorList, Wrapper } from './wrapper';
 
 
-const Input = ({ type='text', id='', name='', initial, classes=null, checked=false, onBlur, onChange, required=false }) => {
+const Input = ({ type='text', id='', name='', initial, classes=null, checked=false, onBlur, onChange, required=false, disabled=false }) => {
     const classNames = classes ??`input__control input__control--${type}`;
     return (
         <input
@@ -26,6 +26,7 @@ const Input = ({ type='text', id='', name='', initial, classes=null, checked=fal
                 }
             }}
             required={required}
+            disabled={disabled}
         ></input>
     );
 };

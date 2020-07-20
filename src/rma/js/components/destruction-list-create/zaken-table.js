@@ -51,7 +51,10 @@ function ZakenTable({ zaken, isLoaded, error, checkboxes, setCheckboxes }) {
             </thead>
             <tbody>
                 {zaken.map(zaak => (
-                  <tr key={zaak.url} className="zaak-record">
+                  <tr
+                      key={zaak.url}
+                      className={"zaak-record" + (!zaak.available ? " zaak-record--disabled" : "")}
+                  >
                       <td>
                           <CheckboxInput
                               checked={checkboxes[zaak.url] || false}
@@ -63,6 +66,7 @@ function ZakenTable({ zaken, isLoaded, error, checkboxes, setCheckboxes }) {
                                       setSelectAll(false);
                                   }
                               }}
+                              disabled={!zaak.available}
                           />
                       </td>
                       <td>{displayZaaktype(zaak.zaaktype)}</td>

@@ -1,5 +1,6 @@
 import itertools
 
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404
@@ -11,7 +12,7 @@ from zgw_consumers.concurrent import parallel
 from rma.accounts.mixins import AuthorOrAssigneeRequiredMixin, RoleRequiredMixin
 
 from .constants import ListItemStatus
-from .models import ArchiveConfig, DestructionList
+from .models import ArchiveConfig, DestructionList, DestructionListItem
 from .service import (
     fetch_zaak,
     get_besluiten,
@@ -22,8 +23,16 @@ from .service import (
 )
 
 
+def get_zaken_chunks(zaken):
+    return (
+        zaken[pos : pos + settings.ZAKEN_PER_QUERY]
+        for pos in range(0, len(zaken), settings.ZAKEN_PER_QUERY)
+    )
+
+
 class FetchZakenView(LoginRequiredMixin, View):
-    def get(self, request):
+    @staticmethod
+    def fetch_zaken(startdatum, zaaktypen):
         config = ArchiveConfig.get_solo()
         current_date = config.archive_date or timezone.now().date()
         #  default params for archived zaken
@@ -31,9 +40,6 @@ class FetchZakenView(LoginRequiredMixin, View):
             "archiefnominatie": "vernietigen",
             "archiefactiedatum__lt": current_date.isoformat(),
         }
-
-        startdatum = request.GET.get("startdatum")
-        zaaktypen = request.GET.get("zaaktypen")
 
         if startdatum:
             query["startdatum__gte"] = startdatum
@@ -50,6 +56,32 @@ class FetchZakenView(LoginRequiredMixin, View):
 
         else:
             zaken = get_zaken(query_params=query)
+
+        return zaken
+
+    @staticmethod
+    def set_zaken_availability(zaken):
+        """check if selected zaken are used in other DLs"""
+        zaak_urls = [zaak["url"] for zaak in zaken]
+        selected_zaken = []
+        for chunk in get_zaken_chunks(zaak_urls):
+            selected_zaken += list(
+                DestructionListItem.objects.filter(
+                    status__in=[ListItemStatus.suggested, ListItemStatus.processing]
+                )
+                .filter(zaak__in=chunk)
+                .values_list("zaak", flat=True)
+            )
+
+        for zaak in zaken:
+            zaak["available"] = zaak["url"] not in selected_zaken
+
+    def get(self, request):
+        startdatum = request.GET.get("startdatum")
+        zaaktypen = request.GET.get("zaaktypen")
+
+        zaken = self.fetch_zaken(startdatum, zaaktypen)
+        self.set_zaken_availability(zaken)
 
         return JsonResponse({"zaken": zaken})
 
