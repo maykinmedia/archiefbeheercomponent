@@ -11,6 +11,7 @@
 <article class="reviewer-list">
     <section class="reviewer-list__filters">
         <form action="" method="get">
+            <label>{% trans "Status" %}</label>
             {{ filter.form.reviewed }}
             <button type="submit" class="btn">Filter</button>
         </form>
