@@ -2,6 +2,7 @@ from unittest.mock import patch
 
 from django.conf import settings
 from django.test import TestCase
+from django.utils.translation import gettext as _
 
 from timeline_logger.models import TimelineLog
 from zds_client.client import ClientError
@@ -107,7 +108,7 @@ class NotifyTests(TestCase):
 
         self.assertEqual(notification.destruction_list, destruction_list)
         self.assertEqual(notification.user, destruction_list.author)
-        self.assertEqual(notification.message, "Destruction list has been processed")
+        self.assertEqual(notification.message, _("Processing of the list is complete."))
 
 
 @patch("rma.destruction.tasks.update_zaak_from_list_item.chunks")

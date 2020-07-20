@@ -200,11 +200,13 @@ class ReviewCreateView(RoleRequiredMixin, UserPassesTestMixin, CreateWithInlines
             n_items=list_review.item_reviews.count(),
         )
         # send notification
+        message = _("{author} has reviewed the destruction list.").format(
+            author=list_review.author
+        )
         Notification.objects.create(
             destruction_list=list_review.destruction_list,
             user=list_review.destruction_list.author,
-            message=_("Destruction list has been reviewed by %(author)s")
-            % {"author": list_review.author},
+            message=message,
         )
 
         destruction_list = self.get_destruction_list()

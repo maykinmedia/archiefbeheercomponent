@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
+from django.utils.translation import gettext as _
 
 from rma.accounts.tests.factories import UserFactory
 from rma.notifications.models import Notification
@@ -63,6 +64,4 @@ class CreateDestructionListTests(TestCase):
         # check that notifications were sent
         notification = Notification.objects.get()
         self.assertEqual(notification.user, destruction_list.assignee)
-        self.assertEqual(
-            notification.message, "You are assigned to the destruction list"
-        )
+        self.assertEqual(notification.message, _("You are assigned for review."))
