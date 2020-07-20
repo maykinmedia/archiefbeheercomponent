@@ -1,14 +1,16 @@
 from unittest.mock import patch
 
-from django.test import TestCase, TransactionTestCase
+from django.test import TestCase
 from django.urls import reverse
 
+from django_capture_on_commit_callbacks import capture_on_commit_callbacks
+from django_webtest import WebTest
 from timeline_logger.models import TimelineLog
 
 from rma.accounts.tests.factories import UserFactory
 from rma.notifications.models import Notification
 
-from ..constants import ListItemStatus, Suggestion
+from ..constants import ListItemStatus, ListStatus, Suggestion
 from ..models import DestructionList, DestructionListItem
 from .factories import (
     DestructionListAssigneeFactory,
@@ -25,14 +27,14 @@ MANAGEMENT_FORM_DATA = {
 }
 
 
-class DestructionListDetailTests(TransactionTestCase):
+@patch("rma.destruction.views.update_zaken.delay")
+class DestructionListUpdateTests(TestCase):
     def setUp(self) -> None:
         super().setUp()
 
         self.user = UserFactory(role__can_start_destruction=True)
         self.client.force_login(self.user)
 
-    @patch("rma.destruction.views.update_zaken.delay")
     def test_update_destruction_list(self, m):
         destruction_list = DestructionListFactory.create(
             author=self.user, assignee=self.user
@@ -64,7 +66,8 @@ class DestructionListDetailTests(TransactionTestCase):
         }
         data.update(MANAGEMENT_FORM_DATA)
 
-        response = self.client.post(url, data=data)
+        with capture_on_commit_callbacks(execute=True) as callbacks:
+            response = self.client.post(url, data=data)
 
         self.assertRedirects(response, reverse("destruction:record-manager-list"))
 
@@ -96,6 +99,7 @@ class DestructionListDetailTests(TransactionTestCase):
         )
 
         # check starting update task
+        self.assertEqual(len(callbacks), 1)
         m.assert_called_once_with(
             [
                 (
@@ -107,3 +111,101 @@ class DestructionListDetailTests(TransactionTestCase):
                 )
             ]
         )
+
+    def test_abort_destruction_list(self, m):
+        destruction_list = DestructionListFactory.create(
+            author=self.user, assignee=self.user
+        )
+        list_items = DestructionListItemFactory.create_batch(
+            3, destruction_list=destruction_list
+        )
+        url = reverse("destruction:record-manager-detail", args=[destruction_list.id])
+        data = {"abort": "abort"}
+        data.update(MANAGEMENT_FORM_DATA)
+        for i, list_item in enumerate(list_items):
+            data.update(
+                {
+                    f"items-{i}-id": list_item.id,
+                    f"items-{i}-action": "",
+                    f"items-{i}-archiefnominatie": "blijvend_bewaren",
+                    f"items-{i}-archiefactiedatum": "2020-06-17",
+                }
+            )
+
+        # with capture_on_commit_callbacks(execute=True) as callbacks:
+        response = self.client.post(url, data=data)
+
+        self.assertRedirects(response, reverse("destruction:record-manager-list"))
+
+        # can't refresh_from_db because of fsm protection
+        destruction_list = DestructionList.objects.get(id=destruction_list.id)
+        self.assertEqual(destruction_list.assignee, None)
+        self.assertEqual(destruction_list.status, ListStatus.completed)
+
+        # check items statuses
+        for item in list_items:
+            list_item = DestructionListItem.objects.get(id=item.id)
+            self.assertEqual(list_item.status, ListItemStatus.removed)
+
+        # check log
+        timeline_log = TimelineLog.objects.get()
+        self.assertEqual(timeline_log.user, self.user)
+        self.assertEqual(timeline_log.template, "destruction/logs/aborted.txt")
+
+        # check no zaken update
+        m.assert_not_called()
+
+
+class DestructionListDetailTests(WebTest):
+    """
+    check that the user can update DL if they are the author and the current assignee of DL
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+
+        cls.user = UserFactory(role__can_start_destruction=True)
+
+    def setUp(self) -> None:
+        super().setUp()
+
+        self.app.set_user(self.user)
+
+    def test_can_update(self):
+        destruction_list = DestructionListFactory.create(
+            author=self.user, assignee=self.user
+        )
+        url = reverse("destruction:record-manager-detail", args=[destruction_list.id])
+
+        response = self.app.get(url)
+
+        self.assertEqual(response.status_code, 200)
+
+        submit_btn = response.html.find("button", type="submit")
+        self.assertIsNotNone(submit_btn)
+
+    def test_author_can_not_update(self):
+        destruction_list = DestructionListFactory.create(author=self.user)
+        url = reverse("destruction:record-manager-detail", args=[destruction_list.id])
+
+        response = self.app.get(url)
+
+        self.assertEqual(response.status_code, 200)
+
+        submit_btn = response.html.find("button", type="submit")
+        self.assertIsNone(submit_btn)
+
+    def test_assignee_can_not_update(self):
+        destruction_list = DestructionListFactory.create()
+        DestructionListAssigneeFactory.create(
+            destruction_list=destruction_list, assignee=self.user
+        )
+        url = reverse("destruction:record-manager-detail", args=[destruction_list.id])
+
+        response = self.app.get(url)
+
+        self.assertEqual(response.status_code, 200)
+
+        submit_btn = response.html.find("button", type="submit")
+        self.assertIsNone(submit_btn)

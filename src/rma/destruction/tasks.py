@@ -137,8 +137,11 @@ def update_zaak_from_list_item(list_item_id: str, archive_data: dict):
         )
         return
 
+    review = list_item.item_reviews.order_by("id").first()
+    audit_comment = review.text if review else None
+
     try:
-        zaak = update_zaak(list_item.zaak, archive_data)
+        zaak = update_zaak(list_item.zaak, archive_data, audit_comment)
     except ClientError as exc:
         logger.warning(
             "Destruction list item %r has failed during execution with error: %r",

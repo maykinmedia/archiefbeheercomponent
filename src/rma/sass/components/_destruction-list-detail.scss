@@ -7,9 +7,13 @@
     text-align: center;
   }
 
-  @include element("btn") {
+  @include element("btns") {
     position: absolute;
     right: 1em;
+
+    .btn + .btn {
+      margin-left: 0.5em;
+    }
   }
 
   @include element("review") {

@@ -2,4 +2,6 @@ import React from "react";
 
 const FormsetConfigContext = React.createContext({});
 
-export { FormsetConfigContext };
+const CanUpdateContext = React.createContext(false);
+
+export { FormsetConfigContext, CanUpdateContext };

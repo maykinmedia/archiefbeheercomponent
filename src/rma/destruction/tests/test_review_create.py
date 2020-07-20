@@ -1,7 +1,9 @@
 from unittest.mock import patch
 
-from django.test import TestCase, TransactionTestCase
+from django.test import TestCase
 from django.urls import reverse
+
+from django_capture_on_commit_callbacks import capture_on_commit_callbacks
 
 from rma.accounts.tests.factories import UserFactory
 from rma.notifications.models import Notification
@@ -108,7 +110,7 @@ class ReviewCreateTests(DLMixin, TestCase):
     def test_create_review_change(self):
         destruction_list = self._create_destruction_list()
         next_assignee = DestructionListAssigneeFactory.create(
-            destruction_list=destruction_list
+            destruction_list=destruction_list, assignee__role=self.user.role
         )
         items = destruction_list.items.order_by("id").all()
 
@@ -208,7 +210,7 @@ class ReviewCreateTests(DLMixin, TestCase):
         m.assert_not_called()
 
 
-class TransactionReviewCreateTests(DLMixin, TransactionTestCase):
+class SendTaskReviewCreateTests(DLMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()
 
@@ -228,8 +230,10 @@ class TransactionReviewCreateTests(DLMixin, TransactionTestCase):
             "status": ReviewStatus.approved,
             "text": "some comment",
         }
-
-        response = self.client.post(url, data=data)
+        with capture_on_commit_callbacks(execute=True) as callbacks:
+            response = self.client.post(url, data=data)
 
         self.assertRedirects(response, reverse("destruction:reviewer-list"))
+
+        self.assertEqual(len(callbacks), 1)
         m.assert_called_once_with(destruction_list.id)

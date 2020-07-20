@@ -16,7 +16,7 @@ from extra_views import (
 )
 from timeline_logger.models import TimelineLog
 
-from rma.accounts.mixins import RoleRequiredMixin
+from rma.accounts.mixins import AuthorOrAssigneeRequiredMixin, RoleRequiredMixin
 from rma.notifications.models import Notification
 
 from .constants import ListItemStatus, Suggestion
@@ -142,6 +142,10 @@ class ReviewCreateView(RoleRequiredMixin, UserPassesTestMixin, CreateWithInlines
     role_permission = "can_review_destruction"
 
     def test_func(self):
+        allowed = super().test_func()
+        if allowed is False:
+            return allowed
+
         destruction_list = self.get_destruction_list()
         if not destruction_list.assignees.filter(assignee=self.request.user).exists():
             return False
@@ -220,17 +224,22 @@ class DestructionListItemInline(InlineFormSetFactory):
     form_class = ListItemForm
 
 
-class DestructionListDetailView(RoleRequiredMixin, UpdateWithInlinesView):
+class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlinesView):
     model = DestructionList
     fields = []
     inlines = [DestructionListItemInline]
     template_name = "destruction/destructionlist_detail.html"
     success_url = reverse_lazy("destruction:record-manager-list")
-    role_permission = "can_start_destruction"
+
+    def get_destruction_list(self):
+        return self.get_object()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         formset = context["inlines"][0]
+        dl = self.get_object()
+        can_update = self.request.user == dl.assignee == dl.author
 
         context.update(
             {
@@ -241,15 +250,37 @@ class DestructionListDetailView(RoleRequiredMixin, UpdateWithInlinesView):
                         for field in formset.management_form
                     },
                 },
+                "can_update": can_update,
             }
         )
         return context
+
+    def abort_destruction_list(self, destruction_list):
+        list_items = destruction_list.items.filter(status=ListItemStatus.suggested)
+        for list_item in list_items:
+            list_item.remove()
+            list_item.save()
+
+        destruction_list.process()
+        destruction_list.complete()
+        destruction_list.save()
+
+        TimelineLog.log_from_request(
+            self.request,
+            destruction_list,
+            template="destruction/logs/aborted.txt",
+            n_items=destruction_list.items.count(),
+        )
 
     @transaction.atomic
     def forms_valid(self, form, inlines):
         response = super().forms_valid(form, inlines)
 
         destruction_list = form.instance
+
+        if "abort" in self.request.POST:
+            self.abort_destruction_list(destruction_list)
+            return response
 
         # log
         TimelineLog.log_from_request(

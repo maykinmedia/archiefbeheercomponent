@@ -17,7 +17,11 @@ from ..tasks import (
     update_zaak_from_list_item,
     update_zaken,
 )
-from .factories import DestructionListFactory, DestructionListItemFactory
+from .factories import (
+    DestructionListFactory,
+    DestructionListItemFactory,
+    DestructionListItemReviewFactory,
+)
 
 
 class ProcessListTests(TestCase):
@@ -130,6 +134,9 @@ class UpdateZaakTests(TestCase):
     )
     def test_update_zaak_from_list_item(self, mock_update_zaak):
         list_item = DestructionListItemFactory.create(status=ListItemStatus.removed)
+        DestructionListItemReviewFactory.create(
+            destruction_list_item=list_item, text="Change archive params"
+        )
         archive_data = {
             "archiefnominatie": "blijvend_bewaren",
             "archiefactiedatum": "2020-06-17",
@@ -142,7 +149,9 @@ class UpdateZaakTests(TestCase):
         self.assertEqual(log.extra_data, {"zaak": "foobar"})
         self.assertEqual(log.template, "destruction/logs/item_update_succeeded.txt")
 
-        mock_update_zaak.assert_called_once_with(list_item.zaak, archive_data)
+        mock_update_zaak.assert_called_once_with(
+            list_item.zaak, archive_data, "Change archive params"
+        )
 
     @patch(
         "rma.destruction.tasks.update_zaak",
@@ -164,4 +173,4 @@ class UpdateZaakTests(TestCase):
         self.assertTrue("something went wrong" in extra_data["error"])
         self.assertEqual(log.template, "destruction/logs/item_update_failed.txt")
 
-        mock_update_zaak.assert_called_once_with(list_item.zaak, archive_data)
+        mock_update_zaak.assert_called_once_with(list_item.zaak, archive_data, None)

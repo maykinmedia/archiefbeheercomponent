@@ -2,9 +2,16 @@
 
 {% block content %}
 <article class="destruction-list-detail">
-<form action="" method="post">
-    {% csrf_token %}
-    <button type="submit" class="destruction-list-detail__btn btn">Submit</button>
+    <form action="" method="post">
+        {% csrf_token %}
+
+        {% if can_update %}
+            <div class="destruction-list-detail__btns">
+                <button type="submit" class="btn" name="submit" value="submit">Submit</button>
+                <button type="submit" class="btn" name="abort" value="abort">Abort</button>
+            </div>
+        {% endif %}
+
         <header class="destruction-list-detail__header">
             <h1 class="title">Lijst "{{ form.instance.name }}"</h1>
             <span>created {{ form.instance.created }}</span>
@@ -38,6 +45,7 @@
         <div
             id="react-destruction-list-detail"
             data-items-url="{% url 'destruction:fetch-list-items' form.instance.id %}"
+            data-can-update="{{ can_update }}"
         >
         {#             empty on purpose - react managed #}
         </div>

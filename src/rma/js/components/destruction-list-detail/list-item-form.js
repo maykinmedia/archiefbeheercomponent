@@ -1,13 +1,14 @@
 import React, {useContext, useState} from "react";
 
 import {HiddenInput} from "../../forms/inputs";
-import {FormsetConfigContext} from "./context";
+import {FormsetConfigContext, CanUpdateContext} from "./context";
 import {ListItemModal} from "./list-item-modal";
 import {ActionIcon} from "../../forms/action-icon";
 
 
 const ListItemForm = ({ index, data }) => {
     const formsetConfig = useContext(FormsetConfigContext);
+    const canUpdate = useContext(CanUpdateContext);
     const { listItem, zaak }  = data;
 
     const prefix = formsetConfig.prefix;
@@ -16,10 +17,29 @@ const ListItemForm = ({ index, data }) => {
 
     // modal
     const [modalIsOpen, setIsOpen] = useState(false);
-    const openModal = () => setIsOpen(true);
+    const openModal = () => {
+        if (canUpdate) {
+            setIsOpen(true);
+        }
+    };
 
     const [action, setAction] = useState("");
-    const extraClasses = action ? " list-item--disabled" : (listItem.review_suggestion ? " list-item--highlighted" : "");
+
+    const getExtraClasses = () => {
+        if (!canUpdate) {
+            return "";
+        }
+
+        let classes = " list-item--clickable";
+
+        if (action) {
+            classes += " list-item--disabled";
+        } else if (listItem.review_suggestion) {
+            classes += " list-item--disabled";
+        }
+
+        return classes;
+    };
 
     // archive inputs
     const [archiefnominatie, setArchiefnominatie] = useState(zaak.archiefnominatie);
@@ -29,7 +49,7 @@ const ListItemForm = ({ index, data }) => {
     return (
         <>
             <tr
-                className={"list-item list-item--clickable" + extraClasses}
+                className={"list-item" + getExtraClasses()}
                 onClick={openModal}
             >
                 <td className="table__hidden">
