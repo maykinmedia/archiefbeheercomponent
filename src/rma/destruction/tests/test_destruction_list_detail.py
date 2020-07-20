@@ -2,6 +2,7 @@ from unittest.mock import patch
 
 from django.test import TestCase
 from django.urls import reverse
+from django.utils.translation import gettext as _
 
 from django_capture_on_commit_callbacks import capture_on_commit_callbacks
 from django_webtest import WebTest
@@ -94,9 +95,7 @@ class DestructionListUpdateTests(TestCase):
         notification = Notification.objects.get()
         self.assertEqual(notification.user, assignee.assignee)
         self.assertEqual(notification.destruction_list, destruction_list)
-        self.assertEqual(
-            notification.message, "You are assigned to the destruction list"
-        )
+        self.assertEqual(notification.message, _("You are assigned for review."))
 
         # check starting update task
         self.assertEqual(len(callbacks), 1)

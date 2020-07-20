@@ -2,6 +2,7 @@ from unittest.mock import patch
 
 from django.test import TestCase
 from django.urls import reverse
+from django.utils.translation import gettext as _
 
 from django_capture_on_commit_callbacks import capture_on_commit_callbacks
 
@@ -100,12 +101,11 @@ class ReviewCreateTests(DLMixin, TestCase):
         self.assertEqual(notifications.count(), 2)
         notif_review = notifications.get(user=destruction_list.author)
         self.assertEqual(
-            notif_review.message, f"Destruction list has been reviewed by {self.user}"
+            notif_review.message,
+            _("{author} has reviewed the destruction list.").format(author=self.user),
         )
         notif_assign = notifications.get(user=next_assignee.assignee)
-        self.assertEqual(
-            notif_assign.message, "You are assigned to the destruction list"
-        )
+        self.assertEqual(notif_assign.message, _("You are assigned for review."))
 
     def test_create_review_change(self):
         destruction_list = self._create_destruction_list()
@@ -157,17 +157,15 @@ class ReviewCreateTests(DLMixin, TestCase):
         self.assertEqual(timeline_log.template, "destruction/logs/review_created.txt")
 
         #  check notifications
-        notifications = Notification.objects.order_by("message").all()
+        notifications = Notification.objects.order_by("created").all()
         self.assertEqual(notifications.count(), 2)
         self.assertEqual(notifications[0].user, destruction_list.author)
         self.assertEqual(
             notifications[0].message,
-            f"Destruction list has been reviewed by {self.user}",
+            _("{author} has reviewed the destruction list.").format(author=self.user),
         )
         self.assertEqual(notifications[1].user, destruction_list.author)
-        self.assertEqual(
-            notifications[1].message, "You are assigned to the destruction list"
-        )
+        self.assertEqual(notifications[1].message, _("There is a review to process."))
 
     @patch("rma.destruction.views.process_destruction_list.delay")
     def test_create_review_approve_last(self, m):
@@ -203,7 +201,8 @@ class ReviewCreateTests(DLMixin, TestCase):
         notification = Notification.objects.get()
         self.assertEqual(notification.user, destruction_list.author)
         self.assertEqual(
-            notification.message, f"Destruction list has been reviewed by {self.user}"
+            notification.message,
+            _("{author} has reviewed the destruction list.").format(author=self.user),
         )
 
         # NOT called since the test transaction should not commit

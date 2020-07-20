@@ -86,12 +86,17 @@ class DestructionList(models.Model):
 
     def assign(self, assignee):
         self.assignee = assignee
+        is_reviewer = assignee != self.author
 
         if assignee:
+            if is_reviewer:
+                message = _("You are assigned for review.")
+            else:
+                message = _("There is a review to process.")
+
+            # TODO: this should only go through if the object is saved!
             Notification.objects.create(
-                destruction_list=self,
-                user=assignee,
-                message=_("You are assigned to the destruction list"),
+                destruction_list=self, user=assignee, message=message,
             )
 
     def last_review(self):

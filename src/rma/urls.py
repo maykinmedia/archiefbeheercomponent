@@ -40,7 +40,7 @@ urlpatterns = [
     path("adfs/", include("django_auth_adfs.urls")),
     # Simply show the master template.
     path("", EnterView.as_view(), name="entry"),
-    path("destruction/", include("rma.destruction.urls")),
+    path("vernietigen/", include("rma.destruction.urls")),
     path("audit/", include("rma.audit.urls")),
 ]
 

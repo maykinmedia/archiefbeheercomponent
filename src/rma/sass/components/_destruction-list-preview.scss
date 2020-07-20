@@ -52,24 +52,6 @@
     display: flex;
   }
 
-  @include element("btn") {
-    display: flex;
-    padding: 0.25em 0.5em;
-    margin-left: 1em;
-    margin-top: 0.25em;
-    background: $color-text--light;
-    border: solid 1px transparent;
-    border-radius: 1em;
-    cursor: pointer;
-    color: #fefefe;
-    text-decoration: none;
-    opacity: 0.75;
-
-    &:hover {
-      opacity: 1;
-    }
-  }
-
   & + & {
     margin-top: 1em;
   }

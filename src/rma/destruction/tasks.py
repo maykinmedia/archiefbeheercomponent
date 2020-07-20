@@ -2,6 +2,7 @@ import logging
 import traceback
 
 from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
 from celery import chain
 from timeline_logger.models import TimelineLog
@@ -106,7 +107,7 @@ def complete_and_notify(list_id):
     notification = Notification.objects.create(
         destruction_list=destruction_list,
         user=destruction_list.author,
-        message="Destruction list has been processed",
+        message=_("Processing of the list is complete."),
     )
     return notification.id
 
