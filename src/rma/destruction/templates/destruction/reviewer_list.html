@@ -54,7 +54,7 @@
 
                     <span class="destruction-list-preview__indicators">
                     {% if object.assignee == request.user %}
-                        <a href="{% url 'destruction:reviewer-create' object.id %}" class="destruction-list-preview__btn">Beoordelen</a>
+                        <a href="{% url 'destruction:reviewer-create' object.id %}" class="btn btn--secondary">{% trans "Review" %}</a>
                     {% endif %}
                     </span>
                 </div>
