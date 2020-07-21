@@ -114,6 +114,35 @@ class ProcessListItemTests(TestCase):
 
         mock_remove_zaken.assert_called_once_with(list_item.zaak)
 
+    @patch("rma.destruction.tasks.remove_zaak")
+    @patch("rma.destruction.tasks.fetch_zaak")
+    def test_process_list_item_status_update_processing(
+        self, mock_fetch_zaak, mock_remove_zaken
+    ):
+        """
+        Test that the db state is updated.
+        """
+        list_item = DestructionListItemFactory.create()
+
+        def assert_list_item_status(url: str):
+            # hook into mock call to make the assertion
+            _list_item = DestructionListItem.objects.get(pk=list_item.pk)
+            self.assertEqual(_list_item.status, ListItemStatus.processing)
+            return {"identificatie": "foobar"}
+
+        mock_fetch_zaak.side_effect = assert_list_item_status
+
+        process_list_item(list_item.id)
+
+    @patch("rma.destruction.tasks.fetch_zaak", side_effect=ClientError("Oopsiewoopsie"))
+    def test_process_list_item_fetch_zaak_fail_recorded(self, mock_fetch_zaak):
+        list_item = DestructionListItemFactory.create()
+
+        process_list_item(list_item.id)
+
+        list_item = DestructionListItem.objects.get(pk=list_item.pk)
+        self.assertEqual(list_item.status, ListItemStatus.failed)
+
 
 class NotifyTests(TestCase):
     def test_complete_and_notify(self):
