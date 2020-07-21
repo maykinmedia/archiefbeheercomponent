@@ -82,7 +82,10 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, csrftoken }) => 
                         <ZaaktypeSelect
                             zaaktypen={zaaktypen}
                             selectedZaaktypen={selectedZaaktypen}
-                            setSelectedZaaktypen={setSelectedZaaktypen}
+                            setSelectedZaaktypen={(selected) => {
+                                setIsLoaded(false);
+                                setSelectedZaaktypen(selected);
+                            }}
                         />
                     </div>
                     <div className="filter-group__item">
@@ -93,6 +96,7 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, csrftoken }) => 
                             onBlur={(e) => {
                                 const eventStartdatum = e.target.value;
                                 if (eventStartdatum !== selectedStartdatum ) {
+                                    setIsLoaded(false);
                                     setSelectedStartdatum(eventStartdatum);
                                 }
                             }}

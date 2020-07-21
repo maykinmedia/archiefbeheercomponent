@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CheckboxInput } from "../../forms/inputs";
+import { Loader } from '../loader';
 
 
 const displayZaaktype = (zaaktype) => {
@@ -19,7 +20,7 @@ function ZakenTable({ zaken, isLoaded, error, checkboxes, setCheckboxes }) {
     }
 
     if (!isLoaded) {
-        return <div>Loading...</div>;
+        return <Loader />;
     }
 
     return (
