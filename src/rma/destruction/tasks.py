@@ -48,6 +48,7 @@ def process_destruction_list(list_id):
 def process_list_item(list_item_id):
     list_item = DestructionListItem.objects.get(id=list_item_id)
     list_item.process()
+    list_item.save()
 
     try:
         zaak = fetch_zaak(list_item.zaak)
@@ -60,6 +61,7 @@ def process_list_item(list_item_id):
         )
 
         list_item.fail()
+        list_item.save()
         TimelineLog.objects.create(
             content_object=list_item,
             template="destruction/logs/item_destruction_failed.txt",
