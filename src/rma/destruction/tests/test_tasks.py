@@ -25,10 +25,10 @@ from .factories import (
 )
 
 
+@patch("rma.destruction.tasks.chain")
+@patch("rma.destruction.tasks.complete_and_notify")
+@patch("rma.destruction.tasks.process_list_item")
 class ProcessListTests(TestCase):
-    @patch("rma.destruction.tasks.chain")
-    @patch("rma.destruction.tasks.complete_and_notify")
-    @patch("rma.destruction.tasks.process_list_item")
     def test_process_list(self, mock_task_item, mock_notify, mock_chain):
         destruction_list = DestructionListFactory.create()
         list_items = DestructionListItemFactory.create_batch(
@@ -42,6 +42,29 @@ class ProcessListTests(TestCase):
         self.assertEqual(destruction_list.status, ListStatus.processing)
 
         list_items_ids = [(list_item.id,) for list_item in list_items]
+
+        mock_chain.assert_called_once_with(
+            mock_task_item.chunks(list_items_ids, settings.ZAKEN_PER_TASK).group(),
+            mock_notify.si(destruction_list.id),
+        )
+
+    def test_process_list_with_removed_items(
+        self, mock_task_item, mock_notify, mock_chain
+    ):
+        destruction_list = DestructionListFactory.create()
+        list_item_1, list_item_2 = DestructionListItemFactory.create_batch(
+            2, destruction_list=destruction_list
+        )
+        list_item_1.remove()
+        list_item_1.save()
+
+        process_destruction_list(destruction_list.id)
+
+        # can't use refresh_from_db() because of django-fsm
+        destruction_list = DestructionList.objects.get(id=destruction_list.id)
+        self.assertEqual(destruction_list.status, ListStatus.processing)
+
+        list_items_ids = [(list_item_2.id,)]
 
         mock_chain.assert_called_once_with(
             mock_task_item.chunks(list_items_ids, settings.ZAKEN_PER_TASK).group(),
