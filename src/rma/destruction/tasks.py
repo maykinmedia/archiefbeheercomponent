@@ -34,7 +34,10 @@ def process_destruction_list(list_id):
     destruction_list.save()
 
     list_item_ids = [
-        (list_item.id,) for list_item in destruction_list.items.order_by("id").all()
+        (list_item.id,)
+        for list_item in destruction_list.items.filter(status=ListItemStatus.suggested)
+        .order_by("id")
+        .all()
     ]
     chunk_tasks = process_list_item.chunks(list_item_ids, settings.ZAKEN_PER_TASK)
     notify_task = complete_and_notify.si(list_id)
