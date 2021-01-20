@@ -1,4 +1,4 @@
-CREATE USER {{ project_name|lower }};
-CREATE DATABASE {{ project_name|lower }};
-GRANT ALL PRIVILEGES ON DATABASE {{ project_name|lower }} TO {{ project_name|lower }};
+CREATE USER rma;
+CREATE DATABASE rma;
+GRANT ALL PRIVILEGES ON DATABASE rma TO rma;
 
