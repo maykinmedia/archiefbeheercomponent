@@ -191,6 +191,10 @@ MEDIA_URL = "/media/"
 
 DEFAULT_LOGO = f"{STATIC_URL}img/logo-placeholder.png"
 
+# Fixtures
+
+FIXTURE_DIRS = config("FIXTURE_DIRS", [os.path.join(DJANGO_PROJECT_DIR, "fixtures")])
+
 #
 # Sending EMAIL
 #

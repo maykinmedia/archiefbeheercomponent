@@ -1,5 +1,3 @@
-/usr/local/lib/python3.8/site-packages/django/core/management/commands/dumpdata.py:153: ProxyModelWarning: admin_index.ContentTypeProxy is a proxy model and won't be serialized.
-  warnings.warn(
 [
 {
     "model": "admin_index.appgroup",
