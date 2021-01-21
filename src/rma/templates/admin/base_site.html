@@ -1,7 +1,7 @@
 {% extends "admin/base.html" %}
 {% load i18n static hijack_tags %}
 
-{% block title %}{{ title }} | {{ site_title|default:_('Administration') }}{% endblock %}
+{% block title %}{{ title }} | {{ settings.PROJECT_NAME }}{% endblock %}
 
 {% block extrastyle %}
     {{ block.super }}
@@ -10,13 +10,31 @@
 {% endblock %}
 
 {% block branding %}
-    <h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Administration') }}</a></h1>
+    <h1 id="site-name"><a href="{% url 'admin:index' %}">{{ settings.PROJECT_NAME }} {% trans 'Administration' %}</a></h1>
+{% endblock %}
+
+{% block welcome-msg %}
+    {% trans 'Logged in as' %}
+    <strong>{% firstof user.get_short_name user.get_username %}</strong>.
+{% endblock %}
+
+{% block userlinks %}
+    {% if site_url %}
+        <a href="{{ site_url }}">{{ settings.SITE_TITLE }}</a> /
+    {% endif %}
+    {% if user.has_usable_password %}
+    <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a> /
+    {% endif %}
+    <a href="{% url 'admin:logout' %}">{% trans 'Log out' %}</a>
 {% endblock %}
 
 {% block nav-global %}{% endblock %}
 
+
 {% block messages %}
-    {% hijack_notification %}
+    {% if settings.ENVIRONMENT_SHOWN_IN_ADMIN %}
+        <div class="env env-{{ settings.ENVIRONMENT }}">{{ settings.ENVIRONMENT }}</div>
+    {% endif %}
     {{ block.super }}
 {% endblock %}
 
