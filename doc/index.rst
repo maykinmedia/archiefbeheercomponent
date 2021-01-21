@@ -37,6 +37,7 @@ The RMA supports all backends implementing the 1.0.x `API's voor Zaakgericht Wer
 
     destruction
     configuration
+    quickstart
 
 
 Indices and tables
