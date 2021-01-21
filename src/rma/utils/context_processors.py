@@ -7,6 +7,7 @@ def settings(request):
         "ENVIRONMENT",
         "SHOW_ALERT",
         "PROJECT_NAME",
+        "SITE_TITLE",
     )
 
     context = {
