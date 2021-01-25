@@ -14,8 +14,7 @@ services:
 
   web:
     image: maykinmedia/record-management-app:latest
-    image: maykinmedia/record-management-app:latest
-    environment:
+    environment: &web_env
       - DJANGO_SETTINGS_MODULE=rma.conf.docker
       - ALLOWED_HOSTS=*
       - DEBUG=True
@@ -25,6 +24,14 @@ services:
       - SECRET_KEY=${SECRET_KEY:-145cqii@)+z$b&9dcmdctpm+&be1#9zslxm+x)0+u*^qf!qz(6}
     ports:
       - 8000:8000
+    depends_on:
+      - db
+      - redis
+
+  celery:
+    image: maykinmedia/record-management-app:latest
+    environment: *web_env
+    command: /celery_worker.sh
     depends_on:
       - db
       - redis
