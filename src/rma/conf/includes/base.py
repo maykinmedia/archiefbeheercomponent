@@ -312,7 +312,7 @@ X_FRAME_OPTIONS = "DENY"
 #
 # Custom settings
 #
-PROJECT_NAME = "rma"
+PROJECT_NAME = "RMA"
 SITE_TITLE = "Record Management"
 
 ENVIRONMENT = None
