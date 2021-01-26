@@ -29,6 +29,21 @@ system actions.
 
 The RMA supports all backends implementing the 1.0.x `API's voor Zaakgericht Werken`_.
 
+Quickstart
+==========
+
+A `docker-compose-quickstart.yml`_ is provided to get up and running quickly. To run the container:
+
+    .. code:: shell
+
+        $ wget https://raw.githubusercontent.com/maykinmedia/record-management-app/master/docker-compose-quickstart.yml
+        $ docker-compose -f docker-compose-quickstart.yml up -d
+        $ docker-compose exec web src/manage.py createsuperuser
+
+Then, navigate to ``http://127.0.0.1:8000/`` and log in with the credentials created.
+
+.. _docker-compose-quickstart.yml: docker-compose-quickstart.yml
+
 Documentation
 =============
 
