@@ -1,61 +1,105 @@
 [
 {
     "model": "admin_index.appgroup",
-    "pk": 3,
     "fields": {
         "order": 2,
         "name": "Authenticatie en autorisatie",
         "slug": "auth",
         "models": [
-            15,
-            14,
-            4
+            [
+                "accounts",
+                "role"
+            ],
+            [
+                "accounts",
+                "user"
+            ],
+            [
+                "auth",
+                "group"
+            ]
         ]
     }
 },
 {
     "model": "admin_index.appgroup",
-    "pk": 5,
     "fields": {
         "order": 4,
         "name": "Vernietiging",
         "slug": "destruction",
         "models": [
-            16,
-            20,
-            17,
-            19,
-            18
+            [
+                "destruction",
+                "destructionlist"
+            ],
+            [
+                "destruction",
+                "destructionlistassignee"
+            ],
+            [
+                "destruction",
+                "destructionlistitem"
+            ],
+            [
+                "destruction",
+                "destructionlistitemreview"
+            ],
+            [
+                "destruction",
+                "destructionlistreview"
+            ]
         ]
     }
 },
 {
     "model": "admin_index.appgroup",
-    "pk": 10,
     "fields": {
         "order": 9,
         "name": "Configuratie",
         "slug": "configuratie",
         "models": [
-            6,
-            21,
-            8,
-            13
+            [
+                "admin_index",
+                "appgroup"
+            ],
+            [
+                "destruction",
+                "archiveconfig"
+            ],
+            [
+                "django_auth_adfs_db",
+                "adfsconfig"
+            ],
+            [
+                "zgw_consumers",
+                "service"
+            ]
         ]
     }
 },
 {
     "model": "admin_index.appgroup",
-    "pk": 11,
     "fields": {
         "order": 10,
         "name": "Logs",
         "slug": "logs",
         "models": [
-            10,
-            11,
-            22,
-            12
+            [
+                "axes",
+                "accessattempt"
+            ],
+            [
+                "axes",
+                "accesslog"
+            ],
+            [
+                "notifications",
+                "notification"
+            ],
+            [
+                "timeline_logger",
+                "timelinelog"
+            ]
         ]
     }
 }
