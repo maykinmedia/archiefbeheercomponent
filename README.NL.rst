@@ -15,19 +15,17 @@ Ontwikkeld door `Maykin Media B.V.`_ voor Gemeente Utrecht en Gemeente Delft.
 Introductie
 ===========
 
-Record management is the practice of destroying data-records that have met their
-end-of-life time. "Zaakgericht werken" prescribes the archiving terms for cases that
-have been brought to an end.
+Archiefbeheer draait om het vernietigen van gegevens die aan het einde van hun levensduur zijn gekomen.
+Zaakgericht werken schrijft de archiveringsvoorwaarden voor, voor zaken die zijn beëindigd.
 
-The RMA provides functionality for record managers to schedule destruction of cases
-according to the archiving parameters. It implements a multi-step, multi-role accordance
-process.
+De Record Management App (RMA) biedt functionaliteit voor archiefbeheer om de vernietiging van zaken in te plannen
+volgens de archiveringsvoorwaarden. De RMA volgt een proces dat uit meerdere stappen bestaat, over verschillende rollen.
 
-Attention is paid to the user experience of the staff using the app, with notifications
-to inform you of pending work-load, full audit logging and traceability of user and
-system actions.
+Er is aandacht besteed aan de gebruikerservaring van de beheerders die de app gebruiken, met notificaties
+om te informeren over lopende taken, volledige auditregistratie en traceerbaarheid van gebruiker- en
+systeemacties.
 
-The RMA supports all backends implementing the 1.0.x `API's voor Zaakgericht Werken`_.
+De RMA ondersteunt alle backends die de 1.0.x `API's voor Zaakgericht Werken`_ implementeren.
 
 Documentatie
 ============
