@@ -1,5 +1,8 @@
-Quickstart
-==========
+.. _quickstart:
+
+=======================
+Quickstart Installation
+=======================
 
 A ``docker-compose-quickstart.yml`` file is available to get the app up and running in minutes.
 It contains 'convenience' settings, which means that no additional configuration is needed to run the app. Therefore,
@@ -31,3 +34,4 @@ Getting started with Docker quickstart
         $ docker-compose exec web src/manage.py createsuperuser
 
 4. Navigate to ``http://127.0.0.1:8000`` and use the credentials created above to log in.
+

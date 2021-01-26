@@ -1,4 +1,4 @@
-.. _destruction_process:
+.. _destruction:
 
 ===================
 Destruction process
