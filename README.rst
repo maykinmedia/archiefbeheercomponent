@@ -7,6 +7,8 @@ Record Management App
 :Keywords: Common Ground, Record Management, Archiveren
 :PythonVersion: 3.8
 
+|build-status| |code-quality| |black| |python-versions|
+
 Zaakgericht record-management in het Common Ground landschap.
 
 Ontwikkeld door `Maykin Media B.V.`_ voor Gemeente Utrecht.
@@ -59,3 +61,19 @@ References
 
 .. _Maykin Media B.V.: https://www.maykinmedia.nl
 .. _API's voor Zaakgericht Werken: https://github.com/VNG-Realisatie/gemma-zaken
+
+
+.. |build-status| image:: https://github.com/maykinmedia/record-management-app/workflows/Run%20CI/badge.svg?branch=master
+    :alt: Build status
+    :target: https://github.com/maykinmedia/record-management-app/actions?query=branch%3Amaster+workflow%3A%22Run+CI%22
+
+.. |black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :alt: Code style
+    :target: https://github.com/psf/black
+
+.. |python-versions| image:: https://img.shields.io/badge/python-3.8-blue.svg
+    :alt: Supported Python version
+
+.. |code-quality| image:: https://github.com/maykinmedia/record-management-app/workflows/Code%20quality%20checks/badge.svg
+     :alt: Code quality checks
+     :target: https://github.com/maykinmedia/record-management-app/actions?query=workflow%3A%22Code+quality+checks%22
