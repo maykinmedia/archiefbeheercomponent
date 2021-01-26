@@ -35,7 +35,7 @@ Instructies voor de installatie en configuratie vindt u in ``INSTALL.rst``.
 Licentie
 ========
 
-Copyright © Maykin Media, 2020
+Copyright © Maykin Media, 2021
 
 Licensed under the `EUPL`_.
 

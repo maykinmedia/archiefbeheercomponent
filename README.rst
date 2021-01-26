@@ -56,7 +56,7 @@ commands.
 License
 =======
 
-Copyright © Maykin Media, 2020
+Copyright © Maykin Media, 2021
 
 Licensed under the `EUPL`_.
 
