@@ -154,8 +154,6 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "rma.utils.context_processors.settings",
-                # REQUIRED FOR ADMIN INDEX
-                "django_admin_index.context_processors.dashboard",
             ],
             "loaders": TEMPLATE_LOADERS,
         },
@@ -190,6 +188,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
 
 DEFAULT_LOGO = f"{STATIC_URL}img/logo-placeholder.png"
+
+# Fixtures
+
+FIXTURE_DIRS = config("FIXTURE_DIRS", [os.path.join(DJANGO_PROJECT_DIR, "fixtures")])
 
 #
 # Sending EMAIL
@@ -310,7 +312,7 @@ X_FRAME_OPTIONS = "DENY"
 #
 # Custom settings
 #
-PROJECT_NAME = "rma"
+PROJECT_NAME = "RMA"
 SITE_TITLE = "Record Management"
 
 ENVIRONMENT = None
@@ -402,3 +404,6 @@ CELERY_TASK_SOFT_TIME_LIMIT = 600
 
 ZAKEN_PER_TASK = 10
 ZAKEN_PER_QUERY = 1_000_000
+
+# DJANGO-ADMIN-INDEX
+ADMIN_INDEX_SHOW_REMAINING_APPS_TO_SUPERUSERS = False
