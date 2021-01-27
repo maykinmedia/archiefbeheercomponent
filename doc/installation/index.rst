@@ -9,3 +9,4 @@ Installation
 
    quickstart
    configuration
+   demo
