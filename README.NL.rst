@@ -7,6 +7,8 @@ Record Management App
 :Keywords: Common Ground, Record Management, Archiveren
 :PythonVersion: 3.8
 
+|build-status| |code-quality| |black| |python-versions|
+
 Zaakgericht record-management in het `Common Ground`_ landschap.
 
 Ontwikkeld door `Maykin Media B.V.`_ voor Gemeente Utrecht en Gemeente Delft.
@@ -26,6 +28,22 @@ om te informeren over lopende taken, volledige auditregistratie en traceerbaarhe
 systeemacties.
 
 De RMA ondersteunt alle backends die de 1.0.x `API's voor Zaakgericht Werken`_ implementeren.
+
+Quickstart
+==========
+
+Om het startprocess van de Record management app te vereenvoudigen, is er een `docker-compose-quickstart.yml`_ beschikbaar.
+Voer de volgende commando's uit om de containers te starten:
+
+    .. code:: shell
+
+        $ wget https://raw.githubusercontent.com/maykinmedia/record-management-app/master/docker-compose-quickstart.yml
+        $ docker-compose -f docker-compose-quickstart.yml up -d
+        $ docker-compose exec web src/manage.py createsuperuser
+
+Ga daarna naar ``http://127.0.0.1:8000/`` en log in met de inloggegevens die je zojuist hebt gemaakt.
+
+.. _docker-compose-quickstart.yml: docker-compose-quickstart.yml
 
 Documentatie
 ============
@@ -51,3 +69,18 @@ Referenties
 .. _API's voor Zaakgericht Werken: https://github.com/VNG-Realisatie/gemma-zaken
 .. _`Common Ground`: https://commonground.nl/
 .. _`EUPL`: LICENSE.md
+
+.. |build-status| image:: https://github.com/maykinmedia/record-management-app/workflows/Run%20CI/badge.svg?branch=master
+    :alt: Build status
+    :target: https://github.com/maykinmedia/record-management-app/actions?query=branch%3Amaster+workflow%3A%22Run+CI%22
+
+.. |black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :alt: Code style
+    :target: https://github.com/psf/black
+
+.. |python-versions| image:: https://img.shields.io/badge/python-3.8-blue.svg
+    :alt: Supported Python version
+
+.. |code-quality| image:: https://github.com/maykinmedia/record-management-app/workflows/Code%20quality%20checks/badge.svg
+     :alt: Code quality checks
+     :target: https://github.com/maykinmedia/record-management-app/actions?query=workflow%3A%22Code+quality+checks%22
