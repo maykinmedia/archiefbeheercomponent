@@ -1,0 +1,57 @@
+[
+{
+    "model": "accounts.role",
+    "pk": 1,
+    "fields": {
+        "order": 6,
+        "name": "Functioneel beheer",
+        "organisatie_onderdeel": "",
+        "can_start_destruction": true,
+        "can_review_destruction": true,
+        "can_view_case_details": true
+    }
+},
+{
+    "model": "accounts.role",
+    "pk": 4,
+    "fields": {
+        "order": 4,
+        "name": "proces eigenaar",
+        "organisatie_onderdeel": "",
+        "can_start_destruction": false,
+        "can_review_destruction": true,
+        "can_view_case_details": true
+    }
+},
+{
+    "model": "accounts.role",
+    "pk": 5,
+    "fields": {
+        "order": 5,
+        "name": "archivaris",
+        "organisatie_onderdeel": "",
+        "can_start_destruction": false,
+        "can_review_destruction": true,
+        "can_view_case_details": false
+    }
+},
+{
+    "model": "accounts.role",
+    "pk": 6,
+    "fields": {
+        "order": 3,
+        "name": "record manager",
+        "organisatie_onderdeel": "",
+        "can_start_destruction": true,
+        "can_review_destruction": false,
+        "can_view_case_details": true
+    }
+},
+{
+    "model": "destruction.archiveconfig",
+    "pk": 1,
+    "fields": {
+        "archive_date": "2030-04-20"
+    }
+}
+]
