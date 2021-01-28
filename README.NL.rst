@@ -4,38 +4,36 @@ Record Management App
 
 :Version: 0.1.0
 :Source: https://github.com/GemeenteUtrecht/record-management-app
-:Keywords: Common Ground, Record Management, Archiving
+:Keywords: Common Ground, Record Management, Archiveren
 :PythonVersion: 3.8
 
 |build-status| |code-quality| |black| |python-versions|
 
-Record management application for "Zaakgericht werken" (case-oriented working),
-part of the `Common Ground`_ project.
+Zaakgericht record-management in het `Common Ground`_ landschap.
 
-Commissioned by the Municipality of Utrecht and Delft and developed by `Maykin Media B.V.`_.
+Ontwikkeld door `Maykin Media B.V.`_ voor Gemeente Utrecht en Gemeente Delft.
 
 
-Introduction
-============
+Introductie
+===========
 
-Record management is the practice of destroying data-records that have met their
-end-of-life time. "Zaakgericht werken" prescribes the archiving terms for cases that
-have been brought to an end.
+Archiefbeheer draait om het vernietigen van gegevens die aan het einde van hun levensduur zijn gekomen.
+Zaakgericht werken schrijft de archiveringsvoorwaarden voor, voor zaken die zijn beëindigd.
 
-The RMA provides functionality for record managers to schedule destruction of cases
-according to the archiving parameters. It implements a multi-step, multi-role accordance
-process.
+De Record Management App (RMA) biedt functionaliteit voor archiefbeheer om de vernietiging van zaken in te plannen
+volgens de archiveringsvoorwaarden. De RMA volgt een proces dat uit meerdere stappen bestaat, over verschillende rollen.
 
-Attention is paid to the user experience of the staff using the app, with notifications
-to inform you of pending work-load, full audit logging and traceability of user and
-system actions.
+Er is aandacht besteed aan de gebruikerservaring van de beheerders die de app gebruiken, met notificaties
+om te informeren over lopende taken, volledige auditregistratie en traceerbaarheid van gebruiker- en
+systeemacties.
 
-The RMA supports all backends implementing the 1.0.x `API's voor Zaakgericht Werken`_.
+De RMA ondersteunt alle backends die de 1.0.x `API's voor Zaakgericht Werken`_ implementeren.
 
 Quickstart
 ==========
 
-A `docker-compose-quickstart.yml`_ is provided to get up and running quickly. To run the container:
+Om het startprocess van de Record management app te vereenvoudigen, is er een `docker-compose-quickstart.yml`_ beschikbaar.
+Voer de volgende commando's uit om de containers te starten:
 
     .. code:: shell
 
@@ -43,25 +41,24 @@ A `docker-compose-quickstart.yml`_ is provided to get up and running quickly. To
         $ docker-compose -f docker-compose-quickstart.yml up -d
         $ docker-compose exec web src/manage.py createsuperuser
 
-Then, navigate to ``http://127.0.0.1:8000/`` and log in with the credentials created.
+Ga daarna naar ``http://127.0.0.1:8000/`` en log in met de inloggegevens die je zojuist hebt gemaakt.
 
 .. _docker-compose-quickstart.yml: docker-compose-quickstart.yml
 
-Documentation
-=============
+Documentatie
+============
 
-See ``INSTALL.rst`` for installation instructions, available settings and
-commands.
+Instructies voor de installatie en configuratie vindt u in ``INSTALL.rst``.
 
-License
-=======
+Licentie
+========
 
 Copyright © Maykin Media, 2021
 
 Licensed under the `EUPL`_.
 
-References
-==========
+Referenties
+===========
 
 * `Issues <https://github.com/GemeenteUtrecht/record-management-app/issues>`_
 * `Code <https://github.com/GemeenteUtrecht/record-management-app>`_
