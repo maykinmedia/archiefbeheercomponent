@@ -31,7 +31,7 @@
     "@babel/polyfill": "latest",
     "@babel/preset-env": "latest",
     "@babel/preset-react": "^7.10.1",
-    "autoprefixer": "latest",
+    "autoprefixer": "^9.0.0",
     "babel-loader": "latest",
     "chai": "latest",
     "cssnano": "latest",
