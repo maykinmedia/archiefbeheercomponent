@@ -38,8 +38,8 @@ Configuring OpenZaak
 In the OpenZaak admin, navigate to **API Autorisaties** > **Applicaties** and click on **Applicatie toevoegen**.
 Fill in the form:
 
-* The **Label** should be ``Archiefvernietingscomponent``
-* The **Client ID** and the **Secret** should be those configured earlier in the Archiefvernietingscomponent.
+* The **Label** should be ``Archiefvernietigingscomponent``
+* The **Client ID** and the **Secret** should be those configured earlier in the Archiefvernietigingscomponent.
 
 
 

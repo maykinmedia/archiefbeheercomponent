@@ -1,6 +1,6 @@
 SECRET_KEY="145cqii@)+z$b&9dcmdctpm+&be1#9zslxm+x)0+u*^qf!qz(6"
-DB_NAME="archiefvernietingscomponent"
-DB_USER="archiefvernietingscomponent"
+DB_NAME="archiefvernietigingscomponent"
+DB_USER="archiefvernietigingscomponent"
 #
 # For peer authentication via unix domain socket
 # these should be kept empty.

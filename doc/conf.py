@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = "Archiefvernietingscomponent"
+project = "Archiefvernietigingscomponent"
 copyright = "2020, Maykin Media, Gemeente Utrecht"
 author = "Maykin Media, Gemeente Utrecht"
 

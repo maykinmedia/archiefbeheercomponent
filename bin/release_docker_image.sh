@@ -3,7 +3,7 @@
 set -e # exit on error
 set -x # echo commands
 
-CONTAINER_REPO=maykinmedia/rma
+CONTAINER_REPO=maykinmedia/archiefvernietigingscomponent
 
 git_tag=$(git tag --points-at HEAD) &>/dev/null
 git_branch=$(git rev-parse --abbrev-ref HEAD)

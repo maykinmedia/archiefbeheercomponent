@@ -6,7 +6,7 @@ Configuration
 
 .. note:: The configuration documentation is aimed at (functional) administrators.
 
-The Archiefvernietingscomponent supports run-time configuration for maximum flexibility to make it fit your
+The Archiefvernietigingscomponent supports run-time configuration for maximum flexibility to make it fit your
 environment. This does also mean that a fresh installation is empty and not useful
 without any configuration.
 
@@ -21,7 +21,7 @@ Accounts, roles and permissions
 Permissions
 -----------
 
-The Archiefvernietingscomponent has a simple permission system, consisting of the following permissions:
+The Archiefvernietigingscomponent has a simple permission system, consisting of the following permissions:
 
 **can start destruction**
 
@@ -79,7 +79,7 @@ known to the system. You can perform administrative actions such as:
 ADFS
 ----
 
-The Archiefvernietingscomponent admin interface and frontend support logging in through ADFS-backed single sign
+The Archiefvernietigingscomponent admin interface and frontend support logging in through ADFS-backed single sign
 on (SSO).
 
 ADFS 2012 and 2016, and Azure AD are supported. See the `ADFS config guides`_ for
@@ -90,18 +90,18 @@ The ADFS configuration can be found under **Admin > Configuration > ADFS Configu
 Services
 ========
 
-The Archiefvernietingscomponent does not store, synchronize or copy case data. All data is retrieved through the
+The Archiefvernietigingscomponent does not store, synchronize or copy case data. All data is retrieved through the
 Zaken, Catalogi and Documenten API. As such, these services need to be configured.
 
 Navigate to **Admin > Configuration > Service** and add the details for your
 environment.
 
-.. note:: Archiefvernietingscomponent supports multiple services of the same type.
+.. note:: Archiefvernietigingscomponent supports multiple services of the same type.
 
 Catalogi API
 ------------
 
-The Archiefvernietingscomponent uses the Catalogi API to provide filter options based on "zaaktype".
+The Archiefvernietigingscomponent uses the Catalogi API to provide filter options based on "zaaktype".
 
 Add a service of the type ``ZTC``, and make sure to fill out:
 
@@ -135,7 +135,7 @@ Documenten API
 
 Cases ("zaken") almost always have relations to documents. If the case is being
 destroyed, documents related to it (and no other cases) also need to be destroyed. For
-that purpose, the Archiefvernietingscomponent needs access to the Documents API.
+that purpose, the Archiefvernietigingscomponent needs access to the Documents API.
 
 Add a service of the type ``DRC``. The configuration steps for the Catalogi API apply
 here, with the exception of "Extra configuration" - this is not required.
@@ -144,7 +144,7 @@ Required scopes
 ---------------
 
 The Catalogi, Zaken and Documenten API enforce authorization checks. For the correct
-functioning of the Archiefvernietingscomponent, it needs the following scopes:
+functioning of the Archiefvernietigingscomponent, it needs the following scopes:
 
 **Zaken API**
 
@@ -169,9 +169,9 @@ functioning of the Archiefvernietingscomponent, it needs the following scopes:
 Archive configuration
 =====================
 
-The Archiefvernietingscomponent only offers cases of which the archive action date has passed, to prevent
+The Archiefvernietigingscomponent only offers cases of which the archive action date has passed, to prevent
 destruction of cases before their scheduled archiving. This is annoying for testing
-purposes, so the Archiefvernietingscomponent supports specifying the "current date".
+purposes, so the Archiefvernietigingscomponent supports specifying the "current date".
 
 Navigate to **Admin > Configuration > Archive configuration** to specify the
 "current date".

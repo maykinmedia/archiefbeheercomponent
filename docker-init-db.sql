@@ -1,4 +1,4 @@
-CREATE USER archiefvernietingscomponent;
-CREATE DATABASE archiefvernietingscomponent;
-GRANT ALL PRIVILEGES ON DATABASE archiefvernietingscomponent TO archiefvernietingscomponent;
+CREATE USER archiefvernietigingscomponent;
+CREATE DATABASE archiefvernietigingscomponent;
+GRANT ALL PRIVILEGES ON DATABASE archiefvernietigingscomponent TO archiefvernietigingscomponent;
 

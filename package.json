@@ -1,8 +1,8 @@
 {
-  "name": "archiefvernietingscomponent",
+  "name": "archiefvernietigingscomponent",
   "version": "1.0.0-alpha.0",
   "description": "RMA project",
-  "main": "src/static/archiefvernietingscomponent/js/archiefvernietingscomponent.js",
+  "main": "src/static/archiefvernietigingscomponent/js/archiefvernietigingscomponent.js",
   "directories": {
     "doc": "doc"
   },
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:maykinmedia/record-management-app.git"
+    "url": "git+ssh://git@github.com:maykinmedia/archiefvernietigingscomponent.git"
   },
   "author": "Maykin Media",
   "license": "UNLICENSED",
