@@ -16,9 +16,9 @@ ROOT_DIR = os.path.abspath(
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "rma",
-        "USER": "rma",
-        "PASSWORD": "rma",
+        "NAME": "archiefvernietingscomponent",
+        "USER": "archiefvernietingscomponent",
+        "PASSWORD": "archiefvernietingscomponent",
         "HOST": "",  # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         "PORT": "",  # Set to empty string for default.
     }

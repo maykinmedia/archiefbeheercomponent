@@ -1,5 +1,5 @@
 """
-WSGI config for RMA project.
+WSGI config for Archiefvernietingscomponent project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

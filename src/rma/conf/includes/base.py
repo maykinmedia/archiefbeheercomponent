@@ -50,9 +50,9 @@ USE_THOUSAND_SEPARATOR = True
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("DB_NAME", "rma"),
-        "USER": config("DB_USER", "rma"),
-        "PASSWORD": config("DB_PASSWORD", "rma"),
+        "NAME": config("DB_NAME", "archiefvernietingscomponent"),
+        "USER": config("DB_USER", "archiefvernietingscomponent"),
+        "PASSWORD": config("DB_PASSWORD", "archiefvernietingscomponent"),
         "HOST": config("DB_HOST", "localhost"),
         "PORT": config("DB_PORT", 5432),
         # "CONN_MAX_AGE": 60,  # Lifetime of a database connection for performance.
@@ -116,10 +116,10 @@ INSTALLED_APPS = [
     "timeline_logger",
     "zgw_consumers",
     # Project applications.
-    "rma.accounts",
-    "rma.destruction",
-    "rma.notifications",
-    "rma.utils",
+    "archiefvernietingscomponent.accounts",
+    "archiefvernietingscomponent.destruction",
+    "archiefvernietingscomponent.notifications",
+    "archiefvernietingscomponent.utils",
 ]
 
 MIDDLEWARE = [
@@ -134,7 +134,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "rma.urls"
+ROOT_URLCONF = "archiefvernietingscomponent.urls"
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -153,14 +153,14 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "rma.utils.context_processors.settings",
+                "archiefvernietingscomponent.utils.context_processors.settings",
             ],
             "loaders": TEMPLATE_LOADERS,
         },
     }
 ]
 
-WSGI_APPLICATION = "rma.wsgi.application"
+WSGI_APPLICATION = "archiefvernietingscomponent.wsgi.application"
 
 # Translations
 LOCALE_PATHS = (os.path.join(DJANGO_PROJECT_DIR, "conf", "locale"),)
@@ -205,7 +205,7 @@ EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
 EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=False)
 EMAIL_TIMEOUT = 10
 
-DEFAULT_FROM_EMAIL = "rma@example.com"
+DEFAULT_FROM_EMAIL = "archiefvernietingscomponent@example.com"
 
 #
 # LOGGING
@@ -247,7 +247,7 @@ LOGGING = {
         "project": {
             "level": "DEBUG",
             "class": "logging.handlers.RotatingFileHandler",
-            "filename": os.path.join(LOGGING_DIR, "rma.log"),
+            "filename": os.path.join(LOGGING_DIR, "archiefvernietingscomponent.log"),
             "formatter": "verbose",
             "maxBytes": 1024 * 1024 * 10,  # 10 MB
             "backupCount": 10,
@@ -262,7 +262,7 @@ LOGGING = {
         },
     },
     "loggers": {
-        "rma": {"handlers": ["project"], "level": "INFO", "propagate": True},
+        "archiefvernietingscomponent": {"handlers": ["project"], "level": "INFO", "propagate": True},
         "django.request": {"handlers": ["django"], "level": "ERROR", "propagate": True},
         "django.template": {
             "handlers": ["console"],
@@ -289,12 +289,12 @@ AUTH_PASSWORD_VALIDATORS = [
 # Allow logging in with both username+password and email+password
 AUTHENTICATION_BACKENDS = [
     "axes.backends.AxesBackend",
-    "rma.accounts.backends.UserModelEmailBackend",
+    "archiefvernietingscomponent.accounts.backends.UserModelEmailBackend",
     "django.contrib.auth.backends.ModelBackend",
     "django_auth_adfs_db.backends.AdfsAuthCodeBackend",
 ]
 
-SESSION_COOKIE_NAME = "rma_sessionid"
+SESSION_COOKIE_NAME = "archiefvernietingscomponent_sessionid"
 
 LOGIN_URL = reverse_lazy("admin:login")
 LOGIN_REDIRECT_URL = reverse_lazy("entry")
@@ -312,7 +312,7 @@ X_FRAME_OPTIONS = "DENY"
 #
 # Custom settings
 #
-PROJECT_NAME = "RMA"
+PROJECT_NAME = "Archiefvernietingscomponent"
 SITE_TITLE = "Record Management"
 
 ENVIRONMENT = None

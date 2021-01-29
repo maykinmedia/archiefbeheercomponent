@@ -41,4 +41,4 @@ class ServiceTests(TestCase):
         self.assertEqual(m.last_request.json(), data)
 
         headers = m.last_request.headers
-        self.assertEqual(headers["X-Audit-Toelichting"], "[RMA] Change archive params")
+        self.assertEqual(headers["X-Audit-Toelichting"], "[Archiefvernietingscomponent] Change archive params")

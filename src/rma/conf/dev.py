@@ -11,9 +11,9 @@ os.environ.setdefault(
 os.environ.setdefault("IS_HTTPS", "no")
 
 # uses postgresql by default, see base.py
-os.environ.setdefault("DB_NAME", "rma"),
-os.environ.setdefault("DB_USER", "rma"),
-os.environ.setdefault("DB_PASSWORD", "rma"),
+os.environ.setdefault("DB_NAME", "archiefvernietingscomponent"),
+os.environ.setdefault("DB_USER", "archiefvernietingscomponent"),
+os.environ.setdefault("DB_PASSWORD", "archiefvernietingscomponent"),
 
 from .includes.base import *  # noqa isort:skip
 
@@ -24,7 +24,7 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 LOGGING["loggers"].update(
     {
-        "rma": {"handlers": ["console"], "level": "DEBUG", "propagate": True,},
+        "archiefvernietingscomponent": {"handlers": ["console"], "level": "DEBUG", "propagate": True,},
         "django": {"handlers": ["console"], "level": "DEBUG", "propagate": True,},
         "django.db.backends": {
             "handlers": ["django"],

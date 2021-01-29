@@ -15,7 +15,7 @@ services:
   web:
     image: maykinmedia/record-management-app:latest
     environment: &web_env
-      - DJANGO_SETTINGS_MODULE=rma.conf.docker
+      - DJANGO_SETTINGS_MODULE=archiefvernietingscomponent.conf.docker
       - ALLOWED_HOSTS=*
       - DEBUG=True
       - CACHE_DEFAULT=redis:6379/0
