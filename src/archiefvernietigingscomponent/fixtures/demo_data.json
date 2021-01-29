@@ -53,5 +53,81 @@
     "fields": {
         "archive_date": "2030-04-20"
     }
+},
+{
+    "model": "accounts.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$150000$E4iQZgWBipkV$qfro0K1JRGdKTJjbiCt/1OCDaOCYkBkcrODf7t0t6NI=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "demo-functioneel-beheer",
+      "first_name": "",
+      "last_name": "",
+      "email": "demo-functioneel-beheer@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2021-01-29T14:52:28Z",
+      "role": 1,
+      "groups": [],
+      "user_permissions": []
+    }
+},
+{
+    "model": "accounts.user",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$150000$dXENGibTeyfV$G8tcculEfNVy8xCTaZ7Ue+sJne1TO+YPZHH23bnyNFs=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "demo-proces-eigenaar",
+      "first_name": "",
+      "last_name": "",
+      "email": "demo-proces-eigenaar@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2021-01-29T14:53:18Z",
+      "role": 4,
+      "groups": [],
+      "user_permissions": []
+    }
+},
+{
+    "model": "accounts.user",
+    "pk": 6,
+    "fields": {
+      "password": "pbkdf2_sha256$150000$pFlkOaa9FCNM$sneu2IeC+eqtIxhkPP4I8lUrQNFu4F5CGqgHmTgplpA=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "demo-record-manager",
+      "first_name": "",
+      "last_name": "",
+      "email": "demo-record-manager@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2021-01-29T14:54:04Z",
+      "role": 6,
+      "groups": [],
+      "user_permissions": []
+    }
+},
+{
+    "model": "accounts.user",
+    "pk": 7,
+    "fields": {
+      "password": "pbkdf2_sha256$150000$xfku8y98EnQ0$GUyLQBlqvj44rMwQM92/8MLFf896o7aNqPvEoee4IQE=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "demo-archivaris",
+      "first_name": "",
+      "last_name": "",
+      "email": "demo-archivaris@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2021-01-29T14:54:13Z",
+      "role": 5,
+      "groups": [],
+      "user_permissions": []
+    }
 }
 ]
