@@ -1,6 +1,6 @@
-=====================
-Record Management App
-=====================
+===========================
+Archiefvernietingscomponent
+===========================
 
 :Version: 0.1.0
 :Source: https://github.com/GemeenteUtrecht/record-management-app
@@ -20,7 +20,7 @@ Introductie
 Archiefbeheer draait om het vernietigen van gegevens die aan het einde van hun levensduur zijn gekomen.
 Zaakgericht werken schrijft de archiveringsvoorwaarden voor, voor zaken die zijn beëindigd.
 
-De Record Management App (RMA) biedt functionaliteit voor archiefbeheer om de vernietiging van zaken in te plannen
+De Archiefvernietingscomponent biedt functionaliteit voor archiefbeheer om de vernietiging van zaken in te plannen
 volgens de archiveringsvoorwaarden. De RMA volgt een proces dat uit meerdere stappen bestaat, over verschillende rollen.
 
 Er is aandacht besteed aan de gebruikerservaring van de beheerders die de app gebruiken, met notificaties
@@ -32,7 +32,7 @@ De RMA ondersteunt alle backends die de 1.0.x `API's voor Zaakgericht Werken`_ i
 Quickstart
 ==========
 
-Om het startprocess van de Record management app te vereenvoudigen, is er een `docker-compose-quickstart.yml`_ beschikbaar.
+Om het startprocess van de Archiefvernietingscomponent te vereenvoudigen, is er een `docker-compose-quickstart.yml`_ beschikbaar.
 Voer de volgende commando's uit om de containers te starten:
 
     .. code:: shell

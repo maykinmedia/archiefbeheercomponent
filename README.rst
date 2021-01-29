@@ -1,6 +1,6 @@
-=====================
-Record Management App
-=====================
+===========================
+Archiefvernietingscomponent
+===========================
 
 :Version: 0.1.0
 :Source: https://github.com/GemeenteUtrecht/record-management-app
@@ -9,7 +9,7 @@ Record Management App
 
 |build-status| |code-quality| |black| |python-versions|
 
-Record management application for "Zaakgericht werken" (case-oriented working),
+Archiefvernietingscomponent (Archive destruction component) for "Zaakgericht werken" (case-oriented working),
 part of the `Common Ground`_ project.
 
 Commissioned by the Municipality of Utrecht and Delft and developed by `Maykin Media B.V.`_.
@@ -22,7 +22,7 @@ Record management is the practice of destroying data-records that have met their
 end-of-life time. "Zaakgericht werken" prescribes the archiving terms for cases that
 have been brought to an end.
 
-The RMA provides functionality for record managers to schedule destruction of cases
+The Archiefvernietingscomponent provides functionality for record managers to schedule destruction of cases
 according to the archiving parameters. It implements a multi-step, multi-role accordance
 process.
 
@@ -30,7 +30,7 @@ Attention is paid to the user experience of the staff using the app, with notifi
 to inform you of pending work-load, full audit logging and traceability of user and
 system actions.
 
-The RMA supports all backends implementing the 1.0.x `API's voor Zaakgericht Werken`_.
+The Archiefvernietingscomponent supports all backends implementing the 1.0.x `API's voor Zaakgericht Werken`_.
 
 Quickstart
 ==========

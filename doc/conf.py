@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = "Record Management App"
+project = "Archiefvernietingscomponent"
 copyright = "2020, Maykin Media, Gemeente Utrecht"
 author = "Maykin Media, Gemeente Utrecht"
 

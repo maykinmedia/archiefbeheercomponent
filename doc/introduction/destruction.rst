@@ -17,14 +17,14 @@ Each case has an "archive action date", which is the date after wich the determi
 action needs to be performed.
 
 The derivation of these parameters is part of the standard for
-"API's voor Zaakgericht Werken". The RMA provides the tooling to perform the destruction
+"API's voor Zaakgericht Werken". The Archiefvernietingscomponent provides the tooling to perform the destruction
 of the cases past the archive action date.
 
 .. note:: When we mention destruction, we mean permanent destruction. The API calls made
    to the involved API's cause the data to be erased from the database and documents to
    be removed from the file systems.
 
-The next sections document the process as implemented in the RMA.
+The next sections document the process as implemented in the Archiefvernietingscomponent.
 
 Destruction list creation
 =========================
