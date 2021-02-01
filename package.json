@@ -1,8 +1,8 @@
 {
-  "name": "rma",
+  "name": "archiefvernietigingscomponent",
   "version": "1.0.0-alpha.0",
   "description": "RMA project",
-  "main": "src/static/rma/js/rma.js",
+  "main": "src/static/archiefvernietigingscomponent/js/archiefvernietigingscomponent.js",
   "directories": {
     "doc": "doc"
   },
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/maykinmedia/rma.git"
+    "url": "git+ssh://git@github.com:maykinmedia/archiefvernietigingscomponent.git"
   },
   "author": "Maykin Media",
   "license": "UNLICENSED",
@@ -31,7 +31,7 @@
     "@babel/polyfill": "latest",
     "@babel/preset-env": "latest",
     "@babel/preset-react": "^7.10.1",
-    "autoprefixer": "latest",
+    "autoprefixer": "^9.0.0",
     "babel-loader": "latest",
     "chai": "latest",
     "cssnano": "latest",

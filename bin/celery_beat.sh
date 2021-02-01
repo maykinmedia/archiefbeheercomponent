@@ -8,7 +8,7 @@ mkdir -p celerybeat
 
 echo "Starting celery beat"
 celery beat \
-    --app rma \
+    --app archiefvernietigingscomponent \
     -l $LOGLEVEL \
     --workdir src \
     -s ../celerybeat/beat

@@ -38,8 +38,8 @@ Configuring OpenZaak
 In the OpenZaak admin, navigate to **API Autorisaties** > **Applicaties** and click on **Applicatie toevoegen**.
 Fill in the form:
 
-* The **Label** should be ``Record management app``
-* The **Client ID** and the **Secret** should be those configured earlier in the Record management app.
+* The **Label** should be ``Archiefvernietigingscomponent``
+* The **Client ID** and the **Secret** should be those configured earlier in the Archiefvernietigingscomponent.
 
 
 

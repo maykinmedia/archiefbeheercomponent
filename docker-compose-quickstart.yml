@@ -13,9 +13,9 @@ services:
     image: redis
 
   web:
-    image: maykinmedia/record-management-app:latest
+    image: maykinmedia/archiefvernietigingscomponent:latest
     environment: &web_env
-      - DJANGO_SETTINGS_MODULE=rma.conf.docker
+      - DJANGO_SETTINGS_MODULE=archiefvernietigingscomponent.conf.docker
       - ALLOWED_HOSTS=*
       - DEBUG=True
       - CACHE_DEFAULT=redis:6379/0
@@ -31,7 +31,7 @@ services:
       - redis
 
   celery:
-    image: maykinmedia/record-management-app:latest
+    image: maykinmedia/archiefvernietigingscomponent:latest
     environment: *web_env
     command: /celery_worker.sh
     depends_on:

@@ -19,7 +19,7 @@ Getting started with Docker quickstart
 
     .. code:: shell
 
-        $ wget https://raw.githubusercontent.com/maykinmedia/record-management-app/master/docker-compose-quickstart.yml
+        $ wget https://raw.githubusercontent.com/maykinmedia/archiefvernietigingscomponent/master/docker-compose-quickstart.yml
 
 2. Start the docker containers with ``docker-compose``. If you want to run the containers in the background, add the ``-d`` flag to the command below.
 

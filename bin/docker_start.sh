@@ -29,7 +29,7 @@ python src/manage.py migrate
 uwsgi \
     --http :$uwsgi_port \
     --http-keepalive \
-    --module rma.wsgi \
+    --module archiefvernietigingscomponent.wsgi \
     --static-map /static=/app/static \
     --static-map /media=/app/media  \
     --chdir src \

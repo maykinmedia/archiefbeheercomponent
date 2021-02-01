@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys
 
-from rma.setup import setup_env
+from archiefvernietigingscomponent.setup import setup_env
 
 if __name__ == "__main__":
     setup_env()
