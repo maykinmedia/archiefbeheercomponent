@@ -24,11 +24,11 @@
         <br>
         <p>
           Record management is the practice of destroying data-records that have met their
-          end-of-life time. "Zaakgericht werken" prescribes the archiving terms for cases 
+          end-of-life time. "Zaakgericht werken" prescribes the archiving terms for cases
           that have been brought to an end.
         </p>
         <p>
-          The Archiefvernietigingscomponent (AVC) provides functionality for record 
+          The Archiefvernietigingscomponent (AVC) provides functionality for record
           managers to schedule destruction of cases according to the archiving parameters.
           It implements a multi-step, multi-role accordance process.
         </p>
@@ -36,11 +36,21 @@
         {% if settings.AVC_DEMO_MODE %}
 
         <p>
-          The <strong>demo mode</strong> is enabled and allows you to use this application, as seen from different 
-          roles. When you open the application, a tutorial is shown on the right side of the screen that explains all 
-          steps. You can freely explore this demo and even see the results in the configured 
-          <a class="text-info" href="https://opengem.nl/producten/open-zaak/">Open Zaak</a> instance. The demo data 
+          The <strong>demo mode</strong> is enabled and allows you to use this application, as seen from different
+          roles. When you open the application, a tutorial is shown on the right side of the screen that explains all
+          steps. You can freely explore this demo and even see the results in the configured
+          <a class="text-info" href="https://opengem.nl/producten/open-zaak/">Open Zaak</a> instance. The demo data
           will be reset multiple times per day.
+        </p>
+
+        <p>
+          Here are the credentials (username / password) for different roles:
+          <ul>
+            <li>Functional administrator: <code>demo-functioneel-beheer</code> / <code>demo-functioneel-beheer</code></li>
+            <li>Process owner: <code>demo-proces-eigenaar</code> / <code>demo-proces-eigenaar</code></li>
+            <li>Archiver: <code>demo-archivaris</code> / <code>demo-archivaris</code></li>
+            <li>Record manager: <code>demo-record-manager</code> / <code>demo-record-manager</code></li>
+          </ul>
         </p>
 
         <p>
@@ -56,33 +66,44 @@
 
         <br>
         <p>
-          Archiefbeheer draait om het vernietigen van gegevens die aan het einde van hun 
-          levensduur zijn gekomen. Zaakgericht werken schrijft de archiveringsvoorwaarden 
+          Archiefbeheer draait om het vernietigen van gegevens die aan het einde van hun
+          levensduur zijn gekomen. Zaakgericht werken schrijft de archiveringsvoorwaarden
           voor, voor zaken die zijn beëindigd.
         </p>
         <p>
-          De Archiefvernietigingscomponent (AVC) biedt functionaliteit voor archiefbeheer 
-          om de vernietiging van zaken in te plannen volgens de archiveringsvoorwaarden. 
-          De AVC volgt een proces dat uit meerdere stappen bestaat, over verschillende 
+          De Archiefvernietigingscomponent (AVC) biedt functionaliteit voor archiefbeheer
+          om de vernietiging van zaken in te plannen volgens de archiveringsvoorwaarden.
+          De AVC volgt een proces dat uit meerdere stappen bestaat, over verschillende
           rollen.
         </p>
 
         {% if settings.AVC_DEMO_MODE %}
 
         <p>
-          De <strong>demo mode</strong> is geactiveerd en stelt u in staat om deze applicatie te gebruiken vanuit het 
-          perspectief van verschillende rollen. Wanneer u de applicatie opent, wordt er rechts zelfstudie scherm 
+          De <strong>demo mode</strong> is geactiveerd en stelt u in staat om deze applicatie te gebruiken vanuit het
+          perspectief van verschillende rollen. Wanneer u de applicatie opent, wordt er rechts zelfstudie scherm
           weergegeven waar alle stappen staan uitgelegd. U kunt deze demo vrij verkennen en zelfs de resultaten zien in
           de gekoppelde <a class="text-info" href="https://opengem.nl/producten/open-zaak/">Open Zaak</a>. Alle demo
           data wordt meerdere keren per dag gereset.
         </p>
 
         <p>
+          Hier vindt u inloggegevens (gebruikersnaam / wachtwoord) voor verschillende rollen:
+          <ul>
+            <li>Functioneel beheer: <code>demo-functioneel-beheer</code> / <code>demo-functioneel-beheer</code></li>
+            <li>Proces eigenaar: <code>demo-proces-eigenaar</code> / <code>demo-proces-eigenaar</code></li>
+            <li>Archivaris: <code>demo-archivaris</code> / <code>demo-archivaris</code></li>
+            <li>Record manager: <code>demo-record-manager</code> / <code>demo-record-manager</code></li>
+          </ul>
+        </p>
+
+
+        <p>
           <a href="{% url 'admin:index' %}" class="btn btn-sm btn-info"><i class="fas fa-chalkboard-teacher"></i> Start zelfstudie</a>
         </p>
 
         {% endif %}
-    
+
       </div>
     </div>
 
