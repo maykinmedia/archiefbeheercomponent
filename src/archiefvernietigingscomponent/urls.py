@@ -43,8 +43,6 @@ urlpatterns = [
     path("", EnterView.as_view(), name="entry"),
     path("vernietigen/", include("archiefvernietigingscomponent.destruction.urls")),
     path("audit/", include("archiefvernietigingscomponent.audit.urls")),
-    # TODO: Add logic for demo mode or not, to EnterView (i guess)
-    path("demo/", TemplateView.as_view(template_name="demo/index.html")),
 ]
 
 # NOTE: The staticfiles_urlpatterns also discovers static files (ie. no need to run collectstatic). Both the static
