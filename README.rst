@@ -5,32 +5,33 @@ Archiefvernietigingscomponent
 :Version: 0.1.0
 :Source: https://github.com/maykinmedia/archiefvernietigingscomponent
 :Keywords: Common Ground, Record Management, Archiving
-:PythonVersion: 3.8
 
 |build-status| |code-quality| |black| |python-versions|
 
-Archiefvernietigingscomponent (Archive destruction component) for "Zaakgericht werken" (case-oriented working),
-part of the `Common Ground`_ project.
+Create, manage and execute destruction lists, for use with for "Zaakgericht 
+werken" (case-oriented working).
+(`Nederlandse versie`_)
 
-Commissioned by the Municipality of Utrecht and Delft and developed by `Maykin Media B.V.`_.
+Developed by `Maykin Media B.V.`_ commissioned by the Municipality of Utrecht and Delft.
 
 
 Introduction
 ============
 
 Record management is the practice of destroying data-records that have met their
-end-of-life time. "Zaakgericht werken" prescribes the archiving terms for cases that
-have been brought to an end.
+end-of-life time. "Zaakgericht werken" prescribes the archiving terms for cases 
+that have been brought to an end.
 
-The Archiefvernietigingscomponent provides functionality for record managers to schedule destruction of cases
-according to the archiving parameters. It implements a multi-step, multi-role accordance
-process.
+The Archiefvernietigingscomponent (AVC) provides functionality for record 
+managers to schedule destruction of cases according to the archiving parameters.
+It implements a multi-step, multi-role accordance process.
 
-Attention is paid to the user experience of the staff using the app, with notifications
-to inform you of pending work-load, full audit logging and traceability of user and
-system actions.
+Attention is paid to the user experience of the staff using the app, with 
+notifications to inform you of pending work-load, full audit logging and 
+traceability of user and system actions.
 
-The Archiefvernietigingscomponent supports all backends implementing the 1.0.x `API's voor Zaakgericht Werken`_.
+The AVC supports all backends implementing the 1.0.x 
+`API's voor Zaakgericht Werken`_, like `Open Zaak`_.
 
 Quickstart
 ==========
@@ -68,8 +69,10 @@ References
 * `Community <https://commonground.nl/groups/view/54478547/archiefbeheercomponent>`_
 * `Docker image <https://hub.docker.com/r/maykinmedia/archiefvernietigingscomponent>`_
 
-.. _Maykin Media B.V.: https://www.maykinmedia.nl
-.. _API's voor Zaakgericht Werken: https://github.com/VNG-Realisatie/gemma-zaken
+.. _`Nederlandse versie`: README.NL.rst
+.. _`Maykin Media B.V.`: https://www.maykinmedia.nl
+.. _`API's voor Zaakgericht Werken`: https://github.com/VNG-Realisatie/gemma-zaken
+.. _`Open Zaak`: https://opengem.nl/producten/open-zaak/
 .. _`Common Ground`: https://commonground.nl/
 .. _`EUPL`: LICENSE.md
 
