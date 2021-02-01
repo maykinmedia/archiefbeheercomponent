@@ -317,7 +317,7 @@ X_FRAME_OPTIONS = "DENY"
 # Custom settings
 #
 PROJECT_NAME = "Archiefvernietigingscomponent"
-SITE_TITLE = "Archiefvernietigingscomponent"
+SITE_TITLE = "Starting point"
 
 ENVIRONMENT = None
 SHOW_ALERT = True

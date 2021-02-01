@@ -44,7 +44,7 @@ development machine.
 
    .. code-block:: bash
 
-       $ git clone git@bitbucket.org:maykinmedia/archiefvernietigingscomponent.git
+       $ git clone git@github.com:maykinmedia/archiefvernietigingscomponent.git
        $ cd archiefvernietigingscomponent
 
 3. Install all required libraries.

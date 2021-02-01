@@ -1,0 +1,102 @@
+{% extends "demo/master.html" %}
+
+{% block content %}
+
+  <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">{{ settings.PROJECT_NAME }}</h1>
+    <p class="lead">{{ settings.SITE_TITLE }}</p>
+  </div>
+
+  <div class="container text-center">
+
+    <ul class="nav nav-tabs justify-content-center" id="languageChoice" role="tablist">
+      <li class="nav-item ">
+        <a class="nav-link text-info" id="en-tab" data-toggle="tab" href="#en" role="tab" aria-controls="en" aria-selected="true">English</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active text-info" id="nl-tab" data-toggle="tab" href="#nl" role="tab" aria-controls="nl" aria-selected="false">Nederlands</a>
+      </li>
+    </ul>
+    <div class="tab-content" id="description">
+      <div class="tab-pane fade" id="en" role="tabpanel" aria-labelledby="en-tab">
+
+        <!-- English -->
+        <br>
+        <p>
+          Record management is the practice of destroying data-records that have met their
+          end-of-life time. "Zaakgericht werken" prescribes the archiving terms for cases 
+          that have been brought to an end.
+        </p>
+        <p>
+          The Archiefvernietigingscomponent (AVC) provides functionality for record 
+          managers to schedule destruction of cases according to the archiving parameters.
+          It implements a multi-step, multi-role accordance process.
+        </p>
+
+        {% if settings.AVC_DEMO_MODE %}
+
+        <p>
+          The <strong>demo mode</strong> is enabled and allows you to use this application, as seen from different 
+          roles. When you open the application, a tutorial is shown on the right side of the screen that explains all 
+          steps. You can freely explore this demo and even see the results in the configured 
+          <a class="text-info" href="https://opengem.nl/producten/open-zaak/">Open Zaak</a> instance. The demo data 
+          will be reset multiple times per day.
+        </p>
+
+        <p>
+          <a href="{% url 'admin:index' %}" class="btn btn-sm btn-info"><i class="fas fa-chalkboard-teacher"></i> Start tutorial</a>
+        </p>
+
+        {% endif %}
+
+      </div>
+      <div class="tab-pane fade show active" id="nl" role="tabpanel" aria-labelledby="nl-tab">
+
+        <!-- Dutch -->
+
+        <br>
+        <p>
+          Archiefbeheer draait om het vernietigen van gegevens die aan het einde van hun 
+          levensduur zijn gekomen. Zaakgericht werken schrijft de archiveringsvoorwaarden 
+          voor, voor zaken die zijn beëindigd.
+        </p>
+        <p>
+          De Archiefvernietigingscomponent (AVC) biedt functionaliteit voor archiefbeheer 
+          om de vernietiging van zaken in te plannen volgens de archiveringsvoorwaarden. 
+          De AVC volgt een proces dat uit meerdere stappen bestaat, over verschillende 
+          rollen.
+        </p>
+
+        {% if settings.AVC_DEMO_MODE %}
+
+        <p>
+          De <strong>demo mode</strong> is geactiveerd en stelt u in staat om deze applicatie te gebruiken vanuit het 
+          perspectief van verschillende rollen. Wanneer u de applicatie opent, wordt er rechts zelfstudie scherm 
+          weergegeven waar alle stappen staan uitgelegd. U kunt deze demo vrij verkennen en zelfs de resultaten zien in
+          de gekoppelde <a class="text-info" href="https://opengem.nl/producten/open-zaak/">Open Zaak</a>. Alle demo
+          data wordt meerdere keren per dag gereset.
+        </p>
+
+        <p>
+          <a href="{% url 'admin:index' %}" class="btn btn-sm btn-info"><i class="fas fa-chalkboard-teacher"></i> Start zelfstudie</a>
+        </p>
+
+        {% endif %}
+    
+      </div>
+    </div>
+
+    <hr>
+
+    <p>
+      <b>Licensed under the <a class="text-info" href="https://github.com/maykinmedia/archiefvernietigingscomponent/blob/master/LICENSE.md">
+        European Union Public License (EUPL) 1.2</a></b>
+    </p>
+
+    <p>
+      <a href="{% url 'admin:index' %}" class="btn btn-sm btn-danger"><i class="fas fa-lock"></i> Administration</a>
+    </p>
+
+  </div>
+
+{% endblock %}

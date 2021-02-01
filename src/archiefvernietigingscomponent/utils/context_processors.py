@@ -8,6 +8,7 @@ def settings(request):
         "SHOW_ALERT",
         "PROJECT_NAME",
         "SITE_TITLE",
+        "AVC_DEMO_MODE",
     )
 
     context = {
