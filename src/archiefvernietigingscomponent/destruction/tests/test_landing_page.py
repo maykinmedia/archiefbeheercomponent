@@ -37,6 +37,7 @@ class RecordManagerTests(WebTest):
 
         self.assertEqual(200, response.status_code)
         self.assertIn("demo mode", response.text)
+        self.assertIn("Tutorial", response.text)
 
     @override_settings(AVC_DEMO_MODE=False)
     def test_start_page_without_demo_details_if_no_demo_mode(self):
@@ -44,6 +45,7 @@ class RecordManagerTests(WebTest):
 
         self.assertEqual(200, response.status_code)
         self.assertNotIn("demo mode", response.text)
+        self.assertNotIn("Tutorial", response.text)
 
     def test_redirect(self):
         response = self.app.get(reverse("entry"), user=self.user).follow()
