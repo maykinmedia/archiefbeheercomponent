@@ -1,15 +1,15 @@
-Who's behind Objects and Objecttypes API?
-=========================================
+Who's behind the Archiefvernietigingscomponent?
+===============================================
 
-The Objects and Objecttypes API project was initiated by 6 organizations to
-standardize common "other" objects that are currently not exposed via an API.
-In alfabetical order, they are:
+Initially, the Archiefvernietigingscomponent was called the Record Management 
+App and was created by the municipality of Utrecht. Later, it was picked up
+by several municipalities to iterate on the work to create a re-usable 
+application. In alfabetical order, they are:
 
-* Amsterdam
-* Delft
-* GBI (Gemeentelijke Basisprocessen Inkomen)
+* Delft 
 * Haarlem
-* Rotterdam
+* Rotterdam 
+* Tilburg
 * Utrecht
 
-The municipality of Utrecht takes the lead in this project.
+The municipality of Utrecht and Delft take the lead in this project.
