@@ -1,0 +1,24 @@
+<nav class="sidenav">
+    {% if current_user.is_authenticated %}
+        <p>U bent ingelogd als <strong>{{ current_user }}</strong>.</p>
+
+        <a href="{% url 'admin:logout' %}">Afmelden</a>
+    {% else %}
+        <p>U bent niet ingelogd.</p>
+    {% endif %}
+
+    <div class="sidebar-header">
+        <h3>Tutorial</h3>
+    </div>
+    <p>Deze applicatie staat in demo modus.</p>
+
+    <p>Demo gebruikers:</p>
+    <ul>
+        {% for demo_user in demo_users %}
+        <li>
+            <a href="#">{{ demo_user }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+</nav>
+

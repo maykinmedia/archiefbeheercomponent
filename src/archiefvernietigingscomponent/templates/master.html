@@ -1,4 +1,4 @@
-{% load static i18n hijack_tags %}<!DOCTYPE html>
+{% load static i18n hijack_tags demo_tutorial %}<!DOCTYPE html>
 {% get_current_language as lang %}
 <html lang="{{ lang|slice:':2' }}">
     <head>
@@ -11,12 +11,17 @@
         <link href="https://fonts.googleapis.com/css?family=Fira+Sans:300,400,600|Material+Icons|Material+Icons+Outlined" rel="stylesheet">
 
         <link href="{% static 'css/screen.css' %}" media="screen" rel="stylesheet" type="text/css" />
+        <link href="{% static 'css/start_page/demo_tutorial.css' %}" media="screen" rel="stylesheet" type="text/css" />
         <link href="{% static 'hijack/hijack-styles.css' %}" rel="stylesheet" type="text/css" />
         {% block extra_css %}{% endblock %}
         <link href="{% static 'ico/favicon.png' %}" rel="shortcut icon">
     </head>
 
     <body class="{% block body-class %}{% endblock %}">
+        {% if settings.AVC_DEMO_MODE %}
+            {% demo_tutorial user %}
+        {% endif %}
+
         {% hijack_notification %}
         <header>
             <div class="logo">

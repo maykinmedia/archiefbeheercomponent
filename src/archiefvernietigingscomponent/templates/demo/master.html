@@ -1,4 +1,4 @@
-{% load static %}<!DOCTYPE html>
+{% load static demo_tutorial %}<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -6,6 +6,7 @@
 
     <link rel="stylesheet" href="{% static 'libs/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'libs/fontawesome/css/all.min.css' %}">
+    <link href="{% static 'css/start_page/demo_tutorial.css' %}" media="screen" rel="stylesheet" type="text/css" />
 
     <link rel="icon" type="image/png" href="{% static 'ico/favicon.png' %}">
 
@@ -22,6 +23,10 @@
           sure they are available via <em>context processors</em>.
         </div>
       </div>
+    {% endif %}
+
+    {% if settings.AVC_DEMO_MODE %}
+        {% demo_tutorial user %}
     {% endif %}
 
     {% block content %}
