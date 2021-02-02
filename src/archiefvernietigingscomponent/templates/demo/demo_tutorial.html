@@ -2,7 +2,7 @@
     {% if current_user.is_authenticated %}
         <p>U bent ingelogd als <strong>{{ current_user }}</strong>.</p>
 
-        <a href="{% url 'admin:logout' %}">Afmelden</a>
+        <a href="{% url 'admin:logout' %}?next={% url 'entry' %}">Afmelden</a>
     {% else %}
         <p>U bent niet ingelogd.</p>
     {% endif %}
@@ -16,7 +16,12 @@
     <ul>
         {% for demo_user in demo_users %}
         <li>
-            <a href="#">{{ demo_user }}</a>
+            <form id="log-in-{{ demo_user }}" action="{% url 'admin:login' %}" target="{% url 'entry' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="username" id="id_username" value="{{ demo_user }}"/>
+                <input type="hidden" name="password" id="id_password" value="{{ demo_user }}"/>
+                <input type="submit" value="{{ demo_user }}">
+            </form>
         </li>
         {% endfor %}
     </ul>
