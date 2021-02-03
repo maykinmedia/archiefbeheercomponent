@@ -120,6 +120,7 @@ INSTALLED_APPS = [
     "archiefvernietigingscomponent.destruction",
     "archiefvernietigingscomponent.notifications",
     "archiefvernietigingscomponent.utils",
+    "archiefvernietigingscomponent.demo",
 ]
 
 MIDDLEWARE = [

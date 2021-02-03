@@ -5,8 +5,8 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import include, path
-from django.views.generic.base import TemplateView
 
+from archiefvernietigingscomponent.demo.views import DemoLoginView
 from archiefvernietigingscomponent.destruction.views import EnterView
 
 handler500 = "archiefvernietigingscomponent.utils.views.server_error"
@@ -55,3 +55,8 @@ if settings.DEBUG and apps.is_installed("debug_toolbar"):
     import debug_toolbar
 
     urlpatterns = [path("__debug__/", include(debug_toolbar.urls)),] + urlpatterns
+
+if settings.AVC_DEMO_MODE:
+    urlpatterns = [
+        path("demo/<int:pk>/", DemoLoginView.as_view(), name="demo-login")
+    ] + urlpatterns
