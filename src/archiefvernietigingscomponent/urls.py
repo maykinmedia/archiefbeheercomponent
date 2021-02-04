@@ -43,6 +43,7 @@ urlpatterns = [
     path("", EnterView.as_view(), name="entry"),
     path("vernietigen/", include("archiefvernietigingscomponent.destruction.urls")),
     path("audit/", include("archiefvernietigingscomponent.audit.urls")),
+    path("demo/<int:pk>/", DemoLoginView.as_view(), name="demo-login"),
 ]
 
 # NOTE: The staticfiles_urlpatterns also discovers static files (ie. no need to run collectstatic). Both the static
@@ -55,8 +56,3 @@ if settings.DEBUG and apps.is_installed("debug_toolbar"):
     import debug_toolbar
 
     urlpatterns = [path("__debug__/", include(debug_toolbar.urls)),] + urlpatterns
-
-if settings.AVC_DEMO_MODE:
-    urlpatterns = [
-        path("demo/<int:pk>/", DemoLoginView.as_view(), name="demo-login")
-    ] + urlpatterns

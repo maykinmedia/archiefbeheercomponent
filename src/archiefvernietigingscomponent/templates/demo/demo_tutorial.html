@@ -13,14 +13,11 @@
     <p>Deze applicatie staat in demo modus.</p>
 
     <p>Demo gebruikers:</p>
-    <ul>
+    <ul class="list-unstyled">
         {% for demo_user in demo_users %}
         <li>
-            <form id="log-in-{{ demo_user }}" action="{% url 'admin:login' %}" target="{% url 'entry' %}" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="username" id="id_username" value="{{ demo_user }}"/>
-                <input type="hidden" name="password" id="id_password" value="{{ demo_user }}"/>
-                <input type="submit" value="{{ demo_user }}">
+            <form action="{% url 'demo-login' demo_user.pk %}" method="get">
+                <button type="submit">{{ demo_user }}</button>
             </form>
         </li>
         {% endfor %}
