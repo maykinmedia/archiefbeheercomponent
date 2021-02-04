@@ -6,6 +6,10 @@
 Documentation
 =============
 
+**Archiefvernietigingscomponent (Archive destruction component) for 
+"Zaakgericht werken" (case-oriented working), part of the** `Common Ground`_ 
+**landscape.**
+
 Record management is the practice of destroying data-records that have met their
 end-of-life time. "Zaakgericht werken" prescribes the archiving terms for cases 
 that have been brought to an end.
