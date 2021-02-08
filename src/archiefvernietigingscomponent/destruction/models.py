@@ -1,4 +1,5 @@
 from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -123,6 +124,12 @@ class DestructionListItem(models.Model):
         choices=ListItemStatus.choices,
         protected=True,
         max_length=80,
+    )
+    extra_zaak_data = JSONField(
+        verbose_name=_("extra zaak data"),
+        help_text=_("Additional information of the zaak"),
+        null=True,
+        blank=True,
     )
 
     class Meta:
