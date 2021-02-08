@@ -18,6 +18,7 @@ from ..tasks import (
     update_zaak_from_list_item,
     update_zaken,
 )
+from ..utils import create_destruction_report
 from .factories import (
     DestructionListFactory,
     DestructionListItemFactory,
@@ -76,7 +77,13 @@ class ProcessListItemTests(TestCase):
     @patch("archiefvernietigingscomponent.destruction.tasks.remove_zaak")
     @patch(
         "archiefvernietigingscomponent.destruction.tasks.fetch_zaak",
-        return_value={"identificatie": "foobar"},
+        return_value={
+            "identificatie": "foobar",
+            "omschrijving": "Een zaak",
+            "toelichting": "Bah",
+            "startdatum": "2020-01-01",
+            "einddatum": "2021-01-01",
+        },
     )
     def test_process_list_item(self, mock_fetch_zaak, mock_remove_zaken):
         list_item = DestructionListItemFactory.create()
@@ -100,7 +107,13 @@ class ProcessListItemTests(TestCase):
     )
     @patch(
         "archiefvernietigingscomponent.destruction.tasks.fetch_zaak",
-        return_value={"identificatie": "foobar"},
+        return_value={
+            "identificatie": "foobar",
+            "omschrijving": "Een zaak",
+            "toelichting": "Bah",
+            "startdatum": "2020-01-01",
+            "einddatum": "2021-01-01",
+        },
     )
     def test_process_list_item_fail(self, mock_fetch_zaak, mock_remove_zaken):
         list_item = DestructionListItemFactory.create()
@@ -134,7 +147,13 @@ class ProcessListItemTests(TestCase):
             # hook into mock call to make the assertion
             _list_item = DestructionListItem.objects.get(pk=list_item.pk)
             self.assertEqual(_list_item.status, ListItemStatus.processing)
-            return {"identificatie": "foobar"}
+            return {
+                "identificatie": "foobar",
+                "omschrijving": "Een zaak",
+                "toelichting": "Bah",
+                "startdatum": "2020-01-01",
+                "einddatum": "2021-01-01",
+            }
 
         mock_fetch_zaak.side_effect = assert_list_item_status
 
@@ -170,6 +189,70 @@ class NotifyTests(TestCase):
         self.assertEqual(notification.destruction_list, destruction_list)
         self.assertEqual(notification.user, destruction_list.author)
         self.assertEqual(notification.message, _("Processing of the list is complete."))
+
+
+class DestructionReportTests(TestCase):
+    def test_destruction_report_generation(self):
+        destruction_list = DestructionListFactory.create()
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.destroyed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-1",
+                "omschrijving": "Een zaak",
+                "toelichting": "Bah",
+                "startdatum": "2020-01-01",
+                "einddatum": "2021-01-01",
+            },
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.destroyed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-2",
+                "omschrijving": "Een andere zaak",
+                "toelichting": "",
+                "startdatum": "2020-02-01",
+                "einddatum": "2021-03-01",
+            },
+        )
+
+        report = create_destruction_report(destruction_list)
+
+        self.assertIn("<td>ZAAK-1</td>", report)
+        self.assertIn("<td>Een zaak</td>", report)
+        self.assertIn("<td>366 days</td>", report)
+
+        self.assertIn("<td>ZAAK-2</td>", report)
+        self.assertIn("<td>Een andere zaak</td>", report)
+        self.assertIn("<td>394 days</td>", report)
+
+    def test_failed_destruction_not_in_report(self):
+        destruction_list = DestructionListFactory.create(status=ListStatus.processing)
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list, status=ListItemStatus.failed,
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.destroyed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-2",
+                "omschrijving": "Een andere zaak",
+                "toelichting": "",
+                "startdatum": "2020-02-01",
+                "einddatum": "2021-03-01",
+            },
+        )
+
+        report = create_destruction_report(destruction_list)
+
+        self.assertNotIn("<td>ZAAK-1</td>", report)
+        self.assertNotIn("<td>Een zaak</td>", report)
+        self.assertNotIn("<td>366 days</td>", report)
+
+        self.assertIn("<td>ZAAK-2</td>", report)
+        self.assertIn("<td>Een andere zaak</td>", report)
+        self.assertIn("<td>394 days</td>", report)
 
 
 @patch(
