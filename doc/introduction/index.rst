@@ -8,3 +8,5 @@ Introduction
    :caption: Further reading
 
    destruction
+   team
+   open-source/index

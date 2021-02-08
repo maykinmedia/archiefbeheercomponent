@@ -7,7 +7,7 @@ Archiefvernietigingscomponent
 :Keywords: Common Ground, Record Management, Archiving
 :PythonVersion: 3.8
 
-|build-status| |code-quality| |black| |python-versions|
+|build-status| |code-quality| |docs| |black| |python-versions|
 
 Archiefvernietigingscomponent (Archive destruction component) for "Zaakgericht werken" (case-oriented working),
 part of the `Common Ground`_ project.
@@ -47,12 +47,6 @@ Then, navigate to ``http://127.0.0.1:8000/`` and log in with the credentials cre
 
 .. _docker-compose-quickstart.yml: docker-compose-quickstart.yml
 
-Documentation
-=============
-
-See ``INSTALL.rst`` for installation instructions, available settings and
-commands.
-
 License
 =======
 
@@ -63,6 +57,7 @@ Licensed under the `EUPL`_.
 References
 ==========
 
+* `Documentation <https://archiefvernietigingscomponent.readthedocs.io/>`_
 * `Issues <https://github.com/maykinmedia/archiefvernietigingscomponent/issues>`_
 * `Code <https://github.com/maykinmedia/archiefvernietigingscomponent>`_
 * `Community <https://commonground.nl/groups/view/54478547/archiefbeheercomponent>`_
@@ -87,3 +82,7 @@ References
 .. |code-quality| image:: https://github.com/maykinmedia/archiefvernietigingscomponent/workflows/Code%20quality%20checks/badge.svg
      :alt: Code quality checks
      :target: https://github.com/maykinmedia/archiefvernietigingscomponent/actions?query=workflow%3A%22Code+quality+checks%22
+
+.. |docs| image:: https://readthedocs.org/projects/archiefvernietigingscomponent/badge/?version=latest
+    :target: https://archiefvernietigingscomponent.readthedocs.io/
+    :alt: Documentation Status
