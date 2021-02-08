@@ -1,7 +1,8 @@
 from unittest.mock import patch
 
 from django.conf import settings
-from django.test import TestCase
+from django.core import mail
+from django.test import TestCase, override_settings
 from django.utils.translation import gettext as _
 
 from timeline_logger.models import TimelineLog
@@ -9,6 +10,7 @@ from zds_client.client import ClientError
 
 from archiefvernietigingscomponent.notifications.models import Notification
 
+from ...accounts.tests.factories import UserFactory
 from ..constants import ListItemStatus, ListStatus
 from ..models import DestructionList, DestructionListItem
 from ..tasks import (
@@ -189,6 +191,58 @@ class NotifyTests(TestCase):
         self.assertEqual(notification.destruction_list, destruction_list)
         self.assertEqual(notification.user, destruction_list.author)
         self.assertEqual(notification.message, _("Processing of the list is complete."))
+
+    @override_settings(DEFAULT_FROM_EMAIL="email@test.avc")
+    def test_all_deleted_cases_are_in_destruction_report(self):
+        archivaris = UserFactory.create(role__can_review_destruction=True)  # archivaris
+
+        destruction_list = DestructionListFactory.create(status=ListStatus.processing)
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.destroyed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-1",
+                "omschrijving": "Een zaak",
+                "toelichting": "Bah",
+                "startdatum": "2020-01-01",
+                "einddatum": "2021-01-01",
+            },
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.destroyed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-2",
+                "omschrijving": "Een andere zaak",
+                "toelichting": "",
+                "startdatum": "2020-02-01",
+                "einddatum": "2021-03-01",
+            },
+        )
+
+        complete_and_notify(destruction_list.id)
+
+        self.assertEqual(1, len(mail.outbox))
+
+        sent_mail = mail.outbox[0]
+
+        self.assertEqual("email@test.avc", sent_mail.from_email)
+        self.assertIn(archivaris.email, sent_mail.to)
+        self.assertIn("<td>ZAAK-1</td>", sent_mail.body)
+        self.assertIn("<td>ZAAK-2</td>", sent_mail.body)
+
+    def test_no_email_sent_if_no_cases_deleted(self):
+        destruction_list = DestructionListFactory.create(status=ListStatus.processing)
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list, status=ListItemStatus.failed,
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list, status=ListItemStatus.failed,
+        )
+
+        complete_and_notify(destruction_list.id)
+
+        self.assertEqual(0, len(mail.outbox))
 
 
 class DestructionReportTests(TestCase):
