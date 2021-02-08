@@ -22,7 +22,7 @@ from archiefvernietigingscomponent.accounts.mixins import (
 )
 from archiefvernietigingscomponent.notifications.models import Notification
 
-from .constants import ListItemStatus, Suggestion
+from .constants import ListItemStatus, ListStatus, Suggestion
 from .filters import ReviewerListFilter
 from .forms import (
     DestructionListForm,
@@ -169,7 +169,11 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
 
         formset = context["inlines"][0]
         dl = self.get_object()
-        can_update = self.request.user == dl.assignee == dl.author
+        can_update = (
+            self.request.user == dl.assignee == dl.author
+            and dl.status != ListStatus.completed
+        )
+        can_abort = self.request.user == dl.author and dl.status != ListStatus.completed
 
         context.update(
             {
@@ -181,6 +185,7 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
                     },
                 },
                 "can_update": can_update,
+                "can_abort": can_abort,
             }
         )
         return context

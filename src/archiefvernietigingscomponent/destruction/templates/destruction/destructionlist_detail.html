@@ -5,12 +5,15 @@
     <form action="" method="post">
         {% csrf_token %}
 
-        {% if can_update %}
+
             <div class="destruction-list-detail__btns">
-                <button type="submit" class="btn" name="submit" value="submit">Submit</button>
-                <button type="submit" class="btn" name="abort" value="abort">Abort</button>
+                {% if can_update %}
+                    <button type="submit" class="btn" name="submit" value="submit">Submit</button>
+                {% endif %}
+                {% if can_abort %}
+                    <button type="submit" class="btn" name="abort" value="abort">Abort</button>
+                {% endif %}
             </div>
-        {% endif %}
 
         <header class="destruction-list-detail__header">
             <h1 class="title">Lijst "{{ form.instance.name }}"</h1>
