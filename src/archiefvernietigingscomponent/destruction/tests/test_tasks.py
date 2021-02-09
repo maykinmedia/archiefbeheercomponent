@@ -302,7 +302,7 @@ class DestructionReportTests(TestCase):
         )
 
     def test_destruction_report_generation(self, m):
-        destruction_list = DestructionListFactory.create()
+        destruction_list = DestructionListFactory.create(name="Winter cases")
         DestructionListItemFactory.create(
             destruction_list=destruction_list,
             status=ListItemStatus.destroyed,
@@ -367,6 +367,7 @@ class DestructionReportTests(TestCase):
         self.assertIn("<td>Een zaak</td>", report)
         self.assertIn("<td>366 days</td>", report)
         self.assertIn("<td>1</td>", report)
+        self.assertIn("<td>Onderdeel van vernietigingslijst: Winter cases</td>", report)
 
         self.assertIn("<td>ZAAK-2</td>", report)
         self.assertIn("<td>Een andere zaak</td>", report)
