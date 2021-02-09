@@ -217,7 +217,9 @@ class NotifyTests(TestCase):
 
     @override_settings(DEFAULT_FROM_EMAIL="email@test.avc")
     def test_all_deleted_cases_are_in_destruction_report(self, m):
-        archivaris = UserFactory.create(role__can_review_destruction=True)  # archivaris
+        archivaris = UserFactory.create(
+            role__can_review_destruction=True, role__can_view_case_details=False,
+        )
 
         destruction_list = DestructionListFactory.create(status=ListStatus.processing)
         DestructionListItemFactory.create(
@@ -243,6 +245,11 @@ class NotifyTests(TestCase):
                 "einddatum": "2021-03-01",
                 "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
             },
+        )
+        DestructionListReviewFactory.create(
+            author=archivaris,
+            status=ReviewStatus.approved,
+            destruction_list=destruction_list,
         )
         mock_service_oas_get(
             m,
@@ -275,6 +282,37 @@ class NotifyTests(TestCase):
         )
         DestructionListItemFactory.create(
             destruction_list=destruction_list, status=ListItemStatus.failed,
+        )
+
+        complete_and_notify(destruction_list.id)
+
+        self.assertEqual(0, len(mail.outbox))
+
+    def test_no_email_sent_if_no_archivaris_assigned(self, m):
+        destruction_list = DestructionListFactory.create(status=ListStatus.processing)
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.destroyed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-1",
+                "omschrijving": "Een zaak",
+                "toelichting": "Bah",
+                "startdatum": "2020-01-01",
+                "einddatum": "2021-01-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+            },
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.destroyed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-2",
+                "omschrijving": "Een andere zaak",
+                "toelichting": "",
+                "startdatum": "2020-02-01",
+                "einddatum": "2021-03-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
+            },
         )
 
         complete_and_notify(destruction_list.id)
