@@ -15,7 +15,7 @@ from archiefvernietigingscomponent.notifications.models import Notification
 
 from ...accounts.tests.factories import UserFactory
 from ...tests.utils import generate_oas_component, mock_service_oas_get
-from ..constants import ListItemStatus, ListStatus
+from ..constants import ListItemStatus, ListStatus, ReviewStatus
 from ..models import DestructionList, DestructionListItem
 from ..tasks import (
     complete_and_notify,
@@ -24,11 +24,16 @@ from ..tasks import (
     update_zaak_from_list_item,
     update_zaken,
 )
-from ..utils import create_destruction_report, get_vernietigings_categorie_selectielijst
+from ..utils import (
+    create_destruction_report,
+    get_destruction_list_archivaris_comments,
+    get_vernietigings_categorie_selectielijst,
+)
 from .factories import (
     DestructionListFactory,
     DestructionListItemFactory,
     DestructionListItemReviewFactory,
+    DestructionListReviewFactory,
 )
 
 
@@ -464,6 +469,197 @@ class DestructionReportTests(TestCase):
         )
 
         self.assertEqual("", number)
+
+    def test_comments_archivaris(self, m):
+        archivaris = UserFactory.create(
+            role__can_start_destruction=False,
+            role__can_review_destruction=True,
+            role__can_view_case_details=False,
+        )
+        destruction_list = DestructionListFactory.create(status=ListStatus.processing)
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.failed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-1",
+                "omschrijving": "Een zaak",
+                "toelichting": "Bah",
+                "startdatum": "2020-01-01",
+                "einddatum": "2021-01-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+            },
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.destroyed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-2",
+                "omschrijving": "Een andere zaak",
+                "toelichting": "",
+                "startdatum": "2020-02-01",
+                "einddatum": "2021-03-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
+            },
+        )
+        DestructionListReviewFactory.create(
+            destruction_list=destruction_list,
+            status=ReviewStatus.approved,
+            author=archivaris,
+            text="What a magnificent list!",
+        )
+
+        comment = get_destruction_list_archivaris_comments(destruction_list)
+
+        self.assertEqual("What a magnificent list!", comment)
+
+    def test_only_comments_from_archivaris_returned(self, m):
+        archivaris = UserFactory.create(
+            role__can_start_destruction=False,
+            role__can_review_destruction=True,
+            role__can_view_case_details=False,
+        )
+        process_owner = UserFactory.create(
+            role__can_start_destruction=False,
+            role__can_review_destruction=True,
+            role__can_view_case_details=True,
+        )
+        destruction_list = DestructionListFactory.create(status=ListStatus.processing)
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.failed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-1",
+                "omschrijving": "Een zaak",
+                "toelichting": "Bah",
+                "startdatum": "2020-01-01",
+                "einddatum": "2021-01-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+            },
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.destroyed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-2",
+                "omschrijving": "Een andere zaak",
+                "toelichting": "",
+                "startdatum": "2020-02-01",
+                "einddatum": "2021-03-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
+            },
+        )
+        DestructionListReviewFactory.create(
+            destruction_list=destruction_list,
+            status=ReviewStatus.approved,
+            author=archivaris,
+            text="What a magnificent list!",
+        )
+        DestructionListReviewFactory.create(
+            destruction_list=destruction_list,
+            status=ReviewStatus.approved,
+            author=process_owner,
+            text="I am happy with this list!",
+        )
+
+        comment = get_destruction_list_archivaris_comments(destruction_list)
+
+        self.assertEqual("What a magnificent list!", comment)
+
+    def test_only_latest_comment_from_archivaris_is_returned(self, m):
+        archivaris = UserFactory.create(
+            role__can_start_destruction=False,
+            role__can_review_destruction=True,
+            role__can_view_case_details=False,
+        )
+        destruction_list = DestructionListFactory.create(status=ListStatus.processing)
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.failed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-1",
+                "omschrijving": "Een zaak",
+                "toelichting": "Bah",
+                "startdatum": "2020-01-01",
+                "einddatum": "2021-01-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+            },
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.destroyed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-2",
+                "omschrijving": "Een andere zaak",
+                "toelichting": "",
+                "startdatum": "2020-02-01",
+                "einddatum": "2021-03-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
+            },
+        )
+        DestructionListReviewFactory.create(
+            destruction_list=destruction_list,
+            status=ReviewStatus.approved,
+            author=archivaris,
+            text="What a magnificent list!",
+        )
+        DestructionListReviewFactory.create(
+            destruction_list=destruction_list,
+            status=ReviewStatus.approved,
+            author=archivaris,
+            text="I am happy with this list!",
+        )
+
+        comment = get_destruction_list_archivaris_comments(destruction_list)
+
+        self.assertEqual("I am happy with this list!", comment)
+
+    def test_only_approval_comment_from_archivaris_is_returned(self, m):
+        archivaris = UserFactory.create(
+            role__can_start_destruction=False,
+            role__can_review_destruction=True,
+            role__can_view_case_details=False,
+        )
+        destruction_list = DestructionListFactory.create(status=ListStatus.processing)
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.failed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-1",
+                "omschrijving": "Een zaak",
+                "toelichting": "Bah",
+                "startdatum": "2020-01-01",
+                "einddatum": "2021-01-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+            },
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.destroyed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-2",
+                "omschrijving": "Een andere zaak",
+                "toelichting": "",
+                "startdatum": "2020-02-01",
+                "einddatum": "2021-03-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
+            },
+        )
+        DestructionListReviewFactory.create(
+            destruction_list=destruction_list,
+            status=ReviewStatus.changes_requested,
+            author=archivaris,
+            text="Could you remove the first zaak?",
+        )
+        DestructionListReviewFactory.create(
+            destruction_list=destruction_list,
+            status=ReviewStatus.approved,
+            author=archivaris,
+            text="I am happy with this list now!",
+        )
+
+        comment = get_destruction_list_archivaris_comments(destruction_list)
+
+        self.assertEqual("I am happy with this list now!", comment)
 
 
 @patch(
