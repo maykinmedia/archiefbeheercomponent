@@ -5,12 +5,16 @@ from django.core import mail
 from django.test import TestCase, override_settings
 from django.utils.translation import gettext as _
 
+import requests_mock
 from timeline_logger.models import TimelineLog
 from zds_client.client import ClientError
+from zgw_consumers.constants import APITypes
+from zgw_consumers.models import Service
 
 from archiefvernietigingscomponent.notifications.models import Notification
 
 from ...accounts.tests.factories import UserFactory
+from ...tests.utils import generate_oas_component, mock_service_oas_get
 from ..constants import ListItemStatus, ListStatus
 from ..models import DestructionList, DestructionListItem
 from ..tasks import (
@@ -20,7 +24,7 @@ from ..tasks import (
     update_zaak_from_list_item,
     update_zaken,
 )
-from ..utils import create_destruction_report
+from ..utils import create_destruction_report, get_vernietigings_categorie_selectielijst
 from .factories import (
     DestructionListFactory,
     DestructionListItemFactory,
@@ -85,6 +89,7 @@ class ProcessListItemTests(TestCase):
             "toelichting": "Bah",
             "startdatum": "2020-01-01",
             "einddatum": "2021-01-01",
+            "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
         },
     )
     def test_process_list_item(self, mock_fetch_zaak, mock_remove_zaken):
@@ -155,6 +160,7 @@ class ProcessListItemTests(TestCase):
                 "toelichting": "Bah",
                 "startdatum": "2020-01-01",
                 "einddatum": "2021-01-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
             }
 
         mock_fetch_zaak.side_effect = assert_list_item_status
@@ -174,8 +180,20 @@ class ProcessListItemTests(TestCase):
         self.assertEqual(list_item.status, ListItemStatus.failed)
 
 
+@requests_mock.Mocker()
 class NotifyTests(TestCase):
-    def test_complete_and_notify(self):
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+
+        Service.objects.create(
+            label="Catalogi API",
+            api_type=APITypes.ztc,
+            api_root="https://oz.nl/catalogi/api/v1",
+            oas="https://oz.nl/catalogi/api/v1/schema/openapi.json",
+        )
+
+    def test_complete_and_notify(self, m):
         destruction_list = DestructionListFactory.create()
         destruction_list.process()
         destruction_list.save()
@@ -193,7 +211,7 @@ class NotifyTests(TestCase):
         self.assertEqual(notification.message, _("Processing of the list is complete."))
 
     @override_settings(DEFAULT_FROM_EMAIL="email@test.avc")
-    def test_all_deleted_cases_are_in_destruction_report(self):
+    def test_all_deleted_cases_are_in_destruction_report(self, m):
         archivaris = UserFactory.create(role__can_review_destruction=True)  # archivaris
 
         destruction_list = DestructionListFactory.create(status=ListStatus.processing)
@@ -206,6 +224,7 @@ class NotifyTests(TestCase):
                 "toelichting": "Bah",
                 "startdatum": "2020-01-01",
                 "einddatum": "2021-01-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
             },
         )
         DestructionListItemFactory.create(
@@ -217,7 +236,20 @@ class NotifyTests(TestCase):
                 "toelichting": "",
                 "startdatum": "2020-02-01",
                 "einddatum": "2021-03-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
             },
+        )
+        mock_service_oas_get(
+            m,
+            "https://oz.nl/catalogi/api/v1",
+            "ztc",
+            oas_url="https://oz.nl/catalogi/api/v1/schema/openapi.json",
+        )
+        m.get(
+            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1", json={},
+        )
+        m.get(
+            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2", json={},
         )
 
         complete_and_notify(destruction_list.id)
@@ -231,7 +263,7 @@ class NotifyTests(TestCase):
         self.assertIn("<td>ZAAK-1</td>", sent_mail.body)
         self.assertIn("<td>ZAAK-2</td>", sent_mail.body)
 
-    def test_no_email_sent_if_no_cases_deleted(self):
+    def test_no_email_sent_if_no_cases_deleted(self, m):
         destruction_list = DestructionListFactory.create(status=ListStatus.processing)
         DestructionListItemFactory.create(
             destruction_list=destruction_list, status=ListItemStatus.failed,
@@ -245,8 +277,26 @@ class NotifyTests(TestCase):
         self.assertEqual(0, len(mail.outbox))
 
 
+@requests_mock.Mocker()
 class DestructionReportTests(TestCase):
-    def test_destruction_report_generation(self):
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+
+        Service.objects.create(
+            label="Selectielijst API",
+            api_type=APITypes.orc,
+            api_root="https://selectielijst.oz.nl/api/v1",
+            oas="https://selectielijst.oz.nl/api/v1/schema/openapi.json",
+        )
+        Service.objects.create(
+            label="Catalogi API",
+            api_type=APITypes.ztc,
+            api_root="https://oz.nl/catalogi/api/v1",
+            oas="https://oz.nl/catalogi/api/v1/schema/openapi.json",
+        )
+
+    def test_destruction_report_generation(self, m):
         destruction_list = DestructionListFactory.create()
         DestructionListItemFactory.create(
             destruction_list=destruction_list,
@@ -257,6 +307,7 @@ class DestructionReportTests(TestCase):
                 "toelichting": "Bah",
                 "startdatum": "2020-01-01",
                 "einddatum": "2021-01-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
             },
         )
         DestructionListItemFactory.create(
@@ -268,7 +319,41 @@ class DestructionReportTests(TestCase):
                 "toelichting": "",
                 "startdatum": "2020-02-01",
                 "einddatum": "2021-03-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
             },
+        )
+
+        mock_service_oas_get(
+            m,
+            "https://selectielijst.oz.nl/api/v1",
+            "orc",
+            oas_url="https://selectielijst.oz.nl/api/v1/schema/openapi.json",
+        )
+        mock_service_oas_get(
+            m,
+            "https://oz.nl/catalogi/api/v1",
+            "ztc",
+            oas_url="https://oz.nl/catalogi/api/v1/schema/openapi.json",
+        )
+        m.get(
+            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+            json={
+                "selectielijstProcestype": "https://selectielijst.oz.nl/api/v1/procestypen/uuid-1"
+            },
+        )
+        m.get(
+            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
+            json={
+                "selectielijstProcestype": "https://selectielijst.oz.nl/api/v1/procestypen/uuid-2"
+            },
+        )
+        m.get(
+            url="https://selectielijst.oz.nl/api/v1/procestypen/uuid-1",
+            json={"nummer": 1},
+        )
+        m.get(
+            url="https://selectielijst.oz.nl/api/v1/procestypen/uuid-2",
+            json={"nummer": 2},
         )
 
         report = create_destruction_report(destruction_list)
@@ -276,15 +361,26 @@ class DestructionReportTests(TestCase):
         self.assertIn("<td>ZAAK-1</td>", report)
         self.assertIn("<td>Een zaak</td>", report)
         self.assertIn("<td>366 days</td>", report)
+        self.assertIn("<td>1</td>", report)
 
         self.assertIn("<td>ZAAK-2</td>", report)
         self.assertIn("<td>Een andere zaak</td>", report)
         self.assertIn("<td>394 days</td>", report)
+        self.assertIn("<td>2</td>", report)
 
-    def test_failed_destruction_not_in_report(self):
+    def test_failed_destruction_not_in_report(self, m):
         destruction_list = DestructionListFactory.create(status=ListStatus.processing)
         DestructionListItemFactory.create(
-            destruction_list=destruction_list, status=ListItemStatus.failed,
+            destruction_list=destruction_list,
+            status=ListItemStatus.failed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-1",
+                "omschrijving": "Een zaak",
+                "toelichting": "Bah",
+                "startdatum": "2020-01-01",
+                "einddatum": "2021-01-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+            },
         )
         DestructionListItemFactory.create(
             destruction_list=destruction_list,
@@ -295,7 +391,31 @@ class DestructionReportTests(TestCase):
                 "toelichting": "",
                 "startdatum": "2020-02-01",
                 "einddatum": "2021-03-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
             },
+        )
+
+        mock_service_oas_get(
+            m,
+            "https://selectielijst.oz.nl/api/v1",
+            "orc",
+            oas_url="https://selectielijst.oz.nl/api/v1/schema/openapi.json",
+        )
+        mock_service_oas_get(
+            m,
+            "https://oz.nl/catalogi/api/v1",
+            "ztc",
+            oas_url="https://oz.nl/catalogi/api/v1/schema/openapi.json",
+        )
+        m.get(
+            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
+            json={
+                "selectielijstProcestype": "https://selectielijst.oz.nl/api/v1/procestypen/uuid-2"
+            },
+        )
+        m.get(
+            url="https://selectielijst.oz.nl/api/v1/procestypen/uuid-2",
+            json={"nummer": 2},
         )
 
         report = create_destruction_report(destruction_list)
@@ -303,10 +423,47 @@ class DestructionReportTests(TestCase):
         self.assertNotIn("<td>ZAAK-1</td>", report)
         self.assertNotIn("<td>Een zaak</td>", report)
         self.assertNotIn("<td>366 days</td>", report)
+        self.assertNotIn("<td>1</td>", report)
 
         self.assertIn("<td>ZAAK-2</td>", report)
         self.assertIn("<td>Een andere zaak</td>", report)
         self.assertIn("<td>394 days</td>", report)
+        self.assertIn("<td>2</td>", report)
+
+    def test_no_selectielijst_client(self, m):
+        mock_service_oas_get(
+            m,
+            "https://oz.nl/catalogi/api/v1",
+            "ztc",
+            oas_url="https://oz.nl/catalogi/api/v1/schema/openapi.json",
+        )
+        m.get(
+            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+            json={
+                "selectielijstProcestype": "https://another-selectielijst.oz.nl/api/v1/procestypen/uuid-1"
+            },
+        )
+
+        number = get_vernietigings_categorie_selectielijst(
+            "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1"
+        )
+
+        self.assertEqual("", number)
+
+    def test_no_process_type_url(self, m):
+        mock_service_oas_get(
+            m,
+            "https://oz.nl/catalogi/api/v1",
+            "ztc",
+            oas_url="https://oz.nl/catalogi/api/v1/schema/openapi.json",
+        )
+        m.get(url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1", json={})
+
+        number = get_vernietigings_categorie_selectielijst(
+            "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1"
+        )
+
+        self.assertEqual("", number)
 
 
 @patch(
