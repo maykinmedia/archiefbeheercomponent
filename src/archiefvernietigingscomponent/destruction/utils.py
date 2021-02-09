@@ -5,8 +5,14 @@ from django.utils.translation import gettext as _
 
 from zds_client import ClientError
 
-from archiefvernietigingscomponent.destruction.constants import ListItemStatus
-from archiefvernietigingscomponent.destruction.models import DestructionList
+from archiefvernietigingscomponent.destruction.constants import (
+    ListItemStatus,
+    ReviewStatus,
+)
+from archiefvernietigingscomponent.destruction.models import (
+    DestructionList,
+    DestructionListReview,
+)
 from archiefvernietigingscomponent.destruction.service import (
     fetch_process_type,
     fetch_zaaktype,
@@ -48,6 +54,24 @@ def get_vernietigings_categorie_selectielijst(zaaktype: str) -> str:
     return str(process_type["nummer"])
 
 
+def get_destruction_list_archivaris_comments(destruction_list: DestructionList) -> str:
+    review = (
+        DestructionListReview.objects.filter(
+            destruction_list=destruction_list,
+            status=ReviewStatus.approved,
+            author__role__can_review_destruction=True,
+            author__role__can_view_case_details=False,
+        )
+        .order_by("created")
+        .last()
+    )
+
+    if not review:
+        return ""
+
+    return review.text
+
+
 def create_destruction_report(destruction_list: DestructionList) -> str:
     destroyed_items = destruction_list.items.filter(
         status=ListItemStatus.destroyed
@@ -61,7 +85,9 @@ def create_destruction_report(destruction_list: DestructionList) -> str:
             "vernietigings_categorie"
         ] = get_vernietigings_categorie_selectielijst(zaak_data["zaaktype"])
         zaak_data["toelichting"] = ""
-        zaak_data["opmerkingen"] = ""
+        zaak_data["opmerkingen"] = get_destruction_list_archivaris_comments(
+            destruction_list
+        )
         zaak_data["reactie_zorgdrager"] = ""
         zaken_data.append(zaak_data)
 
