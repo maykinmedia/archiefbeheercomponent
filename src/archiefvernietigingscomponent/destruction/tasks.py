@@ -104,6 +104,7 @@ def process_list_item(list_item_id):
             "toelichting": zaak.get("toelichting") or "",
             "startdatum": zaak["startdatum"],
             "einddatum": zaak.get("einddatum") or "",
+            "zaaktype": zaak["zaaktype"],
         }
         list_item.save()
 
