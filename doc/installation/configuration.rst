@@ -140,6 +140,29 @@ that purpose, the Archiefvernietigingscomponent needs access to the Documents AP
 Add a service of the type ``DRC``. The configuration steps for the Catalogi API apply
 here, with the exception of "Extra configuration" - this is not required.
 
+Selectielijst API
+-----------------
+
+The steps to configure a service to a Selectielijst API are the same as those for the Documenten API, except that
+the type of service is ``ORC``.
+
+**Why is the Selectielijst API needed?**
+
+When a list is destroyed, a report of destruction is generated with references to all the cases that
+were destroyed. This report contains the following fields:
+
+1. Unieke kenmerk: the ``identificatie`` field of a case
+2. Beschrijving: the ``omschrijving`` field of a case
+3. Looptijd: the number of days between the ``enddatum`` and ``startdatum`` field of a zaak.
+4. Vernietigings-Categorie selectielijst: the ``nummer`` field of the ``selectielijstProcestype`` of the ``zaaktype``.
+5. Toelichting: the name of the destruction list
+6. Opmerkingen: the comment in the latest approval review from the archivaris (user with a role with permissions to review the destruction, but not to start the destruction or view case details).
+7. Reactie zorgdrager: the comment in the latest approval review from the process eigenaar (user with a role with permissions to review the destruction and review case details, but not to start the destruction).
+
+In order to retrieve the data for point 4., a service to a Selectielijst API needs to be configured. Otherwise this
+field will be left empty in the report.
+
+
 Required scopes
 ---------------
 
