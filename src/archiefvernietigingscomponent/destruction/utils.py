@@ -72,6 +72,24 @@ def get_destruction_list_archivaris_comments(destruction_list: DestructionList) 
     return review.text
 
 
+def get_process_owner_comments(destruction_list: DestructionList) -> str:
+    review = (
+        DestructionListReview.objects.filter(
+            destruction_list=destruction_list,
+            status=ReviewStatus.approved,
+            author__role__can_review_destruction=True,
+            author__role__can_view_case_details=True,
+        )
+        .order_by("created")
+        .last()
+    )
+
+    if not review:
+        return ""
+
+    return review.text
+
+
 def create_destruction_report(destruction_list: DestructionList) -> str:
     destroyed_items = destruction_list.items.filter(
         status=ListItemStatus.destroyed
@@ -90,7 +108,7 @@ def create_destruction_report(destruction_list: DestructionList) -> str:
         zaak_data["opmerkingen"] = get_destruction_list_archivaris_comments(
             destruction_list
         )
-        zaak_data["reactie_zorgdrager"] = ""
+        zaak_data["reactie_zorgdrager"] = get_process_owner_comments(destruction_list)
         zaken_data.append(zaak_data)
 
     return render(
