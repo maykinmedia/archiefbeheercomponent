@@ -71,6 +71,10 @@
                 "adfsconfig"
             ],
             [
+                "theme",
+                "themeconfig"
+            ],
+            [
                 "zgw_consumers",
                 "service"
             ]
