@@ -1,6 +1,6 @@
 .demo_sidenav {
   height: 100%;
-  width: 15%;
+  width: 400px;
   position: fixed;
   z-index: 1;
   top: 0;
@@ -9,4 +9,9 @@
   overflow-x: hidden; /* Disable horizontal scroll */
   padding: 20px;
   box-shadow: -5px 0px 5px 0px lightgray;
+}
+
+.main {
+  padding-right: 410px;
+  padding-left: 10px;
 }

@@ -13,14 +13,10 @@
     <p>Deze applicatie staat in demo modus.</p>
 
     <p>Demo gebruikers:</p>
-    <ul class="list-unstyled">
-        {% for demo_user in demo_users %}
-        <li>
-            <form action="{% url 'demo-login' demo_user.pk %}" method="get">
-                <button type="submit">{{ demo_user }}</button>
-            </form>
-        </li>
-        {% endfor %}
+    <ul>
+    {% for demo_user in demo_users %}
+        <li><a href="{% url 'demo-login' demo_user.pk %}">{{ demo_user.username|slice:"5:" }}</a></li>
+    {% endfor %}
     </ul>
 </nav>
 
