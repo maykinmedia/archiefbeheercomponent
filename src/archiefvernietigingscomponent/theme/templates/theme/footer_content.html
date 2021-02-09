@@ -1,0 +1,21 @@
+<div class="footer__column">
+
+    <h3>{{ config.organization_name }}</h3>
+    <p>{{ config.tagline|linebreaks }}</p>
+
+    <div class="footer__contact-details">
+        {% if config.phone_number %}
+        <div>
+            <h3>Telefoon</h3>
+            <p>{{ config.phone_number }}</p>
+        </div>
+        {% endif %}
+        {% if config.address %}
+        <div>
+            <h3>Adres</h3>
+            <p>{{ config.address|linebreaks }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
