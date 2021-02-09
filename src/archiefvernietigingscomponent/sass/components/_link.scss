@@ -1,0 +1,9 @@
+@import "../lib/colors";
+
+a, a:visited {
+  color: $color-link;
+
+  &:hover {
+      color: $color-link--dark;
+  }
+}
