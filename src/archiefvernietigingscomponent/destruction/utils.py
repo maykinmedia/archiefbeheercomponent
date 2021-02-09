@@ -84,7 +84,9 @@ def create_destruction_report(destruction_list: DestructionList) -> str:
         zaak_data[
             "vernietigings_categorie"
         ] = get_vernietigings_categorie_selectielijst(zaak_data["zaaktype"])
-        zaak_data["toelichting"] = ""
+        zaak_data[
+            "toelichting"
+        ] = f"Onderdeel van vernietigingslijst: {destruction_list.name}"
         zaak_data["opmerkingen"] = get_destruction_list_archivaris_comments(
             destruction_list
         )
