@@ -154,6 +154,35 @@ class DestructionListUpdateTests(TestCase):
         # check no zaken update
         m.assert_not_called()
 
+    def test_cant_abort_completed_destruction_list(self, m):
+        destruction_list = DestructionListFactory.create(
+            author=self.user, assignee=self.user, status=ListStatus.completed
+        )
+        list_items = DestructionListItemFactory.create_batch(
+            3, destruction_list=destruction_list
+        )
+
+        url = reverse("destruction:record-manager-detail", args=[destruction_list.id])
+        data = {"abort": "abort"}
+        data.update(MANAGEMENT_FORM_DATA)
+        for i, list_item in enumerate(list_items):
+            data.update(
+                {
+                    f"items-{i}-id": list_item.id,
+                    f"items-{i}-action": "",
+                    f"items-{i}-archiefnominatie": "blijvend_bewaren",
+                    f"items-{i}-archiefactiedatum": "2020-06-17",
+                }
+            )
+
+        response = self.client.post(url, data=data)
+
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(
+            b"The destruction of this list can't be aborted because it has already been completed.",
+            response.content,
+        )
+
 
 class DestructionListDetailTests(WebTest):
     """
