@@ -13,8 +13,8 @@ from archiefvernietigingscomponent.notifications.models import Notification
 
 from ..accounts.models import User
 from ..celery import app
-from .constants import ListItemStatus, ListStatus
-from .models import DestructionList, DestructionListItem
+from .constants import ListItemStatus, ListStatus, ReviewStatus
+from .models import DestructionList, DestructionListItem, DestructionListReview
 from .service import fetch_zaak, remove_zaak, update_zaak
 from .utils import create_destruction_report
 
@@ -129,18 +129,25 @@ def complete_and_notify(list_id):
 
     # Send email to archivaris role
     if destruction_list.items.filter(status=ListItemStatus.destroyed).exists():
-        report = create_destruction_report(destruction_list)
-        email = EmailMessage(
-            subject=_("Verklaring van vernietiging"),
-            body=report,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            to=[
-                user.email
-                for user in User.objects.filter(role__can_review_destruction=True)
-            ],
-        )
-        email.content_subtype = "html"
-        email.send()
+        # Retrieve the assigned archivaris email
+        approval_review = DestructionListReview.objects.filter(
+            destruction_list=destruction_list,
+            status=ReviewStatus.approved,
+            author__role__can_review_destruction=True,
+            author__role__can_view_case_details=False,
+        ).last()
+
+        if approval_review:
+            report = create_destruction_report(destruction_list)
+            assigned_archivaris = approval_review.author
+            email = EmailMessage(
+                subject=_("Verklaring van vernietiging"),
+                body=report,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[assigned_archivaris.email],
+            )
+            email.content_subtype = "html"
+            email.send()
 
     return notification.id
 
