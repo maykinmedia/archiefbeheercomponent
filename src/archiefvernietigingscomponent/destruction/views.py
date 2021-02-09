@@ -1,7 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.db import models, transaction
-from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponseBadRequest
+from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.utils.timesince import timesince
 from django.utils.translation import ugettext_lazy as _
@@ -214,6 +215,13 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
         destruction_list = form.instance
 
         if "abort" in self.request.POST:
+            if destruction_list.status == ListStatus.completed:
+                return HttpResponseBadRequest(
+                    _(
+                        "The destruction of this list can't be aborted because it has already been completed."
+                    )
+                )
+
             self.abort_destruction_list(destruction_list)
             return response
 
