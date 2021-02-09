@@ -77,6 +77,18 @@ def fetch_zaak(url: str) -> dict:
     return response
 
 
+def fetch_zaaktype(url: str) -> dict:
+    client = _client_from_url(url)
+    response = client.retrieve("zaaktype", url=url)
+    return response
+
+
+def fetch_process_type(url: str) -> dict:
+    client = _client_from_url(url)
+    response = client.retrieve("procestype", url=url)
+    return response
+
+
 def update_zaak(url: str, data: dict, audit_comment: Optional[str]) -> dict:
     client = _client_from_url(url)
     headers = {
