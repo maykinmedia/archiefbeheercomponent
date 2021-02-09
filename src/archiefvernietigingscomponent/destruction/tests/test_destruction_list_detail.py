@@ -171,7 +171,7 @@ class DestructionListDetailTests(WebTest):
 
         self.app.set_user(self.user)
 
-    def test_can_update(self):
+    def test_can_update_and_abort(self):
         destruction_list = DestructionListFactory.create(
             author=self.user, assignee=self.user
         )
@@ -181,10 +181,12 @@ class DestructionListDetailTests(WebTest):
 
         self.assertEqual(response.status_code, 200)
 
-        submit_btn = response.html.find("button", type="submit")
+        submit_btn = response.html.find("button", type="submit", value="submit")
         self.assertIsNotNone(submit_btn)
+        abort_btn = response.html.find("button", type="submit", value="abort")
+        self.assertIsNotNone(abort_btn)
 
-    def test_author_can_not_update(self):
+    def test_author_cannot_update_but_can_abort(self):
         destruction_list = DestructionListFactory.create(author=self.user)
         url = reverse("destruction:record-manager-detail", args=[destruction_list.id])
 
@@ -192,10 +194,12 @@ class DestructionListDetailTests(WebTest):
 
         self.assertEqual(response.status_code, 200)
 
-        submit_btn = response.html.find("button", type="submit")
+        submit_btn = response.html.find("button", type="submit", value="submit")
         self.assertIsNone(submit_btn)
+        abort_btn = response.html.find("button", type="submit", value="abort")
+        self.assertIsNotNone(abort_btn)
 
-    def test_assignee_can_not_update(self):
+    def test_assignee_cannot_update_and_cannot_abort(self):
         destruction_list = DestructionListFactory.create()
         DestructionListAssigneeFactory.create(
             destruction_list=destruction_list, assignee=self.user
@@ -206,5 +210,22 @@ class DestructionListDetailTests(WebTest):
 
         self.assertEqual(response.status_code, 200)
 
-        submit_btn = response.html.find("button", type="submit")
+        submit_btn = response.html.find("button", type="submit", value="submit")
         self.assertIsNone(submit_btn)
+        abort_btn = response.html.find("button", type="submit", value="abort")
+        self.assertIsNone(abort_btn)
+
+    def test_cannot_update_or_abort_completed_list(self):
+        destruction_list = DestructionListFactory.create(
+            author=self.user, assignee=self.user, status=ListStatus.completed
+        )
+        url = reverse("destruction:record-manager-detail", args=[destruction_list.id])
+
+        response = self.app.get(url)
+
+        self.assertEqual(response.status_code, 200)
+
+        submit_btn = response.html.find("button", type="submit", value="submit")
+        self.assertIsNone(submit_btn)
+        abort_btn = response.html.find("button", type="submit", value="abort")
+        self.assertIsNone(abort_btn)
