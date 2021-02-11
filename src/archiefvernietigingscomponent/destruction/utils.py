@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import datetime
 
 from django.shortcuts import render
 from django.utils.translation import gettext as _
@@ -27,10 +27,10 @@ class NoClientException(Exception):
 
 def get_looptijd(zaak: dict) -> int:
 
-    if zaak["einddatum"] != "":
+    if zaak.get("einddatum"):
         end_date = datetime.strptime(zaak["einddatum"], "%Y-%m-%d")
     else:
-        end_date = date.today()
+        end_date = datetime.today()
 
     return (end_date - datetime.strptime(zaak["startdatum"], "%Y-%m-%d")).days
 
