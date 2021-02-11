@@ -17,6 +17,7 @@ from archiefvernietigingscomponent.accounts.mixins import (
 from .constants import ListItemStatus
 from .models import ArchiveConfig, DestructionList, DestructionListItem
 from .service import (
+    fetch_process_type,
     fetch_zaak,
     get_besluiten,
     get_documenten,
@@ -24,6 +25,7 @@ from .service import (
     get_zaaktypen,
     get_zaken,
 )
+from .utils import get_looptijd
 
 
 def get_zaken_chunks(zaken):
@@ -95,8 +97,14 @@ NO_DETAIL_ZAAK_ATTRS = [
     "omschrijving",
     "archiefnominatie",
     "archiefactiedatum",
+    "relevanteAndereZaken",
 ]
-NO_DETAIL_ZAAKTYPE_ATTRS = ["url", "omschrijving", "versiedatum"]
+NO_DETAIL_ZAAKTYPE_ATTRS = [
+    "url",
+    "omschrijving",
+    "versiedatum",
+]
+NO_DETAIL_PROCESSTYPE_ATTRS = ["nummer"]
 
 
 class FetchListItemsView(AuthorOrAssigneeRequiredMixin, View):
@@ -143,6 +151,16 @@ class FetchListItemsView(AuthorOrAssigneeRequiredMixin, View):
             zaak_data = {attr: zaak[attr] for attr in NO_DETAIL_ZAAK_ATTRS}
             zaaktype_data = {attr: zaaktype[attr] for attr in NO_DETAIL_ZAAKTYPE_ATTRS}
             zaak_data["zaaktype"] = zaaktype_data
+            zaak_data["looptijd"] = f"{get_looptijd(zaak)} dagen"
+
+            # Retrieve also the Vernietigings-categorie selectielijst
+            if zaaktype.get("selectielijstProcestype"):
+                process_type = fetch_process_type(zaaktype["selectielijstProcestype"])
+                process_type_data = {
+                    attr: process_type[attr] for attr in NO_DETAIL_PROCESSTYPE_ATTRS
+                }
+                zaak_data["zaaktype"]["processttype"] = process_type_data
+
             items.append({"listItem": list_item_data, "zaak": zaak_data})
 
         return JsonResponse({"items": items})
