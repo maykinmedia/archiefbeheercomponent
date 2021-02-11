@@ -159,26 +159,19 @@ class Command(BaseCommand):
         )
 
         # Publish zaaktypen/informatieobjecttypen
-        ztc_client.operation(
-            operation_id="informatieobjecttype_publish",
-            data={},
-            uuid=informatieobjecttype_1["url"].split("/")[-1],
-        )
-        ztc_client.operation(
-            operation_id="informatieobjecttype_publish",
-            data={},
-            uuid=informatieobjecttype_2["url"].split("/")[-1],
-        )
-        ztc_client.operation(
-            operation_id="informatieobjecttype_publish",
-            data={},
-            uuid=informatieobjecttype_3["url"].split("/")[-1],
-        )
-        ztc_client.operation(
-            operation_id="informatieobjecttype_publish",
-            data={},
-            uuid=informatieobjecttype_4["url"].split("/")[-1],
-        )
+        informatieobjecttypes = [
+            informatieobjecttype_1,
+            informatieobjecttype_2,
+            informatieobjecttype_3,
+            informatieobjecttype_4,
+        ]
+        for iot in informatieobjecttypes:
+            ztc_client.operation(
+                operation_id="informatieobjecttype_publish",
+                data={},
+                uuid=iot["url"].split("/")[-1],
+            )
+
         ztc_client.operation(
             operation_id="zaaktype_publish",
             data={},
