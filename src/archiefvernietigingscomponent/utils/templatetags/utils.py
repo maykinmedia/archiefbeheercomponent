@@ -1,8 +1,6 @@
 from django import template
 from django.utils.html import format_html
 
-from archiefvernietigingscomponent.accounts.models import User
-
 register = template.Library()
 
 
@@ -64,9 +62,3 @@ def placekitten_src(width=800, height=600):
         {% include 'components/image/image.html' with mobile_src=mobile_src src=src alt='placekitten' only %}
     """
     return "//placekitten.com/{}/{}".format(width, height)
-
-
-@register.inclusion_tag("demo/demo_tutorial.html")
-def demo_tutorial():
-    demo_users = User.objects.filter(username__startswith="demo")
-    return {"users": demo_users}
