@@ -24,29 +24,6 @@ class RecordManagerTests(WebTest):
     def setUpTestData(cls):
         cls.user = UserFactory.create(role__can_start_destruction=True)
 
-    def test_start_page_if_not_logged_in(self):
-        response = self.app.get(reverse("entry"))
-
-        self.assertEqual(200, response.status_code)
-        self.assertEqual("demo/index.html", response.template[0].name)
-        self.assertEqual("demo/master.html", response.template[1].name)
-
-    @override_settings(AVC_DEMO_MODE=True)
-    def test_start_page_with_demo_details_if_demo_mode(self):
-        response = self.app.get(reverse("entry"))
-
-        self.assertEqual(200, response.status_code)
-        self.assertIn("demo mode", response.text)
-        self.assertIn("Tutorial", response.text)
-
-    @override_settings(AVC_DEMO_MODE=False)
-    def test_start_page_without_demo_details_if_no_demo_mode(self):
-        response = self.app.get(reverse("entry"))
-
-        self.assertEqual(200, response.status_code)
-        self.assertNotIn("demo mode", response.text)
-        self.assertNotIn("Tutorial", response.text)
-
     def test_redirect(self):
         response = self.app.get(reverse("entry"), user=self.user).follow()
 
