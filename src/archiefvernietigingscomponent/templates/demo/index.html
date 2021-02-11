@@ -56,7 +56,10 @@
         <p>
           <a href="{% url 'admin:index' %}" class="btn btn-sm btn-info"><i class="fas fa-chalkboard-teacher"></i> Start tutorial</a>
         </p>
-
+        {% else %}
+            <p>
+                <a href="{% url 'admin:index' %}" class="btn btn-sm btn-info">Log in</a>
+            </p>
         {% endif %}
 
       </div>
@@ -96,11 +99,10 @@
             <li>Record manager</li>
           </ul>
         </p>
-
-        <p>
-          <a href="{% url 'admin:index' %}" class="btn btn-sm btn-info"><i class="fas fa-chalkboard-teacher"></i> Start zelfstudie</a>
-        </p>
-
+        {% else %}
+            <p>
+                <a href="{% url 'admin:index' %}" class="btn btn-sm btn-info">Inloggen</a>
+            </p>
         {% endif %}
 
       </div>
@@ -114,7 +116,7 @@
     </p>
 
     <p>
-      <a href="{% url 'admin:index' %}" class="btn btn-sm btn-danger"><i class="fas fa-lock"></i> Administration</a>
+        <a href="{% url 'admin:index' %}" class="btn btn-sm btn-danger"><i class="fas fa-lock"></i> Administration</a>
     </p>
 
   </div>
