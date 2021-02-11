@@ -42,6 +42,9 @@ const ReviewItemFormset = ({ error, isLoaded, items }) => {
                         <th className="table__header">Identificatie</th>
                         <th className="table__header">Zaaktype</th>
                         <th className="table__header">Omschrijving</th>
+                        <th className="table__header">Looptijd</th>
+                        <th className="table__header">Vernietigings-categorie selectielijst</th>
+                        <th className="table__header">Relaties met andere zaken?</th>
                         <th className="table__header">Actie</th>
                         <th className="table__hidden">Comment</th>
                     </tr>
