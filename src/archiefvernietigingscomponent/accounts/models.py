@@ -1,10 +1,12 @@
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from ordered_model.models import OrderedModel
 
+from ..constants import RoleTypeChoices
 from .managers import UserManager
 
 
@@ -18,7 +20,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         max_length=150,
         unique=True,
         help_text=_("Required. 150 characters or fewer."),
-        error_messages={"unique": _("A user with that username already exists."),},
+        error_messages={"unique": _("A user with that username already exists.")},
     )
     first_name = models.CharField(_("first name"), max_length=255, blank=True)
     last_name = models.CharField(_("last name"), max_length=255, blank=True)
@@ -62,7 +64,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return full_name.strip()
 
     def get_short_name(self):
-        "Returns the short name for the user."
+        """Returns the short name for the user."""
         return self.first_name
 
     def as_reviewer_display(self) -> str:
@@ -73,6 +75,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Role(OrderedModel):
     name = models.CharField(
         _("name"), max_length=255, unique=True, help_text=_("Name of the role")
+    )
+    type = models.CharField(
+        _("type"),
+        max_length=255,
+        help_text=_("The type of role"),
+        choices=RoleTypeChoices,
+        default=RoleTypeChoices.record_manager,
     )
     organisatie_onderdeel = models.URLField(_("organisatie onderdeel"), blank=True)
     can_start_destruction = models.BooleanField(
@@ -105,3 +114,54 @@ class Role(OrderedModel):
 
     def __str__(self):
         return self.name
+
+    def clean(self):
+        if self.type == RoleTypeChoices.archivist:
+            if not self.can_review_destruction:
+                raise ValidationError(
+                    {
+                        "can_review_destruction": _(
+                            "The archivist needs to at least have the permission to review a destruction list."
+                        )
+                    }
+                )
+        elif self.type == RoleTypeChoices.record_manager:
+            if not self.can_start_destruction or not self.can_view_case_details:
+                error_message = _(
+                    "The record manager needs to at least have the permission "
+                    "to start a destruction list and to view the details of a case."
+                )
+                raise ValidationError(
+                    {
+                        "can_start_destruction": error_message,
+                        "can_view_case_details": error_message,
+                    }
+                )
+        elif self.type == RoleTypeChoices.process_owner:
+            if not self.can_review_destruction or not self.can_view_case_details:
+                error_message = _(
+                    "The process owner needs to at least have the permission "
+                    "to review a destruction list and to view the details of a case."
+                )
+                raise ValidationError(
+                    {
+                        "can_review_destruction": error_message,
+                        "can_view_case_details": error_message,
+                    }
+                )
+        elif self.type == RoleTypeChoices.functional_admin:
+            if (
+                not self.can_review_destruction
+                or not self.can_view_case_details
+                or not self.can_start_destruction
+            ):
+                error_message = _(
+                    "The functional administrator should have all the permissions."
+                )
+                raise ValidationError(
+                    {
+                        "can_review_destruction": error_message,
+                        "can_view_case_details": error_message,
+                        "can_start_destruction": error_message,
+                    }
+                )
