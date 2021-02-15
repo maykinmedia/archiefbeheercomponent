@@ -5,6 +5,7 @@ from django.utils.translation import gettext as _
 
 from zds_client import ClientError
 
+from archiefvernietigingscomponent.constants import RoleTypeChoices
 from archiefvernietigingscomponent.destruction.constants import (
     ListItemStatus,
     ReviewStatus,
@@ -59,8 +60,7 @@ def get_destruction_list_archivaris_comments(destruction_list: DestructionList) 
         DestructionListReview.objects.filter(
             destruction_list=destruction_list,
             status=ReviewStatus.approved,
-            author__role__can_review_destruction=True,
-            author__role__can_view_case_details=False,
+            author__role__type=RoleTypeChoices.archivist,
         )
         .order_by("created")
         .last()
@@ -77,8 +77,7 @@ def get_process_owner_comments(destruction_list: DestructionList) -> str:
         DestructionListReview.objects.filter(
             destruction_list=destruction_list,
             status=ReviewStatus.approved,
-            author__role__can_review_destruction=True,
-            author__role__can_view_case_details=True,
+            author__role__type=RoleTypeChoices.process_owner,
         )
         .order_by("created")
         .last()

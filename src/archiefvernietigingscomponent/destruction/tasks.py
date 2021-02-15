@@ -12,6 +12,7 @@ from zds_client.client import ClientError
 from archiefvernietigingscomponent.notifications.models import Notification
 
 from ..celery import app
+from ..constants import RoleTypeChoices
 from .constants import ListItemStatus, ListStatus, ReviewStatus
 from .models import DestructionList, DestructionListItem, DestructionListReview
 from .report import create_destruction_report, create_destruction_report_subject
@@ -132,8 +133,7 @@ def complete_and_notify(list_id):
         approval_review = DestructionListReview.objects.filter(
             destruction_list=destruction_list,
             status=ReviewStatus.approved,
-            author__role__can_review_destruction=True,
-            author__role__can_view_case_details=False,
+            author__role__type=RoleTypeChoices.archivist,
         ).last()
 
         if approval_review:
