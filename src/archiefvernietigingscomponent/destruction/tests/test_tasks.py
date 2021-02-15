@@ -20,19 +20,19 @@ from ...accounts.tests.factories import UserFactory
 from ...tests.utils import mock_service_oas_get
 from ..constants import ListItemStatus, ListStatus, ReviewStatus
 from ..models import DestructionList, DestructionListItem
+from ..report import (
+    create_destruction_report,
+    get_destruction_list_archivaris_comments,
+    get_looptijd,
+    get_process_owner_comments,
+    get_vernietigings_categorie_selectielijst,
+)
 from ..tasks import (
     complete_and_notify,
     process_destruction_list,
     process_list_item,
     update_zaak_from_list_item,
     update_zaken,
-)
-from ..utils import (
-    create_destruction_report,
-    get_destruction_list_archivaris_comments,
-    get_looptijd,
-    get_process_owner_comments,
-    get_vernietigings_categorie_selectielijst,
 )
 from .factories import (
     DestructionListFactory,
