@@ -16,27 +16,32 @@ class StartPageTests(TestCase):
         cls.user = UserFactory.create(role__can_start_destruction=True)
 
     def test_start_page_if_not_logged_in(self):
-        response = self.client.get(reverse("entry"))
+        response = self.client.get(reverse("entry"), follow=True)
 
         self.assertEqual(200, response.status_code)
-        self.assertEqual("demo/index.html", response.templates[0].name)
-        self.assertEqual("demo/master.html", response.templates[1].name)
+        self.assertEqual("start_page/index.html", response.templates[0].name)
+        self.assertEqual("start_page/master.html", response.templates[1].name)
 
     @override_settings(AVC_DEMO_MODE=True)
     def test_start_page_with_demo_details_if_demo_mode(self):
-        response = self.client.get(reverse("entry"))
+        UserFactory.create(
+            username="demo-record-manager",
+            role__can_start_destruction=True,
+            role__can_review_destruction=False,
+            role__can_view_case_details=True,
+        )
+
+        response = self.client.get(reverse("entry"), follow=True)
 
         self.assertEqual(200, response.status_code)
         self.assertIn(b"demo mode", response.content)
-        self.assertIn(b"Tutorial", response.content)
 
     @override_settings(AVC_DEMO_MODE=False)
     def test_start_page_without_demo_details_if_no_demo_mode(self):
-        response = self.client.get(reverse("entry"))
+        response = self.client.get(reverse("entry"), follow=True)
 
         self.assertEqual(200, response.status_code)
         self.assertNotIn(b"demo mode", response.content)
-        self.assertNotIn(b"Tutorial", response.content)
 
 
 @override_settings(AVC_DEMO_MODE=True)
@@ -88,9 +93,16 @@ class DemoViewTests(TestCase):
         )
 
     def test_demo_mode_normal_user(self):
+        UserFactory.create(
+            username="demo-record-manager",
+            role__can_start_destruction=True,
+            role__can_review_destruction=False,
+            role__can_view_case_details=True,
+        )
+
         response = self.client.get(
             reverse("demo-login", args=[self.user.pk]), follow=True
         )
 
         self.assertEqual(200, response.status_code)
-        self.assertEqual(response.request["PATH_INFO"], reverse("entry"))
+        self.assertEqual(response.request["PATH_INFO"], reverse("start-page"))
