@@ -1,8 +1,10 @@
+import datetime
 from unittest.mock import patch
 
 from django.conf import settings
 from django.core import mail
 from django.test import TestCase, override_settings
+from django.utils import timezone
 from django.utils.translation import gettext as _
 
 import requests_mock
@@ -14,7 +16,7 @@ from zgw_consumers.models import Service
 from archiefvernietigingscomponent.notifications.models import Notification
 
 from ...accounts.tests.factories import UserFactory
-from ...tests.utils import generate_oas_component, mock_service_oas_get
+from ...tests.utils import mock_service_oas_get
 from ..constants import ListItemStatus, ListStatus, ReviewStatus
 from ..models import DestructionList, DestructionListItem
 from ..tasks import (
@@ -222,7 +224,11 @@ class NotifyTests(TestCase):
             role__can_review_destruction=True, role__can_view_case_details=False,
         )
 
-        destruction_list = DestructionListFactory.create(status=ListStatus.processing)
+        destruction_list = DestructionListFactory.create(
+            status=ListStatus.processing,
+            name="Nice list",
+            created=timezone.make_aware(datetime.datetime(2021, 2, 15, 10, 30)),
+        )
         DestructionListItemFactory.create(
             destruction_list=destruction_list,
             status=ListItemStatus.destroyed,
@@ -271,6 +277,9 @@ class NotifyTests(TestCase):
 
         sent_mail = mail.outbox[0]
 
+        self.assertEqual(
+            "Verklaring van vernietiging - Nice list (2021-02-15)", sent_mail.subject
+        )
         self.assertEqual("email@test.avc", sent_mail.from_email)
         self.assertIn(archivaris.email, sent_mail.to)
         self.assertIn("<td>ZAAK-1</td>", sent_mail.body)
