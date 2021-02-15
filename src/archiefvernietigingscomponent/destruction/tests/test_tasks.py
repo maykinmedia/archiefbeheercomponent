@@ -370,7 +370,7 @@ class DestructionReportTests(TestCase):
         mock_service_oas_get(
             m,
             "https://selectielijst.oz.nl/api/v1",
-            "orc",
+            "selectielijst",
             oas_url="https://selectielijst.oz.nl/api/v1/schema/openapi.json",
         )
         mock_service_oas_get(
@@ -443,7 +443,7 @@ class DestructionReportTests(TestCase):
         mock_service_oas_get(
             m,
             "https://selectielijst.oz.nl/api/v1",
-            "orc",
+            "selectielijst",
             oas_url="https://selectielijst.oz.nl/api/v1/schema/openapi.json",
         )
         mock_service_oas_get(
