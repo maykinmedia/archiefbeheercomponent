@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 
 from django.shortcuts import render
 from django.utils.translation import gettext as _
@@ -28,11 +28,11 @@ class NoClientException(Exception):
 def get_looptijd(zaak: dict) -> int:
 
     if zaak.get("einddatum"):
-        end_date = datetime.strptime(zaak["einddatum"], "%Y-%m-%d")
+        end_date = date.fromisoformat(zaak["einddatum"])
     else:
-        end_date = datetime.today()
+        end_date = date.today()
 
-    return (end_date - datetime.strptime(zaak["startdatum"], "%Y-%m-%d")).days
+    return (end_date - date.fromisoformat(zaak["startdatum"])).days
 
 
 def get_vernietigings_categorie_selectielijst(zaaktype: str) -> str:
