@@ -116,3 +116,10 @@ def create_destruction_report(destruction_list: DestructionList) -> str:
         template_name="destruction/vernietigings_rapport.html",
         context={"destroyed_zaken": zaken_data},
     ).content.decode("utf8")
+
+
+def create_destruction_report_subject(destruction_list: DestructionList) -> str:
+    subject = _("Verklaring van vernietiging - {} ({})").format(
+        destruction_list.name, datetime.strftime(destruction_list.created, "%Y-%m-%d")
+    )
+    return subject

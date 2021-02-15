@@ -2,7 +2,7 @@ import logging
 import traceback
 
 from django.conf import settings
-from django.core.mail import EmailMessage, send_mail
+from django.core.mail import EmailMessage
 from django.utils.translation import gettext_lazy as _
 
 from celery import chain
@@ -11,12 +11,11 @@ from zds_client.client import ClientError
 
 from archiefvernietigingscomponent.notifications.models import Notification
 
-from ..accounts.models import User
 from ..celery import app
 from .constants import ListItemStatus, ListStatus, ReviewStatus
 from .models import DestructionList, DestructionListItem, DestructionListReview
 from .service import fetch_zaak, remove_zaak, update_zaak
-from .utils import create_destruction_report
+from .utils import create_destruction_report, create_destruction_report_subject
 
 logger = logging.getLogger(__name__)
 
@@ -139,9 +138,10 @@ def complete_and_notify(list_id):
 
         if approval_review:
             report = create_destruction_report(destruction_list)
+            subject = create_destruction_report_subject(destruction_list)
             assigned_archivaris = approval_review.author
             email = EmailMessage(
-                subject=_("Verklaring van vernietiging"),
+                subject=subject,
                 body=report,
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 to=[assigned_archivaris.email],
