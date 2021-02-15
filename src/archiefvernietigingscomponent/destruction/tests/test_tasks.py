@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 
 import requests_mock
+from freezegun import freeze_time
 from timeline_logger.models import TimelineLog
 from zds_client.client import ClientError
 from zgw_consumers.constants import APITypes
@@ -29,6 +30,7 @@ from ..tasks import (
 from ..utils import (
     create_destruction_report,
     get_destruction_list_archivaris_comments,
+    get_looptijd,
     get_process_owner_comments,
     get_vernietigings_categorie_selectielijst,
 )
@@ -900,6 +902,21 @@ class DestructionReportTests(TestCase):
         comment = get_process_owner_comments(destruction_list)
 
         self.assertEqual("I am happy with this list now!", comment)
+
+    def test_looptijd_with_einddatum(self, m):
+        zaak = {"startdatum": "2021-05-01", "einddatum": "2021-05-05"}
+        loop_tijd = get_looptijd(zaak)
+
+        self.assertEqual(4, loop_tijd)
+
+    @freeze_time("2021-05-05")
+    def test_looptijd_without_einddatum(self, m):
+        zaak = {
+            "startdatum": "2021-05-01",
+        }
+        loop_tijd = get_looptijd(zaak)
+
+        self.assertEqual(4, loop_tijd)
 
 
 @patch(
