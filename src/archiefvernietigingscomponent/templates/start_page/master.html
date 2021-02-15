@@ -1,4 +1,4 @@
-{% load static demo_tutorial %}<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -23,10 +23,6 @@
           sure they are available via <em>context processors</em>.
         </div>
       </div>
-    {% endif %}
-
-    {% if settings.AVC_DEMO_MODE %}
-        {% demo_tutorial user %}
     {% endif %}
 
     {% block content %}

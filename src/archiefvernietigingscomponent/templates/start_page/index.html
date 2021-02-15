@@ -1,4 +1,4 @@
-{% extends "demo/master.html" %}
+{% extends "start_page/master.html" %}{% load demo_tutorial %}
 
 {% block content %}
 
@@ -54,12 +54,8 @@
         </p>
 
         <p>
-          <a href="{% url 'admin:index' %}" class="btn btn-sm btn-info"><i class="fas fa-chalkboard-teacher"></i> Start tutorial</a>
+          <a href="{% demo_record_manager_login_url %}" class="btn btn-sm btn-info"><i class="fas fa-chalkboard-teacher"></i> Start tutorial</a>
         </p>
-        {% else %}
-            <p>
-                <a href="{% url 'admin:index' %}" class="btn btn-sm btn-info">Log in</a>
-            </p>
         {% endif %}
 
       </div>
@@ -99,10 +95,10 @@
             <li>Record manager</li>
           </ul>
         </p>
-        {% else %}
-            <p>
-                <a href="{% url 'admin:index' %}" class="btn btn-sm btn-info">Inloggen</a>
-            </p>
+
+        <p>
+          <a href="{% demo_record_manager_login_url %}" class="btn btn-sm btn-info"><i class="fas fa-chalkboard-teacher"></i> Start zelfstudie</a>
+        </p>
         {% endif %}
 
       </div>
