@@ -13,9 +13,9 @@ from archiefvernietigingscomponent.notifications.models import Notification
 
 from ..celery import app
 from ..constants import RoleTypeChoices
+from ..report.utils import create_destruction_report, create_destruction_report_subject
 from .constants import ListItemStatus, ListStatus, ReviewStatus
 from .models import DestructionList, DestructionListItem, DestructionListReview
-from .report import create_destruction_report, create_destruction_report_subject
 from .service import fetch_zaak, remove_zaak, update_zaak
 
 logger = logging.getLogger(__name__)

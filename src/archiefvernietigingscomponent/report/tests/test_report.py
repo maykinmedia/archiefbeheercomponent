@@ -12,17 +12,17 @@ from archiefvernietigingscomponent.destruction.constants import (
     ListStatus,
     ReviewStatus,
 )
-from archiefvernietigingscomponent.destruction.report import (
+from archiefvernietigingscomponent.destruction.tests.factories import (
+    DestructionListFactory,
+    DestructionListItemFactory,
+    DestructionListReviewFactory,
+)
+from archiefvernietigingscomponent.report.utils import (
     create_destruction_report,
     get_destruction_list_archivaris_comments,
     get_looptijd,
     get_process_owner_comments,
     get_vernietigings_categorie_selectielijst,
-)
-from archiefvernietigingscomponent.destruction.tests.factories import (
-    DestructionListFactory,
-    DestructionListItemFactory,
-    DestructionListReviewFactory,
 )
 from archiefvernietigingscomponent.tests.utils import mock_service_oas_get
 
