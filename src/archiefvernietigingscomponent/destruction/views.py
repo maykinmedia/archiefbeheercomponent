@@ -1,8 +1,4 @@
-from django.contrib.auth.mixins import (
-    AccessMixin,
-    LoginRequiredMixin,
-    UserPassesTestMixin,
-)
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.db import models, transaction
 from django.shortcuts import get_object_or_404, render
@@ -47,11 +43,8 @@ from .tasks import process_destruction_list, update_zaken
 # Views that route to the appriopriate specialized view
 
 
-class EnterView(AccessMixin, RedirectView):
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return render(request, "demo/index.html")
-        return super().dispatch(request, *args, **kwargs)
+class EnterView(LoginRequiredMixin, RedirectView):
+    login_url = reverse_lazy("start-page")
 
     def get_redirect_url(self, *args, **kwargs):
         role = self.request.user.role

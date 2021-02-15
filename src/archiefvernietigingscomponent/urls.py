@@ -6,6 +6,7 @@ from django.contrib.auth import views as auth_views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import include, path
 
+from archiefvernietigingscomponent.accounts.views import StartPageView
 from archiefvernietigingscomponent.demo.views import DemoLoginView
 from archiefvernietigingscomponent.destruction.views import EnterView
 
@@ -44,6 +45,7 @@ urlpatterns = [
     path("vernietigen/", include("archiefvernietigingscomponent.destruction.urls")),
     path("audit/", include("archiefvernietigingscomponent.audit.urls")),
     path("demo/<int:pk>/", DemoLoginView.as_view(), name="demo-login"),
+    path("startpage/", StartPageView.as_view(), name="start-page"),
 ]
 
 # NOTE: The staticfiles_urlpatterns also discovers static files (ie. no need to run collectstatic). Both the static
