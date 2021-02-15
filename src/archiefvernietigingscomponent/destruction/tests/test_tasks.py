@@ -20,7 +20,6 @@ from ...constants import RoleTypeChoices
 from ...tests.utils import mock_service_oas_get
 from ..constants import ListItemStatus, ListStatus, ReviewStatus
 from ..models import DestructionList, DestructionListItem
-
 from ..tasks import (
     complete_and_notify,
     process_destruction_list,
