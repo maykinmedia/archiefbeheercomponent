@@ -6,6 +6,7 @@ from zgw_consumers.constants import APITypes
 from zgw_consumers.models import Service
 
 from archiefvernietigingscomponent.accounts.tests.factories import UserFactory
+from archiefvernietigingscomponent.constants import RoleTypeChoices
 from archiefvernietigingscomponent.destruction.constants import (
     ListItemStatus,
     ListStatus,
@@ -217,6 +218,7 @@ class DestructionReportTests(TestCase):
 
     def test_comments_archivaris(self, m):
         archivaris = UserFactory.create(
+            role__type=RoleTypeChoices.archivist,
             role__can_start_destruction=False,
             role__can_review_destruction=True,
             role__can_view_case_details=False,
@@ -259,11 +261,13 @@ class DestructionReportTests(TestCase):
 
     def test_only_comments_from_archivaris_returned(self, m):
         archivaris = UserFactory.create(
+            role__type=RoleTypeChoices.archivist,
             role__can_start_destruction=False,
             role__can_review_destruction=True,
             role__can_view_case_details=False,
         )
         process_owner = UserFactory.create(
+            role__type=RoleTypeChoices.process_owner,
             role__can_start_destruction=False,
             role__can_review_destruction=True,
             role__can_view_case_details=True,
@@ -312,6 +316,7 @@ class DestructionReportTests(TestCase):
 
     def test_only_latest_comment_from_archivaris_is_returned(self, m):
         archivaris = UserFactory.create(
+            role__type=RoleTypeChoices.archivist,
             role__can_start_destruction=False,
             role__can_review_destruction=True,
             role__can_view_case_details=False,
@@ -360,6 +365,7 @@ class DestructionReportTests(TestCase):
 
     def test_only_approval_comment_from_archivaris_is_returned(self, m):
         archivaris = UserFactory.create(
+            role__type=RoleTypeChoices.archivist,
             role__can_start_destruction=False,
             role__can_review_destruction=True,
             role__can_view_case_details=False,
@@ -408,6 +414,7 @@ class DestructionReportTests(TestCase):
 
     def test_comments_process_owner(self, m):
         process_owner = UserFactory.create(
+            role__type=RoleTypeChoices.process_owner,
             role__can_start_destruction=False,
             role__can_review_destruction=True,
             role__can_view_case_details=True,
@@ -450,11 +457,13 @@ class DestructionReportTests(TestCase):
 
     def test_only_comments_from_process_owner_returned(self, m):
         archivaris = UserFactory.create(
+            role__type=RoleTypeChoices.archivist,
             role__can_start_destruction=False,
             role__can_review_destruction=True,
             role__can_view_case_details=False,
         )
         process_owner = UserFactory.create(
+            role__type=RoleTypeChoices.process_owner,
             role__can_start_destruction=False,
             role__can_review_destruction=True,
             role__can_view_case_details=True,
@@ -503,6 +512,7 @@ class DestructionReportTests(TestCase):
 
     def test_only_latest_comment_from_process_owner_is_returned(self, m):
         process_owner = UserFactory.create(
+            role__type=RoleTypeChoices.process_owner,
             role__can_start_destruction=False,
             role__can_review_destruction=True,
             role__can_view_case_details=True,
@@ -551,6 +561,7 @@ class DestructionReportTests(TestCase):
 
     def test_only_approval_comment_from_process_owner_is_returned(self, m):
         process_owner = UserFactory.create(
+            role__type=RoleTypeChoices.process_owner,
             role__can_start_destruction=False,
             role__can_review_destruction=True,
             role__can_view_case_details=True,

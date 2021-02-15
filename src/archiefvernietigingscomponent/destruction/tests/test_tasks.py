@@ -8,7 +8,6 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 
 import requests_mock
-from freezegun import freeze_time
 from timeline_logger.models import TimelineLog
 from zds_client.client import ClientError
 from zgw_consumers.constants import APITypes
@@ -17,16 +16,11 @@ from zgw_consumers.models import Service
 from archiefvernietigingscomponent.notifications.models import Notification
 
 from ...accounts.tests.factories import UserFactory
+from ...constants import RoleTypeChoices
 from ...tests.utils import mock_service_oas_get
 from ..constants import ListItemStatus, ListStatus, ReviewStatus
 from ..models import DestructionList, DestructionListItem
-from ..report import (
-    create_destruction_report,
-    get_destruction_list_archivaris_comments,
-    get_looptijd,
-    get_process_owner_comments,
-    get_vernietigings_categorie_selectielijst,
-)
+
 from ..tasks import (
     complete_and_notify,
     process_destruction_list,
@@ -223,7 +217,9 @@ class NotifyTests(TestCase):
     @override_settings(DEFAULT_FROM_EMAIL="email@test.avc")
     def test_all_deleted_cases_are_in_destruction_report(self, m):
         archivaris = UserFactory.create(
-            role__can_review_destruction=True, role__can_view_case_details=False,
+            role__type=RoleTypeChoices.archivist,
+            role__can_review_destruction=True,
+            role__can_view_case_details=False,
         )
 
         destruction_list = DestructionListFactory.create(
