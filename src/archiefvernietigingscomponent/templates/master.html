@@ -20,7 +20,7 @@
         <title>{% block title %}Archiefvernietigingscomponent{% endblock %}</title>
     </head>
 
-    <body class="{% block body-class %}{% endblock %}">
+    <body class="{% block body-class %}{% endblock %}{% if settings.AVC_DEMO_MODE %} demo{% endif %}">
         {% block body %}
             {% if settings.AVC_DEMO_MODE %}
                 {% demo_tutorial user %}
