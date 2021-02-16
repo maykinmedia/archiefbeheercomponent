@@ -19,8 +19,10 @@ class StartPageTests(TestCase):
         response = self.client.get(reverse("entry"), follow=True)
 
         self.assertEqual(200, response.status_code)
-        self.assertEqual("start_page/index.html", response.templates[0].name)
-        self.assertEqual("start_page/master.html", response.templates[1].name)
+        self.assertEqual(
+            "start_page/content_start_page.html", response.templates[0].name
+        )
+        self.assertEqual("start_page/start_page.html", response.templates[1].name)
 
     @override_settings(AVC_DEMO_MODE=True)
     def test_start_page_with_demo_details_if_demo_mode(self):

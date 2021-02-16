@@ -1,21 +1,15 @@
-{% load static %}<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% extends "master.html" %}
+{% load static %}
 
+{% block extra_css %}
     <link rel="stylesheet" href="{% static 'libs/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'libs/fontawesome/css/all.min.css' %}">
-    <link href="{% static 'css/start_page/demo_tutorial.css' %}" media="screen" rel="stylesheet" type="text/css" />
+{% endblock %}
 
-    <link rel="icon" type="image/png" href="{% static 'ico/favicon.png' %}">
+{% block title %}{% if title %}{{ title }}{% else %}{{ settings.SITE_TITLE }}{% endif %} | {{ settings.PROJECT_NAME }}{% endblock %}
 
-    {% block extra_style %}{% endblock %}
 
-    <title>{% block title %}{% if title %}{{ title }}{% else %}{{ settings.SITE_TITLE }}{% endif %} | {{ settings.PROJECT_NAME }}{% endblock %}</title>
-  </head>
-  <body>
-
+{% block body %}
     {% if not settings.SITE_TITLE or not settings.PROJECT_NAME %}
       <div class="container">
         <div class="alert alert-danger">
@@ -25,10 +19,7 @@
       </div>
     {% endif %}
 
-    {% block content %}
-      Override <code>{% verbatim %}{% block content %}{% endverbatim %}</code>
-      to get some actual content.
-    {% endblock %}
+    {% block content %}{% endblock %}
 
     <div class="container">
       <footer class="pt-4 my-md-5 pt-md-5 border-top">
@@ -81,5 +72,4 @@
     </script>
 
     {% block extra_scripts %}{% endblock %}
-  </body>
-</html>
+{% endblock %}
