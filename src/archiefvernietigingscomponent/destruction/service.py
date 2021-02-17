@@ -43,6 +43,12 @@ def get_besluittypen(dict_response=False) -> list:
     return get_types_generic("besluittype", dict_response)
 
 
+def fetch_zaaktype(url: str) -> dict:
+    client = _client_from_url(url)
+    response = client.retrieve("zaaktype", url=url)
+    return response
+
+
 # ZRC
 def get_zaken(query_params=None) -> list:
     query_params = query_params or {}
@@ -183,3 +189,10 @@ def get_besluiten(zaak_url: str) -> list:
         besluit["besluittype"] = fetched_besluittypen[besluit["besluittype"]]
 
     return besluiten
+
+
+# SELECTIELIJST
+def fetch_process_type(url: str) -> dict:
+    client = _client_from_url(url)
+    response = client.retrieve("procestype", url=url)
+    return response

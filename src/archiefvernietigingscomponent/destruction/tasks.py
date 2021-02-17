@@ -2,6 +2,7 @@ import logging
 import traceback
 
 from django.conf import settings
+from django.core.mail import EmailMessage
 from django.utils.translation import gettext_lazy as _
 
 from celery import chain
@@ -11,8 +12,10 @@ from zds_client.client import ClientError
 from archiefvernietigingscomponent.notifications.models import Notification
 
 from ..celery import app
-from .constants import ListItemStatus, ListStatus
-from .models import DestructionList, DestructionListItem
+from ..constants import RoleTypeChoices
+from ..report.utils import create_destruction_report, create_destruction_report_subject
+from .constants import ListItemStatus, ListStatus, ReviewStatus
+from .models import DestructionList, DestructionListItem, DestructionListReview
 from .service import fetch_zaak, remove_zaak, update_zaak
 
 logger = logging.getLogger(__name__)
@@ -95,6 +98,15 @@ def process_list_item(list_item_id):
             template="destruction/logs/item_destruction_succeeded.txt",
             extra_data={"zaak": zaak["identificatie"]},
         )
+        list_item.extra_zaak_data = {
+            "identificatie": zaak["identificatie"],
+            "omschrijving": zaak.get("omschrijving") or "",
+            "toelichting": zaak.get("toelichting") or "",
+            "startdatum": zaak["startdatum"],
+            "einddatum": zaak.get("einddatum") or "",
+            "zaaktype": zaak["zaaktype"],
+        }
+        list_item.save()
 
     list_item.save()
     return list_item.status
@@ -114,6 +126,29 @@ def complete_and_notify(list_id):
         user=destruction_list.author,
         message=_("Processing of the list is complete."),
     )
+
+    # Send email to archivaris role
+    if destruction_list.items.filter(status=ListItemStatus.destroyed).exists():
+        # Retrieve the assigned archivaris email
+        approval_review = DestructionListReview.objects.filter(
+            destruction_list=destruction_list,
+            status=ReviewStatus.approved,
+            author__role__type=RoleTypeChoices.archivist,
+        ).last()
+
+        if approval_review:
+            report = create_destruction_report(destruction_list)
+            subject = create_destruction_report_subject(destruction_list)
+            assigned_archivaris = approval_review.author
+            email = EmailMessage(
+                subject=subject,
+                body=report,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[assigned_archivaris.email],
+            )
+            email.content_subtype = "html"
+            email.send()
+
     return notification.id
 
 

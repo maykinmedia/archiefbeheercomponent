@@ -1,0 +1,27 @@
+{% load i18n %}
+
+{% trans "Format staat van vernietiging" %}
+
+<table style="width:100%">
+    <tr>
+        <th>{% trans "Uniek kenmerk" %}</th>
+        <th>{% trans "Beschrijving" %}</th>
+        <th>{% trans "Looptijd" %}</th>
+        <th>{% trans "Vernietigings-Categorie Selectielijst" %}</th>
+        <th>{% trans "Toelichting" %}</th>
+        <th>{% trans "Opmerkingen SAD" %}</th>
+        <th>{% trans "Reactie zorgdrager" %}</th>
+    </tr>
+
+    <tr>
+        {% for destroyed_zaak in destroyed_zaken %}
+        <td>{% trans destroyed_zaak.identificatie  %}</td>
+        <td>{% trans destroyed_zaak.omschrijving  %}</td>
+        <td>{% trans destroyed_zaak.looptijd  %}</td>
+        <td>{% trans destroyed_zaak.vernietigings_categorie  %}</td>
+        <td>{% trans destroyed_zaak.toelichting  %}</td>
+        <td>{% trans destroyed_zaak.opmerkingen  %}</td>
+        <td>{% trans destroyed_zaak.reactie_zorgdrager  %}</td>
+        {% endfor %}
+    </tr>
+</table>
