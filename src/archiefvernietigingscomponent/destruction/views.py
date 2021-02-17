@@ -197,6 +197,8 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
             list_item.remove()
             list_item.save()
 
+        assignee = destruction_list.assignee
+
         destruction_list.process()
         destruction_list.complete()
         destruction_list.save()
@@ -207,6 +209,16 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
             template="destruction/logs/aborted.txt",
             n_items=destruction_list.items.count(),
         )
+
+        # If the author is not assigned to the list, notify the assignee
+        # that the list has been aborted.
+        if assignee and destruction_list.author != assignee:
+            message = _(
+                "%(author)s has aborted the destruction list. No further action is required."
+            ) % {"author": destruction_list.author}
+            Notification.objects.create(
+                destruction_list=destruction_list, user=assignee, message=message,
+            )
 
     @transaction.atomic
     def forms_valid(self, form, inlines):
