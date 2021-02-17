@@ -97,13 +97,15 @@ def create_destruction_report(destruction_list: DestructionList) -> str:
     zaken_data = []
     for destroyed_item in destroyed_items:
         zaak_data = destroyed_item.extra_zaak_data
-        zaak_data["looptijd"] = _("{} days").format(get_looptijd(zaak_data))
+        zaak_data["looptijd"] = _("%(looptijd)s days") % {
+            "looptijd": get_looptijd(zaak_data)
+        }
         zaak_data[
             "vernietigings_categorie"
         ] = get_vernietigings_categorie_selectielijst(zaak_data["zaaktype"])
-        zaak_data["toelichting"] = _("Onderdeel van vernietigingslijst: {}").format(
-            destruction_list.name
-        )
+        zaak_data["toelichting"] = _("Onderdeel van vernietigingslijst: %(name)s") % {
+            "name": destruction_list.name
+        }
         zaak_data["opmerkingen"] = get_destruction_list_archivaris_comments(
             destruction_list
         )
@@ -118,7 +120,8 @@ def create_destruction_report(destruction_list: DestructionList) -> str:
 
 
 def create_destruction_report_subject(destruction_list: DestructionList) -> str:
-    subject = _("Verklaring van vernietiging - {} ({})").format(
-        destruction_list.name, datetime.strftime(destruction_list.created, "%Y-%m-%d")
-    )
+    subject = _("Verklaring van vernietiging - %(name)s (%(date)s)") % {
+        "name": destruction_list.name,
+        "date": datetime.strftime(destruction_list.created, "%Y-%m-%d"),
+    }
     return subject
