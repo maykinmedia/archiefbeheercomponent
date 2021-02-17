@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.db import models, transaction
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse, reverse_lazy
 from django.utils.timesince import timesince
 from django.utils.translation import ugettext_lazy as _
@@ -44,6 +44,8 @@ from .tasks import process_destruction_list, update_zaken
 
 
 class EnterView(LoginRequiredMixin, RedirectView):
+    login_url = reverse_lazy("start-page")
+
     def get_redirect_url(self, *args, **kwargs):
         role = self.request.user.role
         if role and role.can_start_destruction:

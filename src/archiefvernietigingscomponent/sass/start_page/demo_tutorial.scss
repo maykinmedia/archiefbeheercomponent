@@ -1,0 +1,12 @@
+.demo_sidenav {
+  height: 100%;
+  width: 15%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  background-color: #ebf8fa;
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding: 20px;
+  box-shadow: -5px 0px 5px 0px lightgray;
+}

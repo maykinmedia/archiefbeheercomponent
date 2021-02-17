@@ -17,6 +17,12 @@ From within the repository, the fixture can be loaded with:
 
         python src/manage.py loaddata src/rma/fixtures/demo_data.json
 
+Enabling demo mode
+------------------
+
+The demo mode can be activated by setting the environment variable ``AVC_DEMO_MODE`` to ``True``.
+By default ``AVC_DEMO_MODE=False``.
+
 Configuring services
 --------------------
 

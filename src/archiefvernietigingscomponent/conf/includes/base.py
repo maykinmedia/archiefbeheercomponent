@@ -120,6 +120,7 @@ INSTALLED_APPS = [
     "archiefvernietigingscomponent.destruction",
     "archiefvernietigingscomponent.notifications",
     "archiefvernietigingscomponent.utils",
+    "archiefvernietigingscomponent.demo",
 ]
 
 MIDDLEWARE = [
@@ -317,7 +318,7 @@ X_FRAME_OPTIONS = "DENY"
 # Custom settings
 #
 PROJECT_NAME = "Archiefvernietigingscomponent"
-SITE_TITLE = "Archiefvernietigingscomponent"
+SITE_TITLE = "Starting point"
 
 ENVIRONMENT = None
 SHOW_ALERT = True
@@ -411,3 +412,6 @@ ZAKEN_PER_QUERY = 1_000_000
 
 # DJANGO-ADMIN-INDEX
 ADMIN_INDEX_SHOW_REMAINING_APPS_TO_SUPERUSERS = False
+
+# ARCHIEFVERNIETIGINGSCOMPONENT specific settings
+AVC_DEMO_MODE = config("AVC_DEMO_MODE", default=False)
