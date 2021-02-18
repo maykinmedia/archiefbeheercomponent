@@ -151,8 +151,103 @@ class DestructionListUpdateTests(TestCase):
         self.assertEqual(timeline_log.user, self.user)
         self.assertEqual(timeline_log.template, "destruction/logs/aborted.txt")
 
+        # Check notification
+        # Since the User is both the author and the assignee, no notification is sent
+        notifications = Notification.objects.filter(destruction_list=destruction_list)
+
+        self.assertEqual(0, notifications.count())
+
         # check no zaken update
         m.assert_not_called()
+
+    def test_abort_destruction_list_notify_assignee(self, m):
+        """
+        Test that if the author of the DL and the assignee are NOT the same, when the DL is aborted a notification is
+        sent to the assignee.
+        """
+        assignee = UserFactory.create(role__can_review_destruction=True)
+        destruction_list = DestructionListFactory.create(
+            author=self.user, assignee=assignee
+        )
+        list_items = DestructionListItemFactory.create_batch(
+            3, destruction_list=destruction_list
+        )
+        url = reverse("destruction:record-manager-detail", args=[destruction_list.id])
+        data = {"abort": "abort"}
+        data.update(MANAGEMENT_FORM_DATA)
+        for i, list_item in enumerate(list_items):
+            data.update(
+                {
+                    f"items-{i}-id": list_item.id,
+                    f"items-{i}-action": "",
+                    f"items-{i}-archiefnominatie": "blijvend_bewaren",
+                    f"items-{i}-archiefactiedatum": "2020-06-17",
+                }
+            )
+
+        # with capture_on_commit_callbacks(execute=True) as callbacks:
+        response = self.client.post(url, data=data)
+
+        self.assertRedirects(response, reverse("destruction:record-manager-list"))
+
+        # can't refresh_from_db because of fsm protection
+        destruction_list = DestructionList.objects.get(id=destruction_list.id)
+        self.assertEqual(destruction_list.assignee, None)
+        self.assertEqual(destruction_list.status, ListStatus.completed)
+
+        # check items statuses
+        for item in list_items:
+            list_item = DestructionListItem.objects.get(id=item.id)
+            self.assertEqual(list_item.status, ListItemStatus.removed)
+
+        # check log
+        timeline_log = TimelineLog.objects.get()
+        self.assertEqual(timeline_log.user, self.user)
+        self.assertEqual(timeline_log.template, "destruction/logs/aborted.txt")
+
+        # Check notification
+        notifications = Notification.objects.filter(destruction_list=destruction_list)
+
+        self.assertEqual(1, notifications.count())
+
+        notification = notifications.get()
+
+        self.assertEqual(
+            f"{self.user} has aborted the destruction list. No further action is required.",
+            notification.message,
+        )
+
+        # check no zaken update
+        m.assert_not_called()
+
+    def test_cant_abort_completed_destruction_list(self, m):
+        destruction_list = DestructionListFactory.create(
+            author=self.user, assignee=self.user, status=ListStatus.completed
+        )
+        list_items = DestructionListItemFactory.create_batch(
+            3, destruction_list=destruction_list
+        )
+
+        url = reverse("destruction:record-manager-detail", args=[destruction_list.id])
+        data = {"abort": "abort"}
+        data.update(MANAGEMENT_FORM_DATA)
+        for i, list_item in enumerate(list_items):
+            data.update(
+                {
+                    f"items-{i}-id": list_item.id,
+                    f"items-{i}-action": "",
+                    f"items-{i}-archiefnominatie": "blijvend_bewaren",
+                    f"items-{i}-archiefactiedatum": "2020-06-17",
+                }
+            )
+
+        response = self.client.post(url, data=data)
+
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(
+            b"The destruction of this list can't be aborted because it has already been completed.",
+            response.content,
+        )
 
 
 class DestructionListDetailTests(WebTest):
@@ -171,7 +266,7 @@ class DestructionListDetailTests(WebTest):
 
         self.app.set_user(self.user)
 
-    def test_can_update(self):
+    def test_can_update_and_abort(self):
         destruction_list = DestructionListFactory.create(
             author=self.user, assignee=self.user
         )
@@ -181,10 +276,12 @@ class DestructionListDetailTests(WebTest):
 
         self.assertEqual(response.status_code, 200)
 
-        submit_btn = response.html.find("button", type="submit")
+        submit_btn = response.html.find("button", type="submit", value="submit")
         self.assertIsNotNone(submit_btn)
+        abort_btn = response.html.find("button", type="submit", value="abort")
+        self.assertIsNotNone(abort_btn)
 
-    def test_author_can_not_update(self):
+    def test_author_cannot_update_but_can_abort(self):
         destruction_list = DestructionListFactory.create(author=self.user)
         url = reverse("destruction:record-manager-detail", args=[destruction_list.id])
 
@@ -192,10 +289,12 @@ class DestructionListDetailTests(WebTest):
 
         self.assertEqual(response.status_code, 200)
 
-        submit_btn = response.html.find("button", type="submit")
+        submit_btn = response.html.find("button", type="submit", value="submit")
         self.assertIsNone(submit_btn)
+        abort_btn = response.html.find("button", type="submit", value="abort")
+        self.assertIsNotNone(abort_btn)
 
-    def test_assignee_can_not_update(self):
+    def test_assignee_cannot_update_and_cannot_abort(self):
         destruction_list = DestructionListFactory.create()
         DestructionListAssigneeFactory.create(
             destruction_list=destruction_list, assignee=self.user
@@ -206,5 +305,22 @@ class DestructionListDetailTests(WebTest):
 
         self.assertEqual(response.status_code, 200)
 
-        submit_btn = response.html.find("button", type="submit")
+        submit_btn = response.html.find("button", type="submit", value="submit")
         self.assertIsNone(submit_btn)
+        abort_btn = response.html.find("button", type="submit", value="abort")
+        self.assertIsNone(abort_btn)
+
+    def test_cannot_update_or_abort_completed_list(self):
+        destruction_list = DestructionListFactory.create(
+            author=self.user, assignee=self.user, status=ListStatus.completed
+        )
+        url = reverse("destruction:record-manager-detail", args=[destruction_list.id])
+
+        response = self.app.get(url)
+
+        self.assertEqual(response.status_code, 200)
+
+        submit_btn = response.html.find("button", type="submit", value="submit")
+        self.assertIsNone(submit_btn)
+        abort_btn = response.html.find("button", type="submit", value="abort")
+        self.assertIsNone(abort_btn)

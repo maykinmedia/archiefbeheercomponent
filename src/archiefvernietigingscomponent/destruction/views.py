@@ -1,7 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.db import models, transaction
-from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponseBadRequest
+from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.utils.timesince import timesince
 from django.utils.translation import ugettext_lazy as _
@@ -22,7 +23,7 @@ from archiefvernietigingscomponent.accounts.mixins import (
 )
 from archiefvernietigingscomponent.notifications.models import Notification
 
-from .constants import ListItemStatus, Suggestion
+from .constants import ListItemStatus, ListStatus, Suggestion
 from .filters import ReviewerListFilter
 from .forms import (
     DestructionListForm,
@@ -169,7 +170,11 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
 
         formset = context["inlines"][0]
         dl = self.get_object()
-        can_update = self.request.user == dl.assignee == dl.author
+        can_update = (
+            self.request.user == dl.assignee == dl.author
+            and dl.status != ListStatus.completed
+        )
+        can_abort = self.request.user == dl.author and dl.status != ListStatus.completed
 
         context.update(
             {
@@ -181,6 +186,7 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
                     },
                 },
                 "can_update": can_update,
+                "can_abort": can_abort,
             }
         )
         return context
@@ -190,6 +196,8 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
         for list_item in list_items:
             list_item.remove()
             list_item.save()
+
+        assignee = destruction_list.assignee
 
         destruction_list.process()
         destruction_list.complete()
@@ -202,6 +210,16 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
             n_items=destruction_list.items.count(),
         )
 
+        # If the author is not assigned to the list, notify the assignee
+        # that the list has been aborted.
+        if assignee and destruction_list.author != assignee:
+            message = _(
+                "%(author)s has aborted the destruction list. No further action is required."
+            ) % {"author": destruction_list.author}
+            Notification.objects.create(
+                destruction_list=destruction_list, user=assignee, message=message,
+            )
+
     @transaction.atomic
     def forms_valid(self, form, inlines):
         response = super().forms_valid(form, inlines)
@@ -209,6 +227,13 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
         destruction_list = form.instance
 
         if "abort" in self.request.POST:
+            if destruction_list.status == ListStatus.completed:
+                return HttpResponseBadRequest(
+                    _(
+                        "The destruction of this list can't be aborted because it has already been completed."
+                    )
+                )
+
             self.abort_destruction_list(destruction_list)
             return response
 

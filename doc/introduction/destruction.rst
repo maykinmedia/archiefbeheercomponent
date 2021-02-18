@@ -96,3 +96,12 @@ being the next assignee on the list.
 
 Additionally, audit trails are collected for list creation, review submission and case
 deletion (for every individual case!).
+
+Deleting a list
+===============
+
+Should the author decide to cancel the destruction process for a list of cases,
+they can use the 'abort' button in the top right hand corner of the list details page.
+Clicking this button will cancel only the list, i.e. the cases will *NOT* be destroyed.
+The cases that were part of the cancelled list will become available again to be included
+in other destruction lists.
