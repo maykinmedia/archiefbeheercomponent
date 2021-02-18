@@ -1,9 +1,13 @@
 @import "../lib/colors";
 
-a, a:visited {
+.link {
   color: $color-link;
 
+  &:visited {
+    color: $color-link;
+  }
+
   &:hover {
-      color: $color-link--dark;
+    color: $color-link--dark;
   }
 }
