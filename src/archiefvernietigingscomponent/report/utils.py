@@ -1,5 +1,7 @@
+import uuid
 from datetime import date, datetime
 
+from django.core.files.base import ContentFile
 from django.shortcuts import render
 from django.utils.translation import gettext as _
 
@@ -18,6 +20,7 @@ from archiefvernietigingscomponent.destruction.service import (
     fetch_process_type,
     fetch_zaaktype,
 )
+from archiefvernietigingscomponent.report.models import DestructionReport
 
 
 class NoClientException(Exception):
@@ -89,7 +92,7 @@ def get_process_owner_comments(destruction_list: DestructionList) -> str:
     return review.text
 
 
-def create_destruction_report(destruction_list: DestructionList) -> str:
+def create_destruction_report_content(destruction_list: DestructionList) -> str:
     destroyed_items = destruction_list.items.filter(
         status=ListItemStatus.destroyed
     ).order_by("id")
@@ -125,3 +128,21 @@ def create_destruction_report_subject(destruction_list: DestructionList) -> str:
         "date": datetime.strftime(destruction_list.created, "%Y-%m-%d"),
     }
     return subject
+
+
+def create_destruction_report(destruction_list: DestructionList) -> DestructionReport:
+    report_content = create_destruction_report_content(destruction_list)
+    report_subject = create_destruction_report_subject(destruction_list)
+
+    process_owner_review = DestructionListReview.objects.filter(
+        destruction_list=destruction_list,
+        author__role__type=RoleTypeChoices.process_owner,
+    ).last()
+
+    destruction_report = DestructionReport.objects.create(
+        title=report_subject,
+        process_owner=process_owner_review.author if process_owner_review else None,
+        content=ContentFile(content=report_content, name=f"{uuid.uuid4()}.html"),
+    )
+
+    return destruction_report
