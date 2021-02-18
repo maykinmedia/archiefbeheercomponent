@@ -304,6 +304,7 @@ SESSION_COOKIE_NAME = "archiefvernietigingscomponent_sessionid"
 
 LOGIN_URL = reverse_lazy("admin:login")
 LOGIN_REDIRECT_URL = reverse_lazy("entry")
+LOGOUT_REDIRECT_URL = reverse_lazy("start-page")
 
 #
 # SECURITY settings
