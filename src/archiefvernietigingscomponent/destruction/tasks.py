@@ -13,7 +13,11 @@ from archiefvernietigingscomponent.notifications.models import Notification
 
 from ..celery import app
 from ..constants import RoleTypeChoices
-from ..report.utils import create_destruction_report, create_destruction_report_subject
+from ..report.utils import (
+    create_destruction_report,
+    create_destruction_report_content,
+    create_destruction_report_title,
+)
 from .constants import ListItemStatus, ListStatus, ReviewStatus
 from .models import DestructionList, DestructionListItem, DestructionListReview
 from .service import fetch_zaak, remove_zaak, update_zaak
@@ -127,6 +131,11 @@ def complete_and_notify(list_id):
         message=_("Processing of the list is complete."),
     )
 
+    # Create the destruction report
+    report = create_destruction_report(destruction_list)
+
+    # TODO Create notification to link where the report can be downloaded
+
     # Send email to archivaris role
     if destruction_list.items.filter(status=ListItemStatus.destroyed).exists():
         # Retrieve the assigned archivaris email
@@ -137,12 +146,10 @@ def complete_and_notify(list_id):
         ).last()
 
         if approval_review:
-            report = create_destruction_report(destruction_list)
-            subject = create_destruction_report_subject(destruction_list)
             assigned_archivaris = approval_review.author
             email = EmailMessage(
-                subject=subject,
-                body=report,
+                subject=report.title,
+                body=report.content.read().decode("utf8"),
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 to=[assigned_archivaris.email],
             )
