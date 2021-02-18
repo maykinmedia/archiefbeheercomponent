@@ -2,6 +2,7 @@
 @import "../lib/colors";
 
 $btn-background-color: $color-background;
+$btn-background-color--hover: $color-border;
 
 .btn {
   display: inline-block;
@@ -18,7 +19,7 @@ $btn-background-color: $color-background;
   text-decoration: none;
 
   &:hover:not(:disabled) {
-    background: $color-secondary;
+    background: $btn-background-color--hover;
   }
 
   &:disabled {

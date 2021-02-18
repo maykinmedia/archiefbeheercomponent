@@ -1,4 +1,4 @@
-{% load static i18n hijack_tags demo_tutorial %}<!DOCTYPE html>
+{% load static i18n hijack_tags demo_tutorial theme %}<!DOCTYPE html>
 {% get_current_language as lang %}
 <html lang="{{ lang|slice:':2' }}">
     <head>
@@ -20,7 +20,7 @@
         <title>{% block title %}Archiefvernietigingscomponent{% endblock %}</title>
     </head>
 
-    <body class="{% block body-class %}{% endblock %}">
+    <body class="{% block body-class %}{% endblock %}{% if settings.AVC_DEMO_MODE %} demo{% endif %}">
         {% block body %}
             {% if settings.AVC_DEMO_MODE %}
                 {% demo_tutorial user %}
@@ -28,9 +28,7 @@
 
             {% hijack_notification %}
             <header>
-                <div class="logo">
-                    <img class="logo__img" src="{% static 'img/wapen-utrecht-rood.svg' %}">
-                </div>
+                {% theme_header %}
             </header>
             <main class="main">
                 <section class="main__content content-panel">
@@ -54,22 +52,7 @@
 
             <footer class="footer">
                 <div class="footer__content">
-                    <div class="footer__column">
-                        <h3>GEMEENTE UTRECHT</h3>
-                        <p>Maandag t/m vrijdag 8.30 - 17.30 uur,<br> donderdag tot 20.00 uur</p>
-
-                        <div class="footer__contact-details">
-                            <div>
-                                <h3>Telefoon</h3>
-                                <p>14 030</p>
-                            </div>
-                            <div>
-                                <h3>Adres</h3>
-                                <p>Stadskantoor<br> Stadsplateau 1<br> 3521 AZ Utrecht</p>
-                            </div>
-                        </div>
-
-                    </div>
+                    {% theme_footer %}
                 </div>
             </footer>
 

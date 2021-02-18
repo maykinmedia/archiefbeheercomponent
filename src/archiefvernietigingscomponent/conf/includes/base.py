@@ -121,6 +121,7 @@ INSTALLED_APPS = [
     "archiefvernietigingscomponent.notifications",
     "archiefvernietigingscomponent.utils",
     "archiefvernietigingscomponent.demo",
+    "archiefvernietigingscomponent.theme",
 ]
 
 MIDDLEWARE = [
@@ -303,6 +304,7 @@ SESSION_COOKIE_NAME = "archiefvernietigingscomponent_sessionid"
 
 LOGIN_URL = reverse_lazy("admin:login")
 LOGIN_REDIRECT_URL = reverse_lazy("entry")
+LOGOUT_REDIRECT_URL = reverse_lazy("start-page")
 
 #
 # SECURITY settings
@@ -398,6 +400,12 @@ if SENTRY_DSN:
 # ZGW-CONSUMERS
 #
 ZGW_CONSUMERS_OAS_CACHE = "oas"
+
+#
+# SOLO
+#
+SOLO_CACHE = "default"
+SOLO_CACHE_TIMEOUT = 60 * 5  # 5 mins
 
 #
 # CELERY

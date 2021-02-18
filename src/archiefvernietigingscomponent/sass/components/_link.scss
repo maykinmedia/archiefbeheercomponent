@@ -1,0 +1,13 @@
+@import "../lib/colors";
+
+.link {
+  color: $color-link;
+
+  &:visited {
+    color: $color-link;
+  }
+
+  &:hover {
+    color: $color-link--dark;
+  }
+}

@@ -1,11 +1,14 @@
-$color-primary: #c00;
-$color-primary--light: #d94e51;
-$color-secondary: #ffcc00;
+$color-primary: #04A5BB;
+$color-primary--light: #C3EAEF;
+$color-secondary: #017092;
 
-$color-highlight: #9acbf0;
+$color-highlight: #c00;
 
 $color-text: #1d1d1c; // asphalt
 $color-background: #f2f2f2;
 $color-border: #ddd;
 
 $color-text--light: lighten($color-text, 20%);
+
+$color-link: $color-secondary;
+$color-link--dark: #051F31;
