@@ -25,7 +25,7 @@ class ThemeConfig(SingletonModel):
     organization_name = models.CharField(
         _("Organization name"),
         max_length=100,
-        help_text=_("Shown on the top of the footer."),
+        help_text=_("Shown at the top of the footer."),
     )
     tagline = models.CharField(
         _("Tagline"),
