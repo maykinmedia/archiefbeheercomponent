@@ -47,6 +47,10 @@
             [
                 "destruction",
                 "destructionlistreview"
+            ],
+            [
+                "report",
+                "destructionreport"
             ]
         ]
     }
