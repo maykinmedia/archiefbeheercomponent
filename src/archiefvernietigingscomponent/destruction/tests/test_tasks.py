@@ -321,6 +321,18 @@ class NotifyTests(TestCase):
                 "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
             },
         )
+        mock_service_oas_get(
+            m,
+            "https://oz.nl/catalogi/api/v1",
+            "ztc",
+            oas_url="https://oz.nl/catalogi/api/v1/schema/openapi.json",
+        )
+        m.get(
+            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1", json={},
+        )
+        m.get(
+            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2", json={},
+        )
 
         complete_and_notify(destruction_list.id)
 
