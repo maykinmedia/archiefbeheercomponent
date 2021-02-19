@@ -38,6 +38,15 @@ services:
       - db
       - redis
 
+  nginx:
+    image: nginx
+    volumes:
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "9000:80"
+    depends_on:
+      - web
+
 # See: src/archiefvernietigingscomponent/conf/docker.py
 # Optional containers below:
 #  elasticsearch:
