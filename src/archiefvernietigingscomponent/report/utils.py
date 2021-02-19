@@ -119,7 +119,7 @@ def create_destruction_report_content(destruction_list: DestructionList) -> str:
 
     return render(
         request=None,
-        template_name="destruction/vernietigings_rapport.html",
+        template_name="report/vernietigings_rapport.html",
         context={"destroyed_zaken": zaken_data},
     ).content.decode("utf8")
 
