@@ -43,18 +43,9 @@ def get_looptijd(zaak: dict) -> int:
     return (end_date - date.fromisoformat(zaak["startdatum"])).days
 
 
-def get_vernietigings_categorie_selectielijst(zaaktype: str) -> str:
+def get_vernietigings_categorie_selectielijst(selectielijst_procestype: str) -> str:
     try:
-        zaaktype = fetch_zaaktype(zaaktype)
-    except ClientError as exc:
-        # If the zaaktype couldn't be retrieved, return an empty value
-        return ""
-
-    if not zaaktype.get("selectielijstProcestype"):
-        return ""
-
-    try:
-        process_type = fetch_process_type(zaaktype["selectielijstProcestype"])
+        process_type = fetch_process_type(selectielijst_procestype)
     except ClientError as exc:
         # If the process type couldn't be retrieved, return an empty value
         return ""
@@ -77,6 +68,14 @@ def get_destruction_list_archivaris_comments(destruction_list: DestructionList) 
         return ""
 
     return review.text
+
+
+def get_zaaktype(zaaktype_url: str) -> dict:
+    try:
+        return fetch_zaaktype(zaaktype_url)
+    except ClientError as exc:
+        # If the zaaktype couldn't be retrieved, return an empty dictionary
+        return {}
 
 
 def get_process_owner_comments(destruction_list: DestructionList) -> str:
@@ -104,12 +103,19 @@ def create_destruction_report_content(destruction_list: DestructionList) -> str:
     zaken_data = []
     for destroyed_item in destroyed_items:
         zaak_data = destroyed_item.extra_zaak_data
+
+        zaaktype = get_zaaktype(zaak_data["zaaktype"])
+
         zaak_data["looptijd"] = _("%(looptijd)s days") % {
             "looptijd": get_looptijd(zaak_data)
         }
-        zaak_data[
-            "vernietigings_categorie"
-        ] = get_vernietigings_categorie_selectielijst(zaak_data["zaaktype"])
+        zaak_data["vernietigings_categorie"] = (
+            get_vernietigings_categorie_selectielijst(
+                zaaktype["selectielijstProcestype"]
+            )
+            if zaaktype.get("selectielijstProcestype")
+            else ""
+        )
         zaak_data["toelichting"] = _("Part of destructionlist: %(name)s") % {
             "name": destruction_list.name
         }
@@ -117,6 +123,24 @@ def create_destruction_report_content(destruction_list: DestructionList) -> str:
             destruction_list
         )
         zaak_data["reactie_zorgdrager"] = get_process_owner_comments(destruction_list)
+        zaak_data["zaaktype"] = (
+            zaaktype["omschrijving"] if zaaktype.get("omschrijving") else ""
+        )
+
+        if zaak_data.get("resultaat"):
+            resultaattype = zaak_data["resultaat"]["resultaattype"]
+            zaak_data["resultaattype"] = resultaattype["omschrijving"]
+            zaak_data["archiefactietermijn"] = (
+                resultaattype["archiefactietermijn"]
+                if resultaattype.get("archiefactietermijn")
+                else ""
+            )
+
+        if len(zaak_data["relevante_andere_zaken"]) > 0:
+            zaak_data["relaties"] = _("Ja")
+        else:
+            zaak_data["relaties"] = _("Nee")
+
         zaken_data.append(zaak_data)
 
     return render(
