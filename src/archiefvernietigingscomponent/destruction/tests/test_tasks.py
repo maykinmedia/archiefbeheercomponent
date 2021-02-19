@@ -2,12 +2,15 @@ import datetime
 from unittest.mock import patch
 
 from django.conf import settings
+from django.contrib.sites.models import Site
 from django.core import mail
 from django.test import TestCase, override_settings
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
 
 import requests_mock
+from privates.test import temp_private_root
 from timeline_logger.models import TimelineLog
 from zds_client.client import ClientError
 from zgw_consumers.constants import APITypes
@@ -17,6 +20,7 @@ from archiefvernietigingscomponent.notifications.models import Notification
 
 from ...accounts.tests.factories import UserFactory
 from ...constants import RoleTypeChoices
+from ...report.models import DestructionReport
 from ...tests.utils import mock_service_oas_get
 from ..constants import ListItemStatus, ListStatus, ReviewStatus
 from ..models import DestructionList, DestructionListItem
@@ -184,6 +188,7 @@ class ProcessListItemTests(TestCase):
 
 
 @requests_mock.Mocker()
+@temp_private_root()
 class NotifyTests(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -212,6 +217,52 @@ class NotifyTests(TestCase):
         self.assertEqual(notification.destruction_list, destruction_list)
         self.assertEqual(notification.user, destruction_list.author)
         self.assertEqual(notification.message, _("Processing of the list is complete."))
+
+    def test_complete_and_notify_process_owner(self, m):
+        process_owner = UserFactory.create(
+            role__type=RoleTypeChoices.process_owner,
+            role__can_review_destruction=True,
+            role__can_view_case_details=True,
+        )
+        destruction_list = DestructionListFactory.create(name="Summer List",)
+        DestructionListReviewFactory.create(
+            author=process_owner,
+            status=ReviewStatus.approved,
+            destruction_list=destruction_list,
+        )
+
+        destruction_list.process()
+        destruction_list.save()
+
+        complete_and_notify(destruction_list.id)
+
+        notifications = Notification.objects.all()
+
+        self.assertEqual(2, notifications.count())
+
+        notification = notifications.get(user=process_owner)
+
+        self.assertEqual(notification.destruction_list, destruction_list)
+
+        report = DestructionReport.objects.get()
+
+        self.assertEqual(
+            notification.message,
+            _(
+                "Destruction list Summer List has been processed. "
+                "You can download the report of destruction here: %(protocol)s://%(domain)s/reports/download/%(id)s/"
+            )
+            % {
+                "protocol": "https" if settings.IS_HTTPS else "http",
+                "domain": Site.objects.get().domain,
+                "id": report.pk,
+            },
+        )
+
+        self.client.force_login(process_owner)
+        response = self.client.get(reverse("report:download-report", args=[report.pk]))
+
+        self.assertEqual(200, response.status_code)
 
     @override_settings(DEFAULT_FROM_EMAIL="email@test.avc")
     def test_all_deleted_cases_are_in_destruction_report(self, m):
