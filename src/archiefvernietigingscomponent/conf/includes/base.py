@@ -28,6 +28,7 @@ DEBUG = config("DEBUG", default=False)
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="", split=True)
 
 IS_HTTPS = config("IS_HTTPS", default=not DEBUG)
+SITE_ID = config("SITE_ID", default=1)
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
@@ -93,6 +94,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.auth",
     "django.contrib.sessions",
+    "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # django-admin-index
