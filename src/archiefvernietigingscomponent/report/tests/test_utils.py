@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 import requests_mock
+import zds_client
 from freezegun import freeze_time
 from privates.test import temp_private_root
 from zgw_consumers.constants import APITypes
@@ -66,13 +67,15 @@ class DestructionReportTests(TestCase):
         m.get(
             url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
             json={
-                "selectielijstProcestype": "https://selectielijst.oz.nl/api/v1/procestypen/uuid-1"
+                "selectielijstProcestype": "https://selectielijst.oz.nl/api/v1/procestypen/uuid-1",
+                "omschrijving": "ZAAKTYPE-001",
             },
         )
         m.get(
             url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
             json={
-                "selectielijstProcestype": "https://selectielijst.oz.nl/api/v1/procestypen/uuid-2"
+                "selectielijstProcestype": "https://selectielijst.oz.nl/api/v1/procestypen/uuid-2",
+                "omschrijving": "ZAAKTYPE-002",
             },
         )
         m.get(
@@ -96,6 +99,14 @@ class DestructionReportTests(TestCase):
                 "startdatum": "2020-01-01",
                 "einddatum": "2021-01-01",
                 "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+                "verantwoordelijke_organisatie": "Nicer organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nicer result type",
+                        "archiefactietermijn": "40 days",
+                    }
+                },
+                "relevante_andere_zaken": [{"url": "http://some.zaak"}],
             },
         )
         DestructionListItemFactory.create(
@@ -108,6 +119,14 @@ class DestructionReportTests(TestCase):
                 "startdatum": "2020-02-01",
                 "einddatum": "2021-03-01",
                 "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
+                "verantwoordelijke_organisatie": "Nice organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nice result type",
+                        "archiefactietermijn": "20 days",
+                    }
+                },
+                "relevante_andere_zaken": [],
             },
         )
 
@@ -120,11 +139,21 @@ class DestructionReportTests(TestCase):
         self.assertIn("<td>366 dagen</td>", report)
         self.assertIn("<td>1</td>", report)
         self.assertIn("<td>Onderdeel van vernietigingslijst: Winter cases</td>", report)
+        self.assertIn("<td>ZAAKTYPE-001</td>", report)
+        self.assertIn("<td>40 days</td>", report)
+        self.assertIn("<td>Nicer result type</td>", report)
+        self.assertIn("<td>Nicer organisation</td>", report)
+        self.assertIn("<td>Ja</td>", report)
 
         self.assertIn("<td>ZAAK-2</td>", report)
         self.assertIn("<td>Een andere zaak</td>", report)
         self.assertIn("<td>394 dagen</td>", report)
         self.assertIn("<td>2</td>", report)
+        self.assertIn("<td>ZAAKTYPE-002</td>", report)
+        self.assertIn("<td>20 days</td>", report)
+        self.assertIn("<td>Nice result type</td>", report)
+        self.assertIn("<td>Nice organisation</td>", report)
+        self.assertIn("<td>Nee</td>", report)
 
     def test_failed_destruction_not_in_report_content(self, m):
         destruction_list = DestructionListFactory.create(status=ListStatus.processing)
@@ -138,6 +167,14 @@ class DestructionReportTests(TestCase):
                 "startdatum": "2020-01-01",
                 "einddatum": "2021-01-01",
                 "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+                "verantwoordelijke_organisatie": "Nicer organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nicer result type",
+                        "archiefactietermijn": "40 days",
+                    }
+                },
+                "relevante_andere_zaken": [{"url": "http://some.zaak"}],
             },
         )
         DestructionListItemFactory.create(
@@ -150,6 +187,14 @@ class DestructionReportTests(TestCase):
                 "startdatum": "2020-02-01",
                 "einddatum": "2021-03-01",
                 "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
+                "verantwoordelijke_organisatie": "Nice organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nice result type",
+                        "archiefactietermijn": "20 days",
+                    }
+                },
+                "relevante_andere_zaken": [],
             },
         )
 
@@ -161,13 +206,51 @@ class DestructionReportTests(TestCase):
         self.assertNotIn("<td>Een zaak</td>", report)
         self.assertNotIn("<td>366 dagen</td>", report)
         self.assertNotIn("<td>1</td>", report)
+        self.assertNotIn("<td>ZAAKTYPE-001</td>", report)
+        self.assertNotIn("<td>40 days</td>", report)
+        self.assertNotIn("<td>Nicer result type</td>", report)
+        self.assertNotIn("<td>Nicer organisation</td>", report)
+        self.assertNotIn("<td>Ja</td>", report)
 
         self.assertIn("<td>ZAAK-2</td>", report)
         self.assertIn("<td>Een andere zaak</td>", report)
         self.assertIn("<td>394 dagen</td>", report)
         self.assertIn("<td>2</td>", report)
+        self.assertIn("<td>ZAAKTYPE-002</td>", report)
+        self.assertIn("<td>20 days</td>", report)
+        self.assertIn("<td>Nice result type</td>", report)
+        self.assertIn("<td>Nice organisation</td>", report)
+        self.assertIn("<td>Nee</td>", report)
 
-    def test_no_selectielijst_client(self, m):
+    def test_failed_zaaktype_retrieval(self, m):
+        destruction_list = DestructionListFactory.create(status=ListStatus.processing)
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.destroyed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-1",
+                "omschrijving": "Een zaak",
+                "toelichting": "Bah",
+                "startdatum": "2020-01-01",
+                "einddatum": "2021-01-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+                "verantwoordelijke_organisatie": "Nicer organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nicer result type",
+                        "archiefactietermijn": "40 days",
+                    }
+                },
+                "relevante_andere_zaken": [{"url": "http://some.zaak"}],
+            },
+        )
+
+        mock_service_oas_get(
+            m,
+            "https://selectielijst.oz.nl/api/v1",
+            "selectielijst",
+            oas_url="https://selectielijst.oz.nl/api/v1/schema/openapi.json",
+        )
         mock_service_oas_get(
             m,
             "https://oz.nl/catalogi/api/v1",
@@ -176,29 +259,21 @@ class DestructionReportTests(TestCase):
         )
         m.get(
             url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
-            json={
-                "selectielijstProcestype": "https://another-selectielijst.oz.nl/api/v1/procestypen/uuid-1"
-            },
+            exc=zds_client.ClientError,
         )
 
-        number = get_vernietigings_categorie_selectielijst(
-            "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1"
-        )
+        report = create_destruction_report_content(destruction_list)
 
-        self.assertEqual("", number)
+        self.assertIn("<td>ZAAK-1</td>", report)
+        self.assertIn("<td>Een zaak</td>", report)
+        self.assertIn("<td>366 dagen</td>", report)
+        self.assertIn("<td>40 days</td>", report)
+        self.assertIn("<td>Nicer result type</td>", report)
+        self.assertIn("<td>Nicer organisation</td>", report)
+        self.assertIn("<td>Ja</td>", report)
 
-    def test_no_process_type_url(self, m):
-        mock_service_oas_get(
-            m,
-            "https://oz.nl/catalogi/api/v1",
-            "ztc",
-            oas_url="https://oz.nl/catalogi/api/v1/schema/openapi.json",
-        )
-        m.get(url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1", json={})
-
-        number = get_vernietigings_categorie_selectielijst(
-            "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1"
-        )
+    def test_no_selectielijst_client(self, m):
+        number = get_vernietigings_categorie_selectielijst("http://somesillyurl")
 
         self.assertEqual("", number)
 
@@ -628,6 +703,14 @@ class DestructionReportTests(TestCase):
                 "startdatum": "2020-01-01",
                 "einddatum": "2021-01-01",
                 "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+                "verantwoordelijke_organisatie": "Nice organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nice result type",
+                        "archiefactietermijn": "20 days",
+                    }
+                },
+                "relevante_andere_zaken": [],
             },
         )
         DestructionListItemFactory.create(
@@ -640,6 +723,14 @@ class DestructionReportTests(TestCase):
                 "startdatum": "2020-02-01",
                 "einddatum": "2021-03-01",
                 "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
+                "verantwoordelijke_organisatie": "Nice organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nice result type",
+                        "archiefactietermijn": "20 days",
+                    }
+                },
+                "relevante_andere_zaken": [],
             },
         )
         DestructionListReviewFactory.create(
@@ -691,6 +782,14 @@ class DestructionReportTests(TestCase):
                 "startdatum": "2020-01-01",
                 "einddatum": "2021-01-01",
                 "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+                "verantwoordelijke_organisatie": "Nice organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nice result type",
+                        "archiefactietermijn": "20 days",
+                    }
+                },
+                "relevante_andere_zaken": [],
             },
         )
         DestructionListItemFactory.create(
@@ -703,6 +802,14 @@ class DestructionReportTests(TestCase):
                 "startdatum": "2020-02-01",
                 "einddatum": "2021-03-01",
                 "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
+                "verantwoordelijke_organisatie": "Nice organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nice result type",
+                        "archiefactietermijn": "20 days",
+                    }
+                },
+                "relevante_andere_zaken": [],
             },
         )
 
@@ -730,6 +837,14 @@ class DestructionReportTests(TestCase):
                 "startdatum": "2020-01-01",
                 "einddatum": "2021-01-01",
                 "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+                "verantwoordelijke_organisatie": "Nice organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nice result type",
+                        "archiefactietermijn": "20 days",
+                    }
+                },
+                "relevante_andere_zaken": [],
             },
         )
         DestructionListItemFactory.create(
@@ -742,6 +857,14 @@ class DestructionReportTests(TestCase):
                 "startdatum": "2020-02-01",
                 "einddatum": "2021-03-01",
                 "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
+                "verantwoordelijke_organisatie": "Nice organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nice result type",
+                        "archiefactietermijn": "20 days",
+                    }
+                },
+                "relevante_andere_zaken": [],
             },
         )
         DestructionListReviewFactory.create(
