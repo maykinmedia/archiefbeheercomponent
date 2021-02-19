@@ -3,6 +3,7 @@ import traceback
 
 from django.conf import settings
 from django.core.mail import EmailMessage
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from celery import chain
@@ -17,6 +18,7 @@ from ..report.utils import (
     create_destruction_report,
     create_destruction_report_content,
     create_destruction_report_title,
+    get_absolute_url,
 )
 from .constants import ListItemStatus, ListStatus, ReviewStatus
 from .models import DestructionList, DestructionListItem, DestructionListReview
@@ -134,9 +136,23 @@ def complete_and_notify(list_id):
     # Create the destruction report
     report = create_destruction_report(destruction_list)
 
-    # TODO Create notification to link where the report can be downloaded
+    if report.process_owner:
+        Notification.objects.create(
+            destruction_list=destruction_list,
+            user=report.process_owner,
+            message=_(
+                "Destruction list %(list)s has been processed. "
+                "You can download the report of destruction here: %(url)s"
+            )
+            % {
+                "list": destruction_list.name,
+                "url": get_absolute_url(
+                    reverse("report:download-report", args=[report.pk])
+                ),
+            },
+        )
 
-    # Send email to archivaris role
+    # Send email to archivist role
     if destruction_list.items.filter(status=ListItemStatus.destroyed).exists():
         # Retrieve the assigned archivaris email
         approval_review = DestructionListReview.objects.filter(
