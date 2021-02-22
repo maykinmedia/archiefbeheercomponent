@@ -88,7 +88,7 @@ class DestructionReportTests(TestCase):
         )
 
     def test_destruction_report_content_generation(self, m):
-        destruction_list = DestructionListFactory.create(name="Winter cases")
+        destruction_list = DestructionListFactory.create()
         DestructionListItemFactory.create(
             destruction_list=destruction_list,
             status=ListItemStatus.destroyed,
@@ -115,7 +115,7 @@ class DestructionReportTests(TestCase):
             extra_zaak_data={
                 "identificatie": "ZAAK-2",
                 "omschrijving": "Een andere zaak",
-                "toelichting": "",
+                "toelichting": "Boh",
                 "startdatum": "2020-02-01",
                 "einddatum": "2021-03-01",
                 "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
@@ -138,7 +138,7 @@ class DestructionReportTests(TestCase):
         self.assertIn("<td>Een zaak</td>", report)
         self.assertIn("<td>366 dagen</td>", report)
         self.assertIn("<td>1</td>", report)
-        self.assertIn("<td>Onderdeel van vernietigingslijst: Winter cases</td>", report)
+        self.assertIn("<td>Bah</td>", report)
         self.assertIn("<td>ZAAKTYPE-001</td>", report)
         self.assertIn("<td>40 days</td>", report)
         self.assertIn("<td>Nicer result type</td>", report)
@@ -149,11 +149,70 @@ class DestructionReportTests(TestCase):
         self.assertIn("<td>Een andere zaak</td>", report)
         self.assertIn("<td>394 dagen</td>", report)
         self.assertIn("<td>2</td>", report)
+        self.assertIn("<td>Boh</td>", report)
         self.assertIn("<td>ZAAKTYPE-002</td>", report)
         self.assertIn("<td>20 days</td>", report)
         self.assertIn("<td>Nice result type</td>", report)
         self.assertIn("<td>Nice organisation</td>", report)
         self.assertIn("<td>Nee</td>", report)
+
+    def test_destruction_report_content_generation_without_toelichting(self, m):
+        destruction_list = DestructionListFactory.create()
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.destroyed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-1",
+                "omschrijving": "Een zaak",
+                "startdatum": "2020-01-01",
+                "einddatum": "2021-01-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+                "verantwoordelijke_organisatie": "Nicer organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nicer result type",
+                        "archiefactietermijn": "40 days",
+                    }
+                },
+                "relevante_andere_zaken": [{"url": "http://some.zaak"}],
+            },
+        )
+
+        mock_service_oas_get(
+            m,
+            "https://selectielijst.oz.nl/api/v1",
+            "selectielijst",
+            oas_url="https://selectielijst.oz.nl/api/v1/schema/openapi.json",
+        )
+        mock_service_oas_get(
+            m,
+            "https://oz.nl/catalogi/api/v1",
+            "ztc",
+            oas_url="https://oz.nl/catalogi/api/v1/schema/openapi.json",
+        )
+        m.get(
+            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+            json={
+                "selectielijstProcestype": "https://selectielijst.oz.nl/api/v1/procestypen/uuid-1",
+                "omschrijving": "ZAAKTYPE-001",
+            },
+        )
+        m.get(
+            url="https://selectielijst.oz.nl/api/v1/procestypen/uuid-1",
+            json={"nummer": 1},
+        )
+
+        report = create_destruction_report_content(destruction_list)
+
+        self.assertIn("<td>ZAAK-1</td>", report)
+        self.assertIn("<td>Een zaak</td>", report)
+        self.assertIn("<td>366 days</td>", report)
+        self.assertIn("<td>1</td>", report)
+        self.assertIn("<td>ZAAKTYPE-001</td>", report)
+        self.assertIn("<td>40 days</td>", report)
+        self.assertIn("<td>Nicer result type</td>", report)
+        self.assertIn("<td>Nicer organisation</td>", report)
+        self.assertIn("<td>Ja</td>", report)
 
     def test_failed_destruction_not_in_report_content(self, m):
         destruction_list = DestructionListFactory.create(status=ListStatus.processing)
@@ -719,7 +778,7 @@ class DestructionReportTests(TestCase):
             extra_zaak_data={
                 "identificatie": "ZAAK-2",
                 "omschrijving": "Een andere zaak",
-                "toelichting": "",
+                "toelichting": "Boh",
                 "startdatum": "2020-02-01",
                 "einddatum": "2021-03-01",
                 "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
@@ -756,14 +815,13 @@ class DestructionReportTests(TestCase):
         self.assertIn("<td>Een zaak</td>", content)
         self.assertIn("<td>366 dagen</td>", content)
         self.assertIn("<td>1</td>", content)
-        self.assertIn(
-            "<td>Onderdeel van vernietigingslijst: Winter cases</td>", content
-        )
+        self.assertIn("<td>Bah</td>", content)
 
         self.assertIn("<td>ZAAK-2</td>", content)
         self.assertIn("<td>Een andere zaak</td>", content)
         self.assertIn("<td>394 dagen</td>", content)
         self.assertIn("<td>2</td>", content)
+        self.assertIn("<td>Boh</td>", content)
 
         self.client.force_login(process_owner)
         response = self.client.get(reverse("report:download-report", args=[report.pk]))
