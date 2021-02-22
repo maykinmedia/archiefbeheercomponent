@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import Modal from 'react-modal';
 
 import { CsrfInput } from "../../forms/csrf";
-import { Input, TextInput } from "../../forms/inputs";
+import {CheckboxInput, Input, TextInput} from "../../forms/inputs";
 import { SelectInput } from "../../forms/select";
+import {Label} from "../../forms/label";
 
 
 const CreateModal = ({ checkboxes, modalIsOpen, setIsOpen, reviewers, url, csrftoken }) => {
@@ -25,6 +26,9 @@ const CreateModal = ({ checkboxes, modalIsOpen, setIsOpen, reviewers, url, csrft
 
     const [reviewer1, setReviewer1] = useState('');
     const [reviewer2, setReviewer2] = useState('');
+
+    // Sensitive information state
+    const [containsSensitiveInfo, setContainsSensitiveInfo] = useState(true);
 
     return (
         <Modal isOpen={modalIsOpen} className="modal">
@@ -77,7 +81,23 @@ const CreateModal = ({ checkboxes, modalIsOpen, setIsOpen, reviewers, url, csrft
                             />
                         }
                     </div>
+                </div>
 
+                <div className="form__field-group">
+                    <div>
+                        <CheckboxInput
+                            name={"contains_sensitive_info"}
+                            checked={containsSensitiveInfo}
+                            value={containsSensitiveInfo}
+                            id={"id_contains_sensitive_info"}
+                            onChange={(event) => {setContainsSensitiveInfo(event.target.checked);}}
+                        />
+                        <Label
+                            label={"Bevat gevoelige gegevens"}
+                            required={true}
+                            idForLabel={"id_contains_sensitive_info"}
+                        />
+                    </div>
                 </div>
 
                 <div className="form__submit-row">
