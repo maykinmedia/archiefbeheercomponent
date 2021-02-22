@@ -116,9 +116,6 @@ def create_destruction_report_content(destruction_list: DestructionList) -> str:
             if zaaktype.get("selectielijstProcestype")
             else ""
         )
-        zaak_data["toelichting"] = _("Part of destructionlist: %(name)s") % {
-            "name": destruction_list.name
-        }
         zaak_data["opmerkingen"] = get_destruction_list_archivaris_comments(
             destruction_list
         )
