@@ -90,7 +90,7 @@ class DestructionReportTests(TestCase):
         )
 
     def test_destruction_report_content_generation(self, m):
-        destruction_list = DestructionListFactory.create()
+        destruction_list = DestructionListFactory.create(contains_sensitive_info=False,)
         DestructionListItemFactory.create(
             destruction_list=destruction_list,
             status=ListItemStatus.destroyed,
@@ -216,8 +216,21 @@ class DestructionReportTests(TestCase):
         self.assertIn("<td>Nicer organisation</td>", report)
         self.assertIn("<td>Yes</td>", report)
 
+        self.assertIn("<td>ZAAK-2</td>", report)
+        self.assertIn("<td>Een andere zaak</td>", report)
+        self.assertIn("<td>394 days</td>", report)
+        self.assertIn("<td>2</td>", report)
+        self.assertIn("<td>Boh</td>", report)
+        self.assertIn("<td>ZAAKTYPE-002</td>", report)
+        self.assertIn("<td>20 days</td>", report)
+        self.assertIn("<td>Nice result type</td>", report)
+        self.assertIn("<td>Nice organisation</td>", report)
+        self.assertIn("<td>No</td>", report)
+
     def test_failed_destruction_not_in_report_content(self, m):
-        destruction_list = DestructionListFactory.create(status=ListStatus.processing)
+        destruction_list = DestructionListFactory.create(
+            status=ListStatus.processing, contains_sensitive_info=False,
+        )
         DestructionListItemFactory.create(
             destruction_list=destruction_list,
             status=ListItemStatus.failed,
@@ -284,7 +297,9 @@ class DestructionReportTests(TestCase):
         self.assertIn("<td>No</td>", report)
 
     def test_failed_zaaktype_retrieval(self, m):
-        destruction_list = DestructionListFactory.create(status=ListStatus.processing)
+        destruction_list = DestructionListFactory.create(
+            status=ListStatus.processing, contains_sensitive_info=False
+        )
         DestructionListItemFactory.create(
             destruction_list=destruction_list,
             status=ListItemStatus.destroyed,
@@ -753,7 +768,9 @@ class DestructionReportTests(TestCase):
             role__can_review_destruction=True,
             role__can_view_case_details=True,
         )
-        destruction_list = DestructionListFactory.create(name="Winter cases")
+        destruction_list = DestructionListFactory.create(
+            name="Winter cases", contains_sensitive_info=False
+        )
         DestructionListItemFactory.create(
             destruction_list=destruction_list,
             status=ListItemStatus.destroyed,
@@ -999,3 +1016,89 @@ class DestructionReportTests(TestCase):
 
         self.assertEqual(1, destruction_list.destructionreport_set.count())
         self.assertEqual(report, destruction_list.destructionreport_set.get())
+
+    def test_optional_columns_are_not_show_by_default(self, m):
+        destruction_list = DestructionListFactory.create(name="Winter cases")
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.destroyed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-1",
+                "omschrijving": "Een zaak",
+                "toelichting": "Bah",
+                "startdatum": "2020-01-01",
+                "einddatum": "2021-01-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+                "verantwoordelijke_organisatie": "Nicer organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nicer result type",
+                        "archiefactietermijn": "40 days",
+                    }
+                },
+                "relevante_andere_zaken": [{"url": "http://some.zaak"}],
+            },
+        )
+        archivaris = UserFactory.create(
+            role__type=RoleTypeChoices.archivist,
+            role__can_start_destruction=False,
+            role__can_review_destruction=True,
+            role__can_view_case_details=False,
+        )
+        DestructionListReviewFactory.create(
+            destruction_list=destruction_list,
+            status=ReviewStatus.approved,
+            author=archivaris,
+            text="What a magnificent list!",
+        )
+
+        self._setup_mocks(m)
+
+        report = create_destruction_report_content(destruction_list)
+
+        self.assertNotIn("<td>Een zaak</td>", report)
+        self.assertNotIn("<td>What a magnificent list!</td>", report)
+
+    def test_optional_columns_are_show_if_configured(self, m):
+        destruction_list = DestructionListFactory.create(
+            name="Winter cases", contains_sensitive_info=False,
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.destroyed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-1",
+                "omschrijving": "Een zaak",
+                "toelichting": "Bah",
+                "startdatum": "2020-01-01",
+                "einddatum": "2021-01-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+                "verantwoordelijke_organisatie": "Nicer organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nicer result type",
+                        "archiefactietermijn": "40 days",
+                    }
+                },
+                "relevante_andere_zaken": [{"url": "http://some.zaak"}],
+            },
+        )
+        archivaris = UserFactory.create(
+            role__type=RoleTypeChoices.archivist,
+            role__can_start_destruction=False,
+            role__can_review_destruction=True,
+            role__can_view_case_details=False,
+        )
+        DestructionListReviewFactory.create(
+            destruction_list=destruction_list,
+            status=ReviewStatus.approved,
+            author=archivaris,
+            text="What a magnificent list!",
+        )
+
+        self._setup_mocks(m)
+
+        report = create_destruction_report_content(destruction_list)
+
+        self.assertIn("<td>Een zaak</td>", report)
+        self.assertIn("<td>What a magnificent list!</td>", report)
