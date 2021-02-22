@@ -146,6 +146,19 @@ def get_resultaat(zaak_url: str) -> Optional[dict]:
     return resultaat
 
 
+def fetch_resultaat(resultaat_url: str) -> dict:
+    zrc_client = _client_from_url(resultaat_url)
+    resultaat = zrc_client.retrieve("resultaat", url=resultaat_url)
+
+    resultaattype_url = resultaat["resultaattype"]
+    ztc_client = _client_from_url(resultaattype_url)
+    resultaattype = ztc_client.retrieve("resultaattype", url=resultaattype_url)
+
+    resultaat["resultaattype"] = resultaattype
+
+    return resultaat
+
+
 # DRC
 def get_documenten(zaak_url: str) -> list:
     zrc_client = _client_from_url(zaak_url)
