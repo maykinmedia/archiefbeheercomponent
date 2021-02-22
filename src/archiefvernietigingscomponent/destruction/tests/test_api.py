@@ -128,7 +128,7 @@ class FetchListItemsTests(TransactionTestCase):
         mock_service_oas_get(
             m,
             SELECTIELIJST_ROOT,
-            "orc",
+            "selectielijst",
             oas_url=f"{SELECTIELIJST_ROOT}schema/openapi.json",
         )
         m.get(
