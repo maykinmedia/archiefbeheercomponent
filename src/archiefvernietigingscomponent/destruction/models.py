@@ -42,6 +42,15 @@ class DestructionList(models.Model):
         max_length=80,
     )
     logs = GenericRelation(TimelineLog)
+    contains_sensitive_info = models.BooleanField(
+        verbose_name=_("contains sensitive information"),
+        help_text=_(
+            "Specify whether this list contains privacy sensitive data. "
+            "If set to true, the report of destruction will NOT contain case "
+            "descriptions or the remarks by the archivist."
+        ),
+        default=True,
+    )
 
     objects = DestructionListQuerySet.as_manager()
 
