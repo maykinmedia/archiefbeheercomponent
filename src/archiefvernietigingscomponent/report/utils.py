@@ -124,9 +124,6 @@ def create_destruction_report_content(destruction_list: DestructionList) -> str:
             if zaaktype.get("selectielijstProcestype")
             else ""
         )
-        zaak_data["toelichting"] = _("Onderdeel van vernietigingslijst: %(name)s") % {
-            "name": destruction_list.name
-        }
         zaak_data["reactie_zorgdrager"] = get_process_owner_comments(destruction_list)
 
         if zaak_data.get("resultaat"):
