@@ -5,11 +5,15 @@
 <table style="width:100%">
     <tr>
         <th>{% trans "Unique ID" %}</th>
-        <th>{% trans "Description" %}</th>
+        {% if not contains_sensitive_info %}
+            <th>{% trans "Description" %}</th>
+        {% endif %}
         <th>{% trans "Duration" %}</th>
         <th>{% trans "Destruction category Selectielijst" %}</th>
         <th>{% trans "Explanation" %}</th>
-        <th>{% trans "Remarks SAD" %}</th>
+        {% if not contains_sensitive_info %}
+            <th>{% trans "Remarks SAD" %}</th>
+        {% endif %}
         <th>{% trans "Reaction caretaker" %}</th>
         <th>{% trans "Case type" %}</th>
         <th>{% trans "Archive action period" %}</th>
@@ -21,11 +25,15 @@
     <tr>
         {% for destroyed_zaak in destroyed_zaken %}
         <td>{% trans destroyed_zaak.identificatie  %}</td>
-        <td>{% trans destroyed_zaak.omschrijving  %}</td>
+        {% if not contains_sensitive_info %}
+            <td>{% trans destroyed_zaak.omschrijving  %}</td>
+        {% endif %}
         <td>{% trans destroyed_zaak.looptijd  %}</td>
         <td>{% trans destroyed_zaak.vernietigings_categorie  %}</td>
         <td>{% trans destroyed_zaak.toelichting  %}</td>
-        <td>{% trans destroyed_zaak.opmerkingen  %}</td>
+        {% if not contains_sensitive_info %}
+            <td>{% trans destroyed_zaak.opmerkingen  %}</td>
+        {% endif %}
         <td>{% trans destroyed_zaak.reactie_zorgdrager  %}</td>
         <td>{% trans destroyed_zaak.zaaktype  %}</td>
         <td>{% trans destroyed_zaak.archiefactietermijn  %}</td>
