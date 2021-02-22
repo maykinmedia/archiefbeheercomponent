@@ -13,11 +13,13 @@ from archiefvernietigingscomponent.accounts.mixins import (
     AuthorOrAssigneeRequiredMixin,
     RoleRequiredMixin,
 )
+from archiefvernietigingscomponent.report.utils import get_looptijd
 
 from .constants import ListItemStatus
 from .models import ArchiveConfig, DestructionList, DestructionListItem
 from .service import (
     fetch_process_type,
+    fetch_resultaat,
     fetch_zaak,
     get_besluiten,
     get_documenten,
@@ -25,7 +27,6 @@ from .service import (
     get_zaaktypen,
     get_zaken,
 )
-from .utils import get_looptijd
 
 
 def get_zaken_chunks(zaken):
@@ -98,6 +99,9 @@ NO_DETAIL_ZAAK_ATTRS = [
     "archiefnominatie",
     "archiefactiedatum",
     "relevanteAndereZaken",
+    "verantwoordelijkeOrganisatie",
+    "toelichting",
+    "resultaat",
 ]
 NO_DETAIL_ZAAKTYPE_ATTRS = [
     "url",
@@ -148,7 +152,7 @@ class FetchListItemsView(AuthorOrAssigneeRequiredMixin, View):
             zaaktype = fetched_zaaktypen[zaak["zaaktype"]]
 
             # return only general information
-            zaak_data = {attr: zaak[attr] for attr in NO_DETAIL_ZAAK_ATTRS}
+            zaak_data = {attr: zaak.get(attr) for attr in NO_DETAIL_ZAAK_ATTRS}
             zaaktype_data = {attr: zaaktype[attr] for attr in NO_DETAIL_ZAAKTYPE_ATTRS}
             zaak_data["zaaktype"] = zaaktype_data
             zaak_data["looptijd"] = f"{get_looptijd(zaak)} dagen"
@@ -160,6 +164,10 @@ class FetchListItemsView(AuthorOrAssigneeRequiredMixin, View):
                     attr: process_type[attr] for attr in NO_DETAIL_PROCESSTYPE_ATTRS
                 }
                 zaak_data["zaaktype"]["processttype"] = process_type_data
+
+            # Retrieve resultaat
+            if zaak_data.get("resultaat"):
+                zaak_data["resultaat"] = fetch_resultaat(zaak["resultaat"])
 
             items.append({"listItem": list_item_data, "zaak": zaak_data})
 
