@@ -22,6 +22,8 @@ logging.disable(logging.CRITICAL)
 
 ENVIRONMENT = "ci"
 
+SENDFILE_BACKEND = config("SENDFILE_BACKEND", "django_sendfile.backends.simple")
+
 #
 # Django-axes
 #
