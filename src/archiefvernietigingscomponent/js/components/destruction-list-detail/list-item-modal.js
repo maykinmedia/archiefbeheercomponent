@@ -6,8 +6,8 @@ import {RadioSelect} from "../../forms/select";
 
 
 const SUGGESTION_DISPLAY = {
-    "remove": "Remove",
-    "change_and_remove": "Change and remove"
+    "remove": "Verwijderen",
+    "change_and_remove": "Aanpassen en verwijderen"
 };
 
 const ARCHIEFNOMINATIE_CHOICES = [
@@ -34,18 +34,18 @@ const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, setAction, archi
 
                 <div className="modal__section">
                     <section className="content-panel modal__item">
-                        <h2 className="section-title section-title--highlight">Review</h2>
+                        <h2 className="section-title section-title--highlight">Beoordeling</h2>
 
-                        <h3>Suggestion</h3>
-                        <p>{SUGGESTION_DISPLAY[listItem.review_suggestion] || "No"}</p>
+                        <h3>Voorstel</h3>
+                        <p>{SUGGESTION_DISPLAY[listItem.review_suggestion] || "Geen voorstel"}</p>
 
-                        <h3>Remarks</h3>
+                        <h3>Opmerkingen</h3>
                         <p>
-                            { listItem.review_text ? listItem.review_text : "No comment"}
+                            { listItem.review_text ? listItem.review_text : "Geen opmerkingen"}
                         </p>
                     </section>
                     <section className="content-panel modal__item">
-                        <h2 className="section-title section-title--highlight">Change data</h2>
+                        <h2 className="section-title section-title--highlight">Wijzigingen</h2>
 
                         <div className="list-item-modal__archiefnominatie">
                             <label><strong>Archiefnominatie</strong>
@@ -88,7 +88,7 @@ const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, setAction, archi
                             closeModal();
                         }}
                         className="btn"
-                    >Keep item
+                    >Zaak behouden
                     </button>
                 </div>
 

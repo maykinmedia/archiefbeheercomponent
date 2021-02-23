@@ -1,4 +1,4 @@
-{% extends "master.html" %}
+{% extends "master.html" %}{% load i18n %}
 
 {% block content %}
 <article class="destruction-list-detail">
@@ -8,28 +8,28 @@
 
             <div class="destruction-list-detail__btns">
                 {% if can_update %}
-                    <button type="submit" class="btn" name="submit" value="submit">Submit</button>
+                    <button type="submit" class="btn" name="submit" value="submit">{% trans "Insturen" %}</button>
                 {% endif %}
                 {% if can_abort %}
-                    <button type="submit" class="btn" name="abort" value="abort">Abort</button>
+                    <button type="submit" class="btn" name="abort" value="abort">{% trans "Annuleren" %}</button>
                 {% endif %}
             </div>
 
         <header class="destruction-list-detail__header">
             <h1 class="title">Lijst "{{ form.instance.name }}"</h1>
-            <span>created {{ form.instance.created }}</span>
+            <span>{% blocktrans %}Gemaakt op {{ form.instance.created }}{% endblocktrans %}</span>
         </header>
 
 
         <div class="destruction-list-detail__review">
 
-            <h2 class="section-title">Last review</h2>
+            <h2 class="section-title">{% trans "Laatste beoordeling" %}</h2>
             {% if form.instance.last_review %}
-                <p>Author: {{ form.instance.last_review.author.get_full_name }}</p>
-                <p>Result: {{ form.instance.last_review.get_status_display }}
-                <p>Comment: {{ form.instance.last_review.text|default:"No commment" }}</p>
+                <p>{% trans "Auteur" %}: {{ form.instance.last_review.author.get_full_name }}</p>
+                <p>{% trans "Resultaat" %}: {{ form.instance.last_review.get_status_display }}
+                <p>{% trans "Opmerkingen" %}: {{ form.instance.last_review.text|default:"Geen opmerkingen" }}</p>
             {% else %}
-                <p>The destruction list hasn't been reviewed</p>
+                <p>{% trans "De vernietigingslijst is nog niet beoordeeld." %}</p>
             {% endif %}
 
         </div>
