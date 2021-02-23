@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Optional
+from typing import ByteString, Optional
 
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -8,6 +8,7 @@ from django.http import HttpRequest
 from django.shortcuts import render
 from django.utils.translation import gettext as _
 
+from weasyprint import HTML
 from zds_client import ClientError
 
 from archiefvernietigingscomponent.constants import RoleTypeChoices
@@ -109,10 +110,12 @@ def create_destruction_report_content(destruction_list: DestructionList) -> str:
             zaak_data["opmerkingen"] = get_destruction_list_archivaris_comments(
                 destruction_list
             )
-            zaak_data["zaaktype"] = (
-                zaaktype["omschrijving"] if zaaktype.get("omschrijving") else ""
-            )
+        else:
+            zaak_data["omschrijving"] = ""
 
+        zaak_data["zaaktype"] = (
+            zaaktype["omschrijving"] if "omschrijving" in zaaktype else ""
+        )
         zaak_data["looptijd"] = _("%(looptijd)s days") % {
             "looptijd": get_looptijd(zaak_data)
         }
@@ -159,6 +162,11 @@ def create_destruction_report_subject(destruction_list: DestructionList) -> str:
     return subject
 
 
+def convert_to_pdf(html_content: str) -> ByteString:
+    html_object = HTML(string=html_content)
+    return html_object.write_pdf()
+
+
 def create_destruction_report(destruction_list: DestructionList) -> DestructionReport:
     report_content = create_destruction_report_content(destruction_list)
     report_subject = create_destruction_report_subject(destruction_list)
@@ -175,7 +183,9 @@ def create_destruction_report(destruction_list: DestructionList) -> DestructionR
     destruction_report = DestructionReport.objects.create(
         title=report_subject,
         process_owner=process_owner_review.author if process_owner_review else None,
-        content=ContentFile(content=report_content, name=report_filename),
+        content=ContentFile(
+            content=convert_to_pdf(report_content), name=report_filename
+        ),
         destruction_list=destruction_list,
     )
 
