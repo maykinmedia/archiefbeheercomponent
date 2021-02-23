@@ -4,6 +4,7 @@ import traceback
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.urls import reverse
+from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 
 from celery import chain
@@ -175,11 +176,19 @@ def complete_and_notify(list_id):
             assigned_archivaris = approval_review.author
             email = EmailMessage(
                 subject=report.title,
-                body=report.content.read().decode("utf8"),
+                body=_(
+                    "Destruction list '%(list)s' has been processed. "
+                    "The report of destruction is attached to this email."
+                )
+                % {"list": destruction_list.name,},
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 to=[assigned_archivaris.email],
             )
-            email.content_subtype = "html"
+            email.attach(
+                filename=f"verklaring_van_vernietiging_{get_random_string(length=6)}.pdf",
+                content=report.content.read(),
+                mimetype="application/pdf",
+            )
             email.send()
 
     return notification.id
