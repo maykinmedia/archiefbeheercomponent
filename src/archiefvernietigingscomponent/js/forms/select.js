@@ -18,6 +18,7 @@ const SelectInput = ({ name, label='', required=false, choices=[], id='', helpTe
         <select
             name={name}
             id={id}
+            required={required}
             className={classNames}
             disabled={!!disabled}
             value={selected}

@@ -67,19 +67,19 @@ const CreateModal = ({ checkboxes, modalIsOpen, setIsOpen, reviewers, url, csrft
                                 setReviewers2(changedReviewers2(value));
                             }}
                         />
-                        { disable2 ? null :
-                            <SelectInput
-                                name={"reviewer_2"}
-                                selected={reviewer2}
-                                label="Tweede reviewer"
-                                choices={reviewers2}
-                                id={"id_reviewer_2"}
-                                required={false}
-                                onChange={ (value) => {
-                                    setReviewer2(value);
-                                }}
-                            />
-                        }
+                        <SelectInput
+                            name={"reviewer_2"}
+                            selected={reviewer2}
+                            label="Tweede reviewer"
+                            choices={reviewers2}
+                            helpText="Kies de tweede medewerker om de lijst te beoordelen"
+                            id={"id_reviewer_2"}
+                            required={true}
+                            disabled={disable2}
+                            onChange={ (value) => {
+                                setReviewer2(value);
+                            }}
+                        />
                     </div>
                 </div>
 
