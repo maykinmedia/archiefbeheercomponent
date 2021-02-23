@@ -40,8 +40,8 @@
         <th>{% trans "Relations" %}</th>
     </tr>
 
+    {% for destroyed_zaak in destroyed_zaken %}
     <tr>
-        {% for destroyed_zaak in destroyed_zaken %}
         <td>{% trans destroyed_zaak.identificatie  %}</td>
         {% if not contains_sensitive_info %}
             <td>{% trans destroyed_zaak.omschrijving  %}</td>
@@ -58,6 +58,6 @@
         <td>{% trans destroyed_zaak.resultaattype  %}</td>
         <td>{% trans destroyed_zaak.verantwoordelijke_organisatie  %}</td>
         <td>{% trans destroyed_zaak.relaties  %}</td>
-        {% endfor %}
     </tr>
+    {% endfor %}
 </table>
