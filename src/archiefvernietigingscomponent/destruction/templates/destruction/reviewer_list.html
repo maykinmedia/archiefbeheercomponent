@@ -1,5 +1,5 @@
 {% extends "master.html" %}
-{% load i18n notifications %}
+{% load i18n notifications download_report_link%}
 
 {% block content %}
 
@@ -41,7 +41,6 @@
                         {% endif %}
                     </span>
                 {% endif %}
-
                 </span>
 
 
@@ -58,8 +57,8 @@
                     {% endif %}
                     </span>
                 </div>
+                {% download_report_link object %}
             </div>
-
         {% endfor %}
 
         {% include "includes/pagination.html" %}
