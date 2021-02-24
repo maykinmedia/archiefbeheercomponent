@@ -1,9 +1,11 @@
 import uuid
 from datetime import date, datetime
+from typing import Optional
 
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.files.base import ContentFile
+from django.http import HttpRequest
 from django.shortcuts import render
 from django.utils.translation import gettext as _
 
@@ -150,7 +152,10 @@ def create_destruction_report(destruction_list: DestructionList) -> DestructionR
     return destruction_report
 
 
-def get_absolute_url(path: str) -> str:
+def get_absolute_url(path: str, request: Optional[HttpRequest] = None) -> str:
+    if request is not None:
+        return request.build_absolute_uri(path)
+
     site = Site.objects.get_current()
     protocol = "https" if settings.IS_HTTPS else "http"
     return f"{protocol}://{site.domain}{path}"

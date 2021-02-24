@@ -201,3 +201,9 @@ Navigate to **Admin > Configuration > Archive configuration** to specify the
 
 
 .. _ADFS config guides: https://django-auth-adfs.readthedocs.io/en/latest/config_guides.html
+
+Setting the domain
+==================
+
+In the admin, under **Configuratie > Websites**, make sure to change the existing `Site` to the domain under which
+the Archiefvernietigingscomponent will be deployed.

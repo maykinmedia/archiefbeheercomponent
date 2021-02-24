@@ -81,6 +81,10 @@
             [
                 "zgw_consumers",
                 "service"
+            ],
+            [
+                "sites",
+                "site"
             ]
         ]
     }
