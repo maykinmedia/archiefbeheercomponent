@@ -111,8 +111,14 @@ The fields with asterisk are optional. They are only present if the record manag
 
 The destruction report is an HTML file with the information mentioned above for each case that was destroyed.
 The report is sent via email to the archivist who reviewed the list and the process owner can
-view and download the report within the AVC app (they will receive a notification with the link once
-the report is available).
+download the report within the AVC app. The link can be found in the page with path ``vernietigen/reviews/`` after
+filtering for lists that have already been reviewed. All lists with an associated report will have a link
+(see image below).
+
+.. image:: images/download_link.png
+    :width: 100%
+    :alt: Download destruction report
+
 
 Audit trails and logs
 =====================
