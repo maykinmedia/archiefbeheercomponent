@@ -50,33 +50,7 @@ class DestructionReportTests(TestCase):
             oas="https://oz.nl/catalogi/api/v1/schema/openapi.json",
         )
 
-    def test_destruction_report_content_generation(self, m):
-        destruction_list = DestructionListFactory.create(name="Winter cases")
-        DestructionListItemFactory.create(
-            destruction_list=destruction_list,
-            status=ListItemStatus.destroyed,
-            extra_zaak_data={
-                "identificatie": "ZAAK-1",
-                "omschrijving": "Een zaak",
-                "toelichting": "Bah",
-                "startdatum": "2020-01-01",
-                "einddatum": "2021-01-01",
-                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
-            },
-        )
-        DestructionListItemFactory.create(
-            destruction_list=destruction_list,
-            status=ListItemStatus.destroyed,
-            extra_zaak_data={
-                "identificatie": "ZAAK-2",
-                "omschrijving": "Een andere zaak",
-                "toelichting": "",
-                "startdatum": "2020-02-01",
-                "einddatum": "2021-03-01",
-                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
-            },
-        )
-
+    def _setup_mocks(self, m):
         mock_service_oas_get(
             m,
             "https://selectielijst.oz.nl/api/v1",
@@ -109,6 +83,35 @@ class DestructionReportTests(TestCase):
             url="https://selectielijst.oz.nl/api/v1/procestypen/uuid-2",
             json={"nummer": 2},
         )
+
+    def test_destruction_report_content_generation(self, m):
+        destruction_list = DestructionListFactory.create(name="Winter cases")
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.destroyed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-1",
+                "omschrijving": "Een zaak",
+                "toelichting": "Bah",
+                "startdatum": "2020-01-01",
+                "einddatum": "2021-01-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+            },
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.destroyed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-2",
+                "omschrijving": "Een andere zaak",
+                "toelichting": "",
+                "startdatum": "2020-02-01",
+                "einddatum": "2021-03-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
+            },
+        )
+
+        self._setup_mocks(m)
 
         report = create_destruction_report_content(destruction_list)
 
@@ -150,28 +153,7 @@ class DestructionReportTests(TestCase):
             },
         )
 
-        mock_service_oas_get(
-            m,
-            "https://selectielijst.oz.nl/api/v1",
-            "selectielijst",
-            oas_url="https://selectielijst.oz.nl/api/v1/schema/openapi.json",
-        )
-        mock_service_oas_get(
-            m,
-            "https://oz.nl/catalogi/api/v1",
-            "ztc",
-            oas_url="https://oz.nl/catalogi/api/v1/schema/openapi.json",
-        )
-        m.get(
-            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
-            json={
-                "selectielijstProcestype": "https://selectielijst.oz.nl/api/v1/procestypen/uuid-2"
-            },
-        )
-        m.get(
-            url="https://selectielijst.oz.nl/api/v1/procestypen/uuid-2",
-            json={"nummer": 2},
-        )
+        self._setup_mocks(m)
 
         report = create_destruction_report_content(destruction_list)
 
@@ -667,38 +649,7 @@ class DestructionReportTests(TestCase):
             text="What a magnificent list!",
         )
 
-        mock_service_oas_get(
-            m,
-            "https://selectielijst.oz.nl/api/v1",
-            "selectielijst",
-            oas_url="https://selectielijst.oz.nl/api/v1/schema/openapi.json",
-        )
-        mock_service_oas_get(
-            m,
-            "https://oz.nl/catalogi/api/v1",
-            "ztc",
-            oas_url="https://oz.nl/catalogi/api/v1/schema/openapi.json",
-        )
-        m.get(
-            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
-            json={
-                "selectielijstProcestype": "https://selectielijst.oz.nl/api/v1/procestypen/uuid-1"
-            },
-        )
-        m.get(
-            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
-            json={
-                "selectielijstProcestype": "https://selectielijst.oz.nl/api/v1/procestypen/uuid-2"
-            },
-        )
-        m.get(
-            url="https://selectielijst.oz.nl/api/v1/procestypen/uuid-1",
-            json={"nummer": 1},
-        )
-        m.get(
-            url="https://selectielijst.oz.nl/api/v1/procestypen/uuid-2",
-            json={"nummer": 2},
-        )
+        self._setup_mocks(m)
 
         report = create_destruction_report(destruction_list)
 
@@ -755,38 +706,7 @@ class DestructionReportTests(TestCase):
             },
         )
 
-        mock_service_oas_get(
-            m,
-            "https://selectielijst.oz.nl/api/v1",
-            "selectielijst",
-            oas_url="https://selectielijst.oz.nl/api/v1/schema/openapi.json",
-        )
-        mock_service_oas_get(
-            m,
-            "https://oz.nl/catalogi/api/v1",
-            "ztc",
-            oas_url="https://oz.nl/catalogi/api/v1/schema/openapi.json",
-        )
-        m.get(
-            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
-            json={
-                "selectielijstProcestype": "https://selectielijst.oz.nl/api/v1/procestypen/uuid-1"
-            },
-        )
-        m.get(
-            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
-            json={
-                "selectielijstProcestype": "https://selectielijst.oz.nl/api/v1/procestypen/uuid-2"
-            },
-        )
-        m.get(
-            url="https://selectielijst.oz.nl/api/v1/procestypen/uuid-1",
-            json={"nummer": 1},
-        )
-        m.get(
-            url="https://selectielijst.oz.nl/api/v1/procestypen/uuid-2",
-            json={"nummer": 2},
-        )
+        self._setup_mocks(m)
 
         report = create_destruction_report(destruction_list)
 
@@ -831,38 +751,7 @@ class DestructionReportTests(TestCase):
             text="What a magnificent list!",
         )
 
-        mock_service_oas_get(
-            m,
-            "https://selectielijst.oz.nl/api/v1",
-            "selectielijst",
-            oas_url="https://selectielijst.oz.nl/api/v1/schema/openapi.json",
-        )
-        mock_service_oas_get(
-            m,
-            "https://oz.nl/catalogi/api/v1",
-            "ztc",
-            oas_url="https://oz.nl/catalogi/api/v1/schema/openapi.json",
-        )
-        m.get(
-            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
-            json={
-                "selectielijstProcestype": "https://selectielijst.oz.nl/api/v1/procestypen/uuid-1"
-            },
-        )
-        m.get(
-            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
-            json={
-                "selectielijstProcestype": "https://selectielijst.oz.nl/api/v1/procestypen/uuid-2"
-            },
-        )
-        m.get(
-            url="https://selectielijst.oz.nl/api/v1/procestypen/uuid-1",
-            json={"nummer": 1},
-        )
-        m.get(
-            url="https://selectielijst.oz.nl/api/v1/procestypen/uuid-2",
-            json={"nummer": 2},
-        )
+        self._setup_mocks(m)
 
         report = create_destruction_report(destruction_list)
 

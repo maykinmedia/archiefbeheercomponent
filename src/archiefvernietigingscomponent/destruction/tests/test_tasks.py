@@ -250,13 +250,9 @@ class NotifyTests(TestCase):
             notification.message,
             _(
                 "Destruction list Summer List has been processed. "
-                "You can download the report of destruction here: %(protocol)s://%(domain)s/reports/download/%(id)s/"
+                "You can download the report of destruction here: http://example.com%(url)s"
             )
-            % {
-                "protocol": "https" if settings.IS_HTTPS else "http",
-                "domain": Site.objects.get().domain,
-                "id": report.pk,
-            },
+            % {"url": reverse("report:download-report", args=[report.pk]),},
         )
 
         self.client.force_login(process_owner)

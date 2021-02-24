@@ -143,10 +143,14 @@ def create_destruction_report(destruction_list: DestructionList) -> DestructionR
         author__role__type=RoleTypeChoices.process_owner,
     ).last()
 
+    report_filename = (
+        f"verklaring-van-vernietiging_{destruction_list.name.replace(' ', '-')}.pdf"
+    )
+
     destruction_report = DestructionReport.objects.create(
         title=report_subject,
         process_owner=process_owner_review.author if process_owner_review else None,
-        content=ContentFile(content=report_content, name=f"{uuid.uuid4()}.html"),
+        content=ContentFile(content=report_content, name=report_filename),
     )
 
     return destruction_report
