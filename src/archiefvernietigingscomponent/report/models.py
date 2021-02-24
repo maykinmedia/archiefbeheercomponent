@@ -30,6 +30,14 @@ class DestructionReport(models.Model):
         upload_to="reports/%Y/%m/",
         help_text=_("Content of the destruction report"),
     )
+    destruction_list = models.ForeignKey(
+        to="destruction.DestructionList",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        verbose_name=_("destruction list"),
+        help_text=_("Destruction list for which the report was created."),
+    )
 
     class Meta:
         verbose_name = _("Destruction report")
