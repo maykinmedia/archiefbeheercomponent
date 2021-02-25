@@ -28,6 +28,7 @@ from .filters import ReviewerListFilter
 from .forms import (
     DestructionListForm,
     ListItemForm,
+    ReviewCommentForm,
     ReviewForm,
     ReviewItemBaseFormset,
     get_reviewer_choices,
@@ -38,6 +39,7 @@ from .models import (
     DestructionListItem,
     DestructionListItemReview,
     DestructionListReview,
+    DestructionListReviewComment,
 )
 from .tasks import process_destruction_list, update_zaken
 
@@ -176,6 +178,9 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
         )
         can_abort = self.request.user == dl.author and dl.status != ListStatus.completed
 
+        if can_update and "comment_form" not in context:
+            context["comment_form"] = ReviewCommentForm()
+
         context.update(
             {
                 "formset_config": {
@@ -246,6 +251,17 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
                 status=ListItemStatus.removed
             ).count(),
         )
+
+        # Check if there are comments from the author
+        if "text" in self.request.POST:
+            comment = DestructionListReviewComment(
+                author=self.request.user, review=destruction_list.last_review()
+            )
+            comment_form = ReviewCommentForm(self.request.POST, instance=comment)
+            if comment_form.is_valid():
+                comment_form.save()
+            else:
+                super().forms_invalid(form, inlines)
 
         # assign a reviewer
         destruction_list.assign(destruction_list.next_assignee())

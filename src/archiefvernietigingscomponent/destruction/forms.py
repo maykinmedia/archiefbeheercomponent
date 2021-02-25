@@ -12,6 +12,7 @@ from .models import (
     DestructionListAssignee,
     DestructionListItem,
     DestructionListReview,
+    DestructionListReviewComment,
 )
 from .service import get_zaaktypen
 
@@ -98,6 +99,12 @@ class ReviewForm(forms.ModelForm):
     class Meta:
         model = DestructionListReview
         fields = ("text", "status")
+
+
+class ReviewCommentForm(forms.ModelForm):
+    class Meta:
+        model = DestructionListReviewComment
+        fields = ("text",)
 
 
 class ReviewItemBaseFormset(BaseInlineFormSet):
