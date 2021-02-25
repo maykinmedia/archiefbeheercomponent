@@ -200,6 +200,35 @@ class DestructionListReview(models.Model):
         return f"{self.destruction_list}: {self.author}"
 
 
+class DestructionListReviewComment(models.Model):
+    review = models.ForeignKey(
+        DestructionListReview,
+        on_delete=models.CASCADE,
+        related_name="comments",
+        verbose_name=_("destruction list review"),
+    )
+    text = models.TextField(
+        _("text"),
+        max_length=2000,
+        blank=True,
+        help_text=_("Text of the comment to the review"),
+    )
+    author = models.ForeignKey(
+        "accounts.User",
+        on_delete=models.CASCADE,
+        verbose_name=_("author"),
+        help_text=_("User who added the comment to the review"),
+    )
+    created = models.DateTimeField(_("created"), default=timezone.now)
+
+    class Meta:
+        verbose_name = _("destruction list review comment")
+        verbose_name_plural = _("destruction list review comments")
+
+    def __str__(self):
+        return f"Comment by {self.author} ({self.created})"
+
+
 class DestructionListItemReview(models.Model):
     destruction_list_review = models.ForeignKey(
         DestructionListReview,
