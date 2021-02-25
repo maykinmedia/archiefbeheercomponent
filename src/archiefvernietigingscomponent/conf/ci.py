@@ -6,6 +6,7 @@ import os
 import warnings
 
 os.environ.setdefault("SECRET_KEY", "dummy")
+os.environ.setdefault("IS_HTTPS", "no")
 
 from .includes.base import *  # noqa isort:skip
 
