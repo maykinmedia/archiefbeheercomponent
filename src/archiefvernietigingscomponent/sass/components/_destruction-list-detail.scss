@@ -20,4 +20,8 @@
     padding-left: 1em;
   }
 
+  @include element("review-comment") {
+    padding: 2em 1em;
+  }
+
 }

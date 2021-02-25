@@ -35,6 +35,7 @@
 
         {{ form }}
         {{ form.errors }}
+        {{ comment_form.errors }}
 
         {% for formset in inlines %}
             {% if formset.errors %}
