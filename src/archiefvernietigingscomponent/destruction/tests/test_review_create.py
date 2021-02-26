@@ -9,12 +9,15 @@ from django_capture_on_commit_callbacks import capture_on_commit_callbacks
 from archiefvernietigingscomponent.accounts.tests.factories import UserFactory
 from archiefvernietigingscomponent.notifications.models import Notification
 
+from ...constants import RoleTypeChoices
 from ..constants import ReviewStatus, Suggestion
 from ..models import DestructionListReview
 from .factories import (
     DestructionListAssigneeFactory,
     DestructionListFactory,
     DestructionListItemFactory,
+    DestructionListReviewCommentFactory,
+    DestructionListReviewFactory,
 )
 
 MANAGEMENT_FORM_DATA = {
@@ -209,6 +212,130 @@ class ReviewCreateTests(DLMixin, TestCase):
 
         # NOT called since the test transaction should not commit
         m.assert_not_called()
+
+    def test_create_review_with_comment(self):
+        """
+        After a record manager has made changes to a list based on the comments of a reviewer, they may have added
+        a comment to explain why they ignored some remarks. Here we test that the reviewer can see those remarks.
+        """
+        destruction_list = self._create_destruction_list()
+        destruction_review = DestructionListReviewFactory.create(
+            destruction_list=destruction_list, author=self.user
+        )
+        DestructionListReviewCommentFactory.create(
+            review=destruction_review, text="Important comment text"
+        )
+        url = reverse("destruction:reviewer-create", args=[destruction_list.id])
+
+        response = self.client.get(url)
+
+        self.assertEqual(200, response.status_code)
+
+        self.assertIn(b"Important comment text", response.content)
+
+    def test_reviewer_only_sees_comments_to_their_review(self):
+        """
+        Since a list may have been reviewed multiple times, check that a reviewer only sees comments to their review.
+        """
+        archivist = UserFactory(
+            role__can_review_destruction=True, role__type=RoleTypeChoices.archivist
+        )
+        destruction_list = self._create_destruction_list()
+        destruction_review = DestructionListReviewFactory.create(
+            destruction_list=destruction_list, author=archivist
+        )
+        DestructionListReviewFactory.create(
+            destruction_list=destruction_list, author=self.user
+        )
+        DestructionListReviewCommentFactory.create(
+            review=destruction_review, text="Important comment text"
+        )
+        url = reverse("destruction:reviewer-create", args=[destruction_list.id])
+
+        response = self.client.get(url)
+
+        self.assertEqual(200, response.status_code)
+
+        self.assertNotIn(b"Important comment text", response.content)
+
+    def test_reviewer_only_sees_comments_to_their_last_review(self):
+        """
+        Since a list may have been reviewed multiple times, check that a reviewer only sees comments to their last
+        review.
+        """
+        destruction_list = self._create_destruction_list()
+
+        destruction_review_1 = DestructionListReviewFactory.create(
+            destruction_list=destruction_list, author=self.user
+        )
+        DestructionListReviewCommentFactory.create(
+            review=destruction_review_1, text="First important comment text"
+        )
+
+        destruction_review_2 = DestructionListReviewFactory.create(
+            destruction_list=destruction_list, author=self.user
+        )
+        DestructionListReviewCommentFactory.create(
+            review=destruction_review_2, text="Second important comment text"
+        )
+
+        url = reverse("destruction:reviewer-create", args=[destruction_list.id])
+
+        response = self.client.get(url)
+
+        self.assertEqual(200, response.status_code)
+
+        self.assertIn(b"Second important comment text", response.content)
+        self.assertNotIn(b"First important comment text", response.content)
+
+    def test_each_reviewer_sees_the_right_comment(self):
+        """
+        Flow to test: there are multiple reviewers and the last one requests changes. The author of the list
+        makes changes and adds a comment to the last review. The rewiew process restarts, but now the first reviewer
+        asks for changes. The author adds a comment. Reviewer 1 and 2 need to see the comments that were addressed
+        to their review.
+        """
+        process_owner = UserFactory(
+            role__can_review_destruction=True, role__type=RoleTypeChoices.process_owner
+        )
+        destruction_list = self._create_destruction_list()
+        destruction_review_1 = DestructionListReviewFactory.create(
+            destruction_list=destruction_list, author=process_owner
+        )
+        destruction_review_2 = DestructionListReviewFactory.create(
+            destruction_list=destruction_list, author=self.user
+        )
+
+        DestructionListReviewCommentFactory.create(
+            review=destruction_review_1, text="Important comment for process owner"
+        )
+        DestructionListReviewCommentFactory.create(
+            review=destruction_review_2, text="Important comment for user"
+        )
+
+        url = reverse("destruction:reviewer-create", args=[destruction_list.id])
+
+        self.client.force_login(self.user)
+        response = self.client.get(url)
+
+        self.assertEqual(200, response.status_code)
+
+        self.assertNotIn(b"Important comment for process owner", response.content)
+        self.assertIn(b"Important comment for user", response.content)
+
+        assignee = DestructionListAssigneeFactory.create(
+            assignee=process_owner, destruction_list=destruction_list
+        )
+        destruction_list.assignee = assignee.assignee
+        destruction_list.save()
+
+        self.client.force_login(process_owner)
+        response = self.client.get(url)
+
+        self.assertEqual(200, response.status_code)
+
+        self.assertIn(b"Important comment for process owner", response.content)
+        self.assertNotIn(b"Important comment for user", response.content)
 
 
 class SendTaskReviewCreateTests(DLMixin, TestCase):
