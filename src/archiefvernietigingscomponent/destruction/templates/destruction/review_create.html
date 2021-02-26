@@ -14,6 +14,7 @@
 
     {{ destruction_list_json|json_script:"destruction-list" }}
     {{ formset_config|json_script:"formset-config" }}
+    {{ comment_to_review|json_script:"review-comment" }}
 
     <form action="" method="post">
         {% csrf_token %}
