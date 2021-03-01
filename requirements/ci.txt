@@ -52,6 +52,7 @@ humanize==0.5.1           # via -r requirements/base.txt, flower
 idna==2.9                 # via -r requirements/base.txt, requests
 kombu==4.6.10             # via -r requirements/base.txt, celery
 lxml==4.6.2               # via pyquery
+maykin-django-better-admin-arrayfield==1.0.5  # via -r requirements/base.txt
 pillow==7.1.2             # via -r requirements/base.txt
 polib==1.1.0              # via -r requirements/base.txt, django-rosetta
 psycopg2==2.8.5           # via -r requirements/base.txt

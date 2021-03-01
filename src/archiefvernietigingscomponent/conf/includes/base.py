@@ -118,6 +118,7 @@ INSTALLED_APPS = [
     "timeline_logger",
     "zgw_consumers",
     "privates",
+    "django_better_admin_arrayfield.apps.DjangoBetterAdminArrayfieldConfig",
     # Project applications.
     "archiefvernietigingscomponent.accounts",
     "archiefvernietigingscomponent.destruction",

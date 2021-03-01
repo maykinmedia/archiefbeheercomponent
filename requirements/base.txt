@@ -42,6 +42,7 @@ gemma-zds-client==0.13.1  # via zgw-consumers
 humanize==0.5.1           # via flower
 idna==2.9                 # via requests
 kombu==4.6.10             # via celery
+maykin-django-better-admin-arrayfield==1.0.5  # via -r requirements/base.in
 pillow==7.1.2             # via -r requirements/base.in
 polib==1.1.0              # via django-rosetta
 psycopg2==2.8.5           # via -r requirements/base.in
