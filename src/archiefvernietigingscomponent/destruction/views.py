@@ -35,6 +35,7 @@ from .forms import (
     get_zaaktype_choices,
 )
 from .models import (
+    ArchiveConfig,
     DestructionList,
     DestructionListItem,
     DestructionListItemReview,
@@ -121,11 +122,14 @@ class DestructionListCreateView(RoleRequiredMixin, CreateView):
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
 
+        archive_config = ArchiveConfig.get_solo()
+
         # add zaaktypen
         context.update(
             {
                 "zaaktypen": get_zaaktype_choices(),
                 "reviewers": get_reviewer_choices(self.request.user),
+                "short_review_zaaktypes": archive_config.short_review_zaaktypes,
             }
         )
 
