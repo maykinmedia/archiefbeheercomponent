@@ -1,17 +1,34 @@
-import React, { useState } from "react";
+import React, {useContext, useState} from "react";
 import Modal from 'react-modal';
 
 import { CsrfInput } from "../../forms/csrf";
 import {CheckboxInput, Input, TextInput} from "../../forms/inputs";
 import { SelectInput } from "../../forms/select";
 import {Label} from "../../forms/label";
+import {ShortReviewZaaktypesContext} from "./context";
 
 
-const CreateModal = ({ checkboxes, modalIsOpen, setIsOpen, reviewers, url, csrftoken }) => {
+const CreateModal = ({ zaken, checkboxes, modalIsOpen, setIsOpen, reviewers, url, csrftoken }) => {
 
     const closeModal = () => setIsOpen(false);
     const selectedUrls = Object.keys(checkboxes).filter(url => checkboxes[url]);
     const selectedCount = selectedUrls.length;
+
+    const isSecondReviewerMandatory = () => {
+        // Check if all URLs of the selected zaaktypes are in the list of zaaktypes that don't require a second reviewer
+        const shortReviewZaaktypes = useContext(ShortReviewZaaktypesContext);
+
+        for (var counter=0; counter < selectedUrls.length; counter++) {
+            const zaak_details = zaken.filter((zaak) => {
+                return zaak.url === selectedUrls[counter];
+            })[0];
+
+            if (!shortReviewZaaktypes.includes(zaak_details.zaaktype.url)) {
+                return true;
+            }
+        }
+        return false;
+    };
 
     // reviewers
     const [disable2, setDisable2] = useState(true);
@@ -74,7 +91,7 @@ const CreateModal = ({ checkboxes, modalIsOpen, setIsOpen, reviewers, url, csrft
                             choices={reviewers2}
                             helpText="Kies de tweede medewerker om de lijst te beoordelen"
                             id={"id_reviewer_2"}
-                            required={true}
+                            required={isSecondReviewerMandatory()}
                             disabled={disable2}
                             onChange={ (value) => {
                                 setReviewer2(value);
