@@ -61,7 +61,7 @@ const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, index, comment, setComm
                                 <section className="content-panel modal__item">
                                     <h2 className="section-title section-title--highlight">Besluiten</h2>
                                     {!besluiten
-                                        ? <span>The zaak doesn't have related besluiten</span>
+                                        ? <span>Deze zaak heeft geen gerelateerde besluiten</span>
                                         : <ul>
                                             { besluiten.map(
                                                 (besluit) => <li key={besluit.url}>{ besluit.identificatie} </li>
@@ -73,7 +73,7 @@ const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, index, comment, setComm
                                 <section className="content-panel modal__item">
                                     <h2 className="section-title section-title--highlight">Resultaat</h2>
                                     {!resultaat
-                                        ? <span>The zaak doesn't have a resultaat</span>
+                                        ? <span>Deze zaak heeft geen resultaat</span>
                                         : <span title={ resultaat.toelichting }>{ resultaat.resultaattype.omschrijving }</span>
                                     }
                                 </section>
@@ -81,7 +81,7 @@ const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, index, comment, setComm
                             <section className="content-panel">
                                 <h2 className="section-title section-title--highlight">Documenten</h2>
                                 {!documenten
-                                    ? <span>The zaak doesn't have related documenten</span>
+                                    ? <span>Deze zaak heeft geen gerelateerde documenten</span>
                                     : <ul>
                                         { documenten.map(
                                             (document) => <li key={document.url}>{ document.identificatie }</li>
@@ -91,7 +91,7 @@ const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, index, comment, setComm
                             </section>
 
                             <div className="zaak-detail__comment">
-                                <label htmlFor="id_comment">Comment:</label>
+                                <label htmlFor="id_comment">Opmerkingen:</label>
                                 <TextInput
                                     id="id_comment"
                                     name="comment"

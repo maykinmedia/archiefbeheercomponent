@@ -80,12 +80,12 @@ class ThemeConfig(SingletonModel):
         help_text=_("The main link color."),
     )
     color_link_dark = models.CharField(
-        _("Link color (dark"),
+        _("Link color (dark)"),
         max_length=6,
         default="051f31",
         validators=[validate_color],
         help_text=_(
-            "Typically a darker share of the link color, used for hover states."
+            "Typically a darker shade of the link color, used for hover states."
         ),
     )
 

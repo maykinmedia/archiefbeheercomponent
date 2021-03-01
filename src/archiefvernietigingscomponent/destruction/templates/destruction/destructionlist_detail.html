@@ -1,4 +1,4 @@
-{% extends "master.html" %}
+{% extends "master.html" %}{% load i18n %}
 
 {% block content %}
 <article class="destruction-list-detail">
@@ -8,28 +8,27 @@
 
             <div class="destruction-list-detail__btns">
                 {% if can_update %}
-                    <button type="submit" class="btn" name="submit" value="submit">Submit</button>
+                    <button type="submit" class="btn" name="submit" value="submit">{% trans "Submit" %}</button>
                 {% endif %}
                 {% if can_abort %}
-                    <button type="submit" class="btn" name="abort" value="abort">Abort</button>
+                    <button type="submit" class="btn" name="abort" value="abort">{% trans "Cancel" %}</button>
                 {% endif %}
             </div>
 
         <header class="destruction-list-detail__header">
             <h1 class="title">Lijst "{{ form.instance.name }}"</h1>
-            <span>created {{ form.instance.created }}</span>
+            <span>{% blocktrans with creation_date=form.instance.created %}Created on {{ creation_date }}{% endblocktrans %}</span>
         </header>
-
 
         <div class="destruction-list-detail__review">
 
-            <h2 class="section-title">Last review</h2>
+            <h2 class="section-title">{% trans "Last review" %}</h2>
             {% if form.instance.last_review %}
-                <p>Author: {{ form.instance.last_review.author.get_full_name }}</p>
-                <p>Result: {{ form.instance.last_review.get_status_display }}
-                <p>Comment: {{ form.instance.last_review.text|default:"No commment" }}</p>
+                <p>{% trans "Author" %}: {{ form.instance.last_review.author.get_full_name }}</p>
+                <p>{% trans "Result" %}: {{ form.instance.last_review.get_status_display }}
+                <p>{% trans "Comments" %}: {{ form.instance.last_review.text|default:"No comments" }}</p>
             {% else %}
-                <p>The destruction list hasn't been reviewed</p>
+                <p>{% trans "The destruction list hasn't been reviewed." %}</p>
             {% endif %}
 
         </div>

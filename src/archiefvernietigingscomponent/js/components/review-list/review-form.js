@@ -56,7 +56,7 @@ const ReviewForm = ({ itemsUrl, destructionList }) => {
                     id="id_text"
                     required={reviewStatus !== "approved"}
                     initial={comment}
-                    label="Feedback"
+                    label="Opmerkingen"
                     onChange={(event) => setComment(event.target.value)}
                 />
             </div>
