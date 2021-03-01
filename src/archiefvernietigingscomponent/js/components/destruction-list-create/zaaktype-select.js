@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { Collapse } from "react-collapse";
 
 import {CheckboxInput} from "../../forms/inputs";
@@ -23,9 +23,30 @@ const remove = (value, arr, setState) => {
 };
 
 
-const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen}) => {
+const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen, checkboxName="zaaktype-item"}) => {
     const [selectedGroups, setSelectedGroups] = useState([]);
     const [expandedGroups, setExpandedGroups] = useState([]);
+
+    const getInitialCheckedGroups = () => {
+        const filledGroups = zaaktypen.filter((zaaktype) => {
+            const zaaktypeVersions = zaaktype[1];
+
+            for (var counter=0; counter<zaaktypeVersions.length; counter++){
+                if (!selectedZaaktypen.includes(zaaktypeVersions[counter][0])) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+
+        return filledGroups.map((zaaktype) => zaaktype[0]);
+    };
+
+    useEffect(() => {
+        const initiallySelectedGroups = getInitialCheckedGroups();
+        setSelectedGroups(initiallySelectedGroups);
+    }, []);
 
     const addZaak = (value) => add(value, selectedZaaktypen, setSelectedZaaktypen);
     const removeZaak = (value) => remove(value, selectedZaaktypen, setSelectedZaaktypen);
@@ -41,7 +62,7 @@ const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen}) =>
             <label>
                 <CheckboxInput
                     initial={value}
-                    name="zaaktype-item"
+                    name={checkboxName}
                     checked={selectedZaaktypen.includes(value)}
                     onChange={(event) => {
                         if (event.target.checked){

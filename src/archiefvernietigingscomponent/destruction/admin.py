@@ -3,6 +3,7 @@ from django.contrib import admin
 from fsm_admin.mixins import FSMTransitionMixin
 from solo.admin import SingletonModelAdmin
 
+from .forms import get_zaaktype_choices
 from .models import (
     ArchiveConfig,
     DestructionList,
@@ -99,4 +100,15 @@ class DestructionListAssigneeAdmin(admin.ModelAdmin):
 
 @admin.register(ArchiveConfig)
 class ArchiveConfigAdmin(SingletonModelAdmin):
-    pass
+    change_form_template = "destruction/admin/change_solo_form.html"
+
+    def changeform_view(self, request, object_id=None, form_url='', extra_context=None):
+        if not extra_context:
+            extra_context = {}
+
+        extra_context.update({
+            "zaaktypen": get_zaaktype_choices()
+        })
+
+        response = super().changeform_view(request, object_id, form_url, extra_context)
+        return response
