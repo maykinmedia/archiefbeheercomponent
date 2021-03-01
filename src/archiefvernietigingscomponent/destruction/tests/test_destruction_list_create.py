@@ -6,7 +6,7 @@ from archiefvernietigingscomponent.accounts.tests.factories import UserFactory
 from archiefvernietigingscomponent.notifications.models import Notification
 
 from ..constants import ListItemStatus, ListStatus
-from ..models import DestructionList
+from ..models import ArchiveConfig, DestructionList
 
 
 class CreateDestructionListTests(TestCase):
@@ -65,3 +65,18 @@ class CreateDestructionListTests(TestCase):
         notification = Notification.objects.get()
         self.assertEqual(notification.user, destruction_list.assignee)
         self.assertEqual(notification.message, _("You are assigned for review."))
+
+    def test_list_with_short_review_process(self):
+        archive_config = ArchiveConfig.get_solo()
+        archive_config.short_review_zaaktypes = ["http://example.com/zaak/uuid-1"]
+        archive_config.save()
+
+        url = reverse("destruction:record-manager-create")
+
+        response = self.client.get(url)
+
+        self.assertEqual(200, response.status_code)
+        self.assertIn(
+            b'<script id="short-review-zaaktypes" type="application/json">["http://example.com/zaak/uuid-1"]</script>',
+            response.content,
+        )
