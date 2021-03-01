@@ -4,6 +4,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+from django_better_admin_arrayfield.models.fields import ArrayField
 from django_fsm import FSMField, transition
 from solo.models import SingletonModel
 from timeline_logger.models import TimelineLog
@@ -292,6 +293,14 @@ class ArchiveConfig(SingletonModel):
         blank=True,
         help_text=_(
             "Only zaken with archiefactiedatum less that this date would be displayed for destruction"
+        ),
+    )
+    short_review_zaaktypes = ArrayField(
+        models.URLField(_("cases with short review process"), max_length=1000),
+        blank=True,
+        default=list,
+        help_text=_(
+            "Cases for which a second reviewer of the destruction list is optional"
         ),
     )
 
