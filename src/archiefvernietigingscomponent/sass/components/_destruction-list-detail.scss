@@ -21,7 +21,7 @@
   }
 
   @include element("review-comment") {
-    padding: 2em 1em;
+    padding: 2em 1em !important;
   }
 
 }
