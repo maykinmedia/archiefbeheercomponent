@@ -255,7 +255,7 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
         # Check if there are comments from the author
         if "text" in self.request.POST:
             comment = DestructionListReviewComment(
-                author=self.request.user, review=destruction_list.last_review()
+                review=destruction_list.last_review()
             )
             comment_form = ReviewCommentForm(self.request.POST, instance=comment)
             if comment_form.is_valid():
@@ -377,7 +377,7 @@ class ReviewCreateView(RoleRequiredMixin, UserPassesTestMixin, CreateWithInlines
             comment = last_review.comments.last()
             if comment:
                 context["comment_to_review"] = {
-                    "author": comment.author.get_full_name(),
+                    "author": last_review.destruction_list.author.get_full_name(),
                     "text": comment.text,
                 }
 

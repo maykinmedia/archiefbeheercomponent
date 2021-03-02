@@ -75,12 +75,12 @@ class DestructionListReviewAdmin(admin.ModelAdmin):
 
 @admin.register(DestructionListReviewComment)
 class DestructionListReviewCommentAdmin(admin.ModelAdmin):
-    list_display = ("author", "review", "created")
-    readonly_fields = ("author", "review", "created", "text")
-    search_fields = ("review", "author")
-    list_filter = ("review", "author")
+    list_display = ("review", "created")
+    readonly_fields = ("review", "created", "text")
+    search_fields = ("review",)
+    list_filter = ("review",)
     date_hierarchy = "created"
-    raw_id_fields = ("author", "review")
+    raw_id_fields = ("review",)
 
 
 @admin.register(DestructionListItemReview)

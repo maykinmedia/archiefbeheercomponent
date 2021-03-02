@@ -213,12 +213,6 @@ class DestructionListReviewComment(models.Model):
         blank=True,
         help_text=_("Text of the comment to the review"),
     )
-    author = models.ForeignKey(
-        "accounts.User",
-        on_delete=models.CASCADE,
-        verbose_name=_("author"),
-        help_text=_("User who added the comment to the review"),
-    )
     created = models.DateTimeField(_("created"), default=timezone.now)
 
     class Meta:
@@ -226,7 +220,7 @@ class DestructionListReviewComment(models.Model):
         verbose_name_plural = _("destruction list review comments")
 
     def __str__(self):
-        return f"Comment by {self.author} ({self.created})"
+        return f"Comment by {self.review.destruction_list.author} ({self.created})"
 
 
 class DestructionListItemReview(models.Model):
