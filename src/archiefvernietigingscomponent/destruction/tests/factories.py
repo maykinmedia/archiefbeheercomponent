@@ -33,7 +33,6 @@ class DestructionListReviewFactory(factory.django.DjangoModelFactory):
 
 
 class DestructionListReviewCommentFactory(factory.django.DjangoModelFactory):
-    author = factory.SubFactory(UserFactory)
     text = factory.Faker("text")
     review = factory.SubFactory(DestructionListReviewFactory)
 

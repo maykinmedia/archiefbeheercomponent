@@ -300,7 +300,7 @@ class DestructionListUpdateTests(TestCase):
         comment = comments.get()
 
         self.assertEqual("I disagree with these comments!", comment.text)
-        self.assertEqual(record_manager, comment.author)
+        self.assertEqual(record_manager, comment.review.destruction_list.author)
         self.assertEqual(destruction_list.last_review(), comment.review)
 
     def test_list_author_can_leave_comment_empty(self, m):
