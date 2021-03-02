@@ -117,13 +117,13 @@ class DestructionReportTests(TestCase):
 
         self.assertIn("<td>ZAAK-1</td>", report)
         self.assertIn("<td>Een zaak</td>", report)
-        self.assertIn("<td>366 days</td>", report)
+        self.assertIn("<td>366 dagen</td>", report)
         self.assertIn("<td>1</td>", report)
         self.assertIn("<td>Onderdeel van vernietigingslijst: Winter cases</td>", report)
 
         self.assertIn("<td>ZAAK-2</td>", report)
         self.assertIn("<td>Een andere zaak</td>", report)
-        self.assertIn("<td>394 days</td>", report)
+        self.assertIn("<td>394 dagen</td>", report)
         self.assertIn("<td>2</td>", report)
 
     def test_failed_destruction_not_in_report_content(self, m):
@@ -159,12 +159,12 @@ class DestructionReportTests(TestCase):
 
         self.assertNotIn("<td>ZAAK-1</td>", report)
         self.assertNotIn("<td>Een zaak</td>", report)
-        self.assertNotIn("<td>366 days</td>", report)
+        self.assertNotIn("<td>366 dagen</td>", report)
         self.assertNotIn("<td>1</td>", report)
 
         self.assertIn("<td>ZAAK-2</td>", report)
         self.assertIn("<td>Een andere zaak</td>", report)
-        self.assertIn("<td>394 days</td>", report)
+        self.assertIn("<td>394 dagen</td>", report)
         self.assertIn("<td>2</td>", report)
 
     def test_no_selectielijst_client(self, m):
@@ -663,7 +663,7 @@ class DestructionReportTests(TestCase):
 
         self.assertIn("<td>ZAAK-1</td>", content)
         self.assertIn("<td>Een zaak</td>", content)
-        self.assertIn("<td>366 days</td>", content)
+        self.assertIn("<td>366 dagen</td>", content)
         self.assertIn("<td>1</td>", content)
         self.assertIn(
             "<td>Onderdeel van vernietigingslijst: Winter cases</td>", content
@@ -671,7 +671,7 @@ class DestructionReportTests(TestCase):
 
         self.assertIn("<td>ZAAK-2</td>", content)
         self.assertIn("<td>Een andere zaak</td>", content)
-        self.assertIn("<td>394 days</td>", content)
+        self.assertIn("<td>394 dagen</td>", content)
         self.assertIn("<td>2</td>", content)
 
         self.client.force_login(process_owner)

@@ -14,12 +14,7 @@ from archiefvernietigingscomponent.notifications.models import Notification
 
 from ..celery import app
 from ..constants import RoleTypeChoices
-from ..report.utils import (
-    create_destruction_report,
-    create_destruction_report_content,
-    create_destruction_report_title,
-    get_absolute_url,
-)
+from ..report.utils import create_destruction_report, get_absolute_url
 from .constants import ListItemStatus, ListStatus, ReviewStatus
 from .models import DestructionList, DestructionListItem, DestructionListReview
 from .service import fetch_zaak, remove_zaak, update_zaak
