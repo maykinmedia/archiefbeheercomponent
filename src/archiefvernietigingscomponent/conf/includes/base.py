@@ -28,6 +28,7 @@ DEBUG = config("DEBUG", default=False)
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="", split=True)
 
 IS_HTTPS = config("IS_HTTPS", default=not DEBUG)
+SITE_ID = config("SITE_ID", default=1)
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
@@ -93,6 +94,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.auth",
     "django.contrib.sessions",
+    "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # django-admin-index
@@ -115,6 +117,7 @@ INSTALLED_APPS = [
     "solo",
     "timeline_logger",
     "zgw_consumers",
+    "privates",
     # Project applications.
     "archiefvernietigingscomponent.accounts",
     "archiefvernietigingscomponent.destruction",
@@ -122,6 +125,7 @@ INSTALLED_APPS = [
     "archiefvernietigingscomponent.utils",
     "archiefvernietigingscomponent.demo",
     "archiefvernietigingscomponent.theme",
+    "archiefvernietigingscomponent.report",
 ]
 
 MIDDLEWARE = [
@@ -190,6 +194,16 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
 
 DEFAULT_LOGO = f"{STATIC_URL}img/logo-placeholder.png"
+
+#
+# DJANGO-PRIVATES -- safely serve files after authorization
+#
+PRIVATE_MEDIA_ROOT = os.path.join(BASE_DIR, "private-media")
+PRIVATE_MEDIA_URL = "/private-media/"
+# requires an nginx container running in front
+SENDFILE_BACKEND = config("SENDFILE_BACKEND", "django_sendfile.backends.nginx")
+SENDFILE_ROOT = PRIVATE_MEDIA_ROOT
+SENDFILE_URL = PRIVATE_MEDIA_URL
 
 # Fixtures
 

@@ -59,4 +59,13 @@
   &__assigned + &__status {
     margin-left: 0.5em;
   }
+
+  @include element("download-report") {
+    display: inline-flex;
+    opacity: 0.75;
+    .material-icons {
+      color: black;
+      opacity: 0.8;
+    }
+  }
 }

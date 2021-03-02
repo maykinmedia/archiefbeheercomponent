@@ -15,6 +15,8 @@ os.environ.setdefault("DB_NAME", "archiefvernietigingscomponent"),
 os.environ.setdefault("DB_USER", "archiefvernietigingscomponent"),
 os.environ.setdefault("DB_PASSWORD", "archiefvernietigingscomponent"),
 
+os.environ.setdefault("SENDFILE_BACKEND", "django_sendfile.backends.development")
+
 from .includes.base import *  # noqa isort:skip
 
 #

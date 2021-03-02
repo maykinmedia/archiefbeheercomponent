@@ -2,7 +2,7 @@
 Test the various role landing pages.
 """
 from django.test import override_settings
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 
 from django_webtest import WebTest
 
@@ -11,7 +11,9 @@ from archiefvernietigingscomponent.notifications.tests.factories import (
     NotificationFactory,
 )
 
-from ..constants import ReviewerDisplay
+from ...constants import RoleTypeChoices
+from ...report.tests.factories import DestructionReportFactory
+from ..constants import ListItemStatus, ReviewerDisplay
 from .factories import DestructionListFactory, DestructionListReviewFactory
 
 
@@ -151,3 +153,83 @@ class ReviewerTests(WebTest):
         )
 
         self.assertEqual(response_default.body, response_to_review.body)
+
+
+class ReviewerDownloadReportTests(WebTest):
+    """
+    Test which reviewers can download a report
+    """
+
+    url = reverse_lazy("destruction:reviewer-list")
+
+    def test_process_owner_can_download(self):
+        user = UserFactory.create(
+            role__can_review_destruction=True, role__type=RoleTypeChoices.process_owner
+        )
+
+        list_reviewed = DestructionListFactory.create(
+            name="list reviewed", status=ListItemStatus.destroyed
+        )
+        DestructionListReviewFactory.create(destruction_list=list_reviewed, author=user)
+        DestructionReportFactory.create(
+            destruction_list=list_reviewed, process_owner=user
+        )
+
+        self.app.set_user(user)
+        response = self.app.get(self.url, {"reviewed": ReviewerDisplay.reviewed})
+
+        self.assertEqual(response.status_code, 200)
+
+        destruction_lists = response.html.find_all(class_="destruction-list-preview")
+        self.assertEqual(len(destruction_lists), 1)
+
+        self.assertIn("Download verklaring van vernietiging", response.html.text)
+
+    def test_archivist_cannot_download(self):
+        archivist = UserFactory.create(
+            role__can_review_destruction=True, role__type=RoleTypeChoices.archivist
+        )
+        process_owner = UserFactory.create(
+            role__can_review_destruction=True,
+            role__type=RoleTypeChoices.functional_admin,
+        )
+
+        list_reviewed = DestructionListFactory.create(
+            name="list reviewed", status=ListItemStatus.destroyed
+        )
+        DestructionListReviewFactory.create(
+            destruction_list=list_reviewed, author=archivist
+        )
+        DestructionReportFactory.create(
+            destruction_list=list_reviewed, process_owner=process_owner
+        )
+
+        self.app.set_user(archivist)
+        response = self.app.get(self.url, {"reviewed": ReviewerDisplay.reviewed})
+
+        self.assertEqual(response.status_code, 200)
+
+        destruction_lists = response.html.find_all(class_="destruction-list-preview")
+        self.assertEqual(len(destruction_lists), 1)
+
+        self.assertNotIn("Download verklaring van vernietiging", response.html.text)
+
+    def test_processing_list_does_not_have_link(self):
+        user = UserFactory.create(
+            role__can_review_destruction=True, role__type=RoleTypeChoices.process_owner
+        )
+
+        list_reviewed = DestructionListFactory.create(
+            name="list reviewed", status=ListItemStatus.processing
+        )
+        DestructionListReviewFactory.create(destruction_list=list_reviewed, author=user)
+
+        self.app.set_user(user)
+        response = self.app.get(self.url, {"reviewed": ReviewerDisplay.reviewed})
+
+        self.assertEqual(response.status_code, 200)
+
+        destruction_lists = response.html.find_all(class_="destruction-list-preview")
+        self.assertEqual(len(destruction_lists), 1)
+
+        self.assertNotIn("Download verklaring van vernietiging", response.html.text)

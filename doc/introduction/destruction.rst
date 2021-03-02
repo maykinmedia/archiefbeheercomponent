@@ -88,6 +88,38 @@ with the first reviewer.
 After the last reviewer has given their approval, the list is submitted for actual
 destruction to the background worker queue.
 
+After destruction
+-----------------
+
+Once a list has been destroyed, a report of destruction is created. The report contains the following information:
+
+    - Uniek kenmerk
+    - Beschrijving *
+    - Loop tijd
+    - VCS
+    - Toelichting
+    - Opmerkingen *
+    - Reactie Zorgdrager
+    - Zaaktype
+    - Bewaartermijn
+    - Resultaattype
+    - Verantwoordelijke organisatie
+    - Relaties
+
+The fields with asterisk are optional. They are only present if the record manager unchecked the checkbox
+``Contains sensitive details`` when they created the destruction list.
+
+The destruction report is an HTML file with the information mentioned above for each case that was destroyed.
+The report is sent via email to the archivist who reviewed the list and the process owner can
+download the report within the AVC app. The link can be found in the page with path ``vernietigen/reviews/`` after
+filtering for lists that have already been reviewed. All lists with an associated report will have a link
+(see image below).
+
+.. image:: images/download_link.png
+    :width: 100%
+    :alt: Download destruction report
+
+
 Audit trails and logs
 =====================
 

@@ -3,6 +3,7 @@ import traceback
 
 from django.conf import settings
 from django.core.mail import EmailMessage
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from celery import chain
@@ -13,7 +14,7 @@ from archiefvernietigingscomponent.notifications.models import Notification
 
 from ..celery import app
 from ..constants import RoleTypeChoices
-from ..report.utils import create_destruction_report, create_destruction_report_subject
+from ..report.utils import create_destruction_report, get_absolute_url
 from .constants import ListItemStatus, ListStatus, ReviewStatus
 from .models import DestructionList, DestructionListItem, DestructionListReview
 from .service import fetch_zaak, remove_zaak, update_zaak
@@ -127,7 +128,26 @@ def complete_and_notify(list_id):
         message=_("Processing of the list is complete."),
     )
 
-    # Send email to archivaris role
+    # Create the destruction report
+    report = create_destruction_report(destruction_list)
+
+    if report.process_owner:
+        Notification.objects.create(
+            destruction_list=destruction_list,
+            user=report.process_owner,
+            message=_(
+                "Destruction list %(list)s has been processed. "
+                "You can download the report of destruction here: %(url)s"
+            )
+            % {
+                "list": destruction_list.name,
+                "url": get_absolute_url(
+                    reverse("report:download-report", args=[report.pk])
+                ),
+            },
+        )
+
+    # Send email to archivist role
     if destruction_list.items.filter(status=ListItemStatus.destroyed).exists():
         # Retrieve the assigned archivaris email
         approval_review = DestructionListReview.objects.filter(
@@ -137,12 +157,10 @@ def complete_and_notify(list_id):
         ).last()
 
         if approval_review:
-            report = create_destruction_report(destruction_list)
-            subject = create_destruction_report_subject(destruction_list)
             assigned_archivaris = approval_review.author
             email = EmailMessage(
-                subject=subject,
-                body=report,
+                subject=report.title,
+                body=report.content.read().decode("utf8"),
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 to=[assigned_archivaris.email],
             )

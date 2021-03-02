@@ -43,6 +43,7 @@ urlpatterns = [
     # Simply show the master template.
     path("", EnterView.as_view(), name="entry"),
     path("vernietigen/", include("archiefvernietigingscomponent.destruction.urls")),
+    path("reports/", include("archiefvernietigingscomponent.report.urls")),
     path("audit/", include("archiefvernietigingscomponent.audit.urls")),
     path("demo/<int:pk>/", DemoLoginView.as_view(), name="demo-login"),
     path("startpage/", StartPageView.as_view(), name="start-page"),

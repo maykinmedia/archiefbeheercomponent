@@ -24,6 +24,7 @@ services:
       - SECRET_KEY=${SECRET_KEY:-145cqii@)+z$b&9dcmdctpm+&be1#9zslxm+x)0+u*^qf!qz(6}
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - SENDFILE_BACKEND=django_sendfile.backends.simple
     ports:
       - 8000:8000
     depends_on:

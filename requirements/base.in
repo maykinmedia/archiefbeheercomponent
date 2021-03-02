@@ -23,6 +23,7 @@ django-rosetta
 django-solo
 django-sniplates
 django-timeline-logger
+django-privates
 
 # API libraries
 # djangorestframework

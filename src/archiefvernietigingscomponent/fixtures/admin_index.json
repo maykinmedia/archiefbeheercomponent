@@ -47,6 +47,10 @@
             [
                 "destruction",
                 "destructionlistreview"
+            ],
+            [
+                "report",
+                "destructionreport"
             ]
         ]
     }
@@ -77,6 +81,10 @@
             [
                 "zgw_consumers",
                 "service"
+            ],
+            [
+                "sites",
+                "site"
             ]
         ]
     }
