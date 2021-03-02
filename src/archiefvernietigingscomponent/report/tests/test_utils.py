@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 
 import requests_mock
@@ -33,6 +33,7 @@ from archiefvernietigingscomponent.tests.utils import mock_service_oas_get
 
 @requests_mock.Mocker()
 @temp_private_root()
+@override_settings(LANGUAGE_CODE="en")
 class DestructionReportTests(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -136,25 +137,25 @@ class DestructionReportTests(TestCase):
 
         self.assertIn("<td>ZAAK-1</td>", report)
         self.assertIn("<td>Een zaak</td>", report)
-        self.assertIn("<td>366 dagen</td>", report)
+        self.assertIn("<td>366 days</td>", report)
         self.assertIn("<td>1</td>", report)
         self.assertIn("<td>Bah</td>", report)
         self.assertIn("<td>ZAAKTYPE-001</td>", report)
         self.assertIn("<td>40 days</td>", report)
         self.assertIn("<td>Nicer result type</td>", report)
         self.assertIn("<td>Nicer organisation</td>", report)
-        self.assertIn("<td>Ja</td>", report)
+        self.assertIn("<td>Yes</td>", report)
 
         self.assertIn("<td>ZAAK-2</td>", report)
         self.assertIn("<td>Een andere zaak</td>", report)
-        self.assertIn("<td>394 dagen</td>", report)
+        self.assertIn("<td>394 days</td>", report)
         self.assertIn("<td>2</td>", report)
         self.assertIn("<td>Boh</td>", report)
         self.assertIn("<td>ZAAKTYPE-002</td>", report)
         self.assertIn("<td>20 days</td>", report)
         self.assertIn("<td>Nice result type</td>", report)
         self.assertIn("<td>Nice organisation</td>", report)
-        self.assertIn("<td>Nee</td>", report)
+        self.assertIn("<td>No</td>", report)
 
     def test_destruction_report_content_generation_without_toelichting(self, m):
         destruction_list = DestructionListFactory.create()
@@ -212,7 +213,7 @@ class DestructionReportTests(TestCase):
         self.assertIn("<td>40 days</td>", report)
         self.assertIn("<td>Nicer result type</td>", report)
         self.assertIn("<td>Nicer organisation</td>", report)
-        self.assertIn("<td>Ja</td>", report)
+        self.assertIn("<td>Yes</td>", report)
 
     def test_failed_destruction_not_in_report_content(self, m):
         destruction_list = DestructionListFactory.create(status=ListStatus.processing)
@@ -263,23 +264,23 @@ class DestructionReportTests(TestCase):
 
         self.assertNotIn("<td>ZAAK-1</td>", report)
         self.assertNotIn("<td>Een zaak</td>", report)
-        self.assertNotIn("<td>366 dagen</td>", report)
+        self.assertNotIn("<td>366 days</td>", report)
         self.assertNotIn("<td>1</td>", report)
         self.assertNotIn("<td>ZAAKTYPE-001</td>", report)
         self.assertNotIn("<td>40 days</td>", report)
         self.assertNotIn("<td>Nicer result type</td>", report)
         self.assertNotIn("<td>Nicer organisation</td>", report)
-        self.assertNotIn("<td>Ja</td>", report)
+        self.assertNotIn("<td>Yes</td>", report)
 
         self.assertIn("<td>ZAAK-2</td>", report)
         self.assertIn("<td>Een andere zaak</td>", report)
-        self.assertIn("<td>394 dagen</td>", report)
+        self.assertIn("<td>394 days</td>", report)
         self.assertIn("<td>2</td>", report)
         self.assertIn("<td>ZAAKTYPE-002</td>", report)
         self.assertIn("<td>20 days</td>", report)
         self.assertIn("<td>Nice result type</td>", report)
         self.assertIn("<td>Nice organisation</td>", report)
-        self.assertIn("<td>Nee</td>", report)
+        self.assertIn("<td>No</td>", report)
 
     def test_failed_zaaktype_retrieval(self, m):
         destruction_list = DestructionListFactory.create(status=ListStatus.processing)
@@ -325,11 +326,11 @@ class DestructionReportTests(TestCase):
 
         self.assertIn("<td>ZAAK-1</td>", report)
         self.assertIn("<td>Een zaak</td>", report)
-        self.assertIn("<td>366 dagen</td>", report)
+        self.assertIn("<td>366 days</td>", report)
         self.assertIn("<td>40 days</td>", report)
         self.assertIn("<td>Nicer result type</td>", report)
         self.assertIn("<td>Nicer organisation</td>", report)
-        self.assertIn("<td>Ja</td>", report)
+        self.assertIn("<td>Yes</td>", report)
 
     def test_no_selectielijst_client(self, m):
         number = get_vernietigings_categorie_selectielijst("http://somesillyurl")
@@ -805,7 +806,7 @@ class DestructionReportTests(TestCase):
 
         self.assertEqual(process_owner, report.process_owner)
         self.assertEqual(
-            "Verklaring van vernietiging - Winter cases (2021-05-05)", report.title
+            "Declaration of destruction - Winter cases (2021-05-05)", report.title
         )
 
         report.content.seek(0)
@@ -813,13 +814,13 @@ class DestructionReportTests(TestCase):
 
         self.assertIn("<td>ZAAK-1</td>", content)
         self.assertIn("<td>Een zaak</td>", content)
-        self.assertIn("<td>366 dagen</td>", content)
+        self.assertIn("<td>366 days</td>", content)
         self.assertIn("<td>1</td>", content)
         self.assertIn("<td>Bah</td>", content)
 
         self.assertIn("<td>ZAAK-2</td>", content)
         self.assertIn("<td>Een andere zaak</td>", content)
-        self.assertIn("<td>394 dagen</td>", content)
+        self.assertIn("<td>394 days</td>", content)
         self.assertIn("<td>2</td>", content)
         self.assertIn("<td>Boh</td>", content)
 

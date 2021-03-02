@@ -134,9 +134,9 @@ def create_destruction_report_content(destruction_list: DestructionList) -> str:
             )
 
         if len(zaak_data["relevante_andere_zaken"]) > 0:
-            zaak_data["relaties"] = _("Ja")
+            zaak_data["relaties"] = _("Yes")
         else:
-            zaak_data["relaties"] = _("Nee")
+            zaak_data["relaties"] = _("No")
 
         zaken_data.append(zaak_data)
 

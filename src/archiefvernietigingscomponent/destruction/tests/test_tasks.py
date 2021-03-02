@@ -229,6 +229,7 @@ class ProcessListItemTests(TestCase):
 
 @requests_mock.Mocker()
 @temp_private_root()
+@override_settings(LANGUAGE_CODE="en")
 class NotifyTests(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -378,7 +379,7 @@ class NotifyTests(TestCase):
         sent_mail = mail.outbox[0]
 
         self.assertEqual(
-            "Verklaring van vernietiging - Nice list (2021-02-15)", sent_mail.subject
+            "Declaration of destruction - Nice list (2021-02-15)", sent_mail.subject
         )
         self.assertEqual("email@test.avc", sent_mail.from_email)
         self.assertIn(archivaris.email, sent_mail.to)
