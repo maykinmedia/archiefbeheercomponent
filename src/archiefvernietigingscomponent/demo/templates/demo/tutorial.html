@@ -1,22 +1,86 @@
+{% load demo_tutorial %}
 <nav class="demo_sidenav">
     {% if current_user.is_authenticated %}
-        <p>U bent ingelogd als <strong>{{ current_user }}</strong>.</p>
-
-        <a href="{% url 'admin:logout' %}?next={% url 'entry' %}">Afmelden</a>
+        <p>Ingelogd als <strong>{{ current_user.first_name }}</strong> (<a href="{% url 'admin:logout' %}?next={% url 'entry' %}">Afmelden</a>)</p>
     {% else %}
         <p>U bent niet ingelogd.</p>
     {% endif %}
 
-    <div class="sidebar-header">
-        <h3>Tutorial</h3>
-    </div>
-    <p>Deze applicatie staat in demo modus.</p>
+    {% if current_user.username == 'demo-record-manager' %}
+    
+        <h3>Opstellen vernietigingslijst (VL)</h3>
+        <p><i><strong>Doel</strong>: Het initiëren van de vernietiging van verzamelingen zaken die wettelijk vernietigd moeten worden.</i></p>
+    
+        <ol>
+            <li>Kies <strong>Opstellen</strong>. Alle zaken die in aanmerking komen voor vernietigen worden opghaald.</li>
+            <li>Verfijn je selectie indien gewenst met de opties onder <strong>Filters</strong> door specifieke zaaktypen aan te vinken, of door de minimale datum waarop vernietigd mag worden mee te geven. </li>
+            <li>Selecteer nu onder <strong>Zaakdossiers</strong> de zaken die je op de VL wilt zetten. Wanneer je Zaaktype aanvinkt, worden alle zaken in de lijst aangevinkt. Je kunt desgewenst afzonderlijke zaken af- en aanvinken.</li>
+            <li>Na selectie van de zaken, kies je voor <strong>Aanmaken</strong>.</li>
+            <li>Er verschijnt een dialoogvenster <strong>Vernietigingslijst starten</strong>, waarin wordt opgegeven:
+                <ul>
+                    <li><strong>Naam</strong>: De naam van de VL</li>
+                    <li><strong>Eerste reviewer</strong>: De proces eigenaar (selecteer in de pulldown <i>demo-proces-eigenaar@example.com</i>)</li>
+                    <li><strong>Tweede reviewer</strong>: De archivaris (selecteer in de pulldown <i>demo-archivaris@example.com</i>).</li>
+                </ul>
+                Kies <strong>Bevestig</strong>.
+            </li>
+            <li>Je ziet de VL nu in het overzicht van lijsten die door gebruiker record manager zijn aangemaakt. Met een icoontje wordt aangegeven dat de lijst onderhanden is.</li>
+            <li>Wanneer er aanpassingen zijn voorgesteld door een proces eigenaar op eerder opgestelde lijsten, zie je deze lijsten ook terug in dit overzicht.</li>
+        </ol>
 
-    <p>Demo gebruikers:</p>
-    <ul>
-    {% for demo_user in demo_users %}
-        <li><a href="{% url 'demo-login' demo_user.pk %}">{{ demo_user.username|slice:"5:" }}</a></li>
-    {% endfor %}
-    </ul>
+        <p>Log nu in als <a href="{% demo_process_owner_login_url %}">process eigenaar</a> om de VL beoordelen.</p>
+
+    {% elif current_user.username == 'demo-proces-eigenaar' %}
+
+        <h3>Beoordelen vernietigingslijst (VL)</h3>
+        <p><i><strong>Doel</strong>: Het controleren van de juistheid van verzamelingen zaken die volgens de record manager vernietigd moeten worden. Aan de hand van de controle kunnen suggesties worden doorgegeven aan de record manager. </i></p>
+
+        <p>Je ziet nu het overzicht van VLen. Je kunt het overzicht aanpassen naar de status (beoordeeld, te beoordelen, alle). Standaard worden de te beoordelen VLen getoond.</p>
+        
+        <ol>
+            <li>Kies <strong>Beoordelen</strong>, en de VL wordt geopend.</li>
+            <li>Wil je een zaak aanpassen, klik dan op de zaakregel in het overzicht. Kies <strong>Aanpassen</strong>, motiveer de suggestie onder <strong>Opmerkingen</strong> en sla op met knop <strong>Aanpassen</strong>   Kies uitzonderen, en vervolgens <strong>Aanpassen</strong>. De suggestie zie je terug in het overzicht met een aangepast statusicoontje</li>
+            <li>Wanneer je een zaak wilt uitzonderen, klik je op de zaakregel in het overzicht. Kies <strong>Uitzondering</strong>, motiveer de suggestie onder <strong>Opmerkingen</strong> en sla op met knop <strong>Aanpassen</strong>. De suggestie zie je terug in het overzicht met een aangepast statusicoontje.</li>
+            <li>Kies <strong>Accorderen</strong> om de VL met eventuele suggesties op te slaan.</li>
+        </ol>
+
+        <p>Wanneer er aanpassingen zijn voorgesteld, komt de lijst weer in de werkvoorraad van de <i>record manager</i>. Wanneer de lijst zonder aanpassingen geaccordeerd is, komt deze terecht in de werkvoorraad van de <i>archivaris</i>.</p>
+
+        <p>Log nu in als <a href="{% demo_archivist_login_url %}">archivaris</a> om de VL te accorderen.</p>
+
+    {% elif current_user.username == 'demo-archivaris' %}
+
+        <h3>Beoordelen vernietigingslijst (VL)</h3> 
+        <p><i><strong>Doel</strong>: Het controleren van de juistheid van verzamelingen zaken die volgens de record manager vernietigd moeten worden.</i></p>
+
+        <p>Je ziet nu het overzicht van VLen. Je kunt het overzicht aanpassen naar de status (beoordeeld, te beoordelen, alle). Standaard worden de te beoordelen VLen getoond.</p>
+
+        <ol>
+            <li>Kies <strong>Beoordelen</strong>, en de VL wordt geopend.</li>
+            <li>Kies <strong>Accorderen</strong> om de lijst te vernietigen.</li>
+        </ol>
+    
+        <h3>Vernietiging van zaken</h3>
+        <p>Nadat de archivaris voor <strong>Accorderen</strong> heeft gekozen, worden op de achtergrond een aantal systeemtaken opgestart. Zo wordt er een bewijs van vernietiging verstuurd en worden de zaken daadwerkelijk vernietigd.</p>
+
+    {% elif current_user.username == 'demo-functioneel-beheer' %}
+
+        <p>Als functioneel beheerder heeft u alle rechten. Deze rol is minder geschikt om een beeld te krijgen van het archiveringsproces.</p>
+        <p>Om stap voor stap, vanuit diverse rol perspectieven, het archiveringsproces te doorlopen kiest u hieronder de <i>record manager</i>.</p>
+
+    {% else %}
+
+        <p>U bent ingelogd als gebruiker zonder zelfstudie onderdeel.</p>
+
+    {% endif %}
+
+    <small>
+        <p>Alle beschikbare demo gebruikers:</p>
+        <ul>
+        {% for demo_user in demo_users %}
+            <li><a href="{% url 'demo-login' demo_user.pk %}">{{ demo_user.first_name }}</a></li>
+        {% endfor %}
+        </ul>
+    </small>
 </nav>
 
