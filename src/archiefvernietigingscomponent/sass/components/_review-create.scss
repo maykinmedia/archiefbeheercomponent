@@ -20,4 +20,24 @@
   @include element("list-details") {
     color: $color-text--light;
   }
+
+  @include element("review-comment") {
+    padding: 1em 1em;
+    margin: 2em 1em;
+    background: #eee;
+    border-radius: 5px;
+
+    .header {
+      display: inline-flex;
+      font-size: 1.1em;
+      opacity: 0.75;
+    }
+
+    .text {
+      width: 100%;
+      display: flex;
+      margin-top: 1em;
+      opacity: 0.75;
+    }
+  }
 }

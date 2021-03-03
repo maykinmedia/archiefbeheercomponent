@@ -11,8 +11,9 @@ from timeline_logger.models import TimelineLog
 from archiefvernietigingscomponent.accounts.tests.factories import UserFactory
 from archiefvernietigingscomponent.notifications.models import Notification
 
-from ..constants import ListItemStatus, ListStatus, Suggestion
-from ..models import DestructionList, DestructionListItem
+from ...constants import RoleTypeChoices
+from ..constants import ListItemStatus, ListStatus, ReviewStatus, Suggestion
+from ..models import DestructionList, DestructionListItem, DestructionListReviewComment
 from .factories import (
     DestructionListAssigneeFactory,
     DestructionListFactory,
@@ -248,6 +249,133 @@ class DestructionListUpdateTests(TestCase):
             b"The destruction of this list can't be aborted because it has already been completed.",
             response.content,
         )
+
+    def test_list_author_can_comment_on_review(self, m):
+        record_manager = UserFactory(
+            role__can_start_destruction=True, role__type=RoleTypeChoices.archivist
+        )
+        process_owner = UserFactory(
+            role__can_review_destruction=True, role__type=RoleTypeChoices.process_owner
+        )
+
+        destruction_list = DestructionListFactory.create(author=record_manager)
+
+        item = DestructionListItemFactory.create(destruction_list=destruction_list)
+        DestructionListAssigneeFactory.create(
+            assignee=record_manager, destruction_list=destruction_list
+        )
+        destruction_list.assignee = record_manager
+        destruction_list.save()
+
+        DestructionListReviewFactory.create(
+            destruction_list=destruction_list,
+            author=process_owner,
+            status=ReviewStatus.changes_requested,
+        )
+
+        data = {
+            "items-TOTAL_FORMS": 1,
+            "items-INITIAL_FORMS": 1,
+            "items-MIN_NUM_FORMS": 0,
+            "items-MAX_NUM_FORMS": 1000,
+            "text": "I disagree with these comments!",
+            "items-0-id": item.id,
+            "items-0-action": "",
+            "items-0-archiefnominatie": "blijvend_bewaren",
+            "items-0-archiefactiedatum": "2020-06-17",
+        }
+
+        self.client.force_login(record_manager)
+        response = self.client.post(
+            reverse("destruction:record-manager-detail", args=[destruction_list.pk]),
+            data=data,
+        )
+
+        self.assertRedirects(response, reverse("destruction:record-manager-list"))
+
+        comments = DestructionListReviewComment.objects.all()
+
+        self.assertEqual(1, comments.count())
+
+        comment = comments.get()
+
+        self.assertEqual("I disagree with these comments!", comment.text)
+        self.assertEqual(record_manager, comment.review.destruction_list.author)
+        self.assertEqual(destruction_list.last_review(), comment.review)
+
+    def test_list_author_can_leave_comment_empty(self, m):
+        record_manager = UserFactory(
+            role__can_start_destruction=True, role__type=RoleTypeChoices.archivist
+        )
+        process_owner = UserFactory(
+            role__can_review_destruction=True, role__type=RoleTypeChoices.process_owner
+        )
+
+        destruction_list = DestructionListFactory.create(author=record_manager)
+
+        item = DestructionListItemFactory.create(destruction_list=destruction_list)
+        DestructionListAssigneeFactory.create(
+            assignee=record_manager, destruction_list=destruction_list
+        )
+        destruction_list.assignee = record_manager
+        destruction_list.save()
+
+        DestructionListReviewFactory.create(
+            destruction_list=destruction_list,
+            author=process_owner,
+            status=ReviewStatus.changes_requested,
+        )
+
+        data = {
+            "items-TOTAL_FORMS": 1,
+            "items-INITIAL_FORMS": 1,
+            "items-MIN_NUM_FORMS": 0,
+            "items-MAX_NUM_FORMS": 1000,
+            "items-0-id": item.id,
+            "items-0-action": "",
+            "items-0-archiefnominatie": "blijvend_bewaren",
+            "items-0-archiefactiedatum": "2020-06-17",
+        }
+
+        self.client.force_login(record_manager)
+        response = self.client.post(
+            reverse("destruction:record-manager-detail", args=[destruction_list.pk]),
+            data=data,
+        )
+
+        self.assertRedirects(response, reverse("destruction:record-manager-list"))
+
+        comments = DestructionListReviewComment.objects.all()
+
+        self.assertEqual(0, comments.count())
+
+    def test_list_author_cannot_comment_on_approved_list(self, m):
+        record_manager = UserFactory(
+            role__can_start_destruction=True, role__type=RoleTypeChoices.archivist
+        )
+        process_owner = UserFactory(
+            role__can_review_destruction=True, role__type=RoleTypeChoices.process_owner
+        )
+
+        destruction_list = DestructionListFactory.create(author=record_manager)
+
+        DestructionListItemFactory.create_batch(2, destruction_list=destruction_list)
+
+        DestructionListReviewFactory.create(
+            destruction_list=destruction_list,
+            author=process_owner,
+            status=ReviewStatus.approved,
+        )
+
+        self.client.force_login(record_manager)
+        response = self.client.get(
+            reverse("destruction:record-manager-detail", args=[destruction_list.pk]),
+            user=record_manager,
+        )
+
+        self.assertEqual(200, response.status_code)
+
+        self.assertNotIn(b"textarea", response.content)
 
 
 class DestructionListDetailTests(WebTest):

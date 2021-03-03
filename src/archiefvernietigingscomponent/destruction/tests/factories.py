@@ -32,6 +32,14 @@ class DestructionListReviewFactory(factory.django.DjangoModelFactory):
         model = "destruction.DestructionListReview"
 
 
+class DestructionListReviewCommentFactory(factory.django.DjangoModelFactory):
+    text = factory.Faker("text")
+    review = factory.SubFactory(DestructionListReviewFactory)
+
+    class Meta:
+        model = "destruction.DestructionListReviewComment"
+
+
 class DestructionListItemReviewFactory(factory.django.DjangoModelFactory):
     destruction_list_item = factory.SubFactory(DestructionListItemFactory)
     destruction_list_review = factory.SubFactory(DestructionListReviewFactory)

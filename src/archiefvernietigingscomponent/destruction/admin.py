@@ -10,6 +10,7 @@ from .models import (
     DestructionListItem,
     DestructionListItemReview,
     DestructionListReview,
+    DestructionListReviewComment,
 )
 
 
@@ -70,6 +71,16 @@ class DestructionListReviewAdmin(admin.ModelAdmin):
     raw_id_fields = ("destruction_list", "author")
     date_hierarchy = "created"
     inlines = (DestructionListItemReviewInline,)
+
+
+@admin.register(DestructionListReviewComment)
+class DestructionListReviewCommentAdmin(admin.ModelAdmin):
+    list_display = ("review", "created")
+    readonly_fields = ("review", "created", "text")
+    search_fields = ("review",)
+    list_filter = ("review",)
+    date_hierarchy = "created"
+    raw_id_fields = ("review",)
 
 
 @admin.register(DestructionListItemReview)

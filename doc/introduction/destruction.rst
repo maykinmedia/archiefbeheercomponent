@@ -85,6 +85,10 @@ Once a reviewer suggests changes or exemptions, the original list author is assi
 where they process the changes. After processing the changes, the review flow restarts
 with the first reviewer.
 
+If the author of the destruction list disagrees with changes suggested in a review,
+they can add a comment before submitting the list for further review. Only the reviewer
+who created the controversial review will be able to see the comment.
+
 After the last reviewer has given their approval, the list is submitted for actual
 destruction to the background worker queue.
 

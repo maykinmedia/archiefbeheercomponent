@@ -5,6 +5,7 @@ import Modal from "react-modal";
 import { jsonScriptToVar } from '../../utils';
 import { ListItemFormset } from "./list-item-formset";
 import { FormsetConfigContext, CanUpdateContext } from "./context";
+import {TextInput} from "../../forms/inputs";
 
 
 const mount = () => {
@@ -16,14 +17,33 @@ const mount = () => {
 
     Modal.setAppElement('#react-destruction-list-detail');
 
+    const commentForm = () => {
+        if(canUpdate === 'True') {
+            return (
+                <div className="destruction-list-detail__review-comment">
+                    <TextInput
+                        name={"text"}
+                        required={false}
+                        label={"Opmerkingen"}
+                        helpText={"Opmerkingen voor de reviewer"}
+                        id={"id_text"}
+                    />
+                </div>
+            );
+        }
+    };
+
     ReactDOM.render(
-        <FormsetConfigContext.Provider value={formsetConfig}>
-            <CanUpdateContext.Provider value={canUpdate === 'True'}>
-                <ListItemFormset
-                    itemsUrl={itemsUrl}
-                />
-            </CanUpdateContext.Provider>
-        </FormsetConfigContext.Provider>,
+        <React.Fragment>
+            {commentForm()}
+            <FormsetConfigContext.Provider value={formsetConfig}>
+                <CanUpdateContext.Provider value={canUpdate === 'True'}>
+                    <ListItemFormset
+                        itemsUrl={itemsUrl}
+                    />
+                </CanUpdateContext.Provider>
+            </FormsetConfigContext.Provider>
+        </React.Fragment>,
         node
     )
 };

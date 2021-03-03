@@ -11,7 +11,7 @@ const STATUS_TO_BUTTON = {
 };
 
 
-const ReviewForm = ({ itemsUrl, destructionList }) => {
+const ReviewForm = ({ itemsUrl, destructionList, reviewComment }) => {
     const [comment, setComment] = useState("");
 
     // load list items
@@ -38,6 +38,20 @@ const ReviewForm = ({ itemsUrl, destructionList }) => {
             )
     }, []);
 
+    const getReviewComment = () => {
+        if (reviewComment){
+            return (
+                <div className="review-create__review-comment">
+                    <div className={"header"}>{`${reviewComment.author} heeft een opmerking achtergelaten`}</div>
+                    <div className={"text"}>
+                        <i className="material-icons">comment &nbsp;</i>
+                        {reviewComment.text}
+                    </div>
+                </div>
+            );
+        }
+    };
+
     return (
         <SuggestionContext.Provider value={{suggestions, setSuggestions}}>
             <button type="submit" className="review-create__btn btn" >{STATUS_TO_BUTTON[reviewStatus]}</button>
@@ -49,6 +63,8 @@ const ReviewForm = ({ itemsUrl, destructionList }) => {
                     </span>
                 </div>
             </header>
+
+            {getReviewComment()}
 
             <div className="review-create__comment">
                 <TextInput
