@@ -90,6 +90,11 @@ warnings.filterwarnings(
 #
 ENVIRONMENT = "development"
 
+#
+# Django Solo
+#
+SOLO_CACHE_TIMEOUT = 0
+
 # Override settings with local settings.
 try:
     from .includes.local import *  # noqa
