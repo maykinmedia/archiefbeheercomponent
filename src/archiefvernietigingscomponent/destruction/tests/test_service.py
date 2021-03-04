@@ -9,10 +9,12 @@ from archiefvernietigingscomponent.tests.utils import (
     mock_service_oas_get,
 )
 
-from ..service import update_zaak
+from ..service import fetch_resultaat, update_zaak
 
 ZAKEN_ROOT = "https://api.zaken.nl/api/v1/"
 ZAAK_URL = f"{ZAKEN_ROOT}zaken/17e08a91-67ff-401d-aae1-69b1beeeff06"
+
+CATALOGI_ROOT = "https://api.catalogi.nl/api/v1/"
 
 
 @requests_mock.Mocker()
@@ -48,3 +50,19 @@ class ServiceTests(TestCase):
             headers["X-Audit-Toelichting"],
             "[Archiefvernietigingscomponent] Change archive params",
         )
+
+    def test_fetch_resultaat(self, m):
+        resultaat_url = f"{ZAKEN_ROOT}resultaten/uuid-1"
+        resultaattype_url = f"{CATALOGI_ROOT}resultaattypen/uuid-1"
+
+        Service.objects.create(api_type=APITypes.ztc, api_root=CATALOGI_ROOT)
+
+        m.get(resultaat_url, json={"resultaattype": resultaattype_url})
+        m.get(resultaattype_url, json={"url": resultaattype_url})
+        mock_service_oas_get(m, ZAKEN_ROOT, "zrc")
+        mock_service_oas_get(m, CATALOGI_ROOT, "ztc")
+
+        resultaat = fetch_resultaat(resultaat_url)
+
+        self.assertIn("resultaattype", resultaat)
+        self.assertIn("url", resultaat["resultaattype"])

@@ -97,9 +97,22 @@ class ProcessListItemTests(TestCase):
             "startdatum": "2020-01-01",
             "einddatum": "2021-01-01",
             "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+            "resultaat": "https://oz.nl/zaken/api/v1/resultaat/uuid-1",
+            "verantwoordelijkeOrganisatie": "Some organisation",
         },
     )
-    def test_process_list_item(self, mock_fetch_zaak, mock_remove_zaken):
+    @patch(
+        "archiefvernietigingscomponent.destruction.service.get_resultaat",
+        return_value={
+            "resultaattype": {
+                "omschrijving": "Nice result type",
+                "archiefactietermijn": "20 days",
+            },
+        },
+    )
+    def test_process_list_item(
+        self, mock_fetch_zaak, mock_remove_zaken, mock_get_resultaat
+    ):
         list_item = DestructionListItemFactory.create()
 
         process_list_item(list_item.id)
@@ -127,9 +140,15 @@ class ProcessListItemTests(TestCase):
             "toelichting": "Bah",
             "startdatum": "2020-01-01",
             "einddatum": "2021-01-01",
+            "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+            "resultaat": "https://oz.nl/zaken/api/v1/resultaat/uuid-1",
+            "verantwoordelijkeOrganisatie": "Some organisation",
         },
     )
-    def test_process_list_item_fail(self, mock_fetch_zaak, mock_remove_zaken):
+    @patch("archiefvernietigingscomponent.destruction.service.get_resultaat")
+    def test_process_list_item_fail(
+        self, mock_fetch_zaak, mock_remove_zaken, mock_get_resultaat
+    ):
         list_item = DestructionListItemFactory.create()
 
         process_list_item(list_item.id)
@@ -148,9 +167,30 @@ class ProcessListItemTests(TestCase):
         mock_remove_zaken.assert_called_once_with(list_item.zaak)
 
     @patch("archiefvernietigingscomponent.destruction.tasks.remove_zaak")
-    @patch("archiefvernietigingscomponent.destruction.tasks.fetch_zaak")
+    @patch(
+        "archiefvernietigingscomponent.destruction.tasks.fetch_zaak",
+        return_value={
+            "identificatie": "foobar",
+            "omschrijving": "Een zaak",
+            "toelichting": "Bah",
+            "startdatum": "2020-01-01",
+            "einddatum": "2021-01-01",
+            "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+            "resultaat": "https://oz.nl/zaken/api/v1/resultaat/uuid-1",
+            "verantwoordelijkeOrganisatie": "Some organisation",
+        },
+    )
+    @patch(
+        "archiefvernietigingscomponent.destruction.service.get_resultaat",
+        return_value={
+            "resultaattype": {
+                "omschrijving": "Nice result type",
+                "archiefactietermijn": "20 days",
+            },
+        },
+    )
     def test_process_list_item_status_update_processing(
-        self, mock_fetch_zaak, mock_remove_zaken
+        self, mock_fetch_zaak, mock_remove_zaken, mock_get_resultaat
     ):
         """
         Test that the db state is updated.
@@ -189,6 +229,7 @@ class ProcessListItemTests(TestCase):
 
 @requests_mock.Mocker()
 @temp_private_root()
+@override_settings(LANGUAGE_CODE="en")
 class NotifyTests(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -249,10 +290,15 @@ class NotifyTests(TestCase):
         self.assertEqual(
             notification.message,
             _(
-                "Destruction list Summer List has been processed. "
-                "You can download the report of destruction here: http://example.com%(url)s"
+                "Destruction list %(list)s has been processed. "
+                "You can download the report of destruction here: %(url)s"
             )
-            % {"url": reverse("report:download-report", args=[report.pk]),},
+            % {
+                "list": "Summer List",
+                "url": "http://example.com{}".format(
+                    reverse("report:download-report", args=[report.pk])
+                ),
+            },
         )
 
         self.client.force_login(process_owner)
@@ -283,6 +329,14 @@ class NotifyTests(TestCase):
                 "startdatum": "2020-01-01",
                 "einddatum": "2021-01-01",
                 "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+                "verantwoordelijke_organisatie": "Nice organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nice result type",
+                        "archiefactietermijn": "20 days",
+                    }
+                },
+                "relevante_andere_zaken": [],
             },
         )
         DestructionListItemFactory.create(
@@ -295,6 +349,14 @@ class NotifyTests(TestCase):
                 "startdatum": "2020-02-01",
                 "einddatum": "2021-03-01",
                 "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
+                "verantwoordelijke_organisatie": "Nicer organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nicer result type",
+                        "archiefactietermijn": "40 days",
+                    }
+                },
+                "relevante_andere_zaken": [{"url": "http://some.zaak"}],
             },
         )
         DestructionListReviewFactory.create(
@@ -322,7 +384,7 @@ class NotifyTests(TestCase):
         sent_mail = mail.outbox[0]
 
         self.assertEqual(
-            "Verklaring van vernietiging - Nice list (2021-02-15)", sent_mail.subject
+            "Declaration of destruction - Nice list (2021-02-15)", sent_mail.subject
         )
         self.assertEqual("email@test.avc", sent_mail.from_email)
         self.assertIn(archivaris.email, sent_mail.to)
@@ -354,6 +416,14 @@ class NotifyTests(TestCase):
                 "startdatum": "2020-01-01",
                 "einddatum": "2021-01-01",
                 "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+                "verantwoordelijke_organisatie": "Nicer organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nicer result type",
+                        "archiefactietermijn": "40 days",
+                    }
+                },
+                "relevante_andere_zaken": [{"url": "http://some.zaak"}],
             },
         )
         DestructionListItemFactory.create(
@@ -366,6 +436,14 @@ class NotifyTests(TestCase):
                 "startdatum": "2020-02-01",
                 "einddatum": "2021-03-01",
                 "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
+                "verantwoordelijke_organisatie": "Nicer organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nicer result type",
+                        "archiefactietermijn": "40 days",
+                    }
+                },
+                "relevante_andere_zaken": [{"url": "http://some.zaak"}],
             },
         )
         mock_service_oas_get(

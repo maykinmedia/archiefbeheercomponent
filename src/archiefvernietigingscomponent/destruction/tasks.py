@@ -17,7 +17,7 @@ from ..constants import RoleTypeChoices
 from ..report.utils import create_destruction_report, get_absolute_url
 from .constants import ListItemStatus, ListStatus, ReviewStatus
 from .models import DestructionList, DestructionListItem, DestructionListReview
-from .service import fetch_zaak, remove_zaak, update_zaak
+from .service import fetch_resultaat, fetch_zaak, remove_zaak, update_zaak
 
 logger = logging.getLogger(__name__)
 
@@ -74,6 +74,11 @@ def process_list_item(list_item_id):
         return
 
     try:
+        resultaat = fetch_resultaat(zaak["resultaat"])
+    except ClientError:
+        resultaat = None
+
+    try:
         remove_zaak(list_item.zaak)
     except ClientError as exc:
         logger.warning(
@@ -99,6 +104,7 @@ def process_list_item(list_item_id):
             template="destruction/logs/item_destruction_succeeded.txt",
             extra_data={"zaak": zaak["identificatie"]},
         )
+
         list_item.extra_zaak_data = {
             "identificatie": zaak["identificatie"],
             "omschrijving": zaak.get("omschrijving") or "",
@@ -106,6 +112,9 @@ def process_list_item(list_item_id):
             "startdatum": zaak["startdatum"],
             "einddatum": zaak.get("einddatum") or "",
             "zaaktype": zaak["zaaktype"],
+            "verantwoordelijke_organisatie": zaak["verantwoordelijkeOrganisatie"],
+            "resultaat": resultaat,
+            "relevante_andere_zaken": zaak.get("relevanteAndereZaken", []),
         }
         list_item.save()
 

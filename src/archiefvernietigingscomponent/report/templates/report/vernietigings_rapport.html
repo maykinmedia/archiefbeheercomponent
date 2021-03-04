@@ -11,6 +11,11 @@
         <th>{% trans "Explanation" %}</th>
         <th>{% trans "Remarks SAD" %}</th>
         <th>{% trans "Reaction caretaker" %}</th>
+        <th>{% trans "Case type" %}</th>
+        <th>{% trans "Archive action period" %}</th>
+        <th>{% trans "Result type" %}</th>
+        <th>{% trans "Organisation responsible" %}</th>
+        <th>{% trans "Relations" %}</th>
     </tr>
 
     <tr>
@@ -22,6 +27,11 @@
         <td>{% trans destroyed_zaak.toelichting  %}</td>
         <td>{% trans destroyed_zaak.opmerkingen  %}</td>
         <td>{% trans destroyed_zaak.reactie_zorgdrager  %}</td>
+        <td>{% trans destroyed_zaak.zaaktype  %}</td>
+        <td>{% trans destroyed_zaak.archiefactietermijn  %}</td>
+        <td>{% trans destroyed_zaak.resultaattype  %}</td>
+        <td>{% trans destroyed_zaak.verantwoordelijke_organisatie  %}</td>
+        <td>{% trans destroyed_zaak.relaties  %}</td>
         {% endfor %}
     </tr>
 </table>

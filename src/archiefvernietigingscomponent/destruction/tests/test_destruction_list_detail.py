@@ -214,7 +214,10 @@ class DestructionListUpdateTests(TestCase):
         notification = notifications.get()
 
         self.assertEqual(
-            f"{self.user} has aborted the destruction list. No further action is required.",
+            _(
+                "%(author)s has aborted the destruction list. No further action is required."
+            )
+            % {"author": destruction_list.author},
             notification.message,
         )
 
@@ -246,8 +249,10 @@ class DestructionListUpdateTests(TestCase):
 
         self.assertEqual(400, response.status_code)
         self.assertEqual(
-            b"The destruction of this list can't be aborted because it has already been completed.",
-            response.content,
+            _(
+                "The destruction of this list can't be aborted because it has already been completed."
+            ),
+            response.content.decode("utf-8"),
         )
 
     def test_list_author_can_comment_on_review(self, m):
