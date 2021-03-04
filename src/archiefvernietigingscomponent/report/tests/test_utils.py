@@ -159,7 +159,7 @@ class DestructionReportTests(TestCase):
         self.assertIn("<td>No</td>", report)
 
     def test_destruction_report_content_generation_without_toelichting(self, m):
-        destruction_list = DestructionListFactory.create()
+        destruction_list = DestructionListFactory.create(contains_sensitive_info=False)
         DestructionListItemFactory.create(
             destruction_list=destruction_list,
             status=ListItemStatus.destroyed,
