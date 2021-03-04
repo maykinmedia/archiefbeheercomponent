@@ -375,7 +375,7 @@ class DestructionListUpdateTests(TestCase):
 
         self.assertEqual(200, response.status_code)
 
-        self.assertNotIn(b"textarea", response.content)
+        self.assertNotIn(b"<textarea", response.content)
 
 
 class DestructionListDetailTests(WebTest):
