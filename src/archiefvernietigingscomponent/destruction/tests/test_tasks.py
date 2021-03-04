@@ -290,10 +290,15 @@ class NotifyTests(TestCase):
         self.assertEqual(
             notification.message,
             _(
-                "Destruction list Summer List has been processed. "
-                "You can download the report of destruction here: http://example.com%(url)s"
+                "Destruction list %(list)s has been processed. "
+                "You can download the report of destruction here: %(url)s"
             )
-            % {"url": reverse("report:download-report", args=[report.pk]),},
+            % {
+                "list": "Summer List",
+                "url": "http://example.com{}".format(
+                    reverse("report:download-report", args=[report.pk])
+                ),
+            },
         )
 
         self.client.force_login(process_owner)

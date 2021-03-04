@@ -74,6 +74,11 @@ def process_list_item(list_item_id):
         return
 
     try:
+        resultaat = fetch_resultaat(zaak["resultaat"])
+    except ClientError:
+        resultaat = None
+
+    try:
         remove_zaak(list_item.zaak)
     except ClientError as exc:
         logger.warning(
@@ -99,10 +104,6 @@ def process_list_item(list_item_id):
             template="destruction/logs/item_destruction_succeeded.txt",
             extra_data={"zaak": zaak["identificatie"]},
         )
-        try:
-            resultaat = fetch_resultaat(zaak["resultaat"])
-        except ClientError:
-            resultaat = None
 
         list_item.extra_zaak_data = {
             "identificatie": zaak["identificatie"],
@@ -113,7 +114,7 @@ def process_list_item(list_item_id):
             "zaaktype": zaak["zaaktype"],
             "verantwoordelijke_organisatie": zaak["verantwoordelijkeOrganisatie"],
             "resultaat": resultaat,
-            "relevante_andere_zaken": zaak.get("relevanteAndereZaken") or [],
+            "relevante_andere_zaken": zaak.get("relevanteAndereZaken", []),
         }
         list_item.save()
 

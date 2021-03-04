@@ -133,15 +133,8 @@ def get_resultaat(zaak_url: str) -> Optional[dict]:
     if not resultaat_url:
         return None
 
-    zrc_client = _client_from_url(resultaat_url)
-    resultaat = zrc_client.retrieve("resultaat", url=resultaat_url)
-
-    resultaattype_url = resultaat["resultaattype"]
-    ztc_client = _client_from_url(resultaattype_url)
-    resultaattype = ztc_client.retrieve("resultaattype", url=resultaattype_url)
-
+    resultaat = fetch_resultaat(resultaat_url)
     resultaat["zaak"] = zaak
-    resultaat["resultaattype"] = resultaattype
 
     return resultaat
 
