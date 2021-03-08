@@ -40,4 +40,14 @@
       opacity: 0.75;
     }
   }
+
+  @include element("btns") {
+    position: absolute;
+    right: 2em;
+
+    .btn + .btn {
+      margin-left: 0.5em;
+    }
+  }
+
 }
