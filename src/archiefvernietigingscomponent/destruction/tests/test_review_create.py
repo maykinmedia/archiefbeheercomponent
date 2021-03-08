@@ -170,6 +170,61 @@ class ReviewCreateTests(DLMixin, TestCase):
         self.assertEqual(notifications[1].user, destruction_list.author)
         self.assertEqual(notifications[1].message, _("There is a review to process."))
 
+    def test_create_review_reject(self):
+        destruction_list = self._create_destruction_list()
+        DestructionListAssigneeFactory.create(
+            destruction_list=destruction_list, assignee__role=self.user.role
+        )
+        items = destruction_list.items.order_by("id").all()
+
+        url = reverse("destruction:reviewer-create", args=[destruction_list.id])
+
+        data = {
+            "author": self.user.id,
+            "destruction_list": destruction_list.id,
+            "status": ReviewStatus.rejected,
+            "item_reviews-0-destruction_list_item": items[0].id,
+            "item_reviews-0-suggestion": "",
+            "item_reviews-0-text": "",
+            "item_reviews-1-destruction_list_item": items[1].id,
+            "item_reviews-1-suggestion": "",
+            "item_reviews-1-text": "",
+            "item_reviews-2-destruction_list_item": items[2].id,
+            "item_reviews-2-suggestion": "",
+            "item_reviews-2-text": "",
+        }
+        data.update(MANAGEMENT_FORM_DATA)
+
+        response = self.client.post(url, data=data)
+
+        self.assertRedirects(response, reverse("destruction:reviewer-list"))
+
+        review = DestructionListReview.objects.get()
+
+        self.assertEqual(review.author, self.user)
+        self.assertEqual(review.destruction_list, destruction_list)
+        self.assertEqual(review.status, ReviewStatus.rejected)
+
+        item_reviews = review.item_reviews.order_by("destruction_list_item_id").all()
+        self.assertEqual(item_reviews.count(), 0)  # save only changed items
+        self.assertEqual(review.destruction_list.assignee, destruction_list.author)
+
+        #  check logs
+        timeline_log = review.logs.get()
+        self.assertEqual(timeline_log.user, self.user)
+        self.assertEqual(timeline_log.template, "destruction/logs/review_created.txt")
+
+        #  check notifications
+        notifications = Notification.objects.order_by("created").all()
+        self.assertEqual(notifications.count(), 2)
+        self.assertEqual(notifications[0].user, destruction_list.author)
+        self.assertEqual(
+            notifications[0].message,
+            _("{author} has reviewed the destruction list.").format(author=self.user),
+        )
+        self.assertEqual(notifications[1].user, destruction_list.author)
+        self.assertEqual(notifications[1].message, _("There is a review to process."))
+
     @patch(
         "archiefvernietigingscomponent.destruction.views.process_destruction_list.delay"
     )
