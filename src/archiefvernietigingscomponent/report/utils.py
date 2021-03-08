@@ -172,6 +172,7 @@ def create_destruction_report(destruction_list: DestructionList) -> DestructionR
         title=report_subject,
         process_owner=process_owner_review.author if process_owner_review else None,
         content=ContentFile(content=report_content, name=report_filename),
+        destruction_list=destruction_list,
     )
 
     return destruction_report

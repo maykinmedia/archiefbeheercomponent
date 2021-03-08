@@ -15,6 +15,7 @@ from archiefvernietigingscomponent.destruction.constants import (
     ListStatus,
     ReviewStatus,
 )
+from archiefvernietigingscomponent.destruction.models import DestructionList
 from archiefvernietigingscomponent.destruction.tests.factories import (
     DestructionListFactory,
     DestructionListItemFactory,
@@ -940,3 +941,61 @@ class DestructionReportTests(TestCase):
         response = self.client.get(report.content.url)
 
         self.assertEqual(404, response.status_code)
+
+    def test_relation_between_report_and_destructionlist(self, m):
+        destruction_list = DestructionListFactory.create(name="Winter cases")
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.destroyed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-1",
+                "omschrijving": "Een zaak",
+                "toelichting": "Bah",
+                "startdatum": "2020-01-01",
+                "einddatum": "2021-01-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+                "verantwoordelijke_organisatie": "Nice organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nice result type",
+                        "archiefactietermijn": "20 days",
+                    }
+                },
+                "relevante_andere_zaken": [],
+            },
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.destroyed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-2",
+                "omschrijving": "Een andere zaak",
+                "toelichting": "Boh",
+                "startdatum": "2020-02-01",
+                "einddatum": "2021-03-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
+                "verantwoordelijke_organisatie": "Nice organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nice result type",
+                        "archiefactietermijn": "20 days",
+                    }
+                },
+                "relevante_andere_zaken": [],
+            },
+        )
+        DestructionListReviewFactory.create(
+            destruction_list=destruction_list,
+            status=ReviewStatus.approved,
+            text="What a magnificent list!",
+        )
+
+        self._setup_mocks(m)
+
+        report = create_destruction_report(destruction_list)
+
+        # can't use refresh_from_db() because of django-fsm
+        destruction_list = DestructionList.objects.get(id=destruction_list.id)
+
+        self.assertEqual(1, destruction_list.destructionreport_set.count())
+        self.assertEqual(report, destruction_list.destructionreport_set.get())
