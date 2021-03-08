@@ -253,7 +253,7 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
         )
 
         # Check if there are comments from the author
-        if "text" in self.request.POST:
+        if self.request.POST.get("text"):
             comment = DestructionListReviewComment(
                 review=destruction_list.last_review()
             )
