@@ -20,6 +20,7 @@ class ListItemStatus(DjangoChoices):
 class ReviewStatus(DjangoChoices):
     approved = ChoiceItem("approved", _("approved"))
     changes_requested = ChoiceItem("changes_requested", _("changes requested"))
+    rejected = ChoiceItem("rejected", _("rejected"))
 
 
 class Suggestion(DjangoChoices):

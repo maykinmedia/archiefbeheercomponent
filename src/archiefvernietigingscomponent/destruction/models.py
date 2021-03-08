@@ -83,7 +83,7 @@ class DestructionList(models.Model):
         if not review:
             return first_assignee
 
-        if review.status == ReviewStatus.changes_requested:
+        if review.status != ReviewStatus.approved:
             return self.author
 
         current_order = self.assignees.get(assignee=review.author).order
