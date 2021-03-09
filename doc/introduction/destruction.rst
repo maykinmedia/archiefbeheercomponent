@@ -13,7 +13,7 @@ determined during the life-cycle of a case. There are two possible actions:
 - destroy cases
 - keep cases (and transfer them to an e-depot)
 
-Each case has an "archive action date", which is the date after wich the determined
+Each case has an "archive action date", which is the date after which the determined
 action needs to be performed.
 
 The derivation of these parameters is part of the standard for
@@ -65,6 +65,10 @@ specify which users should be involved in the review process. The reviewers shou
 selected in order of review.
 
 Available users are selected based on their role permission.
+
+There is also a checkbox which can be used to specify whether the destruction list contains cases
+with sensitive information. If the checkbox is checked (default), the report of destruction will
+*NOT* contain the case description and the remarks of the archivist.
 
 Once the confirmation button is clicked, the list is created and assigned to the first
 reviewer.

@@ -55,7 +55,13 @@ class DestructionListForm(forms.ModelForm):
 
     class Meta:
         model = DestructionList
-        fields = ("name", "zaken", "reviewer_1", "reviewer_2")
+        fields = (
+            "name",
+            "zaken",
+            "reviewer_1",
+            "reviewer_2",
+            "contains_sensitive_info",
+        )
 
     def clean_zaken(self) -> List[str]:
         return self.cleaned_data["zaken"].split(",")

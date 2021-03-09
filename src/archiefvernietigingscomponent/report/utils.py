@@ -106,6 +106,14 @@ def create_destruction_report_content(destruction_list: DestructionList) -> str:
 
         zaaktype = get_zaaktype(zaak_data["zaaktype"])
 
+        if not destruction_list.contains_sensitive_info:
+            zaak_data["opmerkingen"] = get_destruction_list_archivaris_comments(
+                destruction_list
+            )
+            zaak_data["zaaktype"] = (
+                zaaktype["omschrijving"] if zaaktype.get("omschrijving") else ""
+            )
+
         zaak_data["looptijd"] = _("%(looptijd)s days") % {
             "looptijd": get_looptijd(zaak_data)
         }
@@ -116,13 +124,7 @@ def create_destruction_report_content(destruction_list: DestructionList) -> str:
             if zaaktype.get("selectielijstProcestype")
             else ""
         )
-        zaak_data["opmerkingen"] = get_destruction_list_archivaris_comments(
-            destruction_list
-        )
         zaak_data["reactie_zorgdrager"] = get_process_owner_comments(destruction_list)
-        zaak_data["zaaktype"] = (
-            zaaktype["omschrijving"] if zaaktype.get("omschrijving") else ""
-        )
 
         if zaak_data.get("resultaat"):
             resultaattype = zaak_data["resultaat"]["resultaattype"]
@@ -143,7 +145,10 @@ def create_destruction_report_content(destruction_list: DestructionList) -> str:
     return render(
         request=None,
         template_name="report/vernietigings_rapport.html",
-        context={"destroyed_zaken": zaken_data},
+        context={
+            "destroyed_zaken": zaken_data,
+            "contains_sensitive_info": destruction_list.contains_sensitive_info,
+        },
     ).content.decode("utf8")
 
 

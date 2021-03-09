@@ -1,5 +1,4 @@
 from django.test import TestCase, override_settings
-from django.urls import reverse
 
 import requests_mock
 import zds_client
@@ -15,14 +14,12 @@ from archiefvernietigingscomponent.destruction.constants import (
     ListStatus,
     ReviewStatus,
 )
-from archiefvernietigingscomponent.destruction.models import DestructionList
 from archiefvernietigingscomponent.destruction.tests.factories import (
     DestructionListFactory,
     DestructionListItemFactory,
     DestructionListReviewFactory,
 )
 from archiefvernietigingscomponent.report.utils import (
-    create_destruction_report,
     create_destruction_report_content,
     get_destruction_list_archivaris_comments,
     get_looptijd,
@@ -35,7 +32,7 @@ from archiefvernietigingscomponent.tests.utils import mock_service_oas_get
 @requests_mock.Mocker()
 @temp_private_root()
 @override_settings(LANGUAGE_CODE="en")
-class DestructionReportTests(TestCase):
+class DestructionReportUtilsTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
@@ -90,7 +87,7 @@ class DestructionReportTests(TestCase):
         )
 
     def test_destruction_report_content_generation(self, m):
-        destruction_list = DestructionListFactory.create()
+        destruction_list = DestructionListFactory.create(contains_sensitive_info=False,)
         DestructionListItemFactory.create(
             destruction_list=destruction_list,
             status=ListItemStatus.destroyed,
@@ -159,7 +156,7 @@ class DestructionReportTests(TestCase):
         self.assertIn("<td>No</td>", report)
 
     def test_destruction_report_content_generation_without_toelichting(self, m):
-        destruction_list = DestructionListFactory.create()
+        destruction_list = DestructionListFactory.create(contains_sensitive_info=False)
         DestructionListItemFactory.create(
             destruction_list=destruction_list,
             status=ListItemStatus.destroyed,
@@ -217,7 +214,9 @@ class DestructionReportTests(TestCase):
         self.assertIn("<td>Yes</td>", report)
 
     def test_failed_destruction_not_in_report_content(self, m):
-        destruction_list = DestructionListFactory.create(status=ListStatus.processing)
+        destruction_list = DestructionListFactory.create(
+            status=ListStatus.processing, contains_sensitive_info=False,
+        )
         DestructionListItemFactory.create(
             destruction_list=destruction_list,
             status=ListItemStatus.failed,
@@ -284,7 +283,9 @@ class DestructionReportTests(TestCase):
         self.assertIn("<td>No</td>", report)
 
     def test_failed_zaaktype_retrieval(self, m):
-        destruction_list = DestructionListFactory.create(status=ListStatus.processing)
+        destruction_list = DestructionListFactory.create(
+            status=ListStatus.processing, contains_sensitive_info=False
+        )
         DestructionListItemFactory.create(
             destruction_list=destruction_list,
             status=ListItemStatus.destroyed,
@@ -745,93 +746,52 @@ class DestructionReportTests(TestCase):
 
         self.assertEqual(4, loop_tijd)
 
-    @freeze_time("2021-05-05")
-    def test_report_creation_with_process_owner(self, m):
-        process_owner = UserFactory.create(
-            role__type=RoleTypeChoices.process_owner,
+    def test_optional_columns_are_not_show_by_default(self, m):
+        destruction_list = DestructionListFactory.create(name="Winter cases")
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.destroyed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-1",
+                "omschrijving": "Een zaak",
+                "toelichting": "Bah",
+                "startdatum": "2020-01-01",
+                "einddatum": "2021-01-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+                "verantwoordelijke_organisatie": "Nicer organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nicer result type",
+                        "archiefactietermijn": "40 days",
+                    }
+                },
+                "relevante_andere_zaken": [{"url": "http://some.zaak"}],
+            },
+        )
+        archivaris = UserFactory.create(
+            role__type=RoleTypeChoices.archivist,
             role__can_start_destruction=False,
             role__can_review_destruction=True,
-            role__can_view_case_details=True,
-        )
-        destruction_list = DestructionListFactory.create(name="Winter cases")
-        DestructionListItemFactory.create(
-            destruction_list=destruction_list,
-            status=ListItemStatus.destroyed,
-            extra_zaak_data={
-                "identificatie": "ZAAK-1",
-                "omschrijving": "Een zaak",
-                "toelichting": "Bah",
-                "startdatum": "2020-01-01",
-                "einddatum": "2021-01-01",
-                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
-                "verantwoordelijke_organisatie": "Nice organisation",
-                "resultaat": {
-                    "resultaattype": {
-                        "omschrijving": "Nice result type",
-                        "archiefactietermijn": "20 days",
-                    }
-                },
-                "relevante_andere_zaken": [],
-            },
-        )
-        DestructionListItemFactory.create(
-            destruction_list=destruction_list,
-            status=ListItemStatus.destroyed,
-            extra_zaak_data={
-                "identificatie": "ZAAK-2",
-                "omschrijving": "Een andere zaak",
-                "toelichting": "Boh",
-                "startdatum": "2020-02-01",
-                "einddatum": "2021-03-01",
-                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
-                "verantwoordelijke_organisatie": "Nice organisation",
-                "resultaat": {
-                    "resultaattype": {
-                        "omschrijving": "Nice result type",
-                        "archiefactietermijn": "20 days",
-                    }
-                },
-                "relevante_andere_zaken": [],
-            },
+            role__can_view_case_details=False,
         )
         DestructionListReviewFactory.create(
             destruction_list=destruction_list,
             status=ReviewStatus.approved,
-            author=process_owner,
+            author=archivaris,
             text="What a magnificent list!",
         )
 
         self._setup_mocks(m)
 
-        report = create_destruction_report(destruction_list)
+        report = create_destruction_report_content(destruction_list)
 
-        self.assertEqual(process_owner, report.process_owner)
-        self.assertEqual(
-            "Declaration of destruction - Winter cases (2021-05-05)", report.title
+        self.assertNotIn("<td>Een zaak</td>", report)
+        self.assertNotIn("<td>What a magnificent list!</td>", report)
+
+    def test_optional_columns_are_show_if_configured(self, m):
+        destruction_list = DestructionListFactory.create(
+            name="Winter cases", contains_sensitive_info=False,
         )
-
-        report.content.seek(0)
-        content = report.content.read().decode("utf8")
-
-        self.assertIn("<td>ZAAK-1</td>", content)
-        self.assertIn("<td>Een zaak</td>", content)
-        self.assertIn("<td>366 days</td>", content)
-        self.assertIn("<td>1</td>", content)
-        self.assertIn("<td>Bah</td>", content)
-
-        self.assertIn("<td>ZAAK-2</td>", content)
-        self.assertIn("<td>Een andere zaak</td>", content)
-        self.assertIn("<td>394 days</td>", content)
-        self.assertIn("<td>2</td>", content)
-        self.assertIn("<td>Boh</td>", content)
-
-        self.client.force_login(process_owner)
-        response = self.client.get(reverse("report:download-report", args=[report.pk]))
-
-        self.assertEqual(200, response.status_code)
-
-    def test_report_creation_without_process_owner(self, m):
-        destruction_list = DestructionListFactory.create(name="Winter cases")
         DestructionListItemFactory.create(
             destruction_list=destruction_list,
             status=ListItemStatus.destroyed,
@@ -842,160 +802,32 @@ class DestructionReportTests(TestCase):
                 "startdatum": "2020-01-01",
                 "einddatum": "2021-01-01",
                 "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
-                "verantwoordelijke_organisatie": "Nice organisation",
+                "verantwoordelijke_organisatie": "Nicer organisation",
                 "resultaat": {
                     "resultaattype": {
-                        "omschrijving": "Nice result type",
-                        "archiefactietermijn": "20 days",
+                        "omschrijving": "Nicer result type",
+                        "archiefactietermijn": "40 days",
                     }
                 },
-                "relevante_andere_zaken": [],
+                "relevante_andere_zaken": [{"url": "http://some.zaak"}],
             },
         )
-        DestructionListItemFactory.create(
-            destruction_list=destruction_list,
-            status=ListItemStatus.destroyed,
-            extra_zaak_data={
-                "identificatie": "ZAAK-2",
-                "omschrijving": "Een andere zaak",
-                "toelichting": "",
-                "startdatum": "2020-02-01",
-                "einddatum": "2021-03-01",
-                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
-                "verantwoordelijke_organisatie": "Nice organisation",
-                "resultaat": {
-                    "resultaattype": {
-                        "omschrijving": "Nice result type",
-                        "archiefactietermijn": "20 days",
-                    }
-                },
-                "relevante_andere_zaken": [],
-            },
-        )
-
-        self._setup_mocks(m)
-
-        report = create_destruction_report(destruction_list)
-
-        self.assertEqual(None, report.process_owner)
-
-    def test_private_media_is_not_accessible(self, m):
-        process_owner = UserFactory.create(
-            role__type=RoleTypeChoices.process_owner,
+        archivaris = UserFactory.create(
+            role__type=RoleTypeChoices.archivist,
             role__can_start_destruction=False,
             role__can_review_destruction=True,
-            role__can_view_case_details=True,
-        )
-        destruction_list = DestructionListFactory.create(name="Winter cases")
-        DestructionListItemFactory.create(
-            destruction_list=destruction_list,
-            status=ListItemStatus.destroyed,
-            extra_zaak_data={
-                "identificatie": "ZAAK-1",
-                "omschrijving": "Een zaak",
-                "toelichting": "Bah",
-                "startdatum": "2020-01-01",
-                "einddatum": "2021-01-01",
-                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
-                "verantwoordelijke_organisatie": "Nice organisation",
-                "resultaat": {
-                    "resultaattype": {
-                        "omschrijving": "Nice result type",
-                        "archiefactietermijn": "20 days",
-                    }
-                },
-                "relevante_andere_zaken": [],
-            },
-        )
-        DestructionListItemFactory.create(
-            destruction_list=destruction_list,
-            status=ListItemStatus.destroyed,
-            extra_zaak_data={
-                "identificatie": "ZAAK-2",
-                "omschrijving": "Een andere zaak",
-                "toelichting": "",
-                "startdatum": "2020-02-01",
-                "einddatum": "2021-03-01",
-                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
-                "verantwoordelijke_organisatie": "Nice organisation",
-                "resultaat": {
-                    "resultaattype": {
-                        "omschrijving": "Nice result type",
-                        "archiefactietermijn": "20 days",
-                    }
-                },
-                "relevante_andere_zaken": [],
-            },
+            role__can_view_case_details=False,
         )
         DestructionListReviewFactory.create(
             destruction_list=destruction_list,
             status=ReviewStatus.approved,
-            author=process_owner,
+            author=archivaris,
             text="What a magnificent list!",
         )
 
         self._setup_mocks(m)
 
-        report = create_destruction_report(destruction_list)
+        report = create_destruction_report_content(destruction_list)
 
-        response = self.client.get(report.content.url)
-
-        self.assertEqual(404, response.status_code)
-
-    def test_relation_between_report_and_destructionlist(self, m):
-        destruction_list = DestructionListFactory.create(name="Winter cases")
-        DestructionListItemFactory.create(
-            destruction_list=destruction_list,
-            status=ListItemStatus.destroyed,
-            extra_zaak_data={
-                "identificatie": "ZAAK-1",
-                "omschrijving": "Een zaak",
-                "toelichting": "Bah",
-                "startdatum": "2020-01-01",
-                "einddatum": "2021-01-01",
-                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
-                "verantwoordelijke_organisatie": "Nice organisation",
-                "resultaat": {
-                    "resultaattype": {
-                        "omschrijving": "Nice result type",
-                        "archiefactietermijn": "20 days",
-                    }
-                },
-                "relevante_andere_zaken": [],
-            },
-        )
-        DestructionListItemFactory.create(
-            destruction_list=destruction_list,
-            status=ListItemStatus.destroyed,
-            extra_zaak_data={
-                "identificatie": "ZAAK-2",
-                "omschrijving": "Een andere zaak",
-                "toelichting": "Boh",
-                "startdatum": "2020-02-01",
-                "einddatum": "2021-03-01",
-                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
-                "verantwoordelijke_organisatie": "Nice organisation",
-                "resultaat": {
-                    "resultaattype": {
-                        "omschrijving": "Nice result type",
-                        "archiefactietermijn": "20 days",
-                    }
-                },
-                "relevante_andere_zaken": [],
-            },
-        )
-        DestructionListReviewFactory.create(
-            destruction_list=destruction_list,
-            status=ReviewStatus.approved,
-            text="What a magnificent list!",
-        )
-
-        self._setup_mocks(m)
-
-        report = create_destruction_report(destruction_list)
-
-        # can't use refresh_from_db() because of django-fsm
-        destruction_list = DestructionList.objects.get(id=destruction_list.id)
-
-        self.assertEqual(1, destruction_list.destructionreport_set.count())
-        self.assertEqual(report, destruction_list.destructionreport_set.get())
+        self.assertIn("<td>Een zaak</td>", report)
+        self.assertIn("<td>What a magnificent list!</td>", report)
