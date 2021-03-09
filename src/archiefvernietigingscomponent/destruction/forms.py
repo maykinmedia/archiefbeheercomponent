@@ -52,7 +52,6 @@ class DestructionListForm(forms.ModelForm):
     reviewer_2 = forms.ModelChoiceField(
         queryset=User.objects.reviewers().all(), required=False
     )
-    contains_sensitive_info = forms.BooleanField(required=False)
 
     class Meta:
         model = DestructionList
