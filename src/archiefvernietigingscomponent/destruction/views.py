@@ -23,6 +23,7 @@ from archiefvernietigingscomponent.accounts.mixins import (
 )
 from archiefvernietigingscomponent.notifications.models import Notification
 
+from ..constants import RoleTypeChoices
 from .constants import ListItemStatus, ListStatus, Suggestion
 from .filters import ReviewerListFilter
 from .forms import (
@@ -362,6 +363,10 @@ class ReviewCreateView(RoleRequiredMixin, UserPassesTestMixin, CreateWithInlines
                         for field in formset.management_form
                     },
                 },
+                "show_optional_columns": (
+                    not destruction_list.contains_sensitive_info
+                    or self.request.user.role.type != RoleTypeChoices.archivist
+                ),
             }
         )
 
