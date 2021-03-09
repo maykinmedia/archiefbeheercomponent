@@ -18,7 +18,8 @@ class ThemeConfig(SingletonModel):
     logo = models.FileField(
         upload_to="theme/",
         help_text=_(
-            "Image will be scaled down to a height of 100 pixels. Typically upload a picture with a height of 200 pixels."
+            "Image will be scaled down to a height of 100 pixels. "
+            "Typically upload a picture with a height of 200 pixels."
         ),
     )
 
@@ -68,7 +69,8 @@ class ThemeConfig(SingletonModel):
         default="017092",
         validators=[validate_color],
         help_text=_(
-            "Typically a darker shade or contrasting color of the primary color, used for button hover states, panel headers and outlines."
+            "Typically a darker shade or contrasting color of the primary color, used for button hover states, "
+            "panel headers and outlines."
         ),
     )
 

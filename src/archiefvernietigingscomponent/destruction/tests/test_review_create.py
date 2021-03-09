@@ -112,7 +112,7 @@ class ReviewCreateTests(DLMixin, TestCase):
 
     def test_create_review_change(self):
         destruction_list = self._create_destruction_list()
-        next_assignee = DestructionListAssigneeFactory.create(
+        DestructionListAssigneeFactory.create(
             destruction_list=destruction_list, assignee__role=self.user.role
         )
         items = destruction_list.items.order_by("id").all()
