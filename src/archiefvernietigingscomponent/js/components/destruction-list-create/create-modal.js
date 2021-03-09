@@ -87,6 +87,7 @@ const CreateModal = ({ checkboxes, modalIsOpen, setIsOpen, reviewers, url, csrft
                     <div>
                         <CheckboxInput
                             name={"contains_sensitive_info"}
+                            initial={true}
                             checked={containsSensitiveInfo}
                             value={containsSensitiveInfo}
                             id={"id_contains_sensitive_info"}
