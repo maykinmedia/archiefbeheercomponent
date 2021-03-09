@@ -29,8 +29,10 @@ MANAGEMENT_FORM_DATA = {
 
 
 class DLMixin:
-    def _create_destruction_list(self):
-        destruction_list = DestructionListFactory.create()
+    def _create_destruction_list(self, contains_sensitive_info=False):
+        destruction_list = DestructionListFactory.create(
+            contains_sensitive_info=contains_sensitive_info
+        )
 
         DestructionListItemFactory.create_batch(3, destruction_list=destruction_list)
         assignee = DestructionListAssigneeFactory.create(
@@ -367,3 +369,56 @@ class SendTaskReviewCreateTests(DLMixin, TestCase):
 
         self.assertEqual(len(callbacks), 1)
         m.assert_called_once_with(destruction_list.id)
+
+
+class CreateReviewViewContextTest(TestCase):
+    def test_sensitive_info_process_owner(self):
+        destruction_list = DestructionListFactory.create(contains_sensitive_info=True)
+        process_owner = UserFactory.create(
+            role__can_review_destruction=True, role__type=RoleTypeChoices.process_owner,
+        )
+        DestructionListAssigneeFactory.create(
+            destruction_list=destruction_list, assignee=process_owner
+        )
+
+        url = reverse("destruction:reviewer-create", args=[destruction_list.id])
+
+        self.client.force_login(process_owner)
+        response = self.client.get(url)
+
+        # Process owner can see sensitive info
+        self.assertTrue(response.context["show_optional_columns"])
+
+    def test_sensitive_info_archivist(self):
+        destruction_list = DestructionListFactory.create(contains_sensitive_info=True)
+        archivist = UserFactory.create(
+            role__can_review_destruction=True, role__type=RoleTypeChoices.archivist,
+        )
+        DestructionListAssigneeFactory.create(
+            destruction_list=destruction_list, assignee=archivist
+        )
+
+        url = reverse("destruction:reviewer-create", args=[destruction_list.id])
+
+        self.client.force_login(archivist)
+        response = self.client.get(url)
+
+        # Archivist cannot see sensitive info
+        self.assertFalse(response.context["show_optional_columns"])
+
+    def test_no_sensitive_info_archivist(self):
+        destruction_list = DestructionListFactory.create(contains_sensitive_info=False)
+        archivist = UserFactory.create(
+            role__can_review_destruction=True, role__type=RoleTypeChoices.archivist,
+        )
+        DestructionListAssigneeFactory.create(
+            destruction_list=destruction_list, assignee=archivist
+        )
+
+        url = reverse("destruction:reviewer-create", args=[destruction_list.id])
+
+        self.client.force_login(archivist)
+        response = self.client.get(url)
+
+        # Archivist can see everything since it's not sensitive
+        self.assertTrue(response.context["show_optional_columns"])

@@ -7,7 +7,9 @@ from zgw_consumers.models import Service
 
 from archiefvernietigingscomponent.accounts.models import User
 from archiefvernietigingscomponent.accounts.tests.factories import UserFactory
+from archiefvernietigingscomponent.constants import RoleTypeChoices
 from archiefvernietigingscomponent.destruction.tests.factories import (
+    DestructionListAssigneeFactory,
     DestructionListFactory,
     DestructionListItemFactory,
 )
@@ -87,35 +89,7 @@ class FetchListItemsTests(TransactionTestCase):
             oas="https://oz.nl/selectielijst/api/v1/schema/openapi.json",
         )
 
-    def test_user_unauthenticated_cant_access(self, m):
-        destruction_list = DestructionListFactory.create()
-        url = reverse("destruction:fetch-list-items", args=[destruction_list.id])
-
-        response = self.client.get(url)
-
-        self.assertEqual(302, response.status_code)
-        self.assertEqual(f"/admin/login/?next={url}", response.url)
-
-    def test_returns_list_items_and_zaak_data(self, m):
-        self._set_up_services()
-
-        user = UserFactory.create(
-            username="user",
-            password="user",
-            email="aaa@aaa.aaa",
-            role__can_start_destruction=True,
-            role__can_review_destruction=True,
-        )
-
-        destruction_list = DestructionListFactory.create(author=user, assignee=user)
-        DestructionListItemFactory.create(
-            destruction_list=destruction_list, zaak=ZAAK_1["url"]
-        )
-        DestructionListItemFactory.create(
-            destruction_list=destruction_list, zaak=ZAAK_2["url"]
-        )
-
-        # Mocking
+    def _set_up_mocks(self, m):
         mock_service_oas_get(
             m,
             CATALOGI_ROOT,
@@ -151,6 +125,36 @@ class FetchListItemsTests(TransactionTestCase):
             url=f"{SELECTIELIJST_ROOT}procestypen/uuid-1", json=SELECTIELIJST,
         )
 
+    def test_user_unauthenticated_cant_access(self, m):
+        destruction_list = DestructionListFactory.create()
+        url = reverse("destruction:fetch-list-items", args=[destruction_list.id])
+
+        response = self.client.get(url)
+
+        self.assertEqual(302, response.status_code)
+        self.assertEqual(f"/admin/login/?next={url}", response.url)
+
+    def test_returns_list_items_and_zaak_data(self, m):
+        self._set_up_services()
+
+        user = UserFactory.create(
+            username="user",
+            password="user",
+            email="aaa@aaa.aaa",
+            role__can_start_destruction=True,
+            role__can_review_destruction=True,
+        )
+
+        destruction_list = DestructionListFactory.create(author=user, assignee=user)
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list, zaak=ZAAK_1["url"]
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list, zaak=ZAAK_2["url"]
+        )
+
+        self._set_up_mocks(m)
+
         url = reverse("destruction:fetch-list-items", args=[destruction_list.id])
 
         self.client.force_login(user)
@@ -178,3 +182,185 @@ class FetchListItemsTests(TransactionTestCase):
             [{"url": f"{ZAKEN_ROOT}zaken/uuid-3", "aardRelatie": "vervolg"}],
         )
         self.assertIn("processttype", zaak_2_data["zaaktype"])
+
+    def test_sensitive_data_for_process_owner(self, m):
+        self._set_up_services()
+
+        record_manager = UserFactory.create(
+            role__can_start_destruction=True, role__type=RoleTypeChoices.record_manager,
+        )
+        process_owner = UserFactory.create(
+            role__can_review_destruction=True, role__type=RoleTypeChoices.process_owner,
+        )
+
+        destruction_list = DestructionListFactory.create(
+            author=record_manager, assignee=process_owner, contains_sensitive_info=True,
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list, zaak=ZAAK_1["url"]
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list, zaak=ZAAK_2["url"]
+        )
+
+        DestructionListAssigneeFactory.create(
+            destruction_list=destruction_list, assignee=process_owner
+        )
+
+        self._set_up_mocks(m)
+
+        url = reverse("destruction:fetch-list-items", args=[destruction_list.id])
+
+        self.client.force_login(process_owner)
+        response = self.client.get(url)
+
+        self.assertEqual(200, response.status_code)
+
+        response_data = response.json()
+
+        self.assertIn("items", response_data)
+        self.assertEqual(2, len(response_data["items"]))
+
+        # Even if the list contains sensitive data, the process owner should be able to see it
+        zaak_1_data = response_data["items"][0]["zaak"]
+        self.assertIn("omschrijving", zaak_1_data)
+
+        zaak_2_data = response_data["items"][1]["zaak"]
+        self.assertIn("omschrijving", zaak_2_data)
+
+    def test_no_sensitive_data_for_process_owner(self, m):
+        self._set_up_services()
+
+        record_manager = UserFactory.create(
+            role__can_start_destruction=True, role__type=RoleTypeChoices.record_manager,
+        )
+        process_owner = UserFactory.create(
+            role__can_review_destruction=True, role__type=RoleTypeChoices.process_owner,
+        )
+
+        destruction_list = DestructionListFactory.create(
+            author=record_manager,
+            assignee=process_owner,
+            contains_sensitive_info=False,
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list, zaak=ZAAK_1["url"]
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list, zaak=ZAAK_2["url"]
+        )
+
+        DestructionListAssigneeFactory.create(
+            destruction_list=destruction_list, assignee=process_owner
+        )
+
+        self._set_up_mocks(m)
+
+        url = reverse("destruction:fetch-list-items", args=[destruction_list.id])
+
+        self.client.force_login(process_owner)
+        response = self.client.get(url)
+
+        self.assertEqual(200, response.status_code)
+
+        response_data = response.json()
+
+        self.assertIn("items", response_data)
+        self.assertEqual(2, len(response_data["items"]))
+
+        # Since the list does NOT contain sensitive data, the process owner can see it
+        zaak_1_data = response_data["items"][0]["zaak"]
+        self.assertIn("omschrijving", zaak_1_data)
+
+        zaak_2_data = response_data["items"][1]["zaak"]
+        self.assertIn("omschrijving", zaak_2_data)
+
+    def test_sensitive_data_for_archivist(self, m):
+        self._set_up_services()
+
+        record_manager = UserFactory.create(
+            role__can_start_destruction=True, role__type=RoleTypeChoices.record_manager,
+        )
+        archivist = UserFactory.create(
+            role__can_review_destruction=True, role__type=RoleTypeChoices.archivist,
+        )
+
+        destruction_list = DestructionListFactory.create(
+            author=record_manager, assignee=archivist, contains_sensitive_info=True,
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list, zaak=ZAAK_1["url"]
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list, zaak=ZAAK_2["url"]
+        )
+
+        DestructionListAssigneeFactory.create(
+            destruction_list=destruction_list, assignee=archivist
+        )
+
+        self._set_up_mocks(m)
+
+        url = reverse("destruction:fetch-list-items", args=[destruction_list.id])
+
+        self.client.force_login(archivist)
+        response = self.client.get(url)
+
+        self.assertEqual(200, response.status_code)
+
+        response_data = response.json()
+
+        self.assertIn("items", response_data)
+        self.assertEqual(2, len(response_data["items"]))
+
+        # The list contains sensitive data, the archivist should NOT be able to see it
+        zaak_1_data = response_data["items"][0]["zaak"]
+        self.assertNotIn("omschrijving", zaak_1_data)
+
+        zaak_2_data = response_data["items"][1]["zaak"]
+        self.assertNotIn("omschrijving", zaak_2_data)
+
+    def test_no_sensitive_data_for_archivist(self, m):
+        self._set_up_services()
+
+        record_manager = UserFactory.create(
+            role__can_start_destruction=True, role__type=RoleTypeChoices.record_manager,
+        )
+        archivist = UserFactory.create(
+            role__can_review_destruction=True, role__type=RoleTypeChoices.archivist,
+        )
+
+        destruction_list = DestructionListFactory.create(
+            author=record_manager, assignee=archivist, contains_sensitive_info=False,
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list, zaak=ZAAK_1["url"]
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list, zaak=ZAAK_2["url"]
+        )
+
+        DestructionListAssigneeFactory.create(
+            destruction_list=destruction_list, assignee=archivist
+        )
+
+        self._set_up_mocks(m)
+
+        url = reverse("destruction:fetch-list-items", args=[destruction_list.id])
+
+        self.client.force_login(archivist)
+        response = self.client.get(url)
+
+        self.assertEqual(200, response.status_code)
+
+        response_data = response.json()
+
+        self.assertIn("items", response_data)
+        self.assertEqual(2, len(response_data["items"]))
+
+        # Since the list does NOT contain sensitive data, the archivist can see it
+        zaak_1_data = response_data["items"][0]["zaak"]
+        self.assertIn("omschrijving", zaak_1_data)
+
+        zaak_2_data = response_data["items"][1]["zaak"]
+        self.assertIn("omschrijving", zaak_2_data)
