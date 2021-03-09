@@ -6,7 +6,7 @@ import { ManagementForm } from "../../forms/management-form";
 
 
 const ReviewItemFormset = ({ error, isLoaded, items }) => {
-    const { formsetConfig } = useContext(ConstantsContext);
+    const { formsetConfig, showOptionalColumns } = useContext(ConstantsContext);
 
     //set up forms
     const forms = items.map(
@@ -41,7 +41,7 @@ const ReviewItemFormset = ({ error, isLoaded, items }) => {
                         <th className="table__hidden">List item id</th>
                         <th className="table__header">Identificatie</th>
                         <th className="table__header">Zaaktype</th>
-                        <th className="table__header">Omschrijving</th>
+                        { showOptionalColumns === "True" && <th className="table__header">Omschrijving</th>}
                         <th className="table__header">Looptijd</th>
                         <th className="table__header">Verantwoordelijke organisatie</th>
                         <th className="table__header">Resultaattype</th>

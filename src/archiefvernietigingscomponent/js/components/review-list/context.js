@@ -4,6 +4,7 @@ const ConstantsContext = React.createContext({
     formsetConfig: {},
     zaakDetailUrl: "",
     zaakDetailPermission: "",
+    showOptionalColumns: "",
 });
 
 const SuggestionContext = React.createContext({

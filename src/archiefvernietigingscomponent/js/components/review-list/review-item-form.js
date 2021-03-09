@@ -8,7 +8,7 @@ import { ActionIcon } from "../../forms/action-icon";
 
 const ReviewItemForm = ({ index, data }) => {
     const { listItem, zaak }  = data;
-    const { formsetConfig, zaakDetailPermission } = useContext(ConstantsContext);
+    const { formsetConfig, zaakDetailPermission, showOptionalColumns } = useContext(ConstantsContext);
     const { suggestions } = useContext(SuggestionContext);
 
     const prefix = formsetConfig.prefix;
@@ -43,7 +43,7 @@ const ReviewItemForm = ({ index, data }) => {
                 </td>
                 <td>{ zaak.identificatie }</td>
                 <td>{`${zaak.zaaktype.omschrijving} (${zaak.zaaktype.versiedatum})`}</td>
-                <td>{ zaak.omschrijving }</td>
+                { showOptionalColumns === "True" && <td>{zaak.omschrijving}</td> }
                 <td>{ zaak.looptijd }</td>
                 <td>{ zaak.verantwoordelijkeOrganisatie }</td>
                 <td>{ zaak.resultaat ? zaak.resultaat.resultaattype.omschrijving : '-' }</td>
