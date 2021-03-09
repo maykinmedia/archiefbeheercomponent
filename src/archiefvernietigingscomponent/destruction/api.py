@@ -15,6 +15,7 @@ from archiefvernietigingscomponent.accounts.mixins import (
 )
 from archiefvernietigingscomponent.report.utils import get_looptijd
 
+from ..constants import RoleTypeChoices
 from .constants import ListItemStatus
 from .models import ArchiveConfig, DestructionList, DestructionListItem
 from .service import (
@@ -95,7 +96,6 @@ class FetchZakenView(LoginRequiredMixin, View):
 NO_DETAIL_ZAAK_ATTRS = [
     "url",
     "identificatie",
-    "omschrijving",
     "archiefnominatie",
     "archiefactiedatum",
     "relevanteAndereZaken",
@@ -168,6 +168,12 @@ class FetchListItemsView(AuthorOrAssigneeRequiredMixin, View):
             # Retrieve resultaat
             if zaak_data.get("resultaat"):
                 zaak_data["resultaat"] = fetch_resultaat(zaak["resultaat"])
+
+            if (
+                not destruction_list.contains_sensitive_info
+                or self.request.user.role.type != RoleTypeChoices.archivist
+            ):
+                zaak_data["omschrijving"] = zaak.get("omschrijving")
 
             items.append({"listItem": list_item_data, "zaak": zaak_data})
 
