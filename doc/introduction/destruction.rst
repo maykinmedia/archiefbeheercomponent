@@ -79,7 +79,7 @@ Destruction list review
 Each reviewer assigned to a list performs the review in turn after the previous reviewer
 has approved the destruction list.
 
-Each reviewer has the option to suggest exemptions or changes:
+Reviewers with *process owner* role have the option to suggest exemptions or changes:
 
 - exemptions: suggests removing the case from the destruction list
 - changes: the reviewer can provide a comment so that the author knows which changes to
@@ -92,6 +92,12 @@ with the first reviewer.
 If the author of the destruction list disagrees with changes suggested in a review,
 they can add a comment before submitting the list for further review. Only the reviewer
 who created the controversial review will be able to see the comment.
+
+Reviewers with *archivist* role do NOT have the option to suggest changes or exemptions,
+but they can reject a list in its entirety. After an archivist has rejected a list, the
+original list author is assigned. The author can then decide whether to abort the list and start a new one,
+make changes to the existing list, or simply add a comment for the archivist explaining why they
+disagree with their review.
 
 After the last reviewer has given their approval, the list is submitted for actual
 destruction to the background worker queue.

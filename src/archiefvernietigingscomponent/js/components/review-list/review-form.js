@@ -1,17 +1,19 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import axios from "axios";
 
 import {HiddenInput, TextInput} from "../../forms/inputs";
 import {ReviewItemFormset} from "./review-item-formset";
-import {SuggestionContext} from "./context";
+import {ConstantsContext, SuggestionContext} from "./context";
 
 const STATUS_TO_BUTTON = {
     "approved": "Accorderen",
-    "changes_requested": "Aanpassen"
+    "changes_requested": "Aanpassen",
+    "rejected": "Afwijzen",
 };
 
 
 const ReviewForm = ({ itemsUrl, destructionList, reviewComment }) => {
+    const { zaakDetailPermission } = useContext(ConstantsContext);
     const [comment, setComment] = useState("");
 
     // load list items
@@ -20,7 +22,19 @@ const ReviewForm = ({ itemsUrl, destructionList, reviewComment }) => {
     const [items, setItems] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
 
-    const reviewStatus = (suggestions.filter((value) => value).length) ? "changes_requested" : "approved";
+    const areThereSuggestions = () => {
+      return (suggestions.filter((value) => value).length);
+    };
+
+    const [reviewStatus, setReviewStatus] = useState(areThereSuggestions() ? "changes_requested" : "approved");
+
+    useEffect(() => {
+        if (areThereSuggestions()) {
+            setReviewStatus("changes_requested");
+        } else {
+            setReviewStatus("approved");
+        }
+    }, [suggestions]);
 
     // fetch list items
     useEffect(() => {
@@ -52,9 +66,38 @@ const ReviewForm = ({ itemsUrl, destructionList, reviewComment }) => {
         }
     };
 
+    const submitButtons = () => {
+        // If the reviewer cannot see zaak details, then
+        // they can only accept or reject the list (they can't add suggestions)
+        if(zaakDetailPermission === "False") {
+            return (
+                <div className="review-create__btns">
+                    <button
+                        type="submit"
+                        className="btn"
+                        onClick={(e) => {
+                            setReviewStatus("rejected");
+                        }}
+                    >{STATUS_TO_BUTTON["rejected"]}</button>
+                    <button
+                        type="submit"
+                        className="btn"
+                        onClick={(e) => {
+                            setReviewStatus("approved");
+                        }}
+                    >{STATUS_TO_BUTTON["approved"]}</button>
+                </div>
+            );
+        } else {
+            return (
+                <button type="submit" className="review-create__btn btn" >{STATUS_TO_BUTTON[reviewStatus]}</button>
+            );
+        }
+    };
+
     return (
         <SuggestionContext.Provider value={{suggestions, setSuggestions}}>
-            <button type="submit" className="review-create__btn btn" >{STATUS_TO_BUTTON[reviewStatus]}</button>
+            {submitButtons()}
             <header className="review-create__header">
                 <div>
                     <h1 className="title">{`Lijst "${destructionList.name}"`}</h1>
