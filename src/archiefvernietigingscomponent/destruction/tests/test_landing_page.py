@@ -1,7 +1,6 @@
 """
 Test the various role landing pages.
 """
-from django.test import override_settings
 from django.urls import reverse, reverse_lazy
 
 from django_webtest import WebTest

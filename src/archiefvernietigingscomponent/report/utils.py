@@ -1,4 +1,3 @@
-import uuid
 from datetime import date, datetime
 from typing import Optional
 
@@ -46,7 +45,7 @@ def get_looptijd(zaak: dict) -> int:
 def get_vernietigings_categorie_selectielijst(selectielijst_procestype: str) -> str:
     try:
         process_type = fetch_process_type(selectielijst_procestype)
-    except ClientError as exc:
+    except ClientError:
         # If the process type couldn't be retrieved, return an empty value
         return ""
 
@@ -73,7 +72,7 @@ def get_destruction_list_archivaris_comments(destruction_list: DestructionList) 
 def get_zaaktype(zaaktype_url: str) -> dict:
     try:
         return fetch_zaaktype(zaaktype_url)
-    except ClientError as exc:
+    except ClientError:
         # If the zaaktype couldn't be retrieved, return an empty dictionary
         return {}
 
