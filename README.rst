@@ -6,9 +6,9 @@ Archiefvernietigingscomponent
 :Source: https://github.com/maykinmedia/archiefvernietigingscomponent
 :Keywords: Common Ground, Record Management, Archiving
 
-|build-status| |code-quality| |docs| |black| |python-versions|
+|build-status| |code-quality| |docs| |coverage| |black| |python-versions|
 
-Create, manage and execute destruction lists, for use with for "Zaakgericht 
+Create, manage and execute destruction lists, for use with for "Zaakgericht
 werken" (case-oriented working).
 (`Nederlandse versie`_)
 
@@ -19,18 +19,18 @@ Introduction
 ============
 
 Record management is the practice of destroying data-records that have met their
-end-of-life time. "Zaakgericht werken" prescribes the archiving terms for cases 
+end-of-life time. "Zaakgericht werken" prescribes the archiving terms for cases
 that have been brought to an end.
 
-The Archiefvernietigingscomponent (AVC) provides functionality for record 
+The Archiefvernietigingscomponent (AVC) provides functionality for record
 managers to schedule destruction of cases according to the archiving parameters.
 It implements a multi-step, multi-role accordance process.
 
-Attention is paid to the user experience of the staff using the app, with 
-notifications to inform you of pending work-load, full audit logging and 
+Attention is paid to the user experience of the staff using the app, with
+notifications to inform you of pending work-load, full audit logging and
 traceability of user and system actions.
 
-The AVC supports all backends implementing the 1.0.x 
+The AVC supports all backends implementing the 1.0.x
 `API's voor Zaakgericht Werken`_, like `Open Zaak`_.
 
 Quickstart
@@ -89,3 +89,7 @@ References
 .. |docs| image:: https://readthedocs.org/projects/archiefvernietigingscomponent/badge/?version=latest
     :target: https://archiefvernietigingscomponent.readthedocs.io/
     :alt: Documentation Status
+
+.. |coverage| image:: https://codecov.io/github/maykinmedia/archiefvernietigingscomponent/branch/master/graphs/badge.svg?branch=master
+    :alt: Coverage
+    :target: https://codecov.io/gh/maykinmedia/archiefvernietigingscomponent
