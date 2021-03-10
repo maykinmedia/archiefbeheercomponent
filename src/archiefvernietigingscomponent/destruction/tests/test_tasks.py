@@ -225,6 +225,48 @@ class ProcessListItemTests(TestCase):
         list_item = DestructionListItem.objects.get(pk=list_item.pk)
         self.assertEqual(list_item.status, ListItemStatus.failed)
 
+    @patch(
+        "archiefvernietigingscomponent.destruction.tasks.fetch_zaak",
+        return_value={
+            "identificatie": "foobar",
+            "omschrijving": "Een zaak",
+            "toelichting": "Bah",
+            "startdatum": "2020-01-01",
+            "einddatum": "2021-01-01",
+            "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+            "resultaat": "https://oz.nl/zaken/api/v1/resultaat/uuid-1",
+            "verantwoordelijkeOrganisatie": "Some organisation",
+        },
+    )
+    @patch("archiefvernietigingscomponent.destruction.tasks.remove_zaak")
+    @patch(
+        "archiefvernietigingscomponent.destruction.service.get_resultaat",
+        return_value={
+            "resultaattype": {
+                "omschrijving": "Nice result type",
+                "archiefactietermijn": "20 days",
+            },
+        },
+    )
+    @override_settings(AVC_DEMO_MODE=True)
+    def test_zaak_not_removed_in_demo_mode(
+        self, mock_fetch_zaak, mock_remove_zaken, mock_get_resultaat
+    ):
+        list_item = DestructionListItemFactory.create()
+
+        process_list_item(list_item.id)
+
+        # can't use refresh_from_db() because of django-fsm
+        list_item = DestructionListItem.objects.get(id=list_item.id)
+        self.assertEqual(list_item.status, ListItemStatus.destroyed)
+
+        log = TimelineLog.objects.get()
+
+        self.assertEqual(log.content_object, list_item)
+        self.assertEqual(log.extra_data, {"zaak": "foobar"})
+
+        mock_remove_zaken.assert_not_called()
+
 
 @requests_mock.Mocker()
 @temp_private_root()
