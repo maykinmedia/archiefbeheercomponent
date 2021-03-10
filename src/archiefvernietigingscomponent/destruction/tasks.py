@@ -79,7 +79,13 @@ def process_list_item(list_item_id):
         resultaat = None
 
     try:
-        remove_zaak(list_item.zaak)
+        if settings.AVC_DEMO_MODE:
+            logger.warning(
+                "[DEMO MODE] Zaak %r and related resources will not be deleted.",
+                zaak.get("identificatie"),
+            )
+        else:
+            remove_zaak(list_item.zaak)
     except ClientError as exc:
         logger.warning(
             "Destruction list item %r has failed during execution with error: %r",

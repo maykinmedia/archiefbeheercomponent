@@ -47,5 +47,5 @@ Fill in the form:
 * The **Label** should be ``Archiefvernietigingscomponent``
 * The **Client ID** and the **Secret** should be those configured earlier in the Archiefvernietigingscomponent.
 
-
+.. note:: When the record-management app is in demo mode, cases are not *actually* destroyed, i.e. they remain in OpenZaak and can be included in new destruction lists.
 
