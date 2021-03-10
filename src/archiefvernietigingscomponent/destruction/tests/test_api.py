@@ -1,11 +1,10 @@
-from django.test import TestCase, TransactionTestCase
+from django.test import TransactionTestCase
 from django.urls import reverse
 
 import requests_mock
 from zgw_consumers.constants import APITypes
 from zgw_consumers.models import Service
 
-from archiefvernietigingscomponent.accounts.models import User
 from archiefvernietigingscomponent.accounts.tests.factories import UserFactory
 from archiefvernietigingscomponent.constants import RoleTypeChoices
 from archiefvernietigingscomponent.destruction.tests.factories import (
