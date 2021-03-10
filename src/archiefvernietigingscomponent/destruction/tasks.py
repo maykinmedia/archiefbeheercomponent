@@ -80,7 +80,10 @@ def process_list_item(list_item_id):
 
     try:
         if settings.AVC_DEMO_MODE:
-            logger.warning("Demo mode turned on: no zaak will be deleted.")
+            logger.warning(
+                "[DEMO MODE] Zaak %r and related resources will not be deleted.",
+                zaak.get("identificatie"),
+            )
         else:
             remove_zaak(list_item.zaak)
     except ClientError as exc:
