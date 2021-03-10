@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 
-import { DateInput } from "../../forms/inputs";
+import {CheckboxInput, DateInput} from "../../forms/inputs";
 import { ZakenTable } from "./zaken-table";
 import { CreateModal} from "./create-modal";
 import { ZaaktypeSelect} from "./zaaktype-select";
@@ -18,15 +18,20 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, csrftoken }) => 
     //filters
     const [selectedZaaktypen, setSelectedZaaktypen] = useState([]);
     const [selectedStartdatum, setSelectedStartdatum] = useState(null);
+    const [selectedBronorganisatie, setSelectedBronorganisatie] = useState([]);
     const filters = {
         zaaktypen: selectedZaaktypen,
         startdatum: selectedStartdatum,
+        bronorganisaties: selectedBronorganisatie,
     };
 
     //load zaken
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [zaken, setZaken] = useState([]);
+
+    // Available bronorganisaties
+    const [bronorganisaties, setBronorganisaties] = useState([]);
 
     // checkboxes
     const [checkboxes, setCheckboxes] = useState({});
@@ -51,14 +56,41 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, csrftoken }) => 
                             return {...result, [zaak.url]: false};
                         }, {});
                     setCheckboxes(refreshedCheckboxes);
+
+                    // Should only get the available bronorganisaties once
+                    if (bronorganisaties.length === 0) {
+                        // Get all the unique values of the bronorganisatie
+                        const uniqueBronorganisaties = new Set(result.zaken.map((zaak) => zaak.bronorganisatie));
+                        setBronorganisaties(Array.from(uniqueBronorganisaties));
+                    }
                 },
                 (error) => {
                     setIsLoaded(true);
                     setError(error);
                 }
-            )
-    }, [selectedZaaktypen, selectedStartdatum]);
+            );
+    }, [selectedZaaktypen, selectedStartdatum, selectedBronorganisatie]);
 
+    const bronorganisatieCheckboxes = bronorganisaties.map((bronorganisatie, index) => {
+        return (
+            <label key={index}>
+                <CheckboxInput
+                    checked={selectedBronorganisatie.includes(bronorganisatie)}
+                    name={bronorganisatie}
+                    onChange={(e) => {
+                        if (e.target.checked){
+                            setSelectedBronorganisatie([...selectedBronorganisatie, bronorganisatie]);
+                        } else {
+                            setSelectedBronorganisatie(selectedBronorganisatie.filter((value) => {
+                                return value !== bronorganisatie;
+                            }));
+                        }
+                    }}
+                />
+                {bronorganisatie}
+            </label>
+        );
+    })
 
     return (
         <>
@@ -87,6 +119,10 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, csrftoken }) => 
                                 setSelectedZaaktypen(selected);
                             }}
                         />
+                    </div>
+                    <div className="filter-group__item">
+                        <label htmlFor={"id_bronorganisaties"}>Bronorganisatie</label>
+                        {bronorganisatieCheckboxes}
                     </div>
                     <div className="filter-group__item">
                         <label htmlFor={"id_startdatum"}>Startdatum</label>

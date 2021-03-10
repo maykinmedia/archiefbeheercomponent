@@ -15,6 +15,7 @@ from archiefvernietigingscomponent.accounts.mixins import (
 )
 
 from .constants import ListItemStatus
+from .forms import ZakenFiltersForm
 from .models import ArchiveConfig, DestructionList, DestructionListItem
 from .service import (
     fetch_zaak,
@@ -35,7 +36,7 @@ def get_zaken_chunks(zaken):
 
 class FetchZakenView(LoginRequiredMixin, View):
     @staticmethod
-    def fetch_zaken(startdatum, zaaktypen):
+    def fetch_zaken(startdatum, zaaktypen, bronorganisaties):
         config = ArchiveConfig.get_solo()
         current_date = config.archive_date or timezone.now().date()
         #  default params for archived zaken
@@ -45,12 +46,27 @@ class FetchZakenView(LoginRequiredMixin, View):
         }
 
         if startdatum:
-            query["startdatum__gte"] = startdatum
+            query["startdatum__gte"] = startdatum.strftime("%Y-%m-%d")
 
-        if zaaktypen:
-            zaaktypen = zaaktypen.split(",")
+        queries = []
+        if zaaktypen and bronorganisaties:
+            for zaaktype in zaaktypen:
+                for bronorganisatie in bronorganisaties:
+                    queries.append(
+                        dict(
+                            query,
+                            **{"zaaktype": zaaktype, "bronorganisatie": bronorganisatie}
+                        )
+                    )
+        elif zaaktypen:
             queries = [dict(query, **{"zaaktype": zaaktype}) for zaaktype in zaaktypen]
-            # TODO: async
+        elif bronorganisaties:
+            queries = [
+                dict(query, **{"bronorganisatie": bronorganisatie})
+                for bronorganisatie in bronorganisaties
+            ]
+
+        if len(queries) > 0:
             with parallel() as executor:
                 zaken = list(executor.map(get_zaken, queries))
 
@@ -80,10 +96,17 @@ class FetchZakenView(LoginRequiredMixin, View):
             zaak["available"] = zaak["url"] not in selected_zaken
 
     def get(self, request):
-        startdatum = request.GET.get("startdatum")
-        zaaktypen = request.GET.get("zaaktypen")
+        form = ZakenFiltersForm(request.GET)
+        form.is_valid()
 
-        zaken = self.fetch_zaken(startdatum, zaaktypen)
+        if form.errors:
+            return HttpResponseBadRequest("Invalid filter values")
+
+        startdatum = form.cleaned_data.get("startdatum")
+        zaaktypen = form.cleaned_data.get("zaaktypen")
+        bronorganisaties = form.cleaned_data.get("bronorganisaties")
+
+        zaken = self.fetch_zaken(startdatum, zaaktypen, bronorganisaties)
         self.set_zaken_availability(zaken)
 
         return JsonResponse({"zaken": zaken})

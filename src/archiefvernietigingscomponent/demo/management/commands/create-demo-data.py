@@ -187,7 +187,7 @@ class Command(BaseCommand):
         zaak_1 = zrc_client.create(
             resource="zaak",
             data={
-                "bronorganisatie": "517439943",
+                "bronorganisatie": "095847261",
                 "omschrijving": "Test zaak 1",
                 "zaaktype": zaaktype_1["url"],
                 "vertrouwelijkheidaanduiding": "openbaar",
@@ -195,7 +195,7 @@ class Command(BaseCommand):
                 "verantwoordelijkeOrganisatie": "104567387",
                 "archiefnominatie": "vernietigen",
                 "archiefstatus": "nog_te_archiveren",
-                "archiefactiedatum": "2022-02-01",
+                "archiefactiedatum": "2021-02-01",
             },
         )
         zaak_2 = zrc_client.create(
@@ -209,7 +209,7 @@ class Command(BaseCommand):
                 "verantwoordelijkeOrganisatie": "104567387",
                 "archiefnominatie": "vernietigen",
                 "archiefstatus": "nog_te_archiveren",
-                "archiefactiedatum": "2022-01-01",
+                "archiefactiedatum": "2021-01-01",
             },
         )
 
@@ -263,13 +263,13 @@ class Command(BaseCommand):
                 "verantwoordelijkeOrganisatie": "104567387",
                 "archiefnominatie": "vernietigen",
                 "archiefstatus": "nog_te_archiveren",
-                "archiefactiedatum": "2022-01-01",
+                "archiefactiedatum": "2021-01-01",
             },
         )
         zaak_4 = zrc_client.create(
             resource="zaak",
             data={
-                "bronorganisatie": "517439943",
+                "bronorganisatie": "376924512",
                 "omschrijving": "Test zaak 4",
                 "zaaktype": zaaktype_2["url"],
                 "vertrouwelijkheidaanduiding": "geheim",
@@ -277,7 +277,7 @@ class Command(BaseCommand):
                 "verantwoordelijkeOrganisatie": "104567387",
                 "archiefnominatie": "vernietigen",
                 "archiefstatus": "nog_te_archiveren",
-                "archiefactiedatum": "2022-01-01",
+                "archiefactiedatum": "2021-01-01",
             },
         )
 
