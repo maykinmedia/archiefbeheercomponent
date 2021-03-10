@@ -13,11 +13,15 @@ from archiefvernietigingscomponent.accounts.mixins import (
     AuthorOrAssigneeRequiredMixin,
     RoleRequiredMixin,
 )
+from archiefvernietigingscomponent.report.utils import get_looptijd
 
+from ..constants import RoleTypeChoices
 from .constants import ListItemStatus
 from .forms import ZakenFiltersForm
 from .models import ArchiveConfig, DestructionList, DestructionListItem
 from .service import (
+    fetch_process_type,
+    fetch_resultaat,
     fetch_zaak,
     get_besluiten,
     get_documenten,
@@ -115,11 +119,19 @@ class FetchZakenView(LoginRequiredMixin, View):
 NO_DETAIL_ZAAK_ATTRS = [
     "url",
     "identificatie",
-    "omschrijving",
     "archiefnominatie",
     "archiefactiedatum",
+    "relevanteAndereZaken",
+    "verantwoordelijkeOrganisatie",
+    "toelichting",
+    "resultaat",
 ]
-NO_DETAIL_ZAAKTYPE_ATTRS = ["url", "omschrijving", "versiedatum"]
+NO_DETAIL_ZAAKTYPE_ATTRS = [
+    "url",
+    "omschrijving",
+    "versiedatum",
+]
+NO_DETAIL_PROCESSTYPE_ATTRS = ["nummer"]
 
 
 class FetchListItemsView(AuthorOrAssigneeRequiredMixin, View):
@@ -163,9 +175,29 @@ class FetchListItemsView(AuthorOrAssigneeRequiredMixin, View):
             zaaktype = fetched_zaaktypen[zaak["zaaktype"]]
 
             # return only general information
-            zaak_data = {attr: zaak[attr] for attr in NO_DETAIL_ZAAK_ATTRS}
+            zaak_data = {attr: zaak.get(attr) for attr in NO_DETAIL_ZAAK_ATTRS}
             zaaktype_data = {attr: zaaktype[attr] for attr in NO_DETAIL_ZAAKTYPE_ATTRS}
             zaak_data["zaaktype"] = zaaktype_data
+            zaak_data["looptijd"] = f"{get_looptijd(zaak)} dagen"
+
+            # Retrieve also the Vernietigings-categorie selectielijst
+            if zaaktype.get("selectielijstProcestype"):
+                process_type = fetch_process_type(zaaktype["selectielijstProcestype"])
+                process_type_data = {
+                    attr: process_type[attr] for attr in NO_DETAIL_PROCESSTYPE_ATTRS
+                }
+                zaak_data["zaaktype"]["processttype"] = process_type_data
+
+            # Retrieve resultaat
+            if zaak_data.get("resultaat"):
+                zaak_data["resultaat"] = fetch_resultaat(zaak["resultaat"])
+
+            if (
+                not destruction_list.contains_sensitive_info
+                or self.request.user.role.type != RoleTypeChoices.archivist
+            ):
+                zaak_data["omschrijving"] = zaak.get("omschrijving")
+
             items.append({"listItem": list_item_data, "zaak": zaak_data})
 
         return JsonResponse({"items": items})

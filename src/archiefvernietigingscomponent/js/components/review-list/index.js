@@ -11,13 +11,13 @@ const mount = () => {
     const node = document.getElementById('react-review-create');
     if (!node) return;
 
-    const { itemsUrl, zaakDetailUrl, zaakDetailPermission } = node.dataset;
+    const { itemsUrl, zaakDetailUrl, zaakDetailPermission, showOptionalColumns } = node.dataset;
     const destructionList = jsonScriptToVar('destruction-list');
     const formsetConfig = jsonScriptToVar('formset-config');
     const reviewComment = jsonScriptToVar('review-comment');
 
     // constants
-    const constants = { formsetConfig, zaakDetailUrl, zaakDetailPermission };
+    const constants = { formsetConfig, zaakDetailUrl, zaakDetailPermission, showOptionalColumns };
 
     Modal.setAppElement('#react-review-create');
 
