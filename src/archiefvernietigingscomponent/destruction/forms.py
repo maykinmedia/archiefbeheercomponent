@@ -2,6 +2,7 @@ import itertools
 from typing import List, Tuple
 
 from django import forms
+from django.contrib.postgres.forms import SimpleArrayField
 from django.forms.models import BaseInlineFormSet
 
 from archiefvernietigingscomponent.accounts.models import User
@@ -141,3 +142,9 @@ class ListItemForm(forms.ModelForm):
             list_item.save()
 
         return list_item
+
+
+class ZakenFiltersForm(forms.Form):
+    zaaktypen = SimpleArrayField(forms.URLField(), required=False)
+    bronorganisaties = SimpleArrayField(forms.CharField(max_length=9), required=False)
+    startdatum = forms.DateField(required=False)
