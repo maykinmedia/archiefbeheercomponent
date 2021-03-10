@@ -6,9 +6,9 @@ Archiefvernietigingscomponent
 :Source: https://github.com/maykinmedia/archiefvernietigingscomponent
 :Keywords: Common Ground, Record Management, Archiveren
 
-|build-status| |code-quality| |docs| |black| |python-versions|
+|build-status| |code-quality| |docs| |coverage| |black| |python-versions|
 
-Opstellen, beheren en uitvoeren van vernietigingslijsten, voor gebruik met 
+Opstellen, beheren en uitvoeren van vernietigingslijsten, voor gebruik met
 Zaakgericht werken.
 (`English version`_)
 
@@ -18,20 +18,20 @@ Ontwikkeld door `Maykin Media B.V.`_ voor de Gemeente Utrecht en Delft.
 Introductie
 ===========
 
-Archiefbeheer draait om het vernietigen van gegevens die aan het einde van hun 
-levensduur zijn gekomen. Zaakgericht werken schrijft de archiveringsvoorwaarden 
+Archiefbeheer draait om het vernietigen van gegevens die aan het einde van hun
+levensduur zijn gekomen. Zaakgericht werken schrijft de archiveringsvoorwaarden
 voor, voor zaken die zijn beëindigd.
 
-De Archiefvernietigingscomponent (AVC) biedt functionaliteit voor archiefbeheer 
-om de vernietiging van zaken in te plannen volgens de archiveringsvoorwaarden. 
-De AVC volgt een proces dat uit meerdere stappen bestaat, over verschillende 
+De Archiefvernietigingscomponent (AVC) biedt functionaliteit voor archiefbeheer
+om de vernietiging van zaken in te plannen volgens de archiveringsvoorwaarden.
+De AVC volgt een proces dat uit meerdere stappen bestaat, over verschillende
 rollen.
 
-Er is aandacht besteed aan de gebruikerservaring van de beheerders die de app 
-gebruiken, met notificaties om te informeren over lopende taken, volledige 
+Er is aandacht besteed aan de gebruikerservaring van de beheerders die de app
+gebruiken, met notificaties om te informeren over lopende taken, volledige
 auditregistratie en traceerbaarheid van gebruiker- en systeemacties.
 
-De AVC ondersteunt alle backends die de 1.0.x `API's voor Zaakgericht Werken`_ 
+De AVC ondersteunt alle backends die de 1.0.x `API's voor Zaakgericht Werken`_
 implementeren, zoals `Open Zaak`_.
 
 Quickstart
@@ -91,3 +91,7 @@ Referenties
 .. |docs| image:: https://readthedocs.org/projects/archiefvernietigingscomponent/badge/?version=latest
     :target: https://archiefvernietigingscomponent.readthedocs.io/
     :alt: Documentation Status
+
+.. |coverage| image:: https://codecov.io/github/maykinmedia/archiefvernietigingscomponent/branch/master/graphs/badge.svg?branch=master
+    :alt: Coverage
+    :target: https://codecov.io/gh/maykinmedia/archiefvernietigingscomponent
