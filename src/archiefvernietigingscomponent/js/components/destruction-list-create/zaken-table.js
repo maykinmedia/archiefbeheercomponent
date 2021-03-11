@@ -43,39 +43,47 @@ function ZakenTable({ zaken, isLoaded, error, checkboxes, setCheckboxes }) {
                               setCheckboxes(selectedCheckboxes);
                           }}
                       /></th>
+                    <th className="table__header">Identificatie</th>
                     <th className="table__header">Zaaktype</th>
-                    <th className="table__header">Omschrijving</th>
-                    <th className="table__header">Startdatum</th>
-                    <th className="table__header">Einddatum</th>
-                    <th className="table__header">Archiefactiedatum</th>
+                    <th className="table__header" title="Zaak omschrijving">Omschrijving</th>
+                    <th className="table__header">Looptijd</th>
+                    <th className="table__header" title="Verantwoordelijke organisatie">VO</th>
+                    <th className="table__header">Resultaattype</th>
+                    <th className="table__header" title="Archiefactietermijn">Bewaartermijn</th>
+                    <th className="table__header" title="Vernietigings-categorie selectielijst">VCS</th>
+                    <th className="table__header" title="Relaties met andere zaken?">Relaties?</th>
                 </tr>
             </thead>
             <tbody>
                 {zaken.map(zaak => (
-                  <tr
-                      key={zaak.url}
-                      className={"zaak-record" + (!zaak.available ? " zaak-record--disabled" : "")}
-                  >
-                      <td>
-                          <CheckboxInput
-                              checked={checkboxes[zaak.url] || false}
-                              name={zaak.url}
-                              onChange={(e) => {
-                                  const isChecked = !checkboxes[zaak.url];
-                                  setCheckboxes({...checkboxes, [zaak.url]: isChecked});
-                                  if (!isChecked) {
-                                      setSelectAll(false);
-                                  }
-                              }}
-                              disabled={!zaak.available}
-                          />
-                      </td>
-                      <td>{displayZaaktype(zaak.zaaktype)}</td>
-                      <td>{zaak.omschrijving}</td>
-                      <td>{zaak.startdatum}</td>
-                      <td>{zaak.einddatum}</td>
-                      <td>{zaak.archiefactiedatum}</td>
-                  </tr>
+                <tr
+                  key={zaak.url}
+                  className={"zaak-record" + (!zaak.available ? " zaak-record--disabled" : "")}
+                >
+                    <td>
+                      <CheckboxInput
+                          checked={checkboxes[zaak.url] || false}
+                          name={zaak.url}
+                          onChange={(e) => {
+                              const isChecked = !checkboxes[zaak.url];
+                              setCheckboxes({...checkboxes, [zaak.url]: isChecked});
+                              if (!isChecked) {
+                                  setSelectAll(false);
+                              }
+                          }}
+                          disabled={!zaak.available}
+                      />
+                    </td>
+                    <td>{ zaak.identificatie }</td>
+                    <td>{displayZaaktype(zaak.zaaktype)}</td>
+                    <td>{zaak.omschrijving}</td>
+                    <td>{ zaak.looptijd }</td>
+                    <td>{ zaak.verantwoordelijkeOrganisatie }</td>
+                    <td>{ zaak.resultaat ? zaak.resultaat.resultaattype.omschrijving : '-' }</td>
+                    <td>{ zaak.resultaat ? zaak.resultaat.resultaattype.archiefactietermijn : '-'}</td>
+                    <td>{ zaak.zaaktype.selectielijstProcestype ? zaak.zaaktype.selectielijstProcestype.nummer : "-" }</td>
+                    <td>{ zaak.relevanteAndereZaken.length > 0 ? "Ja" : "Nee" }</td>
+                </tr>
                 ))}
 
             </tbody>
