@@ -44,9 +44,17 @@ ZAKEN = [
 ]
 
 
+def mock_get_additional_zaak_info(arg):
+    return arg
+
+
 @patch(
     "archiefvernietigingscomponent.destruction.api.get_zaken",
     return_value=copy.deepcopy(ZAKEN),
+)
+@patch(
+    "archiefvernietigingscomponent.destruction.api.get_additional_zaak_info",
+    side_effect=mock_get_additional_zaak_info,
 )
 class FetchZakenTests(TestCase):
     url = reverse_lazy("destruction:fetch-zaken")
@@ -71,15 +79,17 @@ class FetchZakenTests(TestCase):
             dict(list(zaak.items()) + [["available", True]]) for zaak in ZAKEN
         ]
 
-    def test_fetch_zaken_no_filters(self, m):
+    def test_fetch_zaken_no_filters(self, m_get_zaak_additional_info, m_get_zaken):
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"zaken": self.zaken_available})
 
-        m.assert_called_once_with(query_params=self.default_query)
+        m_get_zaken.assert_called_once_with(query_params=self.default_query)
 
-    def test_fetch_zaken_filter_by_zaaktype(self, m):
+    def test_fetch_zaken_filter_by_zaaktype(
+        self, m_get_zaak_additional_info, m_get_zaken
+    ):
         response = self.client.get(self.url, {"zaaktypen": ZAAKTYPE_1})
 
         self.assertEqual(response.status_code, 200)
@@ -87,28 +97,34 @@ class FetchZakenTests(TestCase):
 
         query = self.default_query.copy()
         query["zaaktype"] = ZAAKTYPE_1
-        m.assert_called_once_with(query)
+        m_get_zaken.assert_called_once_with(query)
 
-    def test_fetch_zaken_filter_by_invalid_zaaktype(self, m):
+    def test_fetch_zaken_filter_by_invalid_zaaktype(
+        self, m_get_zaak_additional_info, m_get_zaken
+    ):
         response = self.client.get(self.url, {"zaaktypen": "invalid-url"})
 
         self.assertEqual(response.status_code, 400)
 
-    def test_fetch_zaken_filter_by_multiple_zaaktypen(self, m):
+    def test_fetch_zaken_filter_by_multiple_zaaktypen(
+        self, m_get_zaak_additional_info, m_get_zaken
+    ):
         response = self.client.get(
             self.url, {"zaaktypen": f"{ZAAKTYPE_1},{ZAAKTYPE_2}"}
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(2, m.call_count)
+        self.assertEqual(2, m_get_zaken.call_count)
 
         query = self.default_query.copy()
         query["zaaktype"] = ZAAKTYPE_1
-        self.assertEqual(m.call_args_list[0].args[0], query)
+        self.assertEqual(m_get_zaken.call_args_list[0].args[0], query)
         query["zaaktype"] = ZAAKTYPE_2
-        self.assertEqual(m.call_args_list[1].args[0], query)
+        self.assertEqual(m_get_zaken.call_args_list[1].args[0], query)
 
-    def test_fetch_zaken_filter_by_bronorganisatie(self, m):
+    def test_fetch_zaken_filter_by_bronorganisatie(
+        self, m_get_zaak_additional_info, m_get_zaken
+    ):
         response = self.client.get(self.url, {"bronorganisaties": "095847261"})
 
         self.assertEqual(response.status_code, 200)
@@ -116,23 +132,27 @@ class FetchZakenTests(TestCase):
 
         query = self.default_query.copy()
         query["bronorganisatie"] = "095847261"
-        m.assert_called_once_with(query)
+        m_get_zaken.assert_called_once_with(query)
 
-    def test_fetch_zaken_filter_by_multiple_bronorganisaties(self, m):
+    def test_fetch_zaken_filter_by_multiple_bronorganisaties(
+        self, m_get_zaak_additional_info, m_get_zaken
+    ):
         response = self.client.get(
             self.url, {"bronorganisaties": "095847261,517439943"}
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(2, m.call_count)
+        self.assertEqual(2, m_get_zaken.call_count)
 
         query = self.default_query.copy()
         query["bronorganisatie"] = "095847261"
-        self.assertEqual(m.call_args_list[0].args[0], query)
+        self.assertEqual(m_get_zaken.call_args_list[0].args[0], query)
         query["bronorganisatie"] = "517439943"
-        self.assertEqual(m.call_args_list[1].args[0], query)
+        self.assertEqual(m_get_zaken.call_args_list[1].args[0], query)
 
-    def test_fetch_zaken_filter_by_bronorganisatie_and_zaaktype(self, m):
+    def test_fetch_zaken_filter_by_bronorganisatie_and_zaaktype(
+        self, m_get_zaak_additional_info, m_get_zaken
+    ):
         response = self.client.get(
             self.url, {"bronorganisaties": "095847261", "zaaktypen": ZAAKTYPE_1}
         )
@@ -143,9 +163,11 @@ class FetchZakenTests(TestCase):
         query = self.default_query.copy()
         query["bronorganisatie"] = "095847261"
         query["zaaktype"] = ZAAKTYPE_1
-        m.assert_called_once_with(query)
+        m_get_zaken.assert_called_once_with(query)
 
-    def test_fetch_zaken_filter_by_start_date(self, m):
+    def test_fetch_zaken_filter_by_start_date(
+        self, m_get_zaak_additional_info, m_get_zaken
+    ):
         response = self.client.get(self.url, {"startdatum": "2020-02-02"})
 
         self.assertEqual(response.status_code, 200)
@@ -153,9 +175,11 @@ class FetchZakenTests(TestCase):
 
         query = self.default_query.copy()
         query["startdatum__gte"] = "2020-02-02"
-        m.assert_called_once_with(query_params=query)
+        m_get_zaken.assert_called_once_with(query_params=query)
 
-    def test_fetch_zaken_used_in_other_dl(self, m):
+    def test_fetch_zaken_used_in_other_dl(
+        self, m_get_zaak_additional_info, m_get_zaken
+    ):
         DestructionListItemFactory.create(zaak="https://some.zaken.nl/api/v1/zaken/1")
 
         response = self.client.get(self.url)
