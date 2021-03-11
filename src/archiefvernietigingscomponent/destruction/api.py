@@ -13,15 +13,12 @@ from archiefvernietigingscomponent.accounts.mixins import (
     AuthorOrAssigneeRequiredMixin,
     RoleRequiredMixin,
 )
-from archiefvernietigingscomponent.report.utils import get_looptijd
 
 from ..constants import RoleTypeChoices
 from .constants import ListItemStatus
 from .forms import ZakenFiltersForm
 from .models import ArchiveConfig, DestructionList, DestructionListItem
 from .service import (
-    fetch_process_type,
-    fetch_resultaat,
     fetch_zaak,
     get_besluiten,
     get_documenten,
@@ -29,6 +26,7 @@ from .service import (
     get_zaaktypen,
     get_zaken,
 )
+from .utils import get_additional_zaak_info
 
 
 def get_zaken_chunks(zaken):
@@ -111,9 +109,11 @@ class FetchZakenView(LoginRequiredMixin, View):
         bronorganisaties = form.cleaned_data.get("bronorganisaties")
 
         zaken = self.fetch_zaken(startdatum, zaaktypen, bronorganisaties)
-        self.set_zaken_availability(zaken)
+        zaken_with_extra_info = [get_additional_zaak_info(zaak) for zaak in zaken]
 
-        return JsonResponse({"zaken": zaken})
+        self.set_zaken_availability(zaken_with_extra_info)
+
+        return JsonResponse({"zaken": zaken_with_extra_info})
 
 
 NO_DETAIL_ZAAK_ATTRS = [
@@ -125,13 +125,15 @@ NO_DETAIL_ZAAK_ATTRS = [
     "verantwoordelijkeOrganisatie",
     "toelichting",
     "resultaat",
+    "startdatum",
+    "einddatum",
 ]
 NO_DETAIL_ZAAKTYPE_ATTRS = [
     "url",
     "omschrijving",
     "versiedatum",
+    "selectielijstProcestype",
 ]
-NO_DETAIL_PROCESSTYPE_ATTRS = ["nummer"]
 
 
 class FetchListItemsView(AuthorOrAssigneeRequiredMixin, View):
@@ -176,21 +178,11 @@ class FetchListItemsView(AuthorOrAssigneeRequiredMixin, View):
 
             # return only general information
             zaak_data = {attr: zaak.get(attr) for attr in NO_DETAIL_ZAAK_ATTRS}
-            zaaktype_data = {attr: zaaktype[attr] for attr in NO_DETAIL_ZAAKTYPE_ATTRS}
+            zaaktype_data = {
+                attr: zaaktype.get(attr) for attr in NO_DETAIL_ZAAKTYPE_ATTRS
+            }
             zaak_data["zaaktype"] = zaaktype_data
-            zaak_data["looptijd"] = f"{get_looptijd(zaak)} dagen"
-
-            # Retrieve also the Vernietigings-categorie selectielijst
-            if zaaktype.get("selectielijstProcestype"):
-                process_type = fetch_process_type(zaaktype["selectielijstProcestype"])
-                process_type_data = {
-                    attr: process_type[attr] for attr in NO_DETAIL_PROCESSTYPE_ATTRS
-                }
-                zaak_data["zaaktype"]["processttype"] = process_type_data
-
-            # Retrieve resultaat
-            if zaak_data.get("resultaat"):
-                zaak_data["resultaat"] = fetch_resultaat(zaak["resultaat"])
+            zaak_data = get_additional_zaak_info(zaak_data)
 
             if (
                 not destruction_list.contains_sensitive_info
