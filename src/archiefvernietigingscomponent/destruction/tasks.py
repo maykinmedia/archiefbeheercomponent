@@ -4,7 +4,6 @@ import traceback
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.urls import reverse
-from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 
 from celery import chain
@@ -185,7 +184,7 @@ def complete_and_notify(list_id):
                 to=[assigned_archivaris.email],
             )
             email.attach(
-                filename=f"verklaring_van_vernietiging_{get_random_string(length=6)}.pdf",
+                filename=report.get_filename(),
                 content=report.content.read(),
                 mimetype="application/pdf",
             )
