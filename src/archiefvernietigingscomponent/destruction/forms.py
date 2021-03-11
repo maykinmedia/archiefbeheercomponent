@@ -9,6 +9,7 @@ from archiefvernietigingscomponent.accounts.models import User
 
 from .constants import Suggestion
 from .models import (
+    ArchiveConfig,
     DestructionList,
     DestructionListAssignee,
     DestructionListItem,
@@ -148,3 +149,24 @@ class ZakenFiltersForm(forms.Form):
     zaaktypen = SimpleArrayField(forms.URLField(), required=False)
     bronorganisaties = SimpleArrayField(forms.CharField(max_length=9), required=False)
     startdatum = forms.DateField(required=False)
+
+
+class ArchiveConfigForm(forms.ModelForm):
+    class Meta:
+        model = ArchiveConfig
+        fields = ("archive_date", "short_review_zaaktypes")
+
+    def save(self, commit=True):
+        instance = super().save(commit)
+
+        # Case in which all the checkboxes have been unticked. It gets interpreted as if the field hasn't changed.
+        # So we set an empty list of zaaktypes manually
+        if (
+            "short_review_zaaktypes" not in self.changed_data
+            and "short_review_zaaktypes" in self.cleaned_data
+        ):
+            if self.cleaned_data["short_review_zaaktypes"] is None:
+                instance.short_review_zaaktypes = []
+                instance.save()
+
+        return instance

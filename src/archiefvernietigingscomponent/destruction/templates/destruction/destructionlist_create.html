@@ -6,6 +6,7 @@
 
     {{ zaaktypen|json_script:"zaaktype-choices" }}
     {{ reviewers|json_script:"reviewer-choices" }}
+    {{ short_review_zaaktypes|json_script:"short-review-zaaktypes" }}
 
     {{ form.errors }}
     {{ form.non_field_errors }}

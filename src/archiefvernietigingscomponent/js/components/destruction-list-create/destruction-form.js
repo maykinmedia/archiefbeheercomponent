@@ -154,6 +154,7 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, csrftoken }) => 
             </div>
 
             <CreateModal
+                zaken={zaken}
                 checkboxes={checkboxes}
                 modalIsOpen={modalIsOpen}
                 setIsOpen={setIsOpen}

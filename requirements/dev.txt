@@ -66,6 +66,7 @@ jinja2==2.11.2            # via sphinx
 kombu==4.6.10             # via -r requirements/ci.txt, celery
 lxml==4.6.2               # via -r requirements/ci.txt, pyquery
 markupsafe==1.1.1         # via jinja2
+maykin-django-better-admin-arrayfield==1.0.5  # via -r requirements/ci.txt
 mccabe==0.6.1             # via flake8
 packaging==20.4           # via sphinx
 pathspec==0.8.0           # via black
