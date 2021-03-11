@@ -64,7 +64,13 @@ const ListItemFormset = ({itemsUrl}) => {
                         <th className="table__hidden">List item id</th>
                         <th className="table__header">Identificatie</th>
                         <th className="table__header">Zaaktype</th>
-                        <th className="table__header">Omschrijving</th>
+                        <th className="table__header" title="Zaak omschrijving">Omschrijving</th>
+                        <th className="table__header">Looptijd</th>
+                        <th className="table__header" title="Verantwoordelijke organisatie">VO</th>
+                        <th className="table__header">Resultaattype</th>
+                        <th className="table__header" title="Archiefactietermijn">Bewaartermijn</th>
+                        <th className="table__header" title="Vernietigings-categorie selectielijst">VCS</th>
+                        <th className="table__header" title="Relaties met andere zaken?">Relaties?</th>
                         <th className="table__header">Status</th>
                         <th className="table__header">Actie</th>
                         <th className="table__hidden">Archief</th>

@@ -62,6 +62,12 @@ const ListItemForm = ({ index, data }) => {
                 <td>{ zaak.identificatie }</td>
                 <td>{`${zaak.zaaktype.omschrijving} (${zaak.zaaktype.versiedatum})`}</td>
                 <td>{ zaak.omschrijving }</td>
+                <td>{ zaak.looptijd }</td>
+                <td>{ zaak.verantwoordelijkeOrganisatie }</td>
+                <td>{ zaak.resultaat ? zaak.resultaat.resultaattype.omschrijving : '-' }</td>
+                <td>{ zaak.resultaat ? zaak.resultaat.resultaattype.archiefactietermijn : '-'}</td>
+                <td>{ zaak.zaaktype.selectielijstProcestype ? zaak.zaaktype.selectielijstProcestype.nummer : "-" }</td>
+                <td>{ zaak.relevanteAndereZaken.length > 0 ? "Ja" : "Nee" }</td>
                 <td>{ listItem.status }</td>
                 <td>
                     <ActionIcon action={action}/>
