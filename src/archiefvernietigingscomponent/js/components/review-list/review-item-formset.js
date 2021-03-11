@@ -43,11 +43,11 @@ const ReviewItemFormset = ({ error, isLoaded, items }) => {
                         <th className="table__header">Zaaktype</th>
                         { showOptionalColumns === "True" && <th className="table__header">Omschrijving</th>}
                         <th className="table__header">Looptijd</th>
-                        <th className="table__header">Verantwoordelijke organisatie</th>
+                        <th className="table__header" title="Verantwoordelijke organisatie">VO</th>
                         <th className="table__header">Resultaattype</th>
-                        <th className="table__header">Archiefactietermijn</th>
-                        <th className="table__header">Vernietigings-categorie selectielijst</th>
-                        <th className="table__header">Relaties met andere zaken?</th>
+                        <th className="table__header" title="Archiefactietermijn">Bewaartermijn</th>
+                        <th className="table__header" title="Vernietigings-categorie selectielijst">VCS</th>
+                        { showOptionalColumns === "True" && <th className="table__header" title="Relaties met andere zaken?">Relaties?</th>}
                         <th className="table__header">Actie</th>
                         <th className="table__hidden">Comment</th>
                     </tr>

@@ -49,7 +49,7 @@ const ReviewItemForm = ({ index, data }) => {
                 <td>{ zaak.resultaat ? zaak.resultaat.resultaattype.omschrijving : '-' }</td>
                 <td>{ zaak.resultaat ? zaak.resultaat.resultaattype.archiefactietermijn : '-'}</td>
                 <td>{ zaak.zaaktype.selectielijstProcestype ? zaak.zaaktype.selectielijstProcestype.nummer : "-" }</td>
-                <td>{ zaak.relevanteAndereZaken.length > 0 ? "Ja" : "Nee" }</td>
+                { showOptionalColumns === "True" && <td>{ zaak.relevanteAndereZaken.length > 0 ? "Ja" : "Nee" }</td>}
                 <td>
                     <ActionIcon action={suggestion}/>
                     <HiddenInput
