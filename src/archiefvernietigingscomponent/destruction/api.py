@@ -57,7 +57,10 @@ class FetchZakenView(LoginRequiredMixin, View):
                     queries.append(
                         dict(
                             query,
-                            **{"zaaktype": zaaktype, "bronorganisatie": bronorganisatie}
+                            **{
+                                "zaaktype": zaaktype,
+                                "bronorganisatie": bronorganisatie,
+                            },
                         )
                     )
         elif zaaktypen:
