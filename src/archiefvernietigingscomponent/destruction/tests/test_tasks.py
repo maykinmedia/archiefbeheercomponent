@@ -1,5 +1,4 @@
 import datetime
-import re
 from unittest.mock import patch
 
 from django.conf import settings
@@ -437,11 +436,11 @@ class NotifyTests(TestCase):
         self.assertEqual(1, len(sent_mail.attachments))
 
         attachment_file_name = sent_mail.attachments[0][0]
-
-        re.match(r"verklaring_van_vernietiging_.+?\.pdf", attachment_file_name).group(0)
+        self.assertEqual(
+            "verklaring-van-vernietiging_Nice-list.pdf", attachment_file_name
+        )
 
         attachment_content = sent_mail.attachments[0][1]
-
         self.assertIn(b"%PDF-", attachment_content)
 
     def test_no_email_sent_if_no_cases_deleted(self, m):
