@@ -1,0 +1,29 @@
+[
+  {
+    "model": "emails.automaticemail",
+    "pk": 1,
+    "fields": {
+      "type": "review_required",
+      "body": "There is a destruction list ready to be reviewed.",
+      "subject": "[AVC] Review required"
+    }
+  },
+  {
+    "model": "emails.automaticemail",
+    "pk": 2,
+    "fields": {
+      "type": "changes_required",
+      "body": "You have one review to process.",
+      "subject": "[AVC] Changes requested"
+    }
+  },
+  {
+    "model": "emails.automaticemail",
+    "pk": 3,
+    "fields": {
+      "type": "report_available",
+      "body": "Please find attached a report of destruction.",
+      "subject": "[AVC] Destruction report"
+    }
+  }
+]
