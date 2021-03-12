@@ -134,14 +134,24 @@ filtering for lists that have already been reviewed. All lists with an associate
     :alt: Download destruction report
 
 
-Audit trails and logs
-=====================
+Audit trails, logs and notifications
+====================================
 
-Destruction list assignees receive notifications when important events happen, such as
-being the next assignee on the list.
-
-Additionally, audit trails are collected for list creation, review submission and case
+Audit trails are collected for list creation, review submission and case
 deletion (for every individual case!).
+
+In addition, destruction list assignees receive notifications within the app
+when important events happen, such as being the next assignee on the list or when a
+destruction report is ready.
+
+If configured, automatic emails can also be sent to notify the reviewers
+and/or the record manager when there is work that needs their attention. There are three
+types of automatic emails that can be configured:
+
+- An email for the reviewer for when a destruction list needs to be reviewed.
+- An email for the record manager for when there are changes requested by a reviewer.
+- An email for the archivist with as attachment a report of destruction.
+
 
 Deleting a list
 ===============

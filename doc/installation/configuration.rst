@@ -300,3 +300,26 @@ Setting the domain
 
 In the admin, under **Configuratie > Websites**, make sure to change the existing `Site` to the domain under which
 the Archiefvernietigingscomponent will be deployed.
+
+
+Automatic emails
+================
+
+The system administrator can decide to configure automatic emails to be sent to the reviewers and/or the
+record manager. This can be done through the admin, under **Configuratie > Automatische emails**
+
+If there are already automatic emails present, they can be edited. There are three types of automatic emails:
+
+- Review required: for when a reviewer has a destruction list to review.
+- Changes required: for when a record manager needs to process the feedback form a reviewer.
+- Report available: for when a destruction report is sent to the archivist.
+
+A custom email subject and email body can be configured for each type of email. If no automatic emails are present
+in the admin in **Configuratie > Automatische emails**, then no emails will be sent.
+
+To load default automatic emails, a fixture is present. This can be loaded with the following command (from the
+``archiefvernietigingscomponent/`` directory):
+
+.. code-block:: bash
+
+    python src/manage.py loaddata src/archiefvernietigingscomponent/fixtures/automatic_emails_defaults.json
