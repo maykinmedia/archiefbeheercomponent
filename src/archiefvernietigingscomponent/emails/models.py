@@ -4,7 +4,10 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from archiefvernietigingscomponent.accounts.models import User
-from archiefvernietigingscomponent.emails.constants import EmailTypeChoices
+from archiefvernietigingscomponent.emails.constants import (
+    EmailPreferenceChoices,
+    EmailTypeChoices,
+)
 from archiefvernietigingscomponent.report.models import DestructionReport
 
 
@@ -42,3 +45,24 @@ class AutomaticEmail(models.Model):
                 mimetype="application/pdf",
             )
         email.send()
+
+
+class EmailPreference(models.Model):
+    user = models.OneToOneField(
+        to=User,
+        verbose_name=_("user"),
+        help_text=_("User associated with the preferences"),
+        on_delete=models.CASCADE,
+    )
+    preference = models.CharField(
+        max_length=100,
+        choices=EmailPreferenceChoices,
+        default=EmailPreferenceChoices.action_required,
+    )
+
+    class Meta:
+        verbose_name = _("Email preference")
+        verbose_name_plural = _("Email preferences")
+
+    def __str__(self):
+        return f"Email preferences of user {self.user}"
