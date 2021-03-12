@@ -89,6 +89,10 @@
             [
                 "sites",
                 "site"
+            ],
+            [
+                "emails",
+                "automaticemail"
             ]
         ]
     }
