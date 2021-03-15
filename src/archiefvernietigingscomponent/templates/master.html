@@ -42,6 +42,7 @@
 
                     {% spaceless %}
                     <nav class="main__links">
+                    {% block links %}{% endblock %}
                         {% if user.is_staff %}
                             <a href="{% url 'admin:index' %}" class="link">{% trans "Admin" %}</a>
                         {% endif %}
