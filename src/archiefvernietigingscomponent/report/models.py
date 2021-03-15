@@ -25,10 +25,19 @@ class DestructionReport(models.Model):
             "Process owner of the destruction list for which the report was created"
         ),
     )
-    content = PrivateMediaFileField(
-        verbose_name=_("content"),
+    content_pdf = PrivateMediaFileField(
+        verbose_name=_("content pdf"),
         upload_to="reports/%Y/%m/",
-        help_text=_("Content of the destruction report"),
+        help_text=_("Content of the destruction report in PDF format"),
+        blank=True,
+        null=True,
+    )
+    content_csv = PrivateMediaFileField(
+        verbose_name=_("content csv"),
+        upload_to="reports/%Y/%m/",
+        help_text=_("Content of the destruction report in CSV format"),
+        blank=True,
+        null=True,
     )
     destruction_list = models.ForeignKey(
         to="destruction.DestructionList",
@@ -56,5 +65,6 @@ class DestructionReport(models.Model):
             )
             raise ValidationError(error_message)
 
-    def get_filename(self):
-        return os.path.basename(self.content.name)
+    def get_filename(self, extension="pdf"):
+        attr = f"content_{extension}"
+        return os.path.basename(getattr(self, attr).name)
