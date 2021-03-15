@@ -343,9 +343,18 @@ class NotifyTests(TestCase):
         )
 
         self.client.force_login(process_owner)
-        response = self.client.get(reverse("report:download-report", args=[report.pk]))
 
-        self.assertEqual(200, response.status_code)
+        response_pdf = self.client.get(
+            reverse("report:download-report", args=[report.pk]), data={"type": "pdf"}
+        )
+        response_csv = self.client.get(
+            reverse("report:download-report", args=[report.pk]), data={"type": "csv"}
+        )
+
+        self.assertEqual(200, response_pdf.status_code)
+        self.assertGreater(len(response_pdf.content), 0)
+        self.assertEqual(200, response_csv.status_code)
+        self.assertGreater(len(response_csv.content), 0)
 
     @override_settings(DEFAULT_FROM_EMAIL="email@test.avc")
     def test_all_deleted_cases_are_in_destruction_report(self, m):
