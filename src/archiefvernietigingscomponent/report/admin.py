@@ -14,14 +14,27 @@ class DestructionReportAdmin(PrivateMediaMixin, admin.ModelAdmin):
     search_fields = ("title", "destruction_list", "process_owner")
     readonly_fields = ("title", "destruction_list", "process_owner", "file_content")
 
-    private_media_fields = ("content",)
+    private_media_fields = ("content_pdf", "content_csv")
 
     exclude = ("content",)
 
     def file_content(self, instance):
-        url = reverse("admin:report_destructionreport_content", args=[instance.pk])
-        filename = instance.content.name.split("/")[-1]
-        return format_html('<a href="%s">%s</a>' % (url, filename))
+        extensions = ["pdf", "csv"]
+
+        html_snippet = ""
+        for extension in extensions:
+            url = reverse(
+                f"admin:report_destructionreport_content_{extension}",
+                args=[instance.pk],
+            )
+            filename = getattr(instance, f"content_{extension}").name.split("/")[-1]
+            html_snippet += '<div>%s: <a href="%s">%s</a></div>' % (
+                extension,
+                url,
+                filename,
+            )
+
+        return format_html(html_snippet)
 
     def has_add_permission(self, request, obj=None):
         return False
