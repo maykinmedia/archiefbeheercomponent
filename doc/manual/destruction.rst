@@ -152,6 +152,9 @@ types of automatic emails that can be configured:
 - An email for the record manager for when there are changes requested by a reviewer.
 - An email for the archivist with as attachment a report of destruction.
 
+Each user can also update their email preferences. They can decide whether to receive an
+email as soon as there is work waiting for them or to never receive emails. The link to the
+page where email preferences can be changed is at the bottom right of the entry view.
 
 Deleting a list
 ===============
