@@ -9,7 +9,7 @@ from archiefvernietigingscomponent.report.tests.factories import (
 
 
 class DestructionReportAdminTests(WebTest):
-    def test_link_to_report_works(self):
+    def test_links_to_report_work(self):
         superuser = UserFactory.create(is_staff=True, is_superuser=True)
         report = DestructionReportFactory.create()
 
@@ -19,17 +19,35 @@ class DestructionReportAdminTests(WebTest):
 
         self.assertEqual(200, response.status_code)
 
-        download_url = reverse(
-            "admin:report_destructionreport_content", args=[report.pk]
+        download_pdf_url = reverse(
+            "admin:report_destructionreport_content_pdf", args=[report.pk]
         )
-        filename = report.content.name.split("/")[-1]
-        expected_content_tag = f'<a href="{download_url}">{filename}</a>'
+        download_csv_url = reverse(
+            "admin:report_destructionreport_content_csv", args=[report.pk]
+        )
 
-        self.assertIn(expected_content_tag, response.text)
+        links = response.html.find_all("a")
 
-        response = self.app.get(download_url, user=superuser)
+        contains_link_to_pdf = False
+        contains_link_to_csv = False
+        for link in links:
+            if link.attrs["href"] == download_csv_url:
+                contains_link_to_csv = True
+            elif link.attrs["href"] == download_pdf_url:
+                contains_link_to_pdf = True
+
+        self.assertTrue(contains_link_to_pdf)
+        self.assertTrue(contains_link_to_csv)
+
+        response = self.app.get(download_pdf_url, user=superuser)
 
         self.assertEqual(200, response.status_code)
+        self.assertGreater(len(response.content), 0)
+
+        response = self.app.get(download_csv_url, user=superuser)
+
+        self.assertEqual(200, response.status_code)
+        self.assertGreater(len(response.content), 0)
 
     def test_cant_add_report(self):
         superuser = UserFactory.create(is_staff=True, is_superuser=True)
