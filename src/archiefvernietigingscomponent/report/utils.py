@@ -1,5 +1,7 @@
+import csv
+import io
 from datetime import date, datetime
-from typing import ByteString, Optional
+from typing import ByteString, List, Optional
 
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -95,7 +97,7 @@ def get_process_owner_comments(destruction_list: DestructionList) -> str:
     return review.text
 
 
-def create_destruction_report_content(destruction_list: DestructionList) -> str:
+def get_destruction_report_data(destruction_list: DestructionList) -> List[dict]:
     destroyed_items = destruction_list.items.filter(
         status=ListItemStatus.destroyed
     ).order_by("id")
@@ -111,7 +113,7 @@ def create_destruction_report_content(destruction_list: DestructionList) -> str:
                 destruction_list
             )
         else:
-            zaak_data["omschrijving"] = ""
+            del zaak_data["omschrijving"]
 
         zaak_data["zaaktype"] = (
             zaaktype["omschrijving"] if "omschrijving" in zaaktype else ""
@@ -144,14 +146,64 @@ def create_destruction_report_content(destruction_list: DestructionList) -> str:
 
         zaken_data.append(zaak_data)
 
+    return zaken_data
+
+
+def create_html_report_content(
+    zaken_data: List[dict], contains_sensitive_info: bool
+) -> str:
     return render(
         request=None,
         template_name="report/vernietigings_rapport.html",
         context={
             "destroyed_zaken": zaken_data,
-            "contains_sensitive_info": destruction_list.contains_sensitive_info,
+            "contains_sensitive_info": contains_sensitive_info,
         },
     ).content.decode("utf8")
+
+
+def create_csv_report_content(
+    zaken_data: List[dict], contains_sensitive_info: bool
+) -> io.StringIO:
+    column_names = {
+        "identificatie": _("Unique ID"),
+        "omschrijving": _("Description"),
+        "looptijd": _("Duration"),
+        "vernietigings_categorie": _("Destruction category Selectielijst"),
+        "toelichting": _("Explanation"),
+        "opmerkingen": _("Remarks SAD"),
+        "reactie_zorgdrager": _("Reaction caretaker"),
+        "zaaktype": _("Case type"),
+        "archiefactietermijn": _("Archive action period"),
+        "resultaattype": _("Result type"),
+        "verantwoordelijke_organisatie": _("Organisation responsible"),
+        "relaties": _("Relations"),
+    }
+
+    optional_columns = ["omschrijving", "opmerkingen"]
+
+    report_columns = [
+        value
+        for key, value in column_names.items()
+        if not (key in optional_columns and contains_sensitive_info)
+    ]
+
+    output = io.StringIO()
+    writer = csv.DictWriter(output, fieldnames=report_columns)
+
+    writer.writeheader()
+    for zaak in zaken_data:
+        row_data = {
+            value: zaak.get(key) or ""
+            for key, value in column_names.items()
+            if not (key in optional_columns and contains_sensitive_info)
+        }
+
+        writer.writerow(row_data)
+
+    output.seek(0)
+
+    return output
 
 
 def create_destruction_report_subject(destruction_list: DestructionList) -> str:
@@ -168,7 +220,14 @@ def convert_to_pdf(html_content: str) -> ByteString:
 
 
 def create_destruction_report(destruction_list: DestructionList) -> DestructionReport:
-    report_content = create_destruction_report_content(destruction_list)
+    zaken_data_for_report = get_destruction_report_data(destruction_list)
+
+    report_content_html = create_html_report_content(
+        zaken_data_for_report, destruction_list.contains_sensitive_info
+    )
+    report_content_csv = create_csv_report_content(
+        zaken_data_for_report, destruction_list.contains_sensitive_info
+    )
     report_subject = create_destruction_report_subject(destruction_list)
 
     process_owner_review = DestructionListReview.objects.filter(
@@ -177,14 +236,17 @@ def create_destruction_report(destruction_list: DestructionList) -> DestructionR
     ).last()
 
     report_filename = (
-        f"verklaring-van-vernietiging_{destruction_list.name.replace(' ', '-')}.pdf"
+        f"verklaring-van-vernietiging_{destruction_list.name.replace(' ', '-')}"
     )
 
     destruction_report = DestructionReport.objects.create(
         title=report_subject,
         process_owner=process_owner_review.author if process_owner_review else None,
-        content=ContentFile(
-            content=convert_to_pdf(report_content), name=report_filename
+        content_pdf=ContentFile(
+            content=convert_to_pdf(report_content_html), name=f"{report_filename}.pdf"
+        ),
+        content_csv=ContentFile(
+            content=report_content_csv.read(), name=f"{report_filename}.csv"
         ),
         destruction_list=destruction_list,
     )
