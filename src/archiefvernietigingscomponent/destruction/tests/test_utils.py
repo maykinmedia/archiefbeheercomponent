@@ -100,9 +100,7 @@ class GetAdditionalZaakInfoTests(TestCase):
 
         additional_zaak_data = get_additional_zaak_info(self.zaak_2)
 
-        self.assertEqual(
-            {"nummer": 1}, additional_zaak_data["zaaktype"]["processttype"]
-        )
+        self.assertEqual({"nummer": 1}, additional_zaak_data["zaaktype"]["processtype"])
         m_fetch_process_type.assert_called_once()
 
     def test_no_resultaat(
