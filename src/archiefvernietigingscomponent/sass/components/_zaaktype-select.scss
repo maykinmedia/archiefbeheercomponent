@@ -3,7 +3,8 @@
 $main-content-background-color: #fefefe;
 
 .zaaktype-select {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+  word-break: break-all;
 
   @include element("groups") {
     list-style-type: none;

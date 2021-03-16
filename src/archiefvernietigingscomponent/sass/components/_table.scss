@@ -6,14 +6,20 @@ $table-head-border-color: $color-secondary !default;
 .table {
   border-collapse: collapse;
   width: 100%;
+  table-layout: fixed;
+  word-break: break-word;
 
   & > tbody > tr {
     border-bottom: solid 1px #eee;
-    font-size: 0.9em;
+    font-size: 0.8em;
+  }
+
+  & > tbody > tr > td {
+    padding-right: 0.4em;
   }
 
   & &__header {
-    font-size: 1.2em;
+    font-size: 1em;
     font-weight: 400;
     font-variant: small-caps;
     text-align: left;
@@ -23,5 +29,36 @@ $table-head-border-color: $color-secondary !default;
 
   &__hidden {
     display: none;
+  }
+
+  .row-box {
+    width: 2%;
+  }
+  .row-id {
+    width: 15%;
+  }
+  .row-zaaktype {
+    width: 15%;
+  }
+  .row-omschrijving {
+    width: 15%;
+  }
+  .row-looptijd {
+    width: 7%;
+  }
+  .row-vo {
+    width: 7%;
+  }
+  .row-rt {
+    width: 15%;
+  }
+  .row-termijn {
+    width: 12%;
+  }
+  .row-vcs {
+    width: 4%;
+  }
+  .row-relaties {
+    width: 8%;
   }
 }

@@ -27,7 +27,7 @@ function ZakenTable({ zaken, isLoaded, error, checkboxes, setCheckboxes }) {
         <table className="table">
             <thead>
                 <tr>
-                    <th className="table__header">
+                    <th className="table__header row-box">
                         <CheckboxInput
                           checked={selectAll}
                           name="selectAll"
@@ -43,15 +43,15 @@ function ZakenTable({ zaken, isLoaded, error, checkboxes, setCheckboxes }) {
                               setCheckboxes(selectedCheckboxes);
                           }}
                       /></th>
-                    <th className="table__header">Identificatie</th>
-                    <th className="table__header">Zaaktype</th>
-                    <th className="table__header" title="Zaak omschrijving">Omschrijving</th>
-                    <th className="table__header">Looptijd</th>
-                    <th className="table__header" title="Verantwoordelijke organisatie">VO</th>
-                    <th className="table__header">Resultaattype</th>
-                    <th className="table__header" title="Archiefactietermijn">Bewaartermijn</th>
-                    <th className="table__header" title="Vernietigings-categorie selectielijst">VCS</th>
-                    <th className="table__header" title="Relaties met andere zaken?">Relaties?</th>
+                    <th className="table__header row-id">Identificatie</th>
+                    <th className="table__header row-zaaktype">Zaaktype</th>
+                    <th className="table__header row-omschrijving" title="Zaak omschrijving">Omschrijving</th>
+                    <th className="table__header row-looptijd">Looptijd</th>
+                    <th className="table__header row-vo" title="Verantwoordelijke organisatie">VO</th>
+                    <th className="table__header row-rt">Resultaattype</th>
+                    <th className="table__header row-termijn" title="Archiefactietermijn">Bewaartermijn</th>
+                    <th className="table__header row-vcs" title="Vernietigings-categorie selectielijst">VCS</th>
+                    <th className="table__header row-relaties" title="Relaties met andere zaken?">Relaties?</th>
                 </tr>
             </thead>
             <tbody>
