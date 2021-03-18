@@ -1,51 +1,88 @@
 .. _demo:
 
-===========
-Demo set up
-===========
+=========
+Demo mode
+=========
 
-There is a demo fixture that creates 4 different roles in the app. These roles have different combinations of the
-following permissions:
+The demo mode is meant to guide you through the application, following a 
+predefined process with predefined roles.
 
-* Can start destruction
-* Can start review destruction
-* Can view case details
+.. warning:: Do not use this mode in production or any publicly accessible 
+   environment. In doing so, you might expose case data, documents, etc.
 
-From within the repository, the fixture can be loaded with:
+Prerequisites
+-------------
 
-    .. code:: shell
+You will need:
 
-        python src/manage.py loaddata src/rma/fixtures/demo_data.json
+* A working Archiefvernietigingscomponent, for example as installed via the :ref:`quickstart`,
+* Full access to all `API's voor Zaakgericht werken`_, like an `Open Zaak`_ instance,
+* Access to a Selectielijst API, like: https://selectielijst.openzaak.nl.
 
-Enabling demo mode
-------------------
+.. _`API's voor Zaakgericht Werken`: https://github.com/VNG-Realisatie/gemma-zaken
+.. _`Open Zaak`: https://opengem.nl/producten/open-zaak/
 
-The demo mode can be activated by setting the environment variable ``AVC_DEMO_MODE`` to ``True``.
-By default ``AVC_DEMO_MODE=False``.
+.. note:: We assume you are using Open Zaak but this can be an component that
+   offers the `API's voor Zaakgericht werken`_. 
 
-Configuring services
+Setting up demo mode
 --------------------
 
-The record-management app must be connected to an instance of Open-Zaak. This can be done through the admin.
-Once in the admin, navigate to **Configuratie** > **Services** and then click on **Service toevoegen**.
+1. Enable demo mode.
 
-3 different services need to be configured in order to access the Zaken API, Catalogi API  and the Documenten API.
+   The demo mode can be activated by setting the environment variable 
+   ``AVC_DEMO_MODE`` to ``1``. By default ``AVC_DEMO_MODE=0``.
 
-* The **API type** should be ``ZRC (Zaken)``.
-* The **API root** could be ``http://example.com/zaken/api/v1/``.
-* The **Authorization type** should be ``ZGW client_id + secret``.
-* The credential to be filled are then **Client ID** and **Secret**. These values are then needed later to configure access in OpenZaak!
-* The **OAS** could be ``http://example.com/zaken/api/v1/schema/openapi.json``.
+    .. tabs::
+
+        .. group-tab:: Docker
+
+            Change the `docker-compose.yml` file you are using to include the 
+            environment variable:
+
+            .. code:: yaml
+
+                  web:
+                  image: maykinmedia/archiefvernietigingscomponent:latest
+                  environment: &web_env
+                     - AVC_DEMO_MODE=1
+                     - DJANGO_SETTINGS_MODULE=archiefvernietigingscomponent.conf.docker
+                     # etc...
+
+            and stop and start the docker containers (do not just restart).
+                  
+            .. code:: shell
+
+                  $ docker-compose down
+                  $ docker-compose up -d
+
+        .. group-tab:: Python
+
+            .. code:: shell
+
+                  $ AVC_DEMO_MODE=1 python src/manage.py runserver
 
 
-Configuring OpenZaak
---------------------
+2. Navigate to ``http://127.0.0.1:8000`` and you will see that demo mode is 
+   enabled.
 
-In the OpenZaak admin, navigate to **API Autorisaties** > **Applicaties** and click on **Applicatie toevoegen**.
-Fill in the form:
+3. Click the red **Administration** button and login to start configuring the 
+   application.
 
-* The **Label** should be ``Archiefvernietigingscomponent``
-* The **Client ID** and the **Secret** should be those configured earlier in the Archiefvernietigingscomponent.
+4. For testing purposes we can fake the current date. Normally, only cases that
+   should be destroyed today or earlier show up. If we set the date to 50 years
+   in the future, most cases will show up.
 
-.. note:: When the record-management app is in demo mode, cases are not *actually* destroyed, i.e. they remain in OpenZaak and can be included in new destruction lists.
+   a. Navigate to **Configuratie > Archiveringsconfiguratie**
+   
+   b. Fill in the **Archiefdatum** to specify the fake "current date".
 
+   c. Click **Opslaan**.
+
+
+.. note:: When the record-management app is in demo mode, cases are not 
+   *actually* destroyed, i.e. they remain in OpenZaak and can be included in 
+   new destruction lists.
+
+
+You can continue to :ref:`configure <configuration>` the application.

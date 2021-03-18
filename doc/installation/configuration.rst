@@ -1,10 +1,96 @@
-.. _configuraton:
+.. _configuration:
 
 =============
 Configuration
 =============
 
-.. note:: The configuration documentation is aimed at (functional) administrators.
+Quickstart
+==========
+
+This is the minimal configuration and assumes you loaded in the default roles
+described in the :ref:`default-roles`. You can also define your own roles as
+described in the :ref:`more-configuration`.
+
+Services
+--------
+
+The record-management app must be connected to an instance of Open Zaak.
+
+1. Navigate to the Archiefvernietigingscomponent admin.
+
+2. Configure the credentials for the Zaken API (so the 
+   Archiefvernietigingscomponent can access the Zaken API):
+
+   a. Navigate to **API Autorisaties > Services**
+   b. Click **Service toevoegen**.
+   c. Fill out the form:
+
+      - **Label**: ``Open Zaak - Zaken API``
+      - **Type**: Select the option: ``ZRC (Zaken)``
+      - **API root url**: *For example:* ``http://example.com/zaken/api/v1/``
+
+      - **Client ID**: *For example:* ``avc-demo``
+      - **Secret**: *Some random string. You will need this later on!*
+      - **Authorization type**: Select the option: ``ZGW client_id + secret``
+      - **OAS**: URL that points to the OAS, same URL as the *API root url* with ``/schema/openapi.yaml`` added to it
+        *for example:* ``https://example.com/api/v1/schema/openapi.yaml``
+      - **User ID**: *Same as the Client ID*
+      - **User representation**: *For example:* ``Archiefvernietigingscomponent``
+
+   d. Click **Opslaan**.
+
+3. Repeat the steps above for the **Catalogi API**  and the **Documenten API**.
+   Make sure to use the same Client ID and Secret for each of them.
+
+   For the **Catalogi API**, also fill in **Extra configuration** with:
+
+   .. code-block:: json
+
+      {"main_catalogus_uuid": "<the UUID of your main catalog>"}
+
+
+4. Add the Selectielijst API:
+
+   a. Navigate to **API Autorisaties > Services**
+   b. Click **Service toevoegen**.
+   c. Fill out the form:
+
+      - **Label**: ``Open Zaak (public) - Selectielijst API``
+      - **Type**: Select the option: ``ORC (Overige)``
+      - **API root url**: ``https://selectielijst.openzaak.nl/api/v1/``
+
+      - **Authorization type**: Select the option: ``No authorization``
+      - **OAS**: ``https://selectielijst.openzaak.nl/api/v1/schema/openapi.yaml``
+
+   d. Click **Opslaan**.
+
+Open Zaak
+---------
+
+1. Navigate to the Open Zaak admin.
+
+2. Configure the credentials for the Archiefvernietigingscomponent (so the 
+   Archiefvernietigingscomponent can access the various Open Zaak APIs):
+
+   a. Navigate to **API Autorisaties > Applicaties**
+   b. Click **Applicatie toevoegen**.
+   c. Fill out the form:
+
+      - **Label**: ``Archiefvernietigingscomponent``
+      - **Heeft alle autorisaties**: *Checked*
+
+      - **Client ID**: *The same as configured in the Archiefvernietigingscomponent.*
+      - **Secret**: *The same as configured in the Archiefvernietigingscomponent.*
+
+   d. Click **Opslaan**.
+
+.. _more-configuration:
+
+More configuration
+==================
+
+.. note:: This part of the configuration documentation is aimed at (functional)
+   administrators.
 
 The Archiefvernietigingscomponent supports run-time configuration for maximum flexibility to make it fit your
 environment. This does also mean that a fresh installation is empty and not useful
@@ -44,7 +130,7 @@ The Archiefvernietigingscomponent has a simple permission system, consisting of 
 Roles
 -----
 
-Navigate to **Admin > Authentication and authorization > Roles** to manage roles. Roles
+Navigate to **Authenticatie en authorisatie > Rollen** to manage roles. Roles
 define a set of permissions. An application user can have one role.
 
 Typical example roles would be:
@@ -59,7 +145,7 @@ Typical example roles would be:
     - *can review destruction*: yes
     - *can view case details*: yes
 
-- **archivars**:
+- **archivist**:
     - *can start destruction*: no
     - *can review destruction*: yes
     - *can view case details*: no
@@ -69,7 +155,7 @@ You can create as many roles as you want and name them as you see fit.
 Accounts
 --------
 
-Via **Admin > Authentication and authorization > Users** you can manage individual users
+Via **Authenticatie en authorisatie > Gebruikers** you can manage individual users
 known to the system. You can perform administrative actions such as:
 
 - assigning a role to a user
@@ -87,13 +173,15 @@ documentation on how to configure ADFS itself.
 
 The ADFS configuration can be found under **Admin > Configuration > ADFS Configuration**.
 
+.. _`ADFS config guides`: https://django-auth-adfs.readthedocs.io/en/latest/config_guides.html
+
 Services
 ========
 
 The Archiefvernietigingscomponent does not store, synchronize or copy case data. All data is retrieved through the
 Zaken, Catalogi and Documenten API. As such, these services need to be configured.
 
-Navigate to **Admin > Configuration > Service** and add the details for your
+Navigate to **Configuratie > Services** and add the details for your
 environment.
 
 .. note:: Archiefvernietigingscomponent supports multiple services of the same type.
@@ -196,11 +284,16 @@ The Archiefvernietigingscomponent only offers cases of which the archive action 
 destruction of cases before their scheduled archiving. This is annoying for testing
 purposes, so the Archiefvernietigingscomponent supports specifying the "current date".
 
-Navigate to **Admin > Configuration > Archive configuration** to specify the
+Navigate to **Configuratie > Archiveringsconfiguratie** to specify the
 "current date".
 
+Theme settings
+==============
 
-.. _ADFS config guides: https://django-auth-adfs.readthedocs.io/en/latest/config_guides.html
+You can easily change the colors, logo and footer texts to match the ones from 
+your organizaton.
+
+Navigate to **Configuration > Thema configuratie** to configure the theme.
 
 Setting the domain
 ==================

@@ -1,7 +1,7 @@
 .. _quickstart:
 
 =======================
-Quickstart Installation
+Quickstart installation
 =======================
 
 A ``docker-compose-quickstart.yml`` file is available to get the app up and running in minutes.
@@ -12,20 +12,30 @@ it should *not* be used for anything else than testing. For example, it includes
 * A predefined database with the environment variable ``POSTGRES_HOST_AUTH_METHOD=trust``. This lets us connect to the database without using a password.
 * Debug mode is enabled.
 
-Getting started with Docker quickstart
---------------------------------------
+Getting started with Docker
+---------------------------
 
-1. Download the docker-compose file
+1. Download the ``docker-compose`` file:
 
-    .. code:: shell
+   .. tabs::
 
-        $ wget https://raw.githubusercontent.com/maykinmedia/archiefvernietigingscomponent/master/docker-compose-quickstart.yml
+      .. group-tab:: Linux
+
+         .. code:: shell
+
+            $ wget https://raw.githubusercontent.com/maykinmedia/archiefvernietigingscomponent/master/docker-compose-quickstart.yml -O docker-compose.yml
+
+      .. group-tab:: Windows (Powershell 3)
+
+         .. code:: shell
+
+            PS> wget https://raw.githubusercontent.com/maykinmedia/archiefvernietigingscomponent/master/docker-compose-quickstart.yml -Odocker-compose.yml
 
 2. Start the docker containers with ``docker-compose``. If you want to run the containers in the background, add the ``-d`` flag to the command below.
 
     .. code:: shell
 
-        $ docker-compose -f docker-compose-quickstart.yml up
+        $ docker-compose up
 
 3. Create a super-user.
 
@@ -33,5 +43,37 @@ Getting started with Docker quickstart
 
         $ docker-compose exec web src/manage.py createsuperuser
 
-4. Navigate to ``http://127.0.0.1:8000`` and use the credentials created above to log in.
+.. _default-roles:
 
+Default roles
+-------------
+
+.. warning:: Loading the default roles could overwrite existing user accounts.
+
+1. Load the default roles:
+
+    .. tabs::
+
+        .. group-tab:: Docker
+
+           .. code:: shell
+
+              $ docker-compose exec web src/manage.py loaddata default_roles
+
+        .. group-tab:: Python
+
+          .. code:: shell
+
+              $ source env/bin/activate
+              $ python src/manage.py loaddata default_roles
+
+
+    The default roles add 4 :ref:`roles` in the application.
+
+2. Navigate to ``http://127.0.0.1:8000`` and use the credentials created above 
+   to log in.
+
+
+If you want to enable the demo mode, continue to :ref:`demo`. You can also start
+:ref:`configuring <configuration>` the application if you have no need for the
+demo mode.

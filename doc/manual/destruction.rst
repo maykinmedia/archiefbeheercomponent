@@ -129,7 +129,7 @@ download the report within the AVC app. The link can be found in the page with p
 filtering for lists that have already been reviewed. All lists with an associated report will have a link
 (see image below).
 
-.. image:: images/download_link.png
+.. image:: _assets/download_link.png
     :width: 100%
     :alt: Download destruction report
 
