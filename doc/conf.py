@@ -41,7 +41,7 @@ release = archiefvernietigingscomponent.__version__
 # ones.
 extensions = [
     "sphinx.ext.todo",
-    # "sphinx_tabs.tabs",
+    "sphinx_tabs.tabs",
     # "recommonmark",
     # "sphinx_markdown_tables",
 ]
