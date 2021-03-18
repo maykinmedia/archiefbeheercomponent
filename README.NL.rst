@@ -44,7 +44,7 @@ Voer de volgende commando's uit om de containers te starten:
 
         $ wget https://raw.githubusercontent.com/maykinmedia/archiefvernietigingscomponent/master/docker-compose-quickstart.yml
         $ docker-compose -f docker-compose-quickstart.yml up -d
-        $ docker-compose exec web src/manage.py createsuperuser
+        $ docker-compose -f docker-compose-quickstart.yml exec web src/manage.py createsuperuser
 
 Ga daarna naar ``http://127.0.0.1:8000/`` en log in met de inloggegevens die je zojuist hebt gemaakt.
 
