@@ -127,7 +127,7 @@ class DestructionList(models.Model):
             )
 
             if email:
-                email.send(recipient=assignee)
+                email.send(recipient=assignee, destruction_list=self)
 
     def last_review(self, reviewer=None):
         if reviewer:

@@ -179,7 +179,11 @@ def complete_and_notify(list_id):
             ).first()
 
             if email:
-                email.send(recipient=assigned_archivaris, report=report)
+                email.send(
+                    recipient=assigned_archivaris,
+                    destruction_list=destruction_list,
+                    report=report,
+                )
 
     return notification.id
 
