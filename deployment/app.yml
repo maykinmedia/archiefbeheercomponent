@@ -18,8 +18,7 @@
     django_app_docker_secret_key: 'TODO'
     django_app_docker_package_name: archiefvernietigingscomponent
     django_app_docker_https: false
-    django_app_nginx_ssl: {{ django_app_docker_https }}
-
+    
     ## Application database settings
     django_app_docker_db_host: TODO
     django_app_docker_db_name: archiefvc
@@ -32,34 +31,44 @@
     django_app_docker_replicas: 1
     django_app_docker_port_start: 12000
 
-    # PostgreSQL (only needed when role "geerlingguy.postgresql" is enabled)
-    postgresql_version: "10"
-    postgresql_data_dir: "/var/lib/postgresql/{{ postgresql_version }}/main"
-    postgresql_bin_path: "/usr/lib/postgresql/{{ postgresql_version }}/bin"
-    postgresql_config_path: "/etc/postgresql/{{ postgresql_version }}/main"
-    postgresql_daemon: "postgresql@{{ postgresql_version }}-main"
-    postgresql_packages:
-      - "postgresql-{{ postgresql_version }}"
-      - "postgresql-contrib-{{ postgresql_version }}"
-      - libpq-dev
+    django_app_docker_volumes:
+      - name: "{{ django_app_docker_name_prefix }}-media"
+        mount: "/app/media"
+        mode: "rw"
+      - name: "{{ django_app_docker_name_prefix }}-private-media"
+        mount: "/app/private-media"
+        mode: "rw"
 
-    postgresql_python_library: python3-psycopg2
-    postgresql_hba_entries: []  # do not touch pg_hba.conf
-
-    # Shared application and PostgreSQL settings.
-    postgresql_users:
-      - name: "{{ django_app_docker_db_username }}"
-        password: "{{ django_app_docker_db_password }}"
-        port: "{{ django_app_docker_db_port }}"
-    postgresql_databases:
-      - name: "{{ django_app_docker_db_name }}"
-        owner: "{{ django_app_docker_db_username }}"
-        port: "{{ django_app_docker_db_port }}"
+    # Uncomment if you enable the PostgreSQL role.
+    #
+    # postgresql_version: "12"
+    # postgresql_data_dir: "/var/lib/postgresql/{{ postgresql_version }}/main"
+    # postgresql_bin_path: "/usr/lib/postgresql/{{ postgresql_version }}/bin"
+    # postgresql_config_path: "/etc/postgresql/{{ postgresql_version }}/main"
+    # postgresql_daemon: "postgresql@{{ postgresql_version }}-main"
+    # postgresql_packages:
+    #   - "postgresql-{{ postgresql_version }}"
+    #   - "postgresql-contrib-{{ postgresql_version }}"
+    #   - libpq-dev
+    # 
+    # postgresql_python_library: python3-psycopg2
+    # postgresql_hba_entries: []  # do not touch pg_hba.conf
+    # 
+    # postgresql_users:
+    #   - name: "{{ django_app_docker_db_username }}"
+    #     password: "{{ django_app_docker_db_password }}"
+    #     port: "{{ django_app_docker_db_port }}"
+    # postgresql_databases:
+    #   - name: "{{ django_app_docker_db_name }}"
+    #     owner: "{{ django_app_docker_db_username }}"
+    #     port: "{{ django_app_docker_db_port }}"
 
     # Nginx
     django_app_nginx_letsencrypt_enabled: false
-    django_app_nginx_extra_directives:
-      - 'client_max_body_size 50M'
+    # django_app_nginx_ssl_certificate: /path/to/ssl-cert-chain.pem
+    # django_app_nginx_ssl_key: /path/to/ssl-key.pem    
+    django_app_nginx_include_templates:
+      - "templates/nginx-includes.conf.tpl"
 
     # Celery
     django_app_docker_use_celery: true
@@ -68,6 +77,9 @@
     django_app_docker_flower_port: 13555
 
   roles:
+    # Uncomment if you want to install Docker on target machine
+    #  - role: geerlingguy.docker
+
     # Uncomment if you want to install PostgreSQL on target machine.
     # - role: geerlingguy.postgresql
 
@@ -93,4 +105,4 @@
     - template:
         src: "{{ django_app_nginx_template }}"
         # Make sure the target folder is used by Nginx for reading host entries.
-        dest: "/etc/nginx/conf.d/{{ django_app_docker_name_prefix }}.conf"
+        dest: "/etc/nginx/sites-enabled/{{ django_app_docker_name_prefix }}.conf"
