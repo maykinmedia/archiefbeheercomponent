@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from archiefvernietigingscomponent.emails.forms import AutomaticEmailForm
 from archiefvernietigingscomponent.emails.models import AutomaticEmail, EmailPreference
 
 
@@ -9,7 +10,8 @@ class AutomaticEmailAdmin(admin.ModelAdmin):
     list_filter = ("type",)
     search_fields = ("type",)
 
-    fields = ("type", "subject", "body")
+    # fields = ("type", "subject", "body")
+    form = AutomaticEmailForm
 
 
 @admin.register(EmailPreference)
