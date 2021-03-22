@@ -32,3 +32,11 @@ class ReviewerDisplay(DjangoChoices):
     reviewed = ChoiceItem("reviewed", "beoordeeld")
     to_review = ChoiceItem("to_review", "te beoordelen")
     all = ChoiceItem("all", "alle")
+
+
+class ListStateDisplay(DjangoChoices):
+    in_progress = ChoiceItem("in_progress", _("In progress"))
+    changes_requested = ChoiceItem("changes_requested", _("Changes requested"))
+    rejected = ChoiceItem("rejected", _("Rejected"))
+    approved = ChoiceItem("approved", _("Approved"))
+    finished = ChoiceItem("finished", _("Finished"))
