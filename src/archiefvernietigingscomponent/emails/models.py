@@ -1,14 +1,41 @@
+import copy
+import re
+
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
+
+from solo.models import SingletonModel
 
 from archiefvernietigingscomponent.accounts.models import User
 from archiefvernietigingscomponent.emails.constants import (
     EmailPreferenceChoices,
     EmailTypeChoices,
 )
-from archiefvernietigingscomponent.report.models import DestructionReport
+
+USER_TEMPLATE_ELEMENT = "{{ user }}"
+MUNICIPALITY_TEMPLATE_ELEMENT = "{{ municipality }}"
+DL_TEMPLATE_ELEMENT = "{{ list }}"
+LINK_DL_TEMPLATE_ELEMENT = "{{ link_list }}"
+LINK_REPORT_TEMPLATE_ELEMENT = "{{ link_report }}"
+
+EMAIL_TEMPLATE_ELEMENTS = (
+    USER_TEMPLATE_ELEMENT,
+    MUNICIPALITY_TEMPLATE_ELEMENT,
+    DL_TEMPLATE_ELEMENT,
+    LINK_DL_TEMPLATE_ELEMENT,
+    LINK_REPORT_TEMPLATE_ELEMENT,
+)
+
+
+class EmailConfigs(SingletonModel):
+    municipality = models.CharField(
+        _("municipality"),
+        max_length=200,
+        help_text=_("The municipality on behalf of which the emails are sent."),
+    )
 
 
 class AutomaticEmail(models.Model):
@@ -31,10 +58,15 @@ class AutomaticEmail(models.Model):
     def __str__(self):
         return f"Automatic email ({self.type})"
 
-    def send(self, recipient: User, report: DestructionReport = None):
+    def send(
+        self,
+        recipient: User,
+        destruction_list: "DestructionList",
+        report: "DestructionReport" = None,
+    ):
         email = EmailMessage(
             subject=self.subject,
-            body=self.body,
+            body=self.compose_body(recipient, destruction_list, report),
             from_email=settings.DEFAULT_FROM_EMAIL,
             to=[recipient.email],
         )
@@ -45,6 +77,38 @@ class AutomaticEmail(models.Model):
                 mimetype="application/pdf",
             )
         email.send()
+
+    def compose_body(
+        self,
+        recipient: User,
+        destruction_list: "DestructionList",
+        report: "DestructionReport" = None,
+    ) -> str:
+        from archiefvernietigingscomponent.report.utils import get_absolute_url
+
+        filled_body = copy.copy(self.body)
+
+        for pattern in EMAIL_TEMPLATE_ELEMENTS:
+            if re.search(pattern, filled_body):
+                re_pattern = re.compile(pattern)
+
+                if pattern == USER_TEMPLATE_ELEMENT:
+                    value = recipient.get_full_name()
+                elif pattern == MUNICIPALITY_TEMPLATE_ELEMENT:
+                    email_config = EmailConfigs.get_solo()
+                    value = email_config.municipality
+                elif pattern == DL_TEMPLATE_ELEMENT:
+                    value = destruction_list.name
+                elif pattern == LINK_DL_TEMPLATE_ELEMENT:
+                    value = get_absolute_url(reverse(destruction_list))
+                elif pattern == LINK_REPORT_TEMPLATE_ELEMENT:
+                    value = get_absolute_url(
+                        reverse("report:download-report", args=[report.pk]),
+                    )
+
+                filled_body = re.sub(re_pattern, value, filled_body)
+
+        return filled_body
 
 
 class EmailPreference(models.Model):
