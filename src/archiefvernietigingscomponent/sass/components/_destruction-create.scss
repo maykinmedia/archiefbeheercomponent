@@ -19,8 +19,9 @@
   }
 
   &__filters {
-    width: 30%;
+    width: 20%;
     padding: 0 1em;
+    font-size: 0.8em;
 
     position: sticky;
     top: 1em;
@@ -30,7 +31,7 @@
   }
 
   &__zaken {
-    width: 70%;
+    width: 80%;
     padding: 0 1em;
     align-self: flex-start;
   }

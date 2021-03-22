@@ -1,4 +1,4 @@
-from django.test import TransactionTestCase
+from django.test import TransactionTestCase, override_settings
 from django.urls import reverse
 
 import requests_mock
@@ -67,6 +67,7 @@ SELECTIELIJST = {
 
 
 @requests_mock.Mocker()
+@override_settings(LANGUAGE_CODE="en")
 class FetchListItemsTests(TransactionTestCase):
     def _set_up_services(self):
         Service.objects.create(
@@ -170,8 +171,8 @@ class FetchListItemsTests(TransactionTestCase):
         zaak_1_data = response_data["items"][0]["zaak"]
         self.assertEqual(f"{ZAKEN_ROOT}zaken/uuid-1", zaak_1_data["url"])
         self.assertEqual([], zaak_1_data["relevanteAndereZaken"])
-        self.assertNotIn("processttype", zaak_1_data["zaaktype"])
-        self.assertEqual("10 dagen", zaak_1_data["looptijd"])
+        self.assertNotIn("processtype", zaak_1_data["zaaktype"])
+        self.assertEqual("10 days", zaak_1_data["looptijd"])
 
         # Test second item (related zaken and process type)
         zaak_2_data = response_data["items"][1]["zaak"]
@@ -180,7 +181,7 @@ class FetchListItemsTests(TransactionTestCase):
             zaak_2_data["relevanteAndereZaken"],
             [{"url": f"{ZAKEN_ROOT}zaken/uuid-3", "aardRelatie": "vervolg"}],
         )
-        self.assertIn("processttype", zaak_2_data["zaaktype"])
+        self.assertIn("processtype", zaak_2_data["zaaktype"])
 
     def test_sensitive_data_for_process_owner(self, m):
         self._set_up_services()
