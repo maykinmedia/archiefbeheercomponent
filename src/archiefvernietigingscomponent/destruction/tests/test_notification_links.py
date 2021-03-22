@@ -11,7 +11,12 @@ from archiefvernietigingscomponent.accounts.tests.factories import (
     UserFactory,
 )
 
-from .factories import DestructionListAssigneeFactory, DestructionListFactory
+from ..constants import ReviewStatus
+from .factories import (
+    DestructionListAssigneeFactory,
+    DestructionListFactory,
+    DestructionListReviewFactory,
+)
 
 
 @tag("notifs")
@@ -87,6 +92,12 @@ class NotificationLinkTests(WebTest):
         )
 
     def test_author(self):
+        DestructionListReviewFactory.create(
+            author=self.user2,
+            status=ReviewStatus.changes_requested,
+            destruction_list=self.destruction_list,
+        )
+
         # assigning creates the notification
         self.destruction_list.assign(self.user1)
         self.destruction_list.save()
