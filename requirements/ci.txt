@@ -196,7 +196,7 @@ kombu==4.6.10
     # via
     #   -r requirements/base.txt
     #   celery
-lxml==4.6.2
+lxml==4.6.3
     # via pyquery
 maykin-django-better-admin-arrayfield==1.0.5
     # via -r requirements/base.txt
