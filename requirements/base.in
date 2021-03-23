@@ -42,3 +42,6 @@ flower # task monitoring
 
 # ZGW-related libraries
 zgw-consumers
+
+# PDF document creation
+WeasyPrint

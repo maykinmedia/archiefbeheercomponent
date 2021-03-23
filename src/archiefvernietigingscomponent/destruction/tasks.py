@@ -175,11 +175,19 @@ def complete_and_notify(list_id):
             assigned_archivaris = approval_review.author
             email = EmailMessage(
                 subject=report.title,
-                body=report.content.read().decode("utf8"),
+                body=_(
+                    "Destruction list '%(list)s' has been processed. "
+                    "The report of destruction is attached to this email."
+                )
+                % {"list": destruction_list.name,},
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 to=[assigned_archivaris.email],
             )
-            email.content_subtype = "html"
+            email.attach(
+                filename=report.get_filename(),
+                content=report.content.read(),
+                mimetype="application/pdf",
+            )
             email.send()
 
     return notification.id

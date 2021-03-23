@@ -1,3 +1,5 @@
+import os
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -53,3 +55,6 @@ class DestructionReport(models.Model):
                 "Only a process owner can be associated with a destruction report"
             )
             raise ValidationError(error_message)
+
+    def get_filename(self):
+        return os.path.basename(self.content.name)

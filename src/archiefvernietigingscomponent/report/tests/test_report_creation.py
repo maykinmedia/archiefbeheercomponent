@@ -147,21 +147,6 @@ class CreateReportTests(TestCase):
             "Declaration of destruction - Winter cases (2021-05-05)", report.title
         )
 
-        report.content.seek(0)
-        content = report.content.read().decode("utf8")
-
-        self.assertIn("<td>ZAAK-1</td>", content)
-        self.assertIn("<td>Een zaak</td>", content)
-        self.assertIn("<td>366 days</td>", content)
-        self.assertIn("<td>1</td>", content)
-        self.assertIn("<td>Bah</td>", content)
-
-        self.assertIn("<td>ZAAK-2</td>", content)
-        self.assertIn("<td>Een andere zaak</td>", content)
-        self.assertIn("<td>394 days</td>", content)
-        self.assertIn("<td>2</td>", content)
-        self.assertIn("<td>Boh</td>", content)
-
         self.client.force_login(process_owner)
         response = self.client.get(reverse("report:download-report", args=[report.pk]))
 
