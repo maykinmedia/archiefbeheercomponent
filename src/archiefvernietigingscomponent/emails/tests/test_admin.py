@@ -1,12 +1,14 @@
+from django.test import override_settings
 from django.urls import reverse
 
 from django_webtest import WebTest
 
 from archiefvernietigingscomponent.accounts.tests.factories import UserFactory
 from archiefvernietigingscomponent.emails.constants import EmailTypeChoices
-from archiefvernietigingscomponent.emails.models import AutomaticEmail
+from archiefvernietigingscomponent.emails.models import AutomaticEmail, EmailConfig
 
 
+@override_settings(LANGUAGE_CODE="en")
 class AutomaticEmailAdminTest(WebTest):
     def test_no_variables(self):
         user = UserFactory.create(is_staff=True, is_superuser=True)
@@ -27,6 +29,9 @@ class AutomaticEmailAdminTest(WebTest):
 
     def test_correct_variables(self):
         user = UserFactory.create(is_staff=True, is_superuser=True)
+        config = EmailConfig.objects.create()
+        config.municipality = "Gemeente Y"
+        config.save()
 
         response = self.app.get(reverse("admin:emails_automaticemail_add"), user=user)
 
@@ -74,6 +79,26 @@ class AutomaticEmailAdminTest(WebTest):
 
         self.assertIn(
             "Cannot include the report link in the body of this type of email.",
+            response.text,
+        )
+
+        self.assertEqual(0, AutomaticEmail.objects.count())
+
+    def test_no_municipality_configured(self):
+        user = UserFactory.create(is_staff=True, is_superuser=True)
+
+        response = self.app.get(reverse("admin:emails_automaticemail_add"), user=user)
+
+        form = response.form
+
+        form["type"] = EmailTypeChoices.review_required
+        form["body"] = "This is a test body with a variable {{ municipality }}"
+        form["subject"] = "Test subject"
+
+        response = form.submit()
+
+        self.assertIn(
+            "When using the municipality variable, a municipality name needs to be configured.",
             response.text,
         )
 
