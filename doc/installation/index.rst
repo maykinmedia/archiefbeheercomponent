@@ -10,3 +10,4 @@ Installation
    quickstart
    configuration
    demo
+   deployment

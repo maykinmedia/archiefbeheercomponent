@@ -12,4 +12,9 @@ application. In alphabetical order, they are:
 * Tilburg
 * Utrecht
 
-The municipality of Utrecht and Delft take the lead in this project.
+The municipality of Utrecht and Delft take the lead in this project and the
+application is developed by `Maykin Media`_ under the 
+`Open Gemeente Initiatief`_.
+
+.. _`Maykin Media`: https://www.maykinmedia.nl
+.. _`Open Gemeente Initiatief`: https://www.opengem.nl

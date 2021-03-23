@@ -27,6 +27,7 @@ local.py
 /log/*.log*
 /log/nginx/*.log*
 .env
+/deployment/app.*.yml
 
 # Documentation
 /doc/_build

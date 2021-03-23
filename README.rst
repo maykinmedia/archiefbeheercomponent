@@ -42,7 +42,7 @@ A `docker-compose-quickstart.yml`_ is provided to get up and running quickly. To
 
         $ wget https://raw.githubusercontent.com/maykinmedia/archiefvernietigingscomponent/master/docker-compose-quickstart.yml
         $ docker-compose -f docker-compose-quickstart.yml up -d
-        $ docker-compose exec web src/manage.py createsuperuser
+        $ docker-compose -f docker-compose-quickstart.yml exec web src/manage.py createsuperuser
 
 Then, navigate to ``http://127.0.0.1:8000/`` and log in with the credentials created.
 
