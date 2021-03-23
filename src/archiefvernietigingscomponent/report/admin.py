@@ -22,3 +22,6 @@ class DestructionReportAdmin(PrivateMediaMixin, admin.ModelAdmin):
         url = reverse("admin:report_destructionreport_content", args=[instance.pk])
         filename = instance.content.name.split("/")[-1]
         return format_html('<a href="%s">%s</a>' % (url, filename))
+
+    def has_add_permission(self, request, obj=None):
+        return False

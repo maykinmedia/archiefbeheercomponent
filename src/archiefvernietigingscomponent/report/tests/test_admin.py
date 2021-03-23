@@ -30,3 +30,13 @@ class DestructionReportAdminTests(WebTest):
         response = self.app.get(download_url, user=superuser)
 
         self.assertEqual(200, response.status_code)
+
+    def test_cant_add_report(self):
+        superuser = UserFactory.create(is_staff=True, is_superuser=True)
+        self.client.force_login(superuser)
+
+        url = reverse("admin:report_destructionreport_add")
+
+        response = self.client.get(url)
+
+        self.assertEqual(403, response.status_code)
