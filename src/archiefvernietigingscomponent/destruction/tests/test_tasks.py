@@ -452,15 +452,6 @@ class NotifyTests(TestCase):
         self.assertEqual(
             "Report is available!", sent_mail.body,
         )
-        self.assertEqual(1, len(sent_mail.attachments))
-
-        attachment_file_name = sent_mail.attachments[0][0]
-        self.assertEqual(
-            "verklaring-van-vernietiging_Nice-list.pdf", attachment_file_name
-        )
-
-        attachment_content = sent_mail.attachments[0][1]
-        self.assertIn(b"%PDF-", attachment_content)
 
     def test_no_email_sent_if_no_cases_deleted(self, m):
         destruction_list = DestructionListFactory.create(status=ListStatus.processing)

@@ -39,27 +39,6 @@ class AutomaticEmailTest(TestCase):
         self.assertEqual("This is a test text", sent_mail.body)
         self.assertEqual("This is a test subject", sent_mail.subject)
 
-    def test_send_email_with_attached_report(self):
-        report = DestructionReportFactory.create()
-        email = AutomaticEmailFactory(
-            type=EmailTypeChoices.report_available,
-            body="This is a test text",
-            subject="This is a test subject",
-        )
-
-        email.send(
-            recipient=self.user, destruction_list=report.destruction_list, report=report
-        )
-
-        self.assertEqual(1, len(mail.outbox))
-
-        sent_mail = mail.outbox[0]
-
-        self.assertEqual("test@example.com", sent_mail.to[0])
-        self.assertEqual("This is a test text", sent_mail.body)
-        self.assertEqual("This is a test subject", sent_mail.subject)
-        self.assertEqual(1, len(sent_mail.attachments))
-
     def test_send_email_with_variables(self):
         recipient = UserFactory.create(first_name="John", last_name="Doe")
         config = EmailConfig.objects.create()
