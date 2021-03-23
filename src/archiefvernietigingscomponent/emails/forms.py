@@ -8,7 +8,9 @@ from archiefvernietigingscomponent.emails.constants import EmailTypeChoices
 from archiefvernietigingscomponent.emails.models import (
     EMAIL_TEMPLATE_ELEMENTS,
     LINK_REPORT_TEMPLATE_ELEMENT,
+    MUNICIPALITY_TEMPLATE_ELEMENT,
     AutomaticEmail,
+    EmailConfig,
 )
 
 
@@ -34,3 +36,12 @@ class AutomaticEmailForm(forms.ModelForm):
                         "Cannot include the report link in the body of this type of email."
                     )
                 )
+
+            if match == MUNICIPALITY_TEMPLATE_ELEMENT:
+                config = EmailConfig.get_solo()
+                if not config.municipality:
+                    raise ValidationError(
+                        _(
+                            "When using the municipality variable, a municipality name needs to be configured."
+                        )
+                    )

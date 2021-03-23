@@ -1,7 +1,13 @@
 from django.contrib import admin
 
+from solo.admin import SingletonModelAdmin
+
 from archiefvernietigingscomponent.emails.forms import AutomaticEmailForm
-from archiefvernietigingscomponent.emails.models import AutomaticEmail, EmailPreference
+from archiefvernietigingscomponent.emails.models import (
+    AutomaticEmail,
+    EmailConfig,
+    EmailPreference,
+)
 
 
 @admin.register(AutomaticEmail)
@@ -21,3 +27,8 @@ class EmailPreferenceAdmin(admin.ModelAdmin):
     search_fields = ("user",)
 
     fields = ("user", "preference")
+
+
+@admin.register(EmailConfig)
+class EmailConfigsAdmin(SingletonModelAdmin):
+    fields = ("municipality",)

@@ -93,6 +93,10 @@
             [
                 "emails",
                 "automaticemail"
+            ],
+            [
+                "emails",
+                "emailconfig"
             ]
         ]
     }
