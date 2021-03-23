@@ -323,3 +323,15 @@ To load default automatic emails, a fixture is present. This can be loaded with 
 .. code-block:: bash
 
     python src/manage.py loaddata src/archiefvernietigingscomponent/fixtures/automatic_emails_defaults.json
+
+A few variables can be used in the email body. These are:
+
+- ``{{ user}}``: it will be replaced with the full name (first name and last name) of the user receiving the email.
+- ``{{ municipality }}``: it will be replaced with the name of the municipality sending the email.
+- ``{{ list }}``: it will be replaced with the name of the destruction list.
+- ``{{ link_list }}``: it will be replaced with the link to the destruction list.
+- ``{{ link_report }}``: it will be replaced with the link to where the PDF of the destruction report can be downloaded.
+
+.. note:: In order to use the variable ``{{ municipality }}``, the municipality name needs to be configured under **Configuratie > Email configuratie**.
+
+.. note:: The variable ``{{ link_report }}`` can only be used in the email of type "Report available".
