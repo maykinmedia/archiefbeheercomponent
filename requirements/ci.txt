@@ -137,7 +137,7 @@ django-timeline-logger==1.1.2
     # via -r requirements/base.txt
 django-webtest==1.9.7
     # via -r requirements/test-tools.in
-django==2.2.12
+django==2.2.18
     # via
     #   -r requirements/base.txt
     #   django-appconf
@@ -196,11 +196,11 @@ kombu==4.6.10
     # via
     #   -r requirements/base.txt
     #   celery
-lxml==4.6.2
+lxml==4.6.3
     # via pyquery
 maykin-django-better-admin-arrayfield==1.0.5
     # via -r requirements/base.txt
-pillow==7.1.2
+pillow==8.1.1
     # via
     #   -r requirements/base.txt
     #   cairosvg
