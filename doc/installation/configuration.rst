@@ -14,7 +14,7 @@ described in the :ref:`more-configuration`.
 Services
 --------
 
-The record-management app must be connected to an instance of Open Zaak.
+The Archiefvernietigingscomponent must be connected to an instance of Open Zaak.
 
 1. Navigate to the Archiefvernietigingscomponent admin.
 

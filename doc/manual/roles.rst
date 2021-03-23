@@ -10,7 +10,7 @@ these roles in the application or create roles with different permissions.
 Record manager
 --------------
 
-* The recordmanager initiates the proces to destroy cases and generates the list of destruction.
+* The record manager initiates the process to destroy cases and generates the list of destruction.
 * Executes quality control over the list, checks if there are relations that can’t be disconnected when the file is destroyed and if there are cases on the list that can’t be destroyed because of an exemption due to the criteria mentioned in the ‘selectielijst’ (this is the archiving policy list with all the storage periods per zaaktype/process and allowed exemptions).
 * Makes sure the destruction list is forwarded to the process owner.
 
