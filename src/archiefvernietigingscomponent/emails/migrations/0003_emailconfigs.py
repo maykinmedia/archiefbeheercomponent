@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="EmailConfigs",
+            name="EmailConfig",
             fields=[
                 (
                     "id",

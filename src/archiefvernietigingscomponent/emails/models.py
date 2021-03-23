@@ -1,4 +1,5 @@
 import copy
+import logging
 import re
 
 from django.conf import settings
@@ -15,6 +16,9 @@ from archiefvernietigingscomponent.emails.constants import (
     EmailTypeChoices,
 )
 
+logger = logging.getLogger(__name__)
+
+
 USER_TEMPLATE_ELEMENT = "{{ user }}"
 MUNICIPALITY_TEMPLATE_ELEMENT = "{{ municipality }}"
 DL_TEMPLATE_ELEMENT = "{{ list }}"
@@ -30,12 +34,15 @@ EMAIL_TEMPLATE_ELEMENTS = (
 )
 
 
-class EmailConfigs(SingletonModel):
+class EmailConfig(SingletonModel):
     municipality = models.CharField(
         _("municipality"),
         max_length=200,
         help_text=_("The municipality on behalf of which the emails are sent."),
     )
+
+    class Meta:
+        verbose_name = _("email configuration")
 
 
 class AutomaticEmail(models.Model):
@@ -59,11 +66,14 @@ class AutomaticEmail(models.Model):
         return f"Automatic email ({self.type})"
 
     def send(
-        self,
-        recipient: User,
-        destruction_list: "DestructionList",
-        report: "DestructionReport" = None,
+        self, recipient, destruction_list, report=None,
     ):
+        """
+        :param recipient: type User
+        :param destruction_list: type DestructionList:
+        :param report: type DestructionReport (optional)
+        :rtype: None
+        """
         email = EmailMessage(
             subject=self.subject,
             body=self.compose_body(recipient, destruction_list, report),
@@ -78,12 +88,13 @@ class AutomaticEmail(models.Model):
             )
         email.send()
 
-    def compose_body(
-        self,
-        recipient: User,
-        destruction_list: "DestructionList",
-        report: "DestructionReport" = None,
-    ) -> str:
+    def compose_body(self, recipient, destruction_list, report=None) -> str:
+        """
+        :param recipient: type User
+        :param destruction_list: type DestructionList:
+        :param report: type DestructionReport (optional)
+        :rtype: str
+        """
         from archiefvernietigingscomponent.report.utils import get_absolute_url
 
         filled_body = copy.copy(self.body)
@@ -95,12 +106,16 @@ class AutomaticEmail(models.Model):
                 if pattern == USER_TEMPLATE_ELEMENT:
                     value = recipient.get_full_name()
                 elif pattern == MUNICIPALITY_TEMPLATE_ELEMENT:
-                    email_config = EmailConfigs.get_solo()
+                    email_config = EmailConfig.get_solo()
                     value = email_config.municipality
+                    if value == "":
+                        logger.warning("Municipality name is an empty string!")
                 elif pattern == DL_TEMPLATE_ELEMENT:
                     value = destruction_list.name
                 elif pattern == LINK_DL_TEMPLATE_ELEMENT:
-                    value = get_absolute_url(reverse(destruction_list))
+                    value = get_absolute_url(
+                        reverse("destruction:dl-redirect", args=[destruction_list.pk])
+                    )
                 elif pattern == LINK_REPORT_TEMPLATE_ELEMENT:
                     value = get_absolute_url(
                         reverse("report:download-report", args=[report.pk]),
