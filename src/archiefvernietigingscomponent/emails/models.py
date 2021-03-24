@@ -38,7 +38,7 @@ class AutomaticEmail(models.Model):
         if report:
             email.attach(
                 filename=report.get_filename(),
-                content=report.content.read(),
+                content=report.content_pdf.read(),
                 mimetype="application/pdf",
             )
         email.send()
