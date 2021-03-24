@@ -23,7 +23,7 @@
   }
 
   @include element("indicators") {
-    flex: 1;
+    flex: 2;
     text-align: right;
     display: flex;
     justify-content: flex-end;
@@ -35,9 +35,14 @@
     }
   }
 
+  @include element("label") {
+    width: max-content;
+  }
+
   @include element("status") {
     display: flex;
     align-items: center;
+    padding-left: 2px;
   }
 
   @include element("assigned") {

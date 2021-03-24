@@ -24,19 +24,24 @@
 
                 <span class="destruction-list-preview__indicators">
 
-                    <span class="destruction-list-preview__assigned">
-                        {% if object.assignee == request.user %}
-                            <i class="material-icons" title="{% trans 'You are the current assignee!' %}">assignment_ind</i>
+                    <span class="destruction-list-preview__label">
+                        {{ object.list_state.label }}
+                        {% if object.list_state.value == "in_progress" %}
+                            ({{ object.completed_reviewers }}/{{ object.total_reviewers }} {% trans "reviewers" %})
                         {% endif %}
                     </span>
 
-                    <span class="destruction-list-preview__status" title="{{ object.get_status_display }}">
-                        {% if object.status == "in_progress" %}
+                    <span class="destruction-list-preview__status">
+                        {% if object.list_state.value == "in_progress" %}
                             <i class="material-icons">rate_review</i>
-                        {% elif object.status == "processing" %}
-                            <i class="material-icons">watch_later</i>
-                        {% elif object.status == "completed" %}
+                        {% elif object.list_state.value == "changes_requested" %}
+                            <i class="material-icons">assignment_ind</i>
+                        {% elif object.list_state.value == "rejected" %}
+                            <i class="material-icons">clear</i>
+                        {% elif object.list_state.value == "approved" %}
                             <i class="material-icons">done</i>
+                        {% elif object.list_state.value == "finished" %}
+                            <i class="material-icons">done_all</i>
                         {% endif %}
                     </span>
 

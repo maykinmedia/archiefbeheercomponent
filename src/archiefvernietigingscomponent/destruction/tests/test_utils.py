@@ -1,7 +1,7 @@
 import copy
 from unittest.mock import patch
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from archiefvernietigingscomponent.destruction.utils import get_additional_zaak_info
 
@@ -46,6 +46,7 @@ SELECTIELIJST = {
     "archiefvernietigingscomponent.destruction.utils.fetch_resultaat",
     return_value=copy.deepcopy(RESULTAAT),
 )
+@override_settings(LANGUAGE_CODE="en")
 class GetAdditionalZaakInfoTests(TestCase):
     def setUp(self) -> None:
         self.zaak_1 = {

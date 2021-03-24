@@ -11,7 +11,13 @@ from timeline_logger.models import TimelineLog
 
 from archiefvernietigingscomponent.notifications.models import Notification
 
-from .constants import ListItemStatus, ListStatus, ReviewStatus, Suggestion
+from .constants import (
+    ListItemStatus,
+    ListStateDisplay,
+    ListStatus,
+    ReviewStatus,
+    Suggestion,
+)
 from .query import DestructionListQuerySet
 
 
@@ -112,6 +118,40 @@ class DestructionList(models.Model):
 
     def last_review(self):
         return self.reviews.order_by("-id").first()
+
+    def list_state(self) -> dict:
+        if self.status == ListStatus.completed:
+            return ListStateDisplay.get_choice(ListStateDisplay.finished)
+
+        if not self.assignee:
+            return ListStateDisplay.get_choice(ListStateDisplay.approved)
+
+        if self.assignee == self.author:
+            last_review = self.last_review()
+            if last_review.status == ReviewStatus.changes_requested:
+                return ListStateDisplay.get_choice(ListStateDisplay.changes_requested)
+            elif last_review.status == ReviewStatus.rejected:
+                return ListStateDisplay.get_choice(ListStateDisplay.rejected)
+
+        else:
+            return ListStateDisplay.get_choice(ListStateDisplay.in_progress)
+
+    def total_reviewers(self):
+        return self.assignees.count()
+
+    def completed_reviewers(self):
+        if not self.assignee:
+            return self.assignees.order_by("order").all().count()
+
+        if self.assignee == self.author:
+            return 0
+
+        return (
+            DestructionListAssignee.objects.get(
+                assignee=self.assignee, destruction_list=self
+            ).order
+            - 1
+        )
 
 
 class DestructionListItem(models.Model):
