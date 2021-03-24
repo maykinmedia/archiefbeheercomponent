@@ -61,7 +61,7 @@ click==7.1.2
     #   pip-tools
 coverage==4.5.4
     # via -r requirements/ci.txt
-cryptography==2.9.2
+cryptography==3.3.2
     # via
     #   -r requirements/ci.txt
     #   django-auth-adfs
