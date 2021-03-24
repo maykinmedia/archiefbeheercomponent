@@ -25,6 +25,10 @@ def download_report_link(context: dict, destruction_list: DestructionList) -> di
             reverse("report:download-report", args=[report.pk]),
             request=context["view"].request,
         )
-        return {"can_download": True, "url": url}
+        return {
+            "can_download": True,
+            "url_csv": f"{url}?type=csv",
+            "url_pdf": f"{url}?type=pdf",
+        }
 
     return {"can_download": False}
