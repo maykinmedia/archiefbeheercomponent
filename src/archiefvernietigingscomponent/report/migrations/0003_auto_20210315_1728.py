@@ -12,7 +12,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(model_name="destructionreport", name="content",),
+        migrations.RenameField(
+            model_name="destructionreport", old_name="content", new_name="content_pdf"
+        ),
         migrations.AddField(
             model_name="destructionreport",
             name="content_csv",
@@ -25,7 +27,7 @@ class Migration(migrations.Migration):
                 verbose_name="content csv",
             ),
         ),
-        migrations.AddField(
+        migrations.AlterField(
             model_name="destructionreport",
             name="content_pdf",
             field=privates.fields.PrivateMediaFileField(
