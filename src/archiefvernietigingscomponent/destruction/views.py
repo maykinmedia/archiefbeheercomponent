@@ -377,18 +377,14 @@ class ReviewCreateView(RoleRequiredMixin, UserPassesTestMixin, CreateWithInlines
         # If the current reviewer has previously requested changes,
         # add any comments that the user has made when addressing those changes
         current_reviewer = self.request.user
-        reviews = DestructionListReview.objects.filter(
-            destruction_list=destruction_list, author=current_reviewer
-        )
+        comment = destruction_list.response_to_reviewer(current_reviewer)
 
-        if reviews.exists():
-            last_review = reviews.order_by("created").last()
-            comment = last_review.comments.last()
-            if comment:
-                context["comment_to_review"] = {
-                    "author": last_review.destruction_list.author.get_full_name(),
-                    "text": comment.text,
-                }
+        if comment:
+            comment_author = comment.review.destruction_list.author
+            context["comment_to_review"] = {
+                "author": comment_author.get_full_name(),
+                "text": comment.text,
+            }
 
         return context
 

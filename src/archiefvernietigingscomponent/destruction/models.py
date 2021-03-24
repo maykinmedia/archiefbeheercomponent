@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.postgres.fields import JSONField
 from django.db import models
@@ -116,7 +118,9 @@ class DestructionList(models.Model):
                 destruction_list=self, user=assignee, message=message,
             )
 
-    def last_review(self):
+    def last_review(self, reviewer=None):
+        if reviewer:
+            return self.reviews.filter(author=reviewer).order_by("-id").first()
         return self.reviews.order_by("-id").first()
 
     def list_state(self) -> dict:
@@ -152,6 +156,15 @@ class DestructionList(models.Model):
             ).order
             - 1
         )
+
+    def response_to_reviewer(
+        self, current_reviewer
+    ) -> Optional["DestructionListReviewComment"]:
+        review = self.last_review(reviewer=current_reviewer)
+
+        if review:
+            comment = review.comments.last()
+            return comment
 
 
 class DestructionListItem(models.Model):
