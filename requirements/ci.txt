@@ -45,7 +45,7 @@ chardet==3.0.4
     #   requests
 coverage==4.5.4
     # via -r requirements/test-tools.in
-cryptography==2.9.2
+cryptography==3.3.2
     # via
     #   -r requirements/base.txt
     #   django-auth-adfs
