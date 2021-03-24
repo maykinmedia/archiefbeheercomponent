@@ -19,12 +19,9 @@ class DestructionReportAdminTests(WebTest):
 
         self.assertEqual(200, response.status_code)
 
-        download_pdf_url = reverse(
-            "admin:report_destructionreport_content_pdf", args=[report.pk]
-        )
-        download_csv_url = reverse(
-            "admin:report_destructionreport_content_csv", args=[report.pk]
-        )
+        url = reverse("report:download-report", args=[report.pk])
+        download_pdf_url = f"{url}?type=pdf"
+        download_csv_url = f"{url}?type=csv"
 
         links = response.html.find_all("a")
 
