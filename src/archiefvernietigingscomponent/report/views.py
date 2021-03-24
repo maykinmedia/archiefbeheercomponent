@@ -23,14 +23,17 @@ class DownloadDestructionReportView(UserPassesTestMixin, DetailView):
     model = DestructionReport
 
     def test_func(self):
-        if not self.request.user.is_authenticated:
+        user = self.request.user
+
+        if not user.is_authenticated:
             return False
 
         report = self.get_object()
 
         if (
-            self.request.user == report.process_owner
-            or self.request.user.role.type == RoleTypeChoices.functional_admin
+            user == report.process_owner
+            or user.role.type == RoleTypeChoices.functional_admin
+            or user.is_superuser
         ):
             return True
 
