@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: archiefvernietigingscomponent\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-24 16:58+0100\n"
+"POT-Creation-Date: 2021-03-24 17:11+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -78,6 +78,7 @@ msgid "role"
 msgstr "rol"
 
 #: archiefvernietigingscomponent/accounts/models.py:56
+#: archiefvernietigingscomponent/emails/models.py:125
 #: archiefvernietigingscomponent/notifications/models.py:10
 msgid "user"
 msgstr "gebruiker"
@@ -101,7 +102,7 @@ msgid "Name of the role"
 msgstr "Naam van de rol"
 
 #: archiefvernietigingscomponent/accounts/models.py:80
-#: archiefvernietigingscomponent/emails/models.py:13
+#: archiefvernietigingscomponent/emails/models.py:50
 msgid "type"
 msgstr "type"
 
@@ -480,6 +481,7 @@ msgid "View on site"
 msgstr "Bekijk vernietigingslijst"
 
 #: archiefvernietigingscomponent/destruction/templates/destruction/destructionlist_detail.html:11
+#: archiefvernietigingscomponent/emails/templates/emails/emailpreference_form.html:19
 msgid "Submit"
 msgstr "Indienen"
 
@@ -580,6 +582,12 @@ msgstr "reviewers"
 msgid "created %(since)s ago"
 msgstr "%(since)s geleden aangemaakt"
 
+#: archiefvernietigingscomponent/destruction/templates/destruction/recordmanager_list.html:74
+#: archiefvernietigingscomponent/destruction/templates/destruction/reviewer_list.html:76
+#: archiefvernietigingscomponent/emails/models.py:137
+msgid "Email preferences"
+msgstr ""
+
 #: archiefvernietigingscomponent/destruction/templates/destruction/reviewer_list.html:14
 msgid "Status"
 msgstr "Status"
@@ -638,35 +646,83 @@ msgstr ""
 msgid "Changes required"
 msgstr "Wijzigingen verzocht"
 
-#: archiefvernietigingscomponent/emails/models.py:15
-#, fuzzy
-#| msgid "The type of role"
+#: archiefvernietigingscomponent/emails/constants.py:13
+msgid "An action is required"
+msgstr "Wijzigingen verzocht"
+
+#: archiefvernietigingscomponent/emails/constants.py:14
+msgid "Never"
+msgstr "Nooit"
+
+#: archiefvernietigingscomponent/emails/forms.py:28
+msgid "Unknown variable used in the email body."
+msgstr "Onbekend variabele in de inhoud van de email"
+
+#: archiefvernietigingscomponent/emails/forms.py:36
+msgid "Cannot include the report link in the body of this type of email."
+msgstr "De link naar de verklaring van vernietiging mag niet gebruikt worden in emails met dit type."
+
+#: archiefvernietigingscomponent/emails/forms.py:45
+msgid ""
+"When using the municipality variable, a municipality name needs to be "
+"configured."
+msgstr "De gemeente naam moet geconfigureerd zijn om de 'municipality' variabele te gebruiken."
+
+#: archiefvernietigingscomponent/emails/models.py:39
+msgid "municipality"
+msgstr "gemeente"
+
+#: archiefvernietigingscomponent/emails/models.py:41
+msgid "The municipality on behalf of which the emails are sent."
+msgstr "De gemeente namens wie de email is gestuurd."
+
+#: archiefvernietigingscomponent/emails/models.py:45
+msgid "email configuration"
+msgstr "email configuratie"
+
+#: archiefvernietigingscomponent/emails/models.py:52
 msgid "The type of email"
-msgstr "Het type rol"
+msgstr "Het type van email"
 
-#: archiefvernietigingscomponent/emails/models.py:19
+#: archiefvernietigingscomponent/emails/models.py:56
 msgid "body"
-msgstr ""
+msgstr "inhoud"
 
-#: archiefvernietigingscomponent/emails/models.py:19
+#: archiefvernietigingscomponent/emails/models.py:56
 msgid "The text sent in the email body"
-msgstr ""
+msgstr "De tekst gestuurd in de email inhoud"
 
-#: archiefvernietigingscomponent/emails/models.py:21
+#: archiefvernietigingscomponent/emails/models.py:58
 msgid "subject"
-msgstr ""
+msgstr "onderwerp"
 
-#: archiefvernietigingscomponent/emails/models.py:21
+#: archiefvernietigingscomponent/emails/models.py:58
 msgid "The text sent in the email subject"
-msgstr ""
+msgstr "De tekst gestuurd in de email onderwerp"
 
-#: archiefvernietigingscomponent/emails/models.py:25
+#: archiefvernietigingscomponent/emails/models.py:62
 msgid "Automatic email"
-msgstr ""
+msgstr "Automatische email"
 
-#: archiefvernietigingscomponent/emails/models.py:26
+#: archiefvernietigingscomponent/emails/models.py:63
 msgid "Automatic emails"
-msgstr ""
+msgstr "Automatische emails"
+
+#: archiefvernietigingscomponent/emails/models.py:126
+msgid "User associated with the preferences"
+msgstr "User geassocieerd met de email voorkeuren"
+
+#: archiefvernietigingscomponent/emails/models.py:136
+msgid "Email preference"
+msgstr "Email voorkeur"
+
+#: archiefvernietigingscomponent/emails/templates/emails/emailpreference_form.html:5
+msgid "My email preferences"
+msgstr "Mijn email voorkeuren"
+
+#: archiefvernietigingscomponent/emails/templates/emails/emailpreference_form.html:13
+msgid "I would like to be notified by email when:"
+msgstr "Ik wil een email ontvangen als:"
 
 #: archiefvernietigingscomponent/notifications/models.py:18
 msgid "message"
@@ -707,28 +763,22 @@ msgstr ""
 "Processeigenaar van de vernietigingslijst waarvoor het rapport is gemaakt"
 
 #: archiefvernietigingscomponent/report/models.py:29
-#, fuzzy
-#| msgid "content"
 msgid "content pdf"
-msgstr "inhoud"
+msgstr "inhoud pdf"
 
 #: archiefvernietigingscomponent/report/models.py:31
-#, fuzzy
-#| msgid "Content of the destruction report"
 msgid "Content of the destruction report in PDF format"
-msgstr "Inhoud van het vernietigingsrapport."
+msgstr "Inhoud van het vernietigingsrapport in PDF formaat."
 
 #: archiefvernietigingscomponent/report/models.py:36
-#, fuzzy
-#| msgid "content"
 msgid "content csv"
-msgstr "inhoud"
+msgstr "inhoud csv"
 
 #: archiefvernietigingscomponent/report/models.py:38
 #, fuzzy
 #| msgid "Content of the destruction report"
 msgid "Content of the destruction report in CSV format"
-msgstr "Inhoud van het vernietigingsrapport."
+msgstr "Inhoud van het vernietigingsrapport in CSV formaat."
 
 #: archiefvernietigingscomponent/report/models.py:48
 msgid "Destruction list for which the report was created."
@@ -875,7 +925,7 @@ msgstr "volgende"
 msgid "last"
 msgstr "laatste"
 
-#: archiefvernietigingscomponent/templates/master.html:46
+#: archiefvernietigingscomponent/templates/master.html:47
 msgid "Admin"
 msgstr "Beheer"
 
