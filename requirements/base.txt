@@ -30,7 +30,7 @@ cffi==1.14.0
     #   weasyprint
 chardet==3.0.4
     # via requests
-cryptography==2.9.2
+cryptography==3.3.2
     # via django-auth-adfs
 cssselect2==0.4.1
     # via
