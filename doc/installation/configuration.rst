@@ -346,3 +346,41 @@ A few variables can be used in the email body. These are:
 .. note:: In order to use the variable ``{{ municipality }}``, the municipality name needs to be configured under **Configuratie > Email configuratie**.
 
 .. note:: The variable ``{{ link_report }}`` can only be used in the email of type "Report available".
+
+Standard review answers
+=======================
+
+When a reviewer asks for changes to a destruction list, they can choose from a drop down the reason why
+they are asking for changes. These reasons can be configured in the admin under
+**Reviews > Standard review aantwoorden** and then **Standard review aantwoorden toevoegen**.
+Both the text and the order in which these reasons will appear in the dropdown can be configured.
+
+To load in default reasons, the fixture `default_review_answers` can be loaded as follows:
+
+    .. tabs::
+
+        .. group-tab:: Docker
+
+           .. code:: shell
+
+              $ docker-compose exec web src/manage.py loaddata default_review_answers
+
+        .. group-tab:: Python
+
+          .. code:: shell
+
+              $ source env/bin/activate
+              $ python src/manage.py loaddata default_review_answers
+
+This feature will load the following reasons (in this order):
+
+- Zaken die van belang zijn voor de huidige bedrijfsvoering/nog andere lopende zaken.
+- Zaken die bij een vastgestelde Hotspot behoren.
+- Zaken met een uniek karakter.
+- Bijzondere gebeurtenissen.
+- Beeldbepalende, karakteristieke, bijzondere objecten.
+- Samenvattingen van gegevens.
+- Belangrijke burgers en functionarissen.
+- Bescheiden die vervangen wat door een calamiteit verloren is gegaan.
+- Precedenten: individuele zaken die leiden tot algemene regels.
+- Bescheiden waarbij de vernietiging de logische samenhang zou verstoren.
