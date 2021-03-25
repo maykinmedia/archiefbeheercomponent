@@ -1,3 +1,5 @@
+from typing import List, Tuple
+
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.db import models, transaction
@@ -42,6 +44,7 @@ from .models import (
     DestructionListItemReview,
     DestructionListReview,
     DestructionListReviewComment,
+    StandardReviewAnswer,
 )
 from .tasks import process_destruction_list, update_zaken
 
@@ -347,11 +350,16 @@ class ReviewCreateView(RoleRequiredMixin, UserPassesTestMixin, CreateWithInlines
         list_id = self.kwargs.get("destruction_list")
         return get_object_or_404(DestructionList, pk=list_id)
 
+    def get_formatted_standard_review_reasons(self) -> List[Tuple[str, str]]:
+        answers = StandardReviewAnswer.objects.all().order_by("order")
+        return [(answer.reason, answer.reason) for answer in answers]
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         formset = context["inlines"][0]
 
         destruction_list = self.get_destruction_list()
+        standard_review_choices = self.get_formatted_standard_review_reasons()
         context.update(
             {
                 "destruction_list": destruction_list,
@@ -371,6 +379,7 @@ class ReviewCreateView(RoleRequiredMixin, UserPassesTestMixin, CreateWithInlines
                     not destruction_list.contains_sensitive_info
                     or self.request.user.role.type != RoleTypeChoices.archivist
                 ),
+                "standard_review_choices": standard_review_choices,
             }
         )
 
