@@ -15,6 +15,7 @@ const mount = () => {
     const destructionList = jsonScriptToVar('destruction-list');
     const formsetConfig = jsonScriptToVar('formset-config');
     const reviewComment = jsonScriptToVar('review-comment');
+    const reviewChoices = jsonScriptToVar('standard-review-choices');
 
     // constants
     const constants = { formsetConfig, zaakDetailUrl, zaakDetailPermission, showOptionalColumns };
@@ -27,6 +28,7 @@ const mount = () => {
                 itemsUrl={itemsUrl}
                 destructionList={destructionList}
                 reviewComment={reviewComment}
+                reviewChoices={reviewChoices}
             />
         </ConstantsContext.Provider>,
         node

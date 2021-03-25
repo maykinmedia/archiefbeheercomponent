@@ -45,6 +45,47 @@ const TextInput = (props) => {
     );
 };
 
+const TextArea = ({
+    id='',
+    name='',
+    label='',
+    helpText='',
+    initial,
+    classes=null,
+    onBlur,
+    onChange,
+    required=false,
+    disabled=false
+}) => {
+    const classNames = classes ??`input__control input__control--text`;
+
+    return (
+        <Wrapper>
+            <Label label={label} required={required} idForLabel={id} />
+            <Help helpText={helpText} idForLabel={id} />
+            <ErrorList />
+            <textarea
+                name={name}
+                id={id}
+                defaultValue={initial || ''}
+                className={classNames}
+                onBlur={ (event) => {
+                    if (onBlur) {
+                        onBlur(event);
+                    }
+                }}
+                onChange={ (event) => {
+                    if (onChange) {
+                        onChange(event);
+                    }
+                }}
+                required={required}
+                disabled={disabled}
+            />
+        </Wrapper>
+    );
+};
+
 
 const DateInput = (props) => {
     return <Input type="date" {...props} />;
@@ -63,4 +104,4 @@ const HiddenInput = ({name, value}) => {
 }
 
 
-export {Input, TextInput, DateInput, CheckboxInput, RadioInput, HiddenInput};
+export {Input, TextInput, TextArea, DateInput, CheckboxInput, RadioInput, HiddenInput};

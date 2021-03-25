@@ -15,6 +15,12 @@
 
   @include element("comment") {
     padding: 0 1em;
+    .input__control--select {
+        max-width: max-content;
+    }
+    .input__control--text {
+        font-size: 1.1em;
+    }
   }
 
   @include element("list-details") {
@@ -49,5 +55,6 @@
       margin-left: 0.5em;
     }
   }
+
 
 }
