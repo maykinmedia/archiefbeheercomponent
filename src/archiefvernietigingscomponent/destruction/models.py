@@ -13,6 +13,8 @@ from timeline_logger.models import TimelineLog
 
 from archiefvernietigingscomponent.notifications.models import Notification
 
+from ..emails.constants import EmailTypeChoices
+from ..emails.models import AutomaticEmail
 from .constants import (
     ListItemStatus,
     ListStateDisplay,
@@ -110,13 +112,22 @@ class DestructionList(models.Model):
         if assignee:
             if is_reviewer:
                 message = _("You are assigned for review.")
+                email = AutomaticEmail.objects.filter(
+                    type=EmailTypeChoices.review_required
+                ).first()
             else:
                 message = _("There is a review to process.")
+                email = AutomaticEmail.objects.filter(
+                    type=EmailTypeChoices.changes_required
+                ).first()
 
             # TODO: this should only go through if the object is saved!
             Notification.objects.create(
                 destruction_list=self, user=assignee, message=message,
             )
+
+            if email:
+                email.send(recipient=assignee, destruction_list=self)
 
     def last_review(self, reviewer=None):
         if reviewer:

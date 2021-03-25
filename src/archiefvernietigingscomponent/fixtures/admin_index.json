@@ -89,6 +89,14 @@
             [
                 "sites",
                 "site"
+            ],
+            [
+                "emails",
+                "automaticemail"
+            ],
+            [
+                "emails",
+                "emailconfig"
             ]
         ]
     }

@@ -2,7 +2,6 @@ import logging
 import traceback
 
 from django.conf import settings
-from django.core.mail import EmailMessage
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
@@ -14,6 +13,8 @@ from archiefvernietigingscomponent.notifications.models import Notification
 
 from ..celery import app
 from ..constants import RoleTypeChoices
+from ..emails.constants import EmailTypeChoices
+from ..emails.models import AutomaticEmail
 from ..report.utils import create_destruction_report, get_absolute_url
 from .constants import ListItemStatus, ListStatus, ReviewStatus
 from .models import DestructionList, DestructionListItem, DestructionListReview
@@ -173,22 +174,16 @@ def complete_and_notify(list_id):
 
         if approval_review:
             assigned_archivaris = approval_review.author
-            email = EmailMessage(
-                subject=report.title,
-                body=_(
-                    "Destruction list '%(list)s' has been processed. "
-                    "The report of destruction is attached to this email."
+            email = AutomaticEmail.objects.filter(
+                type=EmailTypeChoices.report_available
+            ).first()
+
+            if email:
+                email.send(
+                    recipient=assigned_archivaris,
+                    destruction_list=destruction_list,
+                    report=report,
                 )
-                % {"list": destruction_list.name,},
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                to=[assigned_archivaris.email],
-            )
-            email.attach(
-                filename=report.get_filename(),
-                content=report.content_pdf.read(),
-                mimetype="application/pdf",
-            )
-            email.send()
 
     return notification.id
 

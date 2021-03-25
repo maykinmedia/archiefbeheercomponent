@@ -19,6 +19,9 @@ from archiefvernietigingscomponent.notifications.models import Notification
 
 from ...accounts.tests.factories import UserFactory
 from ...constants import RoleTypeChoices
+from ...emails.constants import EmailTypeChoices
+from ...emails.models import EmailConfig
+from ...emails.tests.factories import AutomaticEmailFactory
 from ...report.models import DestructionReport
 from ...tests.utils import mock_service_oas_get
 from ..constants import ListItemStatus, ListStatus, ReviewStatus
@@ -356,8 +359,18 @@ class NotifyTests(TestCase):
         self.assertEqual(200, response_csv.status_code)
         self.assertGreater(len(response_csv.content), 0)
 
-    @override_settings(DEFAULT_FROM_EMAIL="email@test.avc")
     def test_all_deleted_cases_are_in_destruction_report(self, m):
+        config = EmailConfig.get_solo()
+        config.municipality = "Example"
+        config.from_email = "email@test.avc"
+        config.save()
+
+        AutomaticEmailFactory.create(
+            type=EmailTypeChoices.report_available,
+            body="Report is available!",
+            subject="Report",
+        )
+
         archivaris = UserFactory.create(
             role__type=RoleTypeChoices.archivist,
             role__can_review_destruction=True,
@@ -433,14 +446,11 @@ class NotifyTests(TestCase):
 
         sent_mail = mail.outbox[0]
 
-        self.assertEqual(
-            "Declaration of destruction - Nice list (2021-02-15)", sent_mail.subject
-        )
+        self.assertEqual("Report", sent_mail.subject)
         self.assertEqual("email@test.avc", sent_mail.from_email)
         self.assertIn(archivaris.email, sent_mail.to)
         self.assertEqual(
-            "Destruction list 'Nice list' has been processed. The report of destruction is attached to this email.",
-            sent_mail.body,
+            "Report is available!", sent_mail.body,
         )
         self.assertEqual(1, len(sent_mail.attachments))
 

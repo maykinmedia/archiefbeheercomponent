@@ -69,3 +69,8 @@
 </article>
 
 {% endblock %}
+
+{% block links %}
+    <a href="{% url 'emails:email-preference-update' user.emailpreference.pk %}" class="link">{% trans 'Email preferences' %}</a>
+    &nbsp;
+{% endblock %}
