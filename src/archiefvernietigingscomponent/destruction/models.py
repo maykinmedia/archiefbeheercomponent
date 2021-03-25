@@ -370,3 +370,19 @@ class ArchiveConfig(SingletonModel):
 
     class Meta:
         verbose_name = _("archive configuration")
+
+
+class StandardReviewAnswer(models.Model):
+    reason = models.CharField(
+        verbose_name=_("reason"),
+        max_length=200,
+        help_text=_("Reason for the reviewer to request changes to a list."),
+    )
+    order = models.PositiveSmallIntegerField(
+        verbose_name=_("order"),
+        help_text=_("Order in which the reasons are shown to the user."),
+    )
+
+    class Meta:
+        verbose_name = _("standard review answers")
+        verbose_name_plural = _("standard review answers")
