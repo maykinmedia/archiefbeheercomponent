@@ -2,7 +2,6 @@ import copy
 import logging
 import re
 
-from django.conf import settings
 from django.core.mail import EmailMessage
 from django.db import models
 from django.urls import reverse
@@ -40,6 +39,11 @@ class EmailConfig(SingletonModel):
         max_length=200,
         help_text=_("The municipality on behalf of which the emails are sent."),
     )
+    from_email = models.EmailField(
+        _("from email"),
+        help_text=_("The email address to use to send the automatic emails"),
+        default="archiefvernietigingscomponent@example.com",
+    )
 
     class Meta:
         verbose_name = _("email configuration")
@@ -74,10 +78,12 @@ class AutomaticEmail(models.Model):
         :param report: type DestructionReport (optional)
         :rtype: None
         """
+        config = EmailConfig.get_solo()
+
         email = EmailMessage(
             subject=self.subject,
             body=self.compose_body(recipient, destruction_list, report),
-            from_email=settings.DEFAULT_FROM_EMAIL,
+            from_email=config.from_email,
             to=[recipient.email],
         )
         if report:
