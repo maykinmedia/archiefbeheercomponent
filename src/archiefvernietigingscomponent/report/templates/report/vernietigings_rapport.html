@@ -2,12 +2,9 @@
 
 <head>
     <style>
-        table, th, td {
-            table-layout: fixed;
+        th, td {
             border: 1px solid black;
             border-collapse: collapse;
-        }
-        th, td {
             font-size: 12px;
             padding: 2px;
             text-align: left;
@@ -15,12 +12,22 @@
         }
         @page{
             margin: 1cm;
+            size: A4 landscape;
+            @bottom-center{
+                content: counter(page) "/" counter(pages);
+            }
+        }
+        table {
+            border: 1px solid black;
+            border-collapse: collapse;
+            table-layout: auto;
+            width: 100%;
         }
     </style>
 </head>
 
-<table style="width:100%">
-    <caption>{% trans "Format state of desctruction" %}</caption>
+<table>
+    <caption>{% trans "Destruction report" %}</caption>
     <tr>
         <th>{% trans "Unique ID" %}</th>
         {% if not contains_sensitive_info %}
