@@ -70,8 +70,30 @@ Default roles
 
     The default roles add 4 :ref:`roles` in the application.
 
-2. Navigate to ``http://127.0.0.1:8000`` and use the credentials created above 
+2. Navigate to ``http://127.0.0.1:8000`` and use the credentials created above
    to log in.
+
+
+Default emails
+--------------
+
+To use default emails to be sent throughout the review process of a destruction list,
+load the following fixture.
+
+    .. tabs::
+
+        .. group-tab:: Docker
+
+           .. code:: shell
+
+              $ docker-compose exec web src/manage.py loaddata default_emails
+
+        .. group-tab:: Python
+
+          .. code:: shell
+
+              $ source env/bin/activate
+              $ python src/manage.py loaddata default_emails
 
 
 If you want to enable the demo mode, continue to :ref:`demo`. You can also start

@@ -18,7 +18,7 @@ The Archiefvernietigingscomponent must be connected to an instance of Open Zaak.
 
 1. Navigate to the Archiefvernietigingscomponent admin.
 
-2. Configure the credentials for the Zaken API (so the 
+2. Configure the credentials for the Zaken API (so the
    Archiefvernietigingscomponent can access the Zaken API):
 
    a. Navigate to **API Autorisaties > Services**
@@ -69,7 +69,7 @@ Open Zaak
 
 1. Navigate to the Open Zaak admin.
 
-2. Configure the credentials for the Archiefvernietigingscomponent (so the 
+2. Configure the credentials for the Archiefvernietigingscomponent (so the
    Archiefvernietigingscomponent can access the various Open Zaak APIs):
 
    a. Navigate to **API Autorisaties > Applicaties**
@@ -290,7 +290,7 @@ Navigate to **Configuratie > Archiveringsconfiguratie** to specify the
 Theme settings
 ==============
 
-You can easily change the colors, logo and footer texts to match the ones from 
+You can easily change the colors, logo and footer texts to match the ones from
 your organizaton.
 
 Navigate to **Configuration > Thema configuratie** to configure the theme.
@@ -320,9 +320,20 @@ in the admin in **Configuratie > Automatische emails**, then no emails will be s
 To load default automatic emails, a fixture is present. This can be loaded with the following command (from the
 ``archiefvernietigingscomponent/`` directory):
 
-.. code-block:: bash
+    .. tabs::
 
-    python src/manage.py loaddata src/archiefvernietigingscomponent/fixtures/automatic_emails_defaults.json
+        .. group-tab:: Docker
+
+           .. code:: shell
+
+              $ docker-compose exec web src/manage.py loaddata default_emails
+
+        .. group-tab:: Python
+
+          .. code:: shell
+
+              $ source env/bin/activate
+              $ python src/manage.py loaddata default_emails
 
 A few variables can be used in the email body. These are:
 

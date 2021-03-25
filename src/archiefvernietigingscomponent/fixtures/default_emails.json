@@ -3,7 +3,7 @@
     "model": "emails.emailconfig",
     "pk": 1,
     "fields": {
-      "municipality": "Delft"
+      "municipality": "Example"
     }
   },
   {
