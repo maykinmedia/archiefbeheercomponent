@@ -123,8 +123,9 @@ Once a list has been destroyed, a report of destruction is created. The report c
 The fields with asterisk are optional. They are only present if the record manager unchecked the checkbox
 ``Contains sensitive details`` when they created the destruction list.
 
-The destruction report is an HTML file with the information mentioned above for each case that was destroyed.
-The report is sent via email to the archivist who reviewed the list and the process owner can
+The destruction report is generated both as a PDF and a CSV file. It contains the information mentioned above
+for each case that was destroyed.
+The link to the report is sent via email to the archivist who reviewed the list and the process owner can
 download the report within the AVC app. The link can be found in the page with path ``vernietigen/reviews/`` after
 filtering for lists that have already been reviewed. All lists with an associated report will have a link
 (see image below).
