@@ -1,0 +1,24 @@
+{% extends "master.html" %}{% load i18n %}
+
+{% block content %}
+<header>
+    <h1 class="title">{% trans "My email preferences" %}</h1>
+</header>
+
+<article class="email-preference">
+        <form action="" method="post" class="form">
+            {% csrf_token %}
+            <div class="email-preference__input">
+                {{ form.preference.errors }}
+                <label for="{{ form.preference.id_for_label }}">{% trans "I would like to be notified by email when:" %}</label>
+                {{ form.preference }}
+            </div>
+
+
+            <div class="form__submit-row">
+                <button type="submit" class="btn">{% trans "Submit" %}</button>
+            </div>
+        </form>
+</article>
+
+{% endblock %}

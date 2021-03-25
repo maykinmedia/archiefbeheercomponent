@@ -127,6 +127,7 @@ INSTALLED_APPS = [
     "archiefvernietigingscomponent.demo",
     "archiefvernietigingscomponent.theme",
     "archiefvernietigingscomponent.report",
+    "archiefvernietigingscomponent.emails",
 ]
 
 MIDDLEWARE = [

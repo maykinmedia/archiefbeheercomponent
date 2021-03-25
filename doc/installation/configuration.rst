@@ -18,7 +18,7 @@ The Archiefvernietigingscomponent must be connected to an instance of Open Zaak.
 
 1. Navigate to the Archiefvernietigingscomponent admin.
 
-2. Configure the credentials for the Zaken API (so the 
+2. Configure the credentials for the Zaken API (so the
    Archiefvernietigingscomponent can access the Zaken API):
 
    a. Navigate to **API Autorisaties > Services**
@@ -69,7 +69,7 @@ Open Zaak
 
 1. Navigate to the Open Zaak admin.
 
-2. Configure the credentials for the Archiefvernietigingscomponent (so the 
+2. Configure the credentials for the Archiefvernietigingscomponent (so the
    Archiefvernietigingscomponent can access the various Open Zaak APIs):
 
    a. Navigate to **API Autorisaties > Applicaties**
@@ -290,7 +290,7 @@ Navigate to **Configuratie > Archiveringsconfiguratie** to specify the
 Theme settings
 ==============
 
-You can easily change the colors, logo and footer texts to match the ones from 
+You can easily change the colors, logo and footer texts to match the ones from
 your organizaton.
 
 Navigate to **Configuration > Thema configuratie** to configure the theme.
@@ -300,3 +300,49 @@ Setting the domain
 
 In the admin, under **Configuratie > Websites**, make sure to change the existing `Site` to the domain under which
 the Archiefvernietigingscomponent will be deployed.
+
+
+Automatic emails
+================
+
+The system administrator can decide to configure automatic emails to be sent to the reviewers and/or the
+record manager. This can be done through the admin, under **Configuratie > Automatische emails**
+
+If there are already automatic emails present, they can be edited. There are three types of automatic emails:
+
+- Review required: for when a reviewer has a destruction list to review.
+- Changes required: for when a record manager needs to process the feedback form a reviewer.
+- Report available: for when a destruction report is sent to the archivist.
+
+A custom email subject and email body can be configured for each type of email. If no automatic emails are present
+in the admin in **Configuratie > Automatische emails**, then no emails will be sent.
+
+To load default automatic emails, a fixture is present. This can be loaded with the following command (from the
+``archiefvernietigingscomponent/`` directory):
+
+    .. tabs::
+
+        .. group-tab:: Docker
+
+           .. code:: shell
+
+              $ docker-compose exec web src/manage.py loaddata default_emails
+
+        .. group-tab:: Python
+
+          .. code:: shell
+
+              $ source env/bin/activate
+              $ python src/manage.py loaddata default_emails
+
+A few variables can be used in the email body. These are:
+
+- ``{{ user}}``: it will be replaced with the full name (first name and last name) of the user receiving the email.
+- ``{{ municipality }}``: it will be replaced with the name of the municipality sending the email.
+- ``{{ list }}``: it will be replaced with the name of the destruction list.
+- ``{{ link_list }}``: it will be replaced with the link to the destruction list.
+- ``{{ link_report }}``: it will be replaced with the link to where the PDF of the destruction report can be downloaded.
+
+.. note:: In order to use the variable ``{{ municipality }}``, the municipality name needs to be configured under **Configuratie > Email configuratie**.
+
+.. note:: The variable ``{{ link_report }}`` can only be used in the email of type "Report available".
