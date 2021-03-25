@@ -29,7 +29,7 @@ class AutomaticEmailAdminTest(WebTest):
 
     def test_correct_variables(self):
         user = UserFactory.create(is_staff=True, is_superuser=True)
-        config = EmailConfig.objects.create()
+        config = EmailConfig.get_solo()
         config.municipality = "Gemeente Y"
         config.save()
 
@@ -85,6 +85,10 @@ class AutomaticEmailAdminTest(WebTest):
         self.assertEqual(0, AutomaticEmail.objects.count())
 
     def test_no_municipality_configured(self):
+        config = EmailConfig.get_solo()
+        config.municipality = ""
+        config.save()
+
         user = UserFactory.create(is_staff=True, is_superuser=True)
 
         response = self.app.get(reverse("admin:emails_automaticemail_add"), user=user)
@@ -96,6 +100,8 @@ class AutomaticEmailAdminTest(WebTest):
         form["subject"] = "Test subject"
 
         response = form.submit()
+
+        self.assertEqual(200, response.status_code)
 
         self.assertIn(
             "When using the municipality variable, a municipality name needs to be configured.",

@@ -20,6 +20,7 @@ from archiefvernietigingscomponent.notifications.models import Notification
 from ...accounts.tests.factories import UserFactory
 from ...constants import RoleTypeChoices
 from ...emails.constants import EmailTypeChoices
+from ...emails.models import EmailConfig
 from ...emails.tests.factories import AutomaticEmailFactory
 from ...report.models import DestructionReport
 from ...tests.utils import mock_service_oas_get
@@ -358,8 +359,12 @@ class NotifyTests(TestCase):
         self.assertEqual(200, response_csv.status_code)
         self.assertGreater(len(response_csv.content), 0)
 
-    @override_settings(DEFAULT_FROM_EMAIL="email@test.avc")
     def test_all_deleted_cases_are_in_destruction_report(self, m):
+        config = EmailConfig.get_solo()
+        config.municipality = "Example"
+        config.from_email = "email@test.avc"
+        config.save()
+
         AutomaticEmailFactory.create(
             type=EmailTypeChoices.report_available,
             body="Report is available!",

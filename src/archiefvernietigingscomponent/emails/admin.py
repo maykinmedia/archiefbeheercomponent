@@ -16,7 +16,6 @@ class AutomaticEmailAdmin(admin.ModelAdmin):
     list_filter = ("type",)
     search_fields = ("type",)
 
-    # fields = ("type", "subject", "body")
     form = AutomaticEmailForm
 
 
