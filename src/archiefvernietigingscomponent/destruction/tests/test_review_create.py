@@ -18,6 +18,7 @@ from .factories import (
     DestructionListItemFactory,
     DestructionListReviewCommentFactory,
     DestructionListReviewFactory,
+    StandardReviewAnswerFactory,
 )
 
 MANAGEMENT_FORM_DATA = {
@@ -477,3 +478,26 @@ class CreateReviewViewContextTest(TestCase):
 
         # Archivist can see everything since it's not sensitive
         self.assertTrue(response.context["show_optional_columns"])
+
+    def test_review_answers(self):
+        StandardReviewAnswerFactory.create(reason="choice 1", order=1)
+        StandardReviewAnswerFactory.create(reason="choice 2", order=2)
+
+        destruction_list = DestructionListFactory.create()
+        process_owner = UserFactory.create(
+            role__can_review_destruction=True, role__type=RoleTypeChoices.process_owner,
+        )
+        DestructionListAssigneeFactory.create(
+            destruction_list=destruction_list, assignee=process_owner
+        )
+
+        url = reverse("destruction:reviewer-create", args=[destruction_list.id])
+
+        self.client.force_login(process_owner)
+        response = self.client.get(url)
+
+        self.assertIn("standard_review_choices", response.context)
+
+        choices = response.context["standard_review_choices"]
+
+        self.assertEqual([("choice 1", "choice 1"), ("choice 2", "choice 2")], choices)
