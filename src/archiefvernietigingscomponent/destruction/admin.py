@@ -12,6 +12,7 @@ from .models import (
     DestructionListItemReview,
     DestructionListReview,
     DestructionListReviewComment,
+    StandardReviewAnswer,
 )
 
 
@@ -111,3 +112,8 @@ class ArchiveConfigAdmin(SingletonModelAdmin):
 
         response = super().changeform_view(request, object_id, form_url, extra_context)
         return response
+
+
+@admin.register(StandardReviewAnswer)
+class StandardReviewAnswerAdmin(admin.ModelAdmin):
+    list_display = ("reason", "order")
