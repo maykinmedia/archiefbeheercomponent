@@ -2,7 +2,7 @@ import copy
 import logging
 import re
 
-from django.core.mail import EmailMessage
+from django.core.mail import send_mail
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -80,19 +80,12 @@ class AutomaticEmail(models.Model):
         """
         config = EmailConfig.get_solo()
 
-        email = EmailMessage(
+        send_mail(
             subject=self.subject,
-            body=self.compose_body(recipient, destruction_list, report),
+            message=self.compose_body(recipient, destruction_list, report),
             from_email=config.from_email,
-            to=[recipient.email],
+            recipient_list=[recipient.email],
         )
-        if report:
-            email.attach(
-                filename=report.get_filename(),
-                content=report.content_pdf.read(),
-                mimetype="application/pdf",
-            )
-        email.send()
 
     def compose_body(self, recipient, destruction_list, report=None) -> str:
         """
