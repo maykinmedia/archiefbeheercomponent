@@ -1,7 +1,7 @@
 {
   "name": "archiefvernietigingscomponent",
-  "version": "1.0.0-alpha.0",
-  "description": "RMA project",
+  "version": "1.0.0",
+  "description": "Archiefvernietigingscomponent project",
   "main": "src/static/archiefvernietigingscomponent/js/archiefvernietigingscomponent.js",
   "directories": {
     "doc": "doc"
