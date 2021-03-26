@@ -26,6 +26,10 @@ billiard==3.6.3.0
     #   celery
 black==19.10b0
     # via -r requirements/dev.in
+bump2version==1.0.1
+    # via bumpversion
+bumpversion==0.6.0
+    # via -r requirements/dev.in
 cairocffi==1.2.0
     # via
     #   -r requirements/ci.txt
