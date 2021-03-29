@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_better_admin_arrayfield.models.fields import ArrayField
 from django_fsm import FSMField, transition
+from ordered_model.models import OrderedModel
 from solo.models import SingletonModel
 from timeline_logger.models import TimelineLog
 
@@ -370,3 +371,15 @@ class ArchiveConfig(SingletonModel):
 
     class Meta:
         verbose_name = _("archive configuration")
+
+
+class StandardReviewAnswer(OrderedModel):
+    reason = models.CharField(
+        verbose_name=_("reason"),
+        max_length=200,
+        help_text=_("Reason for the reviewer to request changes to a list."),
+    )
+
+    class Meta(OrderedModel.Meta):
+        verbose_name = _("standard review answers")
+        verbose_name_plural = _("standard review answers")

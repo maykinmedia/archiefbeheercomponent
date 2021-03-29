@@ -1,0 +1,82 @@
+[
+  {
+    "model": "destruction.standardreviewanswer",
+    "pk": 1,
+    "fields": {
+      "reason": "Zaken die van belang zijn voor de huidige bedrijfsvoering/nog andere lopende zaken.",
+      "order": 1
+    }
+  },
+  {
+    "model": "destruction.standardreviewanswer",
+    "pk": 2,
+    "fields": {
+      "reason": "Zaken die bij een vastgestelde Hotspot behoren.",
+      "order": 2
+    }
+  },
+  {
+    "model": "destruction.standardreviewanswer",
+    "pk": 3,
+    "fields": {
+      "reason": "Zaken met een uniek karakter.",
+      "order": 3
+    }
+  },
+  {
+    "model": "destruction.standardreviewanswer",
+    "pk": 4,
+    "fields": {
+      "reason": "Bijzondere gebeurtenissen.",
+      "order": 4
+    }
+  },
+  {
+    "model": "destruction.standardreviewanswer",
+    "pk": 5,
+    "fields": {
+      "reason": "Beeldbepalende, karakteristieke, bijzondere objecten.",
+      "order": 5
+    }
+  },
+  {
+    "model": "destruction.standardreviewanswer",
+    "pk": 6,
+    "fields": {
+      "reason": "Samenvattingen van gegevens.",
+      "order": 6
+    }
+  },
+  {
+    "model": "destruction.standardreviewanswer",
+    "pk": 7,
+    "fields": {
+      "reason": "Belangrijke burgers en functionarissen.",
+      "order": 7
+    }
+  },
+  {
+    "model": "destruction.standardreviewanswer",
+    "pk": 8,
+    "fields": {
+      "reason": "Bescheiden die vervangen wat door een calamiteit verloren is gegaan.",
+      "order": 8
+    }
+  },
+  {
+    "model": "destruction.standardreviewanswer",
+    "pk": 9,
+    "fields": {
+      "reason": "Precedenten: individuele zaken die leiden tot algemene regels.",
+      "order": 9
+    }
+  },
+  {
+    "model": "destruction.standardreviewanswer",
+    "pk": 10,
+    "fields": {
+      "reason": "Bescheiden waarbij de vernietiging de logische samenhang zou verstoren.",
+      "order": 10
+    }
+  }
+]

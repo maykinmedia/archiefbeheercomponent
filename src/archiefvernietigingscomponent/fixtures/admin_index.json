@@ -34,11 +34,25 @@
             ],
             [
                 "destruction",
-                "destructionlistassignee"
+                "destructionlistitem"
             ],
             [
+                "report",
+                "destructionreport"
+            ]
+        ]
+    }
+},
+{
+    "model": "admin_index.appgroup",
+    "fields": {
+        "order": 5,
+        "name": "Reviews",
+        "slug": "reviews",
+        "models": [
+            [
                 "destruction",
-                "destructionlistitem"
+                "destructionlistassignee"
             ],
             [
                 "destruction",
@@ -49,12 +63,12 @@
                 "destructionlistreview"
             ],
             [
-                "report",
-                "destructionreport"
+                "destruction",
+                "destructionlistreviewcomment"
             ],
             [
                 "destruction",
-                "destructionlistreviewcomment"
+                "standardreviewanswer"
             ]
         ]
     }

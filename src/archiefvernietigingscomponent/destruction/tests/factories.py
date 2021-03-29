@@ -57,3 +57,11 @@ class DestructionListAssigneeFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = "destruction.DestructionListAssignee"
+
+
+class StandardReviewAnswerFactory(factory.django.DjangoModelFactory):
+    reason = factory.Faker("text")
+    order = factory.Sequence(lambda n: n)
+
+    class Meta:
+        model = "destruction.StandardReviewAnswer"

@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from fsm_admin.mixins import FSMTransitionMixin
+from ordered_model.admin import OrderedModelAdmin
 from solo.admin import SingletonModelAdmin
 
 from .forms import ArchiveConfigForm, get_zaaktype_choices
@@ -12,6 +13,7 @@ from .models import (
     DestructionListItemReview,
     DestructionListReview,
     DestructionListReviewComment,
+    StandardReviewAnswer,
 )
 
 
@@ -111,3 +113,8 @@ class ArchiveConfigAdmin(SingletonModelAdmin):
 
         response = super().changeform_view(request, object_id, form_url, extra_context)
         return response
+
+
+@admin.register(StandardReviewAnswer)
+class StandardReviewAnswerAdmin(OrderedModelAdmin):
+    list_display = ("reason", "move_up_down_links")

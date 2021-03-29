@@ -8,7 +8,7 @@ Quickstart
 ==========
 
 This is the minimal configuration and assumes you loaded in the default roles
-described in the :ref:`default-roles`. You can also define your own roles as
+described in the :ref:`defaults`. You can also define your own roles as
 described in the :ref:`more-configuration`.
 
 Services
@@ -127,6 +127,8 @@ The Archiefvernietigingscomponent has a simple permission system, consisting of 
   Someone with this permission is allowed to view more details about a case. This could
   be part of the review process or destruction list creation process.
 
+.. _Roles configuration:
+
 Roles
 -----
 
@@ -151,6 +153,30 @@ Typical example roles would be:
     - *can view case details*: no
 
 You can create as many roles as you want and name them as you see fit.
+
+There is a fixture to load default roles.
+
+    .. tabs::
+
+        .. group-tab:: Docker
+
+           .. code:: shell
+
+              $ docker-compose exec web src/manage.py loaddata default_roles
+
+        .. group-tab:: Python
+
+          .. code:: shell
+
+              $ source env/bin/activate
+              $ python src/manage.py loaddata default_roles
+
+This adds 4 :ref:`roles` in the application: process owner, archivist, record
+manager and functional administrator.
+Process owner, archivist and record manager are described :ref:`here <roles>`,
+while the functional administrator is a role with all the permissions of the
+three roles above combined.
+
 
 Accounts
 --------
@@ -301,6 +327,7 @@ Setting the domain
 In the admin, under **Configuratie > Websites**, make sure to change the existing `Site` to the domain under which
 the Archiefvernietigingscomponent will be deployed.
 
+.. _Automatic emails:
 
 Automatic emails
 ================
@@ -346,3 +373,49 @@ A few variables can be used in the email body. These are:
 .. note:: In order to use the variable ``{{ municipality }}``, the municipality name needs to be configured under **Configuratie > Email configuratie**.
 
 .. note:: The variable ``{{ link_report }}`` can only be used in the email of type "Report available".
+
+.. _Standard review answers:
+
+Standard review answers
+=======================
+
+When a reviewer asks for changes to a destruction list, they can choose from a drop down the reason why
+they are asking for changes. These reasons can be configured in the admin under
+**Reviews > Standard review aantwoorden** and then **Standard review aantwoorden toevoegen**.
+Both the text and the order in which these reasons will appear in the dropdown can be configured.
+Once you have added multiple reasons in the admin, you can use the up and down arrows on the right
+(see screenshot below) to change the order.
+
+.. image:: _assets/standard_reasons.png
+    :width: 100%
+    :alt: Reorder standard reasons
+
+To load in default reasons, the fixture `default_review_answers` can be loaded as follows:
+
+    .. tabs::
+
+        .. group-tab:: Docker
+
+           .. code:: shell
+
+              $ docker-compose exec web src/manage.py loaddata default_review_answers
+
+        .. group-tab:: Python
+
+          .. code:: shell
+
+              $ source env/bin/activate
+              $ python src/manage.py loaddata default_review_answers
+
+This feature will load the following reasons (in this order):
+
+- Zaken die van belang zijn voor de huidige bedrijfsvoering/nog andere lopende zaken.
+- Zaken die bij een vastgestelde Hotspot behoren.
+- Zaken met een uniek karakter.
+- Bijzondere gebeurtenissen.
+- Beeldbepalende, karakteristieke, bijzondere objecten.
+- Samenvattingen van gegevens.
+- Belangrijke burgers en functionarissen.
+- Bescheiden die vervangen wat door een calamiteit verloren is gegaan.
+- Precedenten: individuele zaken die leiden tot algemene regels.
+- Bescheiden waarbij de vernietiging de logische samenhang zou verstoren.

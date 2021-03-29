@@ -4,6 +4,7 @@ import axios from "axios";
 import {HiddenInput, TextInput} from "../../forms/inputs";
 import {ReviewItemFormset} from "./review-item-formset";
 import {ConstantsContext, SuggestionContext} from "./context";
+import {SelectInput, SelectWithCustomOption} from "../../forms/select";
 
 const STATUS_TO_BUTTON = {
     "approved": "Accorderen",
@@ -12,9 +13,8 @@ const STATUS_TO_BUTTON = {
 };
 
 
-const ReviewForm = ({ itemsUrl, destructionList, reviewComment }) => {
+const ReviewForm = ({ itemsUrl, destructionList, reviewComment, reviewChoices }) => {
     const { zaakDetailPermission } = useContext(ConstantsContext);
-    const [comment, setComment] = useState("");
 
     // load list items
     const [error, setError] = useState(null);
@@ -110,13 +110,13 @@ const ReviewForm = ({ itemsUrl, destructionList, reviewComment }) => {
             {getReviewComment()}
 
             <div className="review-create__comment">
-                <TextInput
+                <SelectWithCustomOption
                     name="text"
                     id="id_text"
                     required={reviewStatus !== "approved"}
-                    initial={comment}
+                    choices={reviewChoices}
                     label="Opmerkingen"
-                    onChange={(event) => setComment(event.target.value)}
+                    customOtherChoiceLabel={'Anders'}
                 />
             </div>
 

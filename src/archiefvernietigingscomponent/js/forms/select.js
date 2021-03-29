@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
 
-import { RadioInput } from './inputs';
+import {HiddenInput, RadioInput, TextArea, TextInput} from './inputs';
 import { Help } from './help';
 import { Label } from './label';
 import { ErrorList, Wrapper } from './wrapper';
@@ -104,5 +104,50 @@ const RadioSelect = (props) => {
     )
 };
 
+const SelectWithCustomOption = (props) => {
+    const {choices, label, required, name, id, customOtherChoiceLabel} = props;
+    const [selectedOption, setSelectedOption] = useState('');
+    const [commentValue, setCommentValue] = useState('');
 
-export {SelectInput, SelectMultipleInput, RadioSelect};
+    const emptyChoice = [['', '------']];
+    const otherChoiceLabel = customOtherChoiceLabel ? customOtherChoiceLabel : 'Other'
+    const allChoices = emptyChoice.concat(choices, [[otherChoiceLabel, otherChoiceLabel]]);
+
+    const internalOnChange = (chosenValue) => {
+        setSelectedOption(chosenValue);
+        if (chosenValue !== otherChoiceLabel) {
+            setCommentValue(chosenValue)
+        }
+    }
+
+    return (
+        <React.Fragment>
+            <SelectInput
+              name={`${name}_select`}
+              id={`${id}_select`}
+              initial={''}
+              label={label}
+              choices={allChoices}
+              selected={selectedOption}
+              required={required}
+              onChange={internalOnChange}
+            />
+            <HiddenInput id={id} name={name} value={commentValue} />
+            {selectedOption !== otherChoiceLabel ? null :
+                <React.Fragment>
+                    <label>Voeg nog een reden toe:</label>
+                    <TextArea
+                        disabled={selectedOption !== otherChoiceLabel}
+                        required={selectedOption === otherChoiceLabel}
+                        onChange={(event) => {setCommentValue(event.target.value)}}
+                    />
+                </React.Fragment>
+            }
+
+        </React.Fragment>
+    );
+
+}
+
+
+export {SelectInput, SelectMultipleInput, RadioSelect, SelectWithCustomOption};

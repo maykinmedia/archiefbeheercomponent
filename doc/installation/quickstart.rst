@@ -43,14 +43,14 @@ Getting started with Docker
 
         $ docker-compose exec web src/manage.py createsuperuser
 
-.. _default-roles:
+.. _defaults:
 
-Default roles
--------------
+Defaults
+========
 
 .. warning:: Loading the default roles could overwrite existing user accounts.
 
-1. Load the default roles:
+1. Load the default roles, email contents and review answers:
 
     .. tabs::
 
@@ -58,42 +58,21 @@ Default roles
 
            .. code:: shell
 
-              $ docker-compose exec web src/manage.py loaddata default_roles
+              $ docker-compose exec web src/manage.py loaddata default_roles default_emails default_review_answers
 
         .. group-tab:: Python
 
           .. code:: shell
 
               $ source env/bin/activate
-              $ python src/manage.py loaddata default_roles
+              $ python src/manage.py loaddata default_roles default_emails default_review_answers
 
-
-    The default roles add 4 :ref:`roles` in the application.
+    To learn more about the roles, emails and review answers, go
+    :ref:`here <Roles configuration>`, :ref:`here <Automatic emails>` and :ref:`here <Standard review answers>`
+    respectively.
 
 2. Navigate to ``http://127.0.0.1:8000`` and use the credentials created above
    to log in.
-
-
-Default emails
---------------
-
-To use default emails to be sent throughout the review process of a destruction list,
-load the following fixture.
-
-    .. tabs::
-
-        .. group-tab:: Docker
-
-           .. code:: shell
-
-              $ docker-compose exec web src/manage.py loaddata default_emails
-
-        .. group-tab:: Python
-
-          .. code:: shell
-
-              $ source env/bin/activate
-              $ python src/manage.py loaddata default_emails
 
 
 If you want to enable the demo mode, continue to :ref:`demo`. You can also start
