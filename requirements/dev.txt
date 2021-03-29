@@ -301,7 +301,7 @@ pytz==2020.1
     #   celery
     #   django
     #   flower
-pyyaml==5.3.1
+pyyaml==5.4
     # via
     #   -r requirements/ci.txt
     #   gemma-zds-client
