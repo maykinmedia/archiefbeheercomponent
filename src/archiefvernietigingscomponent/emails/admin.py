@@ -30,4 +30,4 @@ class EmailPreferenceAdmin(admin.ModelAdmin):
 
 @admin.register(EmailConfig)
 class EmailConfigsAdmin(SingletonModelAdmin):
-    fields = ("municipality",)
+    fields = ("municipality", "from_email")
