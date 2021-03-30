@@ -8,8 +8,8 @@ const SelectShortReviewZaaktypen = ({zaaktypeChoices, initialZaaktypes}) => {
     const [selectedZaaktypes, setSelectedZaaktypes] = useState(initialZaaktypes);
 
     return (
-        <div className="form-row field-short_review_zaaktypes">
-            <label htmlFor={"id_short_review_zaaktypes"}>Short review zaaktypen:</label>
+        <React.Fragment>
+            <label htmlFor={"id_short_review_zaaktypes"}>Zaaktypen met verkort vernietigingsproces:</label>
             <ZaaktypeSelect
                 zaaktypen={zaaktypeChoices}
                 selectedZaaktypen={selectedZaaktypes}
@@ -18,7 +18,7 @@ const SelectShortReviewZaaktypen = ({zaaktypeChoices, initialZaaktypes}) => {
                 }}
                 checkboxName='short_review_zaaktypes'
             />
-        </div>
+        </React.Fragment>
     );
 };
 
