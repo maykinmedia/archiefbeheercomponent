@@ -1,0 +1,20 @@
+{% load i18n %}
+<code class="log-item__title" title="{{ log.timestamp.isoformat }}">
+    <strong>[{{ log.timestamp|date:'Y-m-d H:i' }}]:</strong>
+</code>
+
+<div class="log-item__body">
+    {% if log.extra_data.n_items %}
+        {% blocktrans with list=log.content_object.destruction_list role=log.user.role count counter=log.extra_data.n_items trimmed %}
+            User with role <strong>{{ role }}</strong> has reviewed the list <strong>{{ list }}</strong>
+            and requested changes for {{ counter }} item.
+        {% plural %}
+            User with role <strong>{{ role }}</strong> has reviewed the list <strong>{{ list }}</strong>
+            and requested changes for {{ counter }} items.
+        {% endblocktrans %}
+    {% else %}
+        {% blocktrans with list=log.content_object.destruction_list role=log.user.role %}
+            User with role <strong>{{ role }}</strong> has approved the list <strong>{{ list }}</strong>.
+        {% endblocktrans %}
+    {% endif %}
+</div>

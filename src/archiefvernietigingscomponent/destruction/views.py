@@ -152,7 +152,7 @@ class DestructionListCreateView(RoleRequiredMixin, CreateView):
         TimelineLog.log_from_request(
             self.request,
             destruction_list,
-            template="destruction/logs/created.txt",
+            template="destruction/logs/created.html",
             n_items=destruction_list.items.count(),
             reviewers=list(
                 destruction_list.assignees.values("assignee__id", "assignee__username")
@@ -221,7 +221,7 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
         TimelineLog.log_from_request(
             self.request,
             destruction_list,
-            template="destruction/logs/aborted.txt",
+            template="destruction/logs/aborted.html",
             n_items=destruction_list.items.count(),
         )
 
@@ -256,7 +256,7 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
         TimelineLog.log_from_request(
             self.request,
             destruction_list,
-            template="destruction/logs/updated.txt",
+            template="destruction/logs/updated.html",
             n_items=destruction_list.items.filter(
                 status=ListItemStatus.removed
             ).count(),
@@ -415,7 +415,7 @@ class ReviewCreateView(RoleRequiredMixin, UserPassesTestMixin, CreateWithInlines
         TimelineLog.log_from_request(
             self.request,
             list_review,
-            template="destruction/logs/review_created.txt",
+            template="destruction/logs/review_created.html",
             n_items=list_review.item_reviews.count(),
         )
         # send notification

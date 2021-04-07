@@ -90,7 +90,7 @@ class DestructionListUpdateTests(TestCase):
         # check log
         timeline_log = TimelineLog.objects.get()
         self.assertEqual(timeline_log.user, self.user)
-        self.assertEqual(timeline_log.template, "destruction/logs/updated.txt")
+        self.assertEqual(timeline_log.template, "destruction/logs/updated.html")
 
         # check notification
         notification = Notification.objects.get()
@@ -150,7 +150,7 @@ class DestructionListUpdateTests(TestCase):
         # check log
         timeline_log = TimelineLog.objects.get()
         self.assertEqual(timeline_log.user, self.user)
-        self.assertEqual(timeline_log.template, "destruction/logs/aborted.txt")
+        self.assertEqual(timeline_log.template, "destruction/logs/aborted.html")
 
         # Check notification
         # Since the User is both the author and the assignee, no notification is sent
@@ -204,7 +204,7 @@ class DestructionListUpdateTests(TestCase):
         # check log
         timeline_log = TimelineLog.objects.get()
         self.assertEqual(timeline_log.user, self.user)
-        self.assertEqual(timeline_log.template, "destruction/logs/aborted.txt")
+        self.assertEqual(timeline_log.template, "destruction/logs/aborted.html")
 
         # Check notification
         notifications = Notification.objects.filter(destruction_list=destruction_list)

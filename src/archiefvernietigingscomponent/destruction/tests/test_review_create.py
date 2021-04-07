@@ -100,7 +100,7 @@ class ReviewCreateTests(DLMixin, TestCase):
         #  check logs
         timeline_log = review.logs.get()
         self.assertEqual(timeline_log.user, self.user)
-        self.assertEqual(timeline_log.template, "destruction/logs/review_created.txt")
+        self.assertEqual(timeline_log.template, "destruction/logs/review_created.html")
 
         #  check notifications
         notifications = Notification.objects.all()
@@ -160,7 +160,7 @@ class ReviewCreateTests(DLMixin, TestCase):
         #  check logs
         timeline_log = review.logs.get()
         self.assertEqual(timeline_log.user, self.user)
-        self.assertEqual(timeline_log.template, "destruction/logs/review_created.txt")
+        self.assertEqual(timeline_log.template, "destruction/logs/review_created.html")
 
         #  check notifications
         notifications = Notification.objects.order_by("created").all()
@@ -215,7 +215,7 @@ class ReviewCreateTests(DLMixin, TestCase):
         #  check logs
         timeline_log = review.logs.get()
         self.assertEqual(timeline_log.user, self.user)
-        self.assertEqual(timeline_log.template, "destruction/logs/review_created.txt")
+        self.assertEqual(timeline_log.template, "destruction/logs/review_created.html")
 
         #  check notifications
         notifications = Notification.objects.order_by("created").all()
@@ -258,7 +258,7 @@ class ReviewCreateTests(DLMixin, TestCase):
         #  check logs
         timeline_log = review.logs.get()
         self.assertEqual(timeline_log.user, self.user)
-        self.assertEqual(timeline_log.template, "destruction/logs/review_created.txt")
+        self.assertEqual(timeline_log.template, "destruction/logs/review_created.html")
 
         #  check notification
         notification = Notification.objects.get()

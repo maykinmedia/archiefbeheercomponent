@@ -59,7 +59,7 @@ class CreateDestructionListTests(TestCase):
         # check that a log entry was created
         timeline_log = destruction_list.logs.get()
         self.assertEqual(timeline_log.user, self.user)
-        self.assertEqual(timeline_log.template, "destruction/logs/created.txt")
+        self.assertEqual(timeline_log.template, "destruction/logs/created.html")
 
         # check that notifications were sent
         notification = Notification.objects.get()

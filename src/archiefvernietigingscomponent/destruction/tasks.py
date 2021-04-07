@@ -69,7 +69,7 @@ def process_list_item(list_item_id):
         list_item.save()
         TimelineLog.objects.create(
             content_object=list_item,
-            template="destruction/logs/item_destruction_failed.txt",
+            template="destruction/logs/item_destruction_failed.html",
             extra_data={"zaak": None, "error": traceback.format_exc(),},
         )
         return
@@ -98,7 +98,7 @@ def process_list_item(list_item_id):
         list_item.fail()
         TimelineLog.objects.create(
             content_object=list_item,
-            template="destruction/logs/item_destruction_failed.txt",
+            template="destruction/logs/item_destruction_failed.html",
             extra_data={
                 "zaak": zaak["identificatie"],
                 "error": traceback.format_exc(),
@@ -108,7 +108,7 @@ def process_list_item(list_item_id):
         list_item.complete()
         TimelineLog.objects.create(
             content_object=list_item,
-            template="destruction/logs/item_destruction_succeeded.txt",
+            template="destruction/logs/item_destruction_succeeded.html",
             extra_data={"zaak": zaak["identificatie"]},
         )
 
@@ -229,12 +229,12 @@ def update_zaak_from_list_item(list_item_id: str, archive_data: dict):
 
         TimelineLog.objects.create(
             content_object=list_item,
-            template="destruction/logs/item_update_failed.txt",
+            template="destruction/logs/item_update_failed.html",
             extra_data={"zaak": None, "error": traceback.format_exc()},
         )
     else:
         TimelineLog.objects.create(
             content_object=list_item,
-            template="destruction/logs/item_update_succeeded.txt",
+            template="destruction/logs/item_update_succeeded.html",
             extra_data={"zaak": zaak["identificatie"]},
         )

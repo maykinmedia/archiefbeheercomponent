@@ -1,7 +1,0 @@
-<time class="log-item__title" title="{{ log.timestamp.isoformat }}">
-    {{ log.timestamp|timesince }} geleden
-</time>
-
-<div class="log-item__body">
-    Zaak <strong>{{ log.extra_data.zaak }}</strong> is vernietigd.
-</div>

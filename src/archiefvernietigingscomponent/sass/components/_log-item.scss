@@ -3,8 +3,10 @@
 
 .log-item {
 
-  padding: 1em;
+  padding: 0 1em;
   border-radius: 3px;
+  display: flex;
+  margin: 0.25em 0;
 
   &:hover {
     background: #fedede;
@@ -12,8 +14,6 @@
 
   @include element("title") {
     display: block;
-    margin-bottom: 0.5em;
-    text-decoration: underline;
   }
 
   @include element("body") {
@@ -25,10 +25,4 @@
       padding: 0.5em;
     }
   }
-
-  @include element("user") {
-    font-weight: bold;
-    color: $color-primary;
-  }
-
 }
