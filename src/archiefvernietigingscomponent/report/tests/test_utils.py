@@ -3,6 +3,8 @@ from unittest.mock import patch
 from django.test import TestCase, override_settings
 
 from freezegun import freeze_time
+from lxml.html import document_fromstring
+from timeline_logger.models import TimelineLog
 
 from archiefvernietigingscomponent.accounts.tests.factories import UserFactory
 from archiefvernietigingscomponent.constants import RoleTypeChoices
@@ -17,6 +19,7 @@ from archiefvernietigingscomponent.destruction.tests.factories import (
     DestructionListReviewFactory,
 )
 from archiefvernietigingscomponent.report.utils import (
+    create_audittrail_report,
     get_destruction_list_archivaris_comments,
     get_destruction_report_data,
     get_looptijd,
@@ -707,3 +710,95 @@ class DestructionReportUtilsTests(TestCase):
         self.assertEqual(1, len(report_data))
 
         self.assertEqual("ZAAK-2", report_data[0]["identificatie"])
+
+    def test_logs_from_right_list_are_shown(self):
+        record_manager = UserFactory.create(role__type=RoleTypeChoices.record_manager)
+        archivaris = UserFactory.create(role__type=RoleTypeChoices.archivist)
+
+        destruction_list_1 = DestructionListFactory.create(author=record_manager)
+        review_1 = DestructionListReviewFactory.create(
+            destruction_list=destruction_list_1, author=archivaris
+        )
+        destruction_list_2 = DestructionListFactory.create(author=record_manager)
+        review_2 = DestructionListReviewFactory.create(
+            destruction_list=destruction_list_2, author=archivaris
+        )
+
+        TimelineLog.objects.create(
+            content_object=destruction_list_1,
+            template="destruction/logs/created.html",
+            extra_data={"n_items": 3},
+            user=record_manager,
+        )
+        TimelineLog.objects.create(
+            content_object=review_1,
+            template="destruction/logs/review_created.html",
+            user=archivaris,
+        )
+        # These should not appear in the audit trail report, because they are not related to the right list
+        TimelineLog.objects.create(
+            content_object=destruction_list_2,
+            template="destruction/logs/created.html",
+            extra_data={"n_items": 3},
+            user=record_manager,
+        )
+        TimelineLog.objects.create(
+            content_object=review_2,
+            template="destruction/logs/review_created.html",
+            user=archivaris,
+        )
+
+        report = create_audittrail_report(destruction_list_1)
+        html_report = document_fromstring(report)
+
+        self.assertEqual(2, len(html_report.find_class("log-item")))
+        self.assertIn(destruction_list_1.name, report)
+        self.assertNotIn(destruction_list_2.name, report)
+
+    def test_logs_are_in_correct_order(self):
+        record_manager = UserFactory.create(role__type=RoleTypeChoices.record_manager)
+        archivaris = UserFactory.create(role__type=RoleTypeChoices.archivist)
+
+        destruction_list = DestructionListFactory.create(author=record_manager)
+        review = DestructionListReviewFactory.create(
+            destruction_list=destruction_list, author=archivaris
+        )
+
+        with freeze_time("2012-01-14 12:00"):
+            TimelineLog.objects.create(
+                content_object=destruction_list,
+                template="destruction/logs/created.html",
+                extra_data={"n_items": 3},
+                user=record_manager,
+            )
+        with freeze_time("2012-01-14 12:05"):
+            TimelineLog.objects.create(
+                content_object=review,
+                template="destruction/logs/review_created.html",
+                user=archivaris,
+            )
+        with freeze_time("2012-01-14 12:10"):
+            TimelineLog.objects.create(
+                content_object=destruction_list,
+                template="destruction/logs/updated.html",
+                extra_data={"n_items": 1},
+                user=record_manager,
+            )
+        with freeze_time("2012-01-14 12:15"):
+            TimelineLog.objects.create(
+                content_object=destruction_list,
+                template="destruction/logs/aborted.html",
+                extra_data={"n_items": 3},
+                user=record_manager,
+            )
+
+        report = create_audittrail_report(destruction_list)
+        html_report = document_fromstring(report)
+
+        self.assertEqual(4, len(html_report.find_class("log-item")))
+
+        titles = html_report.find_class("log-item__title")
+        times = [title.text_content() for title in titles]
+        sorted_times = sorted(times)
+
+        self.assertEqual(times, sorted_times)
