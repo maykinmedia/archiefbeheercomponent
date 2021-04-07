@@ -1,0 +1,32 @@
+{% load i18n %}
+<head>
+    <style>
+        @page{
+            margin: 1cm;
+            @bottom-center{
+                content: counter(page) "/" counter(pages);
+            }
+        }
+        .log-item {
+            padding: 0 1em;
+            border-radius: 3px;
+            display: flex;
+            margin: 0.25em 0;
+            font-size: 12px;
+        }
+        .log-item > .log-item__title {
+            display: block;
+        }
+
+        .log-item > .log-item__body {
+            padding-left: 1em;
+        }
+
+    </style>
+</head>
+
+<h2>Audit trail</h2>
+
+{% for log in logs %}
+    <div class="log-item">{{ log.get_message }}</div>
+{% endfor %}
