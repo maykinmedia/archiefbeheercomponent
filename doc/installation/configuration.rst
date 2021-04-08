@@ -419,3 +419,25 @@ This feature will load the following reasons (in this order):
 - Bescheiden die vervangen wat door een calamiteit verloren is gegaan.
 - Precedenten: individuele zaken die leiden tot algemene regels.
 - Bescheiden waarbij de vernietiging de logische samenhang zou verstoren.
+
+Audit trails
+============
+
+In version ``1.0``, the templates used for the audit trail have been renamed. Their extension was changed from
+``.txt`` to ``.html``. A management command was added to change the template name in all existing logs.
+This can be executed as follows:
+
+    .. tabs::
+
+        .. group-tab:: Docker
+
+           .. code:: shell
+
+              $ docker-compose exec web src/manage.py convert_log_templates
+
+        .. group-tab:: Python
+
+          .. code:: shell
+
+              $ source env/bin/activate
+              $ python src/manage.py convert_log_templates

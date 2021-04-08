@@ -145,6 +145,9 @@ filtering for lists that have already been reviewed. All lists with an associate
     :width: 100%
     :alt: Download destruction report
 
+In addition, the PDF of the destruction report contains the audit trail of the destruction process.
+It shows in chronological order which actions have been performed and the role of the user who performed
+the action.
 
 Audit trails, logs and notifications
 ====================================
