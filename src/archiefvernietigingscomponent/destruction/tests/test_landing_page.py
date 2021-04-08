@@ -72,6 +72,24 @@ class RecordManagerTests(WebTest):
         with self.subTest(message=msg):
             self.assertNotContains(response, msg)
 
+    def test_filters_rendered(self):
+        response = self.app.get(
+            reverse("destruction:record-manager-list"), user=self.user
+        )
+
+        filters = response.html.find_all(attrs="destruction-list__filters")
+
+        self.assertEqual(1, len(filters))
+
+        options = filters[0].find_all("input")
+
+        self.assertEqual(4, len(options))
+
+        values = sorted([option.attrs["value"] for option in options])
+        expected_values = ["action_required", "all", "completed", "in_progress"]
+
+        self.assertEqual(expected_values, values)
+
 
 class ReviewerTests(WebTest):
     """
