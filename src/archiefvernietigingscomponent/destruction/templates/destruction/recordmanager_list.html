@@ -8,6 +8,14 @@
 </header>
 
 <article class="destruction-list">
+    <section class="destruction-list__filters">
+        <form action="" method="get">
+            <label>{% trans "Status" %}</label>
+            {{ filter.form.list_status }}
+            <button type="submit" class="btn">Filter</button>
+        </form>
+    </section>
+
     <section class="destruction-list__content">
         <header class="destruction-list__header">
             <nav class="destruction-list__nav">
