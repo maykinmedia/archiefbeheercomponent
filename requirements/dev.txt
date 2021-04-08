@@ -219,11 +219,6 @@ idna==2.9
     #   requests
 imagesize==1.2.0
     # via sphinx
-importlib-metadata==3.7.3
-    # via
-    #   -r requirements/ci.txt
-    #   flake8
-    #   kombu
 isort==5.0.3
     # via -r requirements/dev.in
 jinja2==2.11.3
@@ -238,8 +233,6 @@ lxml==4.6.3
     #   pyquery
 markupsafe==1.1.1
     # via jinja2
-maykin-django-better-admin-arrayfield==1.0.5
-    # via -r requirements/ci.txt
 mccabe==0.6.1
     # via flake8
 packaging==20.4
@@ -391,10 +384,6 @@ tornado==6.0.4
     #   flower
 typed-ast==1.4.1
     # via black
-typing-extensions==3.7.4.3
-    # via
-    #   -r requirements/ci.txt
-    #   importlib-metadata
 urllib3==1.25.9
     # via
     #   -r requirements/ci.txt
@@ -430,10 +419,6 @@ webtest==2.0.35
     #   django-webtest
 zgw-consumers==0.10.2
     # via -r requirements/ci.txt
-zipp==3.4.1
-    # via
-    #   -r requirements/ci.txt
-    #   importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip

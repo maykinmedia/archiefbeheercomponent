@@ -188,18 +188,12 @@ idna==2.9
     # via
     #   -r requirements/base.txt
     #   requests
-importlib-metadata==3.7.3
-    # via
-    #   -r requirements/base.txt
-    #   kombu
 kombu==4.6.10
     # via
     #   -r requirements/base.txt
     #   celery
 lxml==4.6.3
     # via pyquery
-maykin-django-better-admin-arrayfield==1.0.5
-    # via -r requirements/base.txt
 pillow==8.1.1
     # via
     #   -r requirements/base.txt
@@ -294,10 +288,6 @@ tornado==6.0.4
     # via
     #   -r requirements/base.txt
     #   flower
-typing-extensions==3.7.4.3
-    # via
-    #   -r requirements/base.txt
-    #   importlib-metadata
 urllib3==1.25.9
     # via
     #   -r requirements/base.txt
@@ -327,10 +317,6 @@ webtest==2.0.35
     # via django-webtest
 zgw-consumers==0.10.2
     # via -r requirements/base.txt
-zipp==3.4.1
-    # via
-    #   -r requirements/base.txt
-    #   importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
