@@ -28,5 +28,6 @@ to `Common Ground`_ principles as a re-usable application.
    :maxdepth: 1
    :caption: Further reading
 
+   integration
    team
    open-source/index

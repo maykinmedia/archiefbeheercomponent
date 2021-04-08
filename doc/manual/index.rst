@@ -13,3 +13,4 @@ can follow a certain destruction process.
    roles
    destruction
    step-by-step
+   faq
