@@ -73,6 +73,17 @@ with sensitive information. If the checkbox is checked (default), the report of 
 Once the confirmation button is clicked, the list is created and assigned to the first
 reviewer.
 
+Lists overview
+--------------
+
+In the start page, the record manager has an overview of all the lists that they created.
+To facilitate searching through the lists, there are filters on the left-hand side:
+
+- In progress (*In behandeling*): lists that are waiting to be reviewed and lists that have been approved, but are waiting to be processed.
+- Action required (*Actie vereist*): lists that have been reviewed, but not approved. The reviewer may either have asked for changes or rejected them.
+- Completed (*Verwerkt*): lists that have been processed and the cases have been deleted.
+- All (*Alle*): All lists.
+
 Destruction list review
 =======================
 
