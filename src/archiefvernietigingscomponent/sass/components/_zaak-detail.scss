@@ -3,7 +3,7 @@
 
 .zaak-detail {
 
-  @include element("header") {
+  @include element("link") {
     padding: 1em;
   }
 

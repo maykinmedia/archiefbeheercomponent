@@ -27,7 +27,7 @@ const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, setAction, archi
     );
 
     return (
-        <Modal isOpen={modalIsOpen} className="modal">
+        <Modal isOpen={modalIsOpen} className="modal" bodyOpenClassName="modal-background__open">
             <article className="list-item-modal">
                 <button onClick={closeModal} className="modal__close btn">&times;</button>
                 <h1 className="title modal__title">{zaak.identificatie}</h1>
