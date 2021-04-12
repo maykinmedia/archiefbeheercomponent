@@ -3,6 +3,7 @@ from typing import List, Tuple
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.db import models, transaction
+from django.db.models import Q
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -308,13 +309,14 @@ class ReviewerDestructionListView(RoleRequiredMixin, FilterView):
     paginate_by = 20
 
     def get_queryset(self):
+        user = self.request.user
         review_status = DestructionListReview.objects.filter(
-            author=self.request.user, destruction_list=models.OuterRef("id")
+            author=user, destruction_list=models.OuterRef("id")
         ).values("status")
 
         prefiltered_qs = DestructionList.objects.filter(
-            assignee=self.request.user
-        ) | DestructionList.objects.reviewed_by(self.request.user)
+            Q(assignee=user) | Q(reviews__author=user)
+        ).distinct()
 
         return prefiltered_qs.annotate(
             review_status=models.Subquery(review_status[:1])
