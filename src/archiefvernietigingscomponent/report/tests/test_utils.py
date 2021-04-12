@@ -13,6 +13,9 @@ from archiefvernietigingscomponent.destruction.constants import (
     ListStatus,
     ReviewStatus,
 )
+from archiefvernietigingscomponent.destruction.models import (
+    DestructionListReviewComment,
+)
 from archiefvernietigingscomponent.destruction.tests.factories import (
     DestructionListFactory,
     DestructionListItemFactory,
@@ -802,3 +805,57 @@ class DestructionReportUtilsTests(TestCase):
         sorted_times = sorted(times)
 
         self.assertEqual(times, sorted_times)
+
+    def test_logs_contain_comments(self):
+        record_manager = UserFactory.create(role__type=RoleTypeChoices.record_manager)
+        archivaris = UserFactory.create(role__type=RoleTypeChoices.archivist)
+
+        destruction_list = DestructionListFactory.create(author=record_manager)
+        review_1 = DestructionListReviewFactory.create(
+            destruction_list=destruction_list,
+            author=archivaris,
+            text="This is a comment for the author.",
+        )
+        author_comment = DestructionListReviewComment.objects.create(
+            text="This is a comment for the reviewer.", review=review_1
+        )
+
+        review_2 = DestructionListReviewFactory.create(
+            destruction_list=destruction_list, author=archivaris, text=""
+        )
+
+        TimelineLog.objects.create(
+            content_object=destruction_list,
+            template="destruction/logs/created.html",
+            extra_data={"n_items": 3},
+            user=record_manager,
+        )
+        TimelineLog.objects.create(
+            content_object=review_1,
+            template="destruction/logs/review_created.html",
+            user=archivaris,
+            extra_data={"n_items": 1, "text": review_1.text},
+        )
+        TimelineLog.objects.create(
+            content_object=destruction_list,
+            template="destruction/logs/updated.html",
+            user=record_manager,
+            extra_data={"n_items": 1, "text": author_comment.text},
+        )
+        TimelineLog.objects.create(
+            content_object=review_2,
+            template="destruction/logs/review_created.html",
+            user=archivaris,
+            extra_data={"n_items": 1, "text": review_2.text},
+        )
+
+        report = create_audittrail_report(destruction_list)
+        html_report = document_fromstring(report)
+
+        self.assertEqual(4, len(html_report.find_class("log-item")))
+
+        # The second review should not have this tag, because the review text was empty
+        self.assertEqual(1, len(html_report.find_class("log-item__review-text")))
+        self.assertIn("This is a comment for the author.", report)
+        self.assertEqual(1, len(html_report.find_class("log-item__author-comment")))
+        self.assertIn("This is a comment for the reviewer.", report)
