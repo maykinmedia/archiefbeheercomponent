@@ -1,8 +1,8 @@
 .. _destruction:
 
-===================
-Destruction process
-===================
+============================
+Destruction process overview
+============================
 
 The destruction process takes care of destroying the case data, with respect to their
 archiving law parameters.

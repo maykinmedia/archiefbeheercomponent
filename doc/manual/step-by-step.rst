@@ -1,8 +1,13 @@
-====================
-Step by step process
-====================
+============================
+Step by step process (Dutch)
+============================
 
 .. note:: This section is in Dutch and follows the same steps as the :ref:`demo`.
+
+Hieronder staat een typische workflow door het vernietigingsproces zoals dat
+mogelijk wordt gemaakt met deze applicatie. Het is mogelijk om het proces iets
+anders in te richten met behoudt van dezelfde functionaliteiten. Deze globale
+functionaliteiten staan beschreven in :ref:`destruction`.
 
 Recordmanager
 =============

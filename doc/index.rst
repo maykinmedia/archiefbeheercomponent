@@ -19,11 +19,13 @@ To get you started, you might find some of these links relevant:
 * How to use the application? Read the :ref:`manual`
 * Want to get started quickly? Follow the :ref:`quickstart`
 * Ready to install the application? Head over to :ref:`deployment`.
+* How to deal with local/domain data in other applications? Check out the :ref:`integration`.
 
 
 .. toctree::
+    :caption: Index
     :maxdepth: 3
 
-    installation/index
     introduction/index
+    installation/index
     manual/index
