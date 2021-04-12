@@ -252,17 +252,8 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
             self.abort_destruction_list(destruction_list)
             return response
 
-        # log
-        TimelineLog.log_from_request(
-            self.request,
-            destruction_list,
-            template="destruction/logs/updated.html",
-            n_items=destruction_list.items.filter(
-                status=ListItemStatus.removed
-            ).count(),
-        )
-
         # Check if there are comments from the author
+        comment_text = None
         if self.request.POST.get("text"):
             comment = DestructionListReviewComment(
                 review=destruction_list.last_review()
@@ -272,6 +263,19 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
                 comment_form.save()
             else:
                 super().forms_invalid(form, inlines)
+
+            comment_text = comment_form.cleaned_data["text"]
+
+        # log
+        TimelineLog.log_from_request(
+            self.request,
+            destruction_list,
+            template="destruction/logs/updated.html",
+            n_items=destruction_list.items.filter(
+                status=ListItemStatus.removed
+            ).count(),
+            text=comment_text if comment_text else "",
+        )
 
         # assign a reviewer
         destruction_list.assign(destruction_list.next_assignee())
@@ -417,6 +421,7 @@ class ReviewCreateView(RoleRequiredMixin, UserPassesTestMixin, CreateWithInlines
             list_review,
             template="destruction/logs/review_created.html",
             n_items=list_review.item_reviews.count(),
+            text=list_review.text,
         )
         # send notification
         message = _("{author} has reviewed the destruction list.").format(

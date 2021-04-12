@@ -18,4 +18,12 @@
             for review.
         {% endblocktrans %}
     {% endif %}
+
+    {% if log.extra_data.text %}
+        <div class="log-item__author-comment">
+            {% blocktrans with text=log.extra_data.text trimmed %}
+                <strong>Author's comment</strong>: {{ text }}
+            {% endblocktrans %}
+        </div>
+    {% endif %}
 </div>

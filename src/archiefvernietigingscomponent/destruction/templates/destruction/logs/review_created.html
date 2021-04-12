@@ -13,8 +13,16 @@
             and requested changes for {{ counter }} items.
         {% endblocktrans %}
     {% else %}
-        {% blocktrans with list=log.content_object.destruction_list role=log.user.role %}
+        {% blocktrans with list=log.content_object.destruction_list role=log.user.role trimmed %}
             User with role <strong>{{ role }}</strong> has approved the list <strong>{{ list }}</strong>.
         {% endblocktrans %}
+    {% endif %}
+
+    {% if log.extra_data.text %}
+        <div class="log-item__review-text">
+            {% blocktrans with text=log.extra_data.text trimmed %}
+                <strong>Reviewer's comment</strong>: {{ text }}
+            {% endblocktrans %}
+        </div>
     {% endif %}
 </div>
