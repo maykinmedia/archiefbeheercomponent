@@ -85,6 +85,10 @@ class ReviewerTests(WebTest):
         cls.list_to_review = DestructionListFactory.create(
             assignee=cls.user, name="list to review"
         )
+        DestructionListReviewFactory.create(
+            destruction_list=cls.list_to_review, author=cls.user
+        )
+
         cls.list_reviewed = DestructionListFactory.create(name="list reviewed")
         DestructionListReviewFactory.create(
             destruction_list=cls.list_reviewed, author=cls.user
