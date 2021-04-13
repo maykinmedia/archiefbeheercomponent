@@ -3,7 +3,6 @@ from typing import List, Tuple
 
 from django import forms
 from django.contrib.postgres.forms import SimpleArrayField
-from django.forms.models import BaseInlineFormSet
 
 from archiefvernietigingscomponent.accounts.models import User
 
@@ -117,14 +116,18 @@ class ReviewCommentForm(forms.ModelForm):
         fields = ("text",)
 
 
-class ReviewItemBaseFormset(BaseInlineFormSet):
+class ReviewItemBaseForm(forms.ModelForm):
+    identificatie = forms.CharField()
+
+    class Meta:
+        fields = ["destruction_list_item", "text", "suggestion", "identificatie"]
+
     def save(self, commit=True):
         # save only items with suggestions
-        instances = super().save(commit=False)
+        instance = super().save(commit=False)
 
-        for instance in instances:
-            if instance.suggestion:
-                instance.save()
+        if instance.suggestion:
+            instance.save()
 
 
 class ListItemForm(forms.ModelForm):
