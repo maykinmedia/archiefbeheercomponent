@@ -339,15 +339,15 @@ msgid "destruction lists"
 msgstr "vernietigingslijsten"
 
 #: archiefvernietigingscomponent/destruction/models.py:115
-#: archiefvernietigingscomponent/destruction/tests/test_destruction_list_create.py:67
-#: archiefvernietigingscomponent/destruction/tests/test_destruction_list_detail.py:99
-#: archiefvernietigingscomponent/destruction/tests/test_review_create.py:114
+#: archiefvernietigingscomponent/destruction/tests/test_destruction_list_create.py:71
+#: archiefvernietigingscomponent/destruction/tests/test_destruction_list_detail.py:113
+#: archiefvernietigingscomponent/destruction/tests/test_review_create.py:127
 msgid "You are assigned for review."
 msgstr "Je bent als reviewer aangewezen."
 
 #: archiefvernietigingscomponent/destruction/models.py:120
-#: archiefvernietigingscomponent/destruction/tests/test_review_create.py:174
-#: archiefvernietigingscomponent/destruction/tests/test_review_create.py:229
+#: archiefvernietigingscomponent/destruction/tests/test_review_create.py:201
+#: archiefvernietigingscomponent/destruction/tests/test_review_create.py:270
 msgid "There is a review to process."
 msgstr "Er is een te verwerken beoordeling."
 
@@ -560,19 +560,18 @@ msgstr[1] ""
 "strong> met %(counter)s zaken geannuleerd."
 
 #: archiefvernietigingscomponent/destruction/templates/destruction/logs/created.html:7
-#, python-format
 msgid ""
 "User with role <strong>%(role)s</strong> created the list <strong>%(list)s</"
-"strong> with %(counter)s case."
+"strong> with %(counter)s case:"
 msgid_plural ""
 "User with role <strong>%(role)s</strong> created the list <strong>%(list)s</"
-"strong> with %(counter)s cases."
+"strong> with %(counter)s cases:"
 msgstr[0] ""
 "Gebruiker met rol <strong>%(role)s</strong> heeft de lijst <strong>%(list)s</"
-"strong> met %(counter)s zaak aangemaakt."
+"strong> met %(counter)s zaak aangemaakt:"
 msgstr[1] ""
 "Gebruiker met rol <strong>%(role)s</strong> heeft de lijst <strong>%(list)s</"
-"strong> met %(counter)s zaken aangemaakt."
+"strong> met %(counter)s zaken aangemaakt:"
 
 #: archiefvernietigingscomponent/destruction/templates/destruction/logs/item_destruction_failed.html:7
 #, python-format
@@ -595,49 +594,56 @@ msgid "Case <strong>%(zaak)s</strong> was updated."
 msgstr "Zaak <strong>%(zaak)s</strong> is aangepast."
 
 #: archiefvernietigingscomponent/destruction/templates/destruction/logs/review_created.html:8
-#, python-format
+msgid ""
+"User with role <strong>%(role)s</strong> has rejected the list <strong>"
+"%(list)s</strong>."
+msgstr ""
+"Gebruiker met rol <strong>%(role)s</strong> heeft de lijst <strong>%(list)s</"
+"strong> afgewezen."
+
+#: archiefvernietigingscomponent/destruction/templates/destruction/logs/review_created.html:12
 msgid ""
 "User with role <strong>%(role)s</strong> has reviewed the list <strong>"
-"%(list)s</strong> and requested changes for %(counter)s item."
+"%(list)s</strong> and requested changes for %(counter)s item:"
 msgid_plural ""
 "User with role <strong>%(role)s</strong> has reviewed the list <strong>"
-"%(list)s</strong> and requested changes for %(counter)s items."
+"%(list)s</strong> and requested changes for %(counter)s items:"
 msgstr[0] ""
 "Gebruiker met rol <strong>%(role)s</strong> heeft de lijst <strong>%(list)s</"
-"strong> beoordeeld en heeft wijzigingen voor %(counter)s zaak vereist."
+"strong> beoordeeld en heeft wijzigingen voor %(counter)s zaak vereist:"
 msgstr[1] ""
 "Gebruiker met rol <strong>%(role)s</strong> heeft de lijst <strong>%(list)s</"
-"strong> beoordeeld en heeft wijzigingen voor %(counter)s zaken vereist."
+"strong> beoordeeld en heeft wijzigingen voor %(counter)s zaken vereist:"
 
-#: archiefvernietigingscomponent/destruction/templates/destruction/logs/review_created.html:16
+#: archiefvernietigingscomponent/destruction/templates/destruction/logs/review_created.html:26
+#, python-format
 msgid ""
 "User with role <strong>%(role)s</strong> has approved the list <strong>"
 "%(list)s</strong>."
 msgstr ""
-"Gebruiker met rol <strong>%(role)s</strong> heeft de lijst "
-"<strong>%(list)s</strong> goedgekeurd."
+"Gebruiker met rol <strong>%(role)s</strong> heeft de lijst <strong>%(list)s</"
+"strong> goedgekeurd."
 
-#: archiefvernietigingscomponent/destruction/templates/destruction/logs/review_created.html:23
+#: archiefvernietigingscomponent/destruction/templates/destruction/logs/review_created.html:33
 #, python-format
 msgid "<strong>Reviewer's comment</strong>: %(text)s"
 msgstr "<strong>Opmerking van de reviewer</strong>: %(text)s"
 
 #: archiefvernietigingscomponent/destruction/templates/destruction/logs/updated.html:8
-#, python-format
 msgid ""
 "User with role <strong>%(role)s</strong> has updated the list <strong>"
-"%(list)s</strong> and removed %(counter)s case."
+"%(list)s</strong> and removed %(counter)s case:"
 msgid_plural ""
 "User with role <strong>%(role)s</strong> has updated the list <strong>"
-"%(list)s</strong> and removed %(counter)s cases."
+"%(list)s</strong> and removed %(counter)s cases:"
 msgstr[0] ""
 "Gebruiker met rol <strong>%(role)s</strong> heeft de lijst <strong>%(list)s</"
-"strong> aangepast en heeft %(counter)s zaak weggehaald."
+"strong> aangepast en heeft %(counter)s zaak weggehaald:"
 msgstr[1] ""
 "Gebruiker met rol <strong>%(role)s</strong> heeft de lijst <strong>%(list)s</"
-"strong> aangepast en heeft %(counter)s zaken weggehaald."
+"strong> aangepast en heeft %(counter)s zaken weggehaald:"
 
-#: archiefvernietigingscomponent/destruction/templates/destruction/logs/updated.html:16
+#: archiefvernietigingscomponent/destruction/templates/destruction/logs/updated.html:22
 #, python-format
 msgid ""
 "User with role <strong>%(role)s</strong> has resubmitted the list <strong>"
@@ -646,7 +652,7 @@ msgstr ""
 "Gebruiker met rol <strong>%(role)s</strong> heeft de lijst <strong>%(list)s</"
 "strong> opnieuw ingediend."
 
-#: archiefvernietigingscomponent/destruction/templates/destruction/logs/updated.html:24
+#: archiefvernietigingscomponent/destruction/templates/destruction/logs/updated.html:30
 #, python-format
 msgid "<strong>Author's comment</strong>: %(text)s"
 msgstr "<strong>Opmerking van de auteur</strong>: %(text)s"
@@ -880,7 +886,7 @@ msgid "Destruction list for which the report was created."
 msgstr "Vernietingslijst waarvoor de verklaring van vernietiging is gemaakt."
 
 #: archiefvernietigingscomponent/report/models.py:52
-#: archiefvernietigingscomponent/report/templates/report/vernietigings_rapport.html:30
+#: archiefvernietigingscomponent/report/templates/report/vernietigings_rapport.html:29
 msgid "Destruction report"
 msgstr "Verklaring van vernietiging"
 
