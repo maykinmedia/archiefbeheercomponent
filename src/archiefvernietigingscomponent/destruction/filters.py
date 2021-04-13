@@ -62,8 +62,11 @@ class RecordManagerListFilter(FilterSet):
     def filter_list_status(self, queryset, name, value):
         if value == RecordManagerDisplay.in_progress:
             return queryset.filter(
-                Q(status=ListStatus.in_progress) | Q(status=ListStatus.processing),
-                ~Q(author=F("assignee")) | Q(assignee__isnull=True),
+                Q(
+                    Q(status=ListStatus.in_progress),
+                    ~Q(author=F("assignee")) | Q(assignee__isnull=True),
+                )
+                | Q(status=ListStatus.processing)
             )
         elif value == RecordManagerDisplay.completed:
             return queryset.filter(status=ListStatus.completed)
