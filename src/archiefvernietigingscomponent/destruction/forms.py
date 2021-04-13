@@ -54,6 +54,7 @@ class DestructionListForm(forms.ModelForm):
     reviewer_2 = forms.ModelChoiceField(
         queryset=User.objects.reviewers().all(), required=False
     )
+    zaken_identificaties = SimpleArrayField(forms.CharField(max_length=250))
 
     class Meta:
         model = DestructionList
@@ -62,6 +63,7 @@ class DestructionListForm(forms.ModelForm):
             "zaken",
             "reviewer_1",
             "reviewer_2",
+            "zaken_identificaties",
             "contains_sensitive_info",
         )
 

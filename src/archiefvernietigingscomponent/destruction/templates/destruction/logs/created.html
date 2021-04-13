@@ -6,9 +6,15 @@
 <div class="log-item__body">
     {% blocktrans with list=log.content_object role=log.user.role count counter=log.extra_data.n_items trimmed %}
         User with role <strong>{{ role }}</strong> created the list <strong>{{ list }}</strong>
-        with {{ counter }} case.
+        with {{ counter }} case:
     {% plural %}
         User with role <strong>{{ role }}</strong> created the list <strong>{{ list }}</strong>
-        with {{ counter }} cases.
+        with {{ counter }} cases:
     {% endblocktrans %}
+
+    <div class="log-item__cases">
+        {% for item in log.extra_data.items %}
+            {{ item }}{% if forloop.last %}. {% else %}, {% endif %}
+        {% endfor %}
+    </div>
 </div>

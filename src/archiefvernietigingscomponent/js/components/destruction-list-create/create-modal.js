@@ -2,7 +2,7 @@ import React, {useContext, useState} from "react";
 import Modal from 'react-modal';
 
 import { CsrfInput } from "../../forms/csrf";
-import {CheckboxInput, Input, TextInput} from "../../forms/inputs";
+import {CheckboxInput, HiddenInput, Input, TextInput} from "../../forms/inputs";
 import { SelectInput } from "../../forms/select";
 import {Label} from "../../forms/label";
 import {ShortReviewZaaktypesContext} from "./context";
@@ -58,6 +58,13 @@ const CreateModal = ({ zaken, checkboxes, modalIsOpen, setIsOpen, reviewers, url
                     id={"id_zaken"}
                     name={"zaken"}
                     initial={selectedUrls}
+                />
+                {/* Used to log the ID of the cases that are selected, so that the backend doesnt need to
+                fetch the zaken again. */}
+                <HiddenInput
+                    name="zaken_identificaties"
+                    id="id_zaken_identificaties"
+                    value={zaken.filter(zaak => checkboxes[zaak.url]).map(zaak => zaak.identificatie)}
                 />
 
                 <div className="form__field-group">

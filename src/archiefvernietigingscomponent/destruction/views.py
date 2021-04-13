@@ -157,6 +157,7 @@ class DestructionListCreateView(RoleRequiredMixin, CreateView):
             reviewers=list(
                 destruction_list.assignees.values("assignee__id", "assignee__username")
             ),
+            items=form.cleaned_data["zaken_identificaties"],
         )
 
         return response
