@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 
 from django_capture_on_commit_callbacks import capture_on_commit_callbacks
+from timeline_logger.models import TimelineLog
 
 from archiefvernietigingscomponent.accounts.tests.factories import UserFactory
 from archiefvernietigingscomponent.notifications.models import Notification
@@ -78,6 +79,7 @@ class ReviewCreateTests(DLMixin, TestCase):
                     f"item_reviews-{i}-destruction_list_item": item.id,
                     f"item_reviews-{i}-suggestion": "",
                     f"item_reviews-{i}-text": "",
+                    f"item_reviews-{i}-identificatie": f"ZAAK-{i}",
                 }
             )
 
@@ -98,9 +100,20 @@ class ReviewCreateTests(DLMixin, TestCase):
         self.assertEqual(review.destruction_list.assignee, next_assignee.assignee)
 
         #  check logs
-        timeline_log = review.logs.get()
-        self.assertEqual(timeline_log.user, self.user)
-        self.assertEqual(timeline_log.template, "destruction/logs/review_created.html")
+        logs = TimelineLog.objects.all()
+
+        self.assertEqual(1, logs.count())
+
+        log = logs.first()
+
+        self.assertEqual(log.user, self.user)
+        self.assertEqual(log.template, "destruction/logs/review_created.html")
+        self.assertIn("n_items", log.extra_data)
+        self.assertIn("items", log.extra_data)
+        self.assertIn("text", log.extra_data)
+        self.assertEqual(0, log.extra_data["n_items"])
+        self.assertEqual([], log.extra_data["items"])
+        self.assertEqual("some comment", log.extra_data["text"])
 
         #  check notifications
         notifications = Notification.objects.all()
@@ -129,12 +142,15 @@ class ReviewCreateTests(DLMixin, TestCase):
             "item_reviews-0-destruction_list_item": items[0].id,
             "item_reviews-0-suggestion": Suggestion.change_and_remove,
             "item_reviews-0-text": "some comment",
+            "item_reviews-0-identificatie": "ZAAK-00",
             "item_reviews-1-destruction_list_item": items[1].id,
             "item_reviews-1-suggestion": Suggestion.remove,
             "item_reviews-1-text": "",
+            "item_reviews-1-identificatie": "ZAAK-01",
             "item_reviews-2-destruction_list_item": items[2].id,
             "item_reviews-2-suggestion": "",
             "item_reviews-2-text": "",
+            "item_reviews-2-identificatie": "ZAAK-02",
         }
         data.update(MANAGEMENT_FORM_DATA)
 
@@ -158,9 +174,20 @@ class ReviewCreateTests(DLMixin, TestCase):
         self.assertEqual(review.destruction_list.assignee, destruction_list.author)
 
         #  check logs
-        timeline_log = review.logs.get()
-        self.assertEqual(timeline_log.user, self.user)
-        self.assertEqual(timeline_log.template, "destruction/logs/review_created.html")
+        logs = TimelineLog.objects.all()
+
+        self.assertEqual(1, logs.count())
+
+        log = logs.first()
+
+        self.assertEqual(log.user, self.user)
+        self.assertEqual(log.template, "destruction/logs/review_created.html")
+        self.assertIn("n_items", log.extra_data)
+        self.assertIn("items", log.extra_data)
+        self.assertIn("text", log.extra_data)
+        self.assertEqual(2, log.extra_data["n_items"])
+        self.assertEqual(["ZAAK-00", "ZAAK-01"], sorted(log.extra_data["items"]))
+        self.assertEqual("", log.extra_data["text"])
 
         #  check notifications
         notifications = Notification.objects.order_by("created").all()
@@ -189,12 +216,15 @@ class ReviewCreateTests(DLMixin, TestCase):
             "item_reviews-0-destruction_list_item": items[0].id,
             "item_reviews-0-suggestion": "",
             "item_reviews-0-text": "",
+            "item_reviews-0-identificatie": "ZAAK-00",
             "item_reviews-1-destruction_list_item": items[1].id,
             "item_reviews-1-suggestion": "",
             "item_reviews-1-text": "",
+            "item_reviews-1-identificatie": "ZAAK-01",
             "item_reviews-2-destruction_list_item": items[2].id,
             "item_reviews-2-suggestion": "",
             "item_reviews-2-text": "",
+            "item_reviews-2-identificatie": "ZAAK-02",
         }
         data.update(MANAGEMENT_FORM_DATA)
 
@@ -213,9 +243,20 @@ class ReviewCreateTests(DLMixin, TestCase):
         self.assertEqual(review.destruction_list.assignee, destruction_list.author)
 
         #  check logs
-        timeline_log = review.logs.get()
-        self.assertEqual(timeline_log.user, self.user)
-        self.assertEqual(timeline_log.template, "destruction/logs/review_created.html")
+        logs = TimelineLog.objects.all()
+
+        self.assertEqual(1, logs.count())
+
+        log = logs.first()
+
+        self.assertEqual(log.user, self.user)
+        self.assertEqual(log.template, "destruction/logs/review_created.html")
+        self.assertIn("n_items", log.extra_data)
+        self.assertIn("items", log.extra_data)
+        self.assertIn("text", log.extra_data)
+        self.assertEqual(0, log.extra_data["n_items"])
+        self.assertEqual([], log.extra_data["items"])
+        self.assertEqual("", log.extra_data["text"])
 
         #  check notifications
         notifications = Notification.objects.order_by("created").all()
