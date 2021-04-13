@@ -267,15 +267,21 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
 
             comment_text = comment_form.cleaned_data["text"]
 
+        # Get the identificaties of the removed zaken
+        removed_zaken = []
+        for list_item_form in inlines[0]:
+            action = list_item_form.cleaned_data.get("action")
+            if action:
+                removed_zaken.append(list_item_form.cleaned_data["identificatie"])
+
         # log
         TimelineLog.log_from_request(
             self.request,
             destruction_list,
             template="destruction/logs/updated.html",
-            n_items=destruction_list.items.filter(
-                status=ListItemStatus.removed
-            ).count(),
+            n_items=len(removed_zaken),
             text=comment_text if comment_text else "",
+            items=removed_zaken,
         )
 
         # assign a reviewer

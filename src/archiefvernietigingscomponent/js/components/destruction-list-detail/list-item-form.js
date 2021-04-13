@@ -88,6 +88,11 @@ const ListItemForm = ({ index, data }) => {
                         name={name_prefix("archiefactiedatum")}
                         value={archiefactiedatum}
                     />
+                    <HiddenInput
+                        id={id_prefix("identificatie")}
+                        name={name_prefix("identificatie")}
+                        value={zaak.identificatie}
+                    />
                 </td>
             </tr>
             <ListItemModal

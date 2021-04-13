@@ -132,9 +132,10 @@ class ListItemForm(forms.ModelForm):
     archiefnominatie = forms.CharField(required=False)
     # used charfield for easy conversion into json
     archiefactiedatum = forms.CharField(required=False)
+    identificatie = forms.CharField()
 
     class Meta:
-        fields = ("action", "archiefnominatie", "archiefactiedatum")
+        fields = ("action", "archiefnominatie", "archiefactiedatum", "identificatie")
 
     def save(self, commit=True):
         list_item = super().save(commit)
