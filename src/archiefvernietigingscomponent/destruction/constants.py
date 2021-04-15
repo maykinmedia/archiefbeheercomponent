@@ -34,6 +34,13 @@ class ReviewerDisplay(DjangoChoices):
     all = ChoiceItem("all", "alle")
 
 
+class RecordManagerDisplay(DjangoChoices):
+    in_progress = ChoiceItem("in_progress", _("In progress"))
+    action_required = ChoiceItem("action_required", _("Action required"))
+    completed = ChoiceItem("completed", _("Completed"))
+    all = ChoiceItem("all", _("All"))
+
+
 class ListStateDisplay(DjangoChoices):
     in_progress = ChoiceItem("in_progress", _("In progress"))
     changes_requested = ChoiceItem("changes_requested", _("Changes requested"))

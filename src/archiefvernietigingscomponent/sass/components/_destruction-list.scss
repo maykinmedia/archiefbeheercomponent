@@ -8,6 +8,21 @@ $scrollbar-color: darken($color-primary, 10%);
   justify-content: space-between;
   padding: 0 1em;
 
+  &__filters {
+    width: 15%;
+    padding-left: 1em;
+    padding-bottom: 1em;
+    border-right: dashed 1px #ddd;
+
+    ul {
+      padding-inline-start: 0;
+      }
+
+    li {
+      list-style-type: none;
+    }
+  }
+
   &__header {
     display: flex;
     align-items: center;
@@ -25,7 +40,7 @@ $scrollbar-color: darken($color-primary, 10%);
   }
 
   &__content {
-    width: 65%;
+    width: 50%;
     padding: 1em;
   }
 

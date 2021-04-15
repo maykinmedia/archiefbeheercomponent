@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.utils.timesince import timesince
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView
 from django.views.generic.base import RedirectView
 
 from django_filters.views import FilterView
@@ -28,7 +28,7 @@ from archiefvernietigingscomponent.notifications.models import Notification
 
 from ..constants import RoleTypeChoices
 from .constants import ListItemStatus, ListStatus, Suggestion
-from .filters import ReviewerListFilter
+from .filters import RecordManagerListFilter, ReviewerListFilter
 from .forms import (
     DestructionListForm,
     ListItemForm,
@@ -106,11 +106,12 @@ class DestructionListRedirectView(LoginRequiredMixin, RedirectView):
 # Record manager views
 
 
-class RecordManagerDestructionListView(RoleRequiredMixin, ListView):
+class RecordManagerDestructionListView(RoleRequiredMixin, FilterView):
     """ data for user who can start destruction lists"""
 
     role_permission = "can_start_destruction"
     template_name = "destruction/recordmanager_list.html"
+    filterset_class = RecordManagerListFilter
     paginate_by = 20
 
     def get_queryset(self):

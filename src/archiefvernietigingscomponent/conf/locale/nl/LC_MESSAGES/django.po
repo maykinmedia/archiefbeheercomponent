@@ -244,22 +244,35 @@ msgid "change_and_remove"
 msgstr "wijzingen en van lijst halen"
 
 #: archiefvernietigingscomponent/destruction/constants.py:38
+#: archiefvernietigingscomponent/destruction/constants.py:45
 msgid "In progress"
 msgstr "In behandeling"
 
 #: archiefvernietigingscomponent/destruction/constants.py:39
-msgid "Changes requested"
-msgstr "Wijzigingen verzocht"
+msgid "Action required"
+msgstr "Actie vereist"
 
 #: archiefvernietigingscomponent/destruction/constants.py:40
+msgid "Completed"
+msgstr "Verwerkt"
+
+#: archiefvernietigingscomponent/destruction/constants.py:41
+msgid "All"
+msgstr "Alle"
+
+#: archiefvernietigingscomponent/destruction/constants.py:46
+msgid "Changes requested"
+msgstr "Wijzigingen vereist"
+
+#: archiefvernietigingscomponent/destruction/constants.py:47
 msgid "Rejected"
 msgstr "Afgewezen"
 
-#: archiefvernietigingscomponent/destruction/constants.py:41
+#: archiefvernietigingscomponent/destruction/constants.py:48
 msgid "Approved"
 msgstr "Goedgekeurd"
 
-#: archiefvernietigingscomponent/destruction/constants.py:42
+#: archiefvernietigingscomponent/destruction/constants.py:49
 msgid "Finished"
 msgstr "Verwerkt"
 
@@ -585,25 +598,26 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: archiefvernietigingscomponent/destruction/templates/destruction/recordmanager_list.html:30
+#: archiefvernietigingscomponent/destruction/templates/destruction/recordmanager_list.html:13
+#: archiefvernietigingscomponent/destruction/templates/destruction/reviewer_list.html:14
+msgid "Status"
+msgstr "Status"
+
+#: archiefvernietigingscomponent/destruction/templates/destruction/recordmanager_list.html:38
 msgid "reviewers"
 msgstr "reviewers"
 
-#: archiefvernietigingscomponent/destruction/templates/destruction/recordmanager_list.html:52
+#: archiefvernietigingscomponent/destruction/templates/destruction/recordmanager_list.html:60
 #: archiefvernietigingscomponent/destruction/templates/destruction/reviewer_list.html:49
 #, python-format
 msgid "created %(since)s ago"
 msgstr "%(since)s geleden aangemaakt"
 
-#: archiefvernietigingscomponent/destruction/templates/destruction/recordmanager_list.html:74
+#: archiefvernietigingscomponent/destruction/templates/destruction/recordmanager_list.html:82
 #: archiefvernietigingscomponent/destruction/templates/destruction/reviewer_list.html:76
 #: archiefvernietigingscomponent/emails/models.py:143
 msgid "Email preferences"
 msgstr "E-mail voorkeuren"
-
-#: archiefvernietigingscomponent/destruction/templates/destruction/reviewer_list.html:14
-msgid "Status"
-msgstr "Status"
 
 #: archiefvernietigingscomponent/destruction/templates/destruction/reviewer_list.html:31
 msgid "You are the current assignee!"
@@ -614,7 +628,7 @@ msgid "Review"
 msgstr "Beoordelen"
 
 #: archiefvernietigingscomponent/destruction/tests/test_destruction_list_detail.py:218
-#: archiefvernietigingscomponent/destruction/views.py:230
+#: archiefvernietigingscomponent/destruction/views.py:231
 #, python-format
 msgid ""
 "%(author)s has aborted the destruction list. No further action is required."
@@ -623,7 +637,7 @@ msgstr ""
 "acties nodig."
 
 #: archiefvernietigingscomponent/destruction/tests/test_destruction_list_detail.py:253
-#: archiefvernietigingscomponent/destruction/views.py:246
+#: archiefvernietigingscomponent/destruction/views.py:247
 msgid ""
 "The destruction of this list can't be aborted because it has already been "
 "completed."
@@ -635,7 +649,7 @@ msgstr ""
 #: archiefvernietigingscomponent/destruction/tests/test_review_create.py:171
 #: archiefvernietigingscomponent/destruction/tests/test_review_create.py:226
 #: archiefvernietigingscomponent/destruction/tests/test_review_create.py:268
-#: archiefvernietigingscomponent/destruction/views.py:419
+#: archiefvernietigingscomponent/destruction/views.py:420
 #, python-brace-format
 msgid "{author} has reviewed the destruction list."
 msgstr "{author} heeft de vernietigingslijst beoordeeld."
