@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models import Q
 
 from django_filters import ChoiceFilter, FilterSet
 
@@ -28,9 +29,10 @@ class ReviewerListFilter(FilterSet):
         super().__init__(data, *args, **kwargs)
 
     def filter_reviewed(self, queryset, name, value):
+        user = self.request.user
         if value == ReviewerDisplay.to_review:
-            return queryset.filter(assignee=self.request.user)
+            return queryset.filter(assignee=user)
         elif value == ReviewerDisplay.reviewed:
-            return queryset.reviewed_by(self.request.user)
+            return queryset.filter(~Q(assignee=user))
         else:
             return queryset

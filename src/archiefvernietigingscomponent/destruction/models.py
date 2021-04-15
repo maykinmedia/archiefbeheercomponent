@@ -23,7 +23,6 @@ from .constants import (
     ReviewStatus,
     Suggestion,
 )
-from .query import DestructionListQuerySet
 
 
 class DestructionList(models.Model):
@@ -63,8 +62,6 @@ class DestructionList(models.Model):
         ),
         default=True,
     )
-
-    objects = DestructionListQuerySet.as_manager()
 
     class Meta:
         verbose_name = _("destruction list")
