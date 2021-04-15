@@ -5,12 +5,14 @@ from django.utils.translation import ugettext_lazy as _
 from hijack_admin.admin import HijackUserAdminMixin
 from ordered_model.admin import OrderedModelAdmin
 
+from ..emails.admin import EmailPreferenceInline
 from .models import Role, User
 
 
 @admin.register(User)
 class _UserAdmin(UserAdmin, HijackUserAdminMixin):
-    list_display = UserAdmin.list_display + ("hijack_field", "role")
+    list_display = UserAdmin.list_display + ("hijack_field", "role", "emailpreference")
+    inlines = [EmailPreferenceInline]
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = super().get_fieldsets(request, obj)

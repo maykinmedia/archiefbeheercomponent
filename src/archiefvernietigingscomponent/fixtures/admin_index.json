@@ -111,6 +111,10 @@
             [
                 "emails",
                 "emailconfig"
+            ],
+            [
+                "emails",
+                "emailpreference"
             ]
         ]
     }
