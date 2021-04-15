@@ -8,7 +8,7 @@ def add_email_preferences_for_old_users(apps, schema_editor):
     EmailPreference = apps.get_model("emails", "EmailPreference")
 
     for existing_user in User.objects.filter(emailpreference__isnull=True):
-            EmailPreference.objects.create(user=existing_user)
+        EmailPreference.objects.create(user=existing_user)
 
 
 class Migration(migrations.Migration):
