@@ -10,7 +10,7 @@
             {% csrf_token %}
             <div class="email-preference__input">
                 {{ form.preference.errors }}
-                <label for="{{ form.preference.id_for_label }}">{% trans "I would like to be notified by email when:" %}</label>
+                <label for="{{ form.preference.id_for_label }}">{% trans "I would like to be notified by email:" %}</label>
                 {{ form.preference }}
             </div>
 
