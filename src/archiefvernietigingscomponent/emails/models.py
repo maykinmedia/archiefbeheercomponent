@@ -143,4 +143,4 @@ class EmailPreference(models.Model):
         verbose_name_plural = _("Email preferences")
 
     def __str__(self):
-        return f"Email preferences of user {self.user}"
+        return str(EmailPreferenceChoices.get_choice(self.preference).label)

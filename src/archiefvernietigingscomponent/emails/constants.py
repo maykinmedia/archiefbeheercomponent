@@ -10,5 +10,5 @@ class EmailTypeChoices(DjangoChoices):
 
 
 class EmailPreferenceChoices(DjangoChoices):
-    action_required = ChoiceItem("action_required", _("An action is required"))
+    action_required = ChoiceItem("action_required", _("When an action is required"))
     never = ChoiceItem("never", _("Never"))
