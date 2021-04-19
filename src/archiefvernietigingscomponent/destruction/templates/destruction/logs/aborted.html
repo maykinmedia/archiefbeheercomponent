@@ -1,0 +1,14 @@
+{% load i18n %}
+<code class="log-item__title" title="{{ log.timestamp.isoformat }}">
+    <strong>[{{ log.timestamp|date:'Y-m-d H:i' }}]:</strong>
+</code>
+
+<div class="log-item__body">
+    {% blocktrans with list=log.content_object role=log.user.role count counter=log.extra_data.n_items trimmed %}
+        User with role <strong>{{ role }}</strong> has aborted the list <strong>{{ list }}</strong>
+        with {{ counter }} case.
+    {% plural %}
+        User with role <strong>{{ role }}</strong> has aborted the list <strong>{{ list }}</strong>
+        with {{ counter }} cases.
+    {% endblocktrans %}
+</div>

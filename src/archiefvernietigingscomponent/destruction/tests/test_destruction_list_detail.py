@@ -57,14 +57,17 @@ class DestructionListUpdateTests(TestCase):
             "items-0-action": Suggestion.change_and_remove,
             "items-0-archiefnominatie": "blijvend_bewaren",
             "items-0-archiefactiedatum": "2020-06-17",
+            "items-0-identificatie": "ZAAK-01",
             "items-1-id": list_items[1].id,
             "items-1-action": Suggestion.remove,
             "items-1-archiefnominatie": "vernietigen",
             "items-1-archiefactiedatum": "2020-06-16",
+            "items-1-identificatie": "ZAAK-02",
             "items-2-id": list_items[2].id,
             "items-2-action": "",
             "items-2-archiefnominatie": "vernietigen",
             "items-2-archiefactiedatum": "2020-06-15",
+            "items-2-identificatie": "ZAAK-03",
         }
         data.update(MANAGEMENT_FORM_DATA)
 
@@ -88,9 +91,20 @@ class DestructionListUpdateTests(TestCase):
         self.assertEqual(destruction_list.assignee, assignee.assignee)
 
         # check log
-        timeline_log = TimelineLog.objects.get()
-        self.assertEqual(timeline_log.user, self.user)
-        self.assertEqual(timeline_log.template, "destruction/logs/updated.txt")
+        logs = TimelineLog.objects.all()
+
+        self.assertEqual(1, logs.count())
+
+        log = logs.first()
+
+        self.assertEqual(log.user, self.user)
+        self.assertEqual(log.template, "destruction/logs/updated.html")
+        self.assertIn("n_items", log.extra_data)
+        self.assertIn("items", log.extra_data)
+        self.assertIn("text", log.extra_data)
+        self.assertEqual(2, log.extra_data["n_items"])
+        self.assertEqual(["ZAAK-01", "ZAAK-02"], sorted(log.extra_data["items"]))
+        self.assertEqual("", log.extra_data["text"])
 
         # check notification
         notification = Notification.objects.get()
@@ -129,6 +143,7 @@ class DestructionListUpdateTests(TestCase):
                     f"items-{i}-action": "",
                     f"items-{i}-archiefnominatie": "blijvend_bewaren",
                     f"items-{i}-archiefactiedatum": "2020-06-17",
+                    f"items-{i}-identificatie": f"ZAAK-{i}",
                 }
             )
 
@@ -150,7 +165,7 @@ class DestructionListUpdateTests(TestCase):
         # check log
         timeline_log = TimelineLog.objects.get()
         self.assertEqual(timeline_log.user, self.user)
-        self.assertEqual(timeline_log.template, "destruction/logs/aborted.txt")
+        self.assertEqual(timeline_log.template, "destruction/logs/aborted.html")
 
         # Check notification
         # Since the User is both the author and the assignee, no notification is sent
@@ -183,6 +198,7 @@ class DestructionListUpdateTests(TestCase):
                     f"items-{i}-action": "",
                     f"items-{i}-archiefnominatie": "blijvend_bewaren",
                     f"items-{i}-archiefactiedatum": "2020-06-17",
+                    f"items-{i}-identificatie": f"ZAAK-{i}",
                 }
             )
 
@@ -204,7 +220,7 @@ class DestructionListUpdateTests(TestCase):
         # check log
         timeline_log = TimelineLog.objects.get()
         self.assertEqual(timeline_log.user, self.user)
-        self.assertEqual(timeline_log.template, "destruction/logs/aborted.txt")
+        self.assertEqual(timeline_log.template, "destruction/logs/aborted.html")
 
         # Check notification
         notifications = Notification.objects.filter(destruction_list=destruction_list)
@@ -242,6 +258,7 @@ class DestructionListUpdateTests(TestCase):
                     f"items-{i}-action": "",
                     f"items-{i}-archiefnominatie": "blijvend_bewaren",
                     f"items-{i}-archiefactiedatum": "2020-06-17",
+                    f"items-{i}-identificatie": f"ZAAK-{i}",
                 }
             )
 
@@ -288,6 +305,7 @@ class DestructionListUpdateTests(TestCase):
             "items-0-action": "",
             "items-0-archiefnominatie": "blijvend_bewaren",
             "items-0-archiefactiedatum": "2020-06-17",
+            "items-0-identificatie": "ZAAK-01",
         }
 
         self.client.force_login(record_manager)
@@ -307,6 +325,17 @@ class DestructionListUpdateTests(TestCase):
         self.assertEqual("I disagree with these comments!", comment.text)
         self.assertEqual(record_manager, comment.review.destruction_list.author)
         self.assertEqual(destruction_list.last_review(), comment.review)
+
+        logs = TimelineLog.objects.all()
+
+        self.assertEqual(1, logs.count())
+
+        log = logs.first()
+
+        self.assertIn("items", log.extra_data)
+        self.assertIn("text", log.extra_data)
+        self.assertEqual([], log.extra_data["items"])
+        self.assertEqual("I disagree with these comments!", log.extra_data["text"])
 
     def test_list_author_can_leave_comment_empty(self, m):
         record_manager = UserFactory(
@@ -340,6 +369,7 @@ class DestructionListUpdateTests(TestCase):
             "items-0-action": "",
             "items-0-archiefnominatie": "blijvend_bewaren",
             "items-0-archiefactiedatum": "2020-06-17",
+            "items-0-identificatie": "ZAAK-01",
         }
 
         self.client.force_login(record_manager)
@@ -353,6 +383,15 @@ class DestructionListUpdateTests(TestCase):
         comments = DestructionListReviewComment.objects.all()
 
         self.assertEqual(0, comments.count())
+
+        logs = TimelineLog.objects.all()
+
+        self.assertEqual(1, logs.count())
+
+        log = logs.first()
+
+        self.assertIn("text", log.extra_data)
+        self.assertEqual("", log.extra_data["text"])
 
     def test_empty_comment_is_not_saved(self, m):
         record_manager = UserFactory(
@@ -386,6 +425,7 @@ class DestructionListUpdateTests(TestCase):
             "items-0-action": "",
             "items-0-archiefnominatie": "blijvend_bewaren",
             "items-0-archiefactiedatum": "2020-06-17",
+            "items-0-identificatie": "ZAAK-01",
             "text": "",
         }
 

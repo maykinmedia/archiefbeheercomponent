@@ -3,7 +3,6 @@ from typing import List, Tuple
 
 from django import forms
 from django.contrib.postgres.forms import SimpleArrayField
-from django.forms.models import BaseInlineFormSet
 
 from archiefvernietigingscomponent.accounts.models import User
 
@@ -54,6 +53,7 @@ class DestructionListForm(forms.ModelForm):
     reviewer_2 = forms.ModelChoiceField(
         queryset=User.objects.reviewers().all(), required=False
     )
+    zaken_identificaties = SimpleArrayField(forms.CharField(max_length=250))
 
     class Meta:
         model = DestructionList
@@ -62,6 +62,7 @@ class DestructionListForm(forms.ModelForm):
             "zaken",
             "reviewer_1",
             "reviewer_2",
+            "zaken_identificaties",
             "contains_sensitive_info",
         )
 
@@ -115,14 +116,18 @@ class ReviewCommentForm(forms.ModelForm):
         fields = ("text",)
 
 
-class ReviewItemBaseFormset(BaseInlineFormSet):
+class ReviewItemBaseForm(forms.ModelForm):
+    identificatie = forms.CharField()
+
+    class Meta:
+        fields = ["destruction_list_item", "text", "suggestion", "identificatie"]
+
     def save(self, commit=True):
         # save only items with suggestions
-        instances = super().save(commit=False)
+        instance = super().save(commit=False)
 
-        for instance in instances:
-            if instance.suggestion:
-                instance.save()
+        if instance.suggestion:
+            instance.save()
 
 
 class ListItemForm(forms.ModelForm):
@@ -130,9 +135,10 @@ class ListItemForm(forms.ModelForm):
     archiefnominatie = forms.CharField(required=False)
     # used charfield for easy conversion into json
     archiefactiedatum = forms.CharField(required=False)
+    identificatie = forms.CharField()
 
     class Meta:
-        fields = ("action", "archiefnominatie", "archiefactiedatum")
+        fields = ("action", "archiefnominatie", "archiefactiedatum", "identificatie")
 
     def save(self, commit=True):
         list_item = super().save(commit)

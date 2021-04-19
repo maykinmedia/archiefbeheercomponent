@@ -1,0 +1,8 @@
+{% load i18n %}
+<code class="log-item__title" title="{{ log.timestamp.isoformat }}">
+    <strong>[{{ log.timestamp|date:'Y-m-d H:i' }}]:</strong>
+</code>
+
+<div class="log-item__body">
+    {% blocktrans with zaak=log.extra_data.zaak %}Case <strong>{{ zaak }}</strong> was updated.{% endblocktrans %}
+</div>

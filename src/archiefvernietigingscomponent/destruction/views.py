@@ -34,7 +34,7 @@ from .forms import (
     ListItemForm,
     ReviewCommentForm,
     ReviewForm,
-    ReviewItemBaseFormset,
+    ReviewItemBaseForm,
     get_reviewer_choices,
     get_zaaktype_choices,
 )
@@ -152,11 +152,12 @@ class DestructionListCreateView(RoleRequiredMixin, CreateView):
         TimelineLog.log_from_request(
             self.request,
             destruction_list,
-            template="destruction/logs/created.txt",
+            template="destruction/logs/created.html",
             n_items=destruction_list.items.count(),
             reviewers=list(
                 destruction_list.assignees.values("assignee__id", "assignee__username")
             ),
+            items=form.cleaned_data["zaken_identificaties"],
         )
 
         return response
@@ -221,7 +222,7 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
         TimelineLog.log_from_request(
             self.request,
             destruction_list,
-            template="destruction/logs/aborted.txt",
+            template="destruction/logs/aborted.html",
             n_items=destruction_list.items.count(),
         )
 
@@ -252,17 +253,8 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
             self.abort_destruction_list(destruction_list)
             return response
 
-        # log
-        TimelineLog.log_from_request(
-            self.request,
-            destruction_list,
-            template="destruction/logs/updated.txt",
-            n_items=destruction_list.items.filter(
-                status=ListItemStatus.removed
-            ).count(),
-        )
-
         # Check if there are comments from the author
+        comment_text = None
         if self.request.POST.get("text"):
             comment = DestructionListReviewComment(
                 review=destruction_list.last_review()
@@ -272,6 +264,25 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
                 comment_form.save()
             else:
                 super().forms_invalid(form, inlines)
+
+            comment_text = comment_form.cleaned_data["text"]
+
+        # Get the identificaties of the removed zaken
+        removed_zaken = []
+        for list_item_form in inlines[0]:
+            action = list_item_form.cleaned_data.get("action")
+            if action:
+                removed_zaken.append(list_item_form.cleaned_data["identificatie"])
+
+        # log
+        TimelineLog.log_from_request(
+            self.request,
+            destruction_list,
+            template="destruction/logs/updated.html",
+            n_items=len(removed_zaken),
+            text=comment_text if comment_text else "",
+            items=removed_zaken,
+        )
 
         # assign a reviewer
         destruction_list.assign(destruction_list.next_assignee())
@@ -326,8 +337,7 @@ class ReviewerDestructionListView(RoleRequiredMixin, FilterView):
 
 class ReviewItemInline(InlineFormSetFactory):
     model = DestructionListItemReview
-    fields = ["destruction_list_item", "text", "suggestion"]
-    formset_class = ReviewItemBaseFormset
+    form_class = ReviewItemBaseForm
 
 
 class ReviewCreateView(RoleRequiredMixin, UserPassesTestMixin, CreateWithInlinesView):
@@ -410,13 +420,24 @@ class ReviewCreateView(RoleRequiredMixin, UserPassesTestMixin, CreateWithInlines
     def forms_valid(self, form, inlines):
         response = super().forms_valid(form, inlines)
 
+        # Get the identificaties of the zaken with suggestions
+        zaken_with_suggestions = []
+        for list_item_form in inlines[0]:
+            suggestion = list_item_form.cleaned_data.get("suggestion")
+            if suggestion:
+                zaken_with_suggestions.append(
+                    list_item_form.cleaned_data["identificatie"]
+                )
+
         # log review
         list_review = form.instance
         TimelineLog.log_from_request(
             self.request,
             list_review,
-            template="destruction/logs/review_created.txt",
-            n_items=list_review.item_reviews.count(),
+            template="destruction/logs/review_created.html",
+            n_items=len(zaken_with_suggestions),
+            text=list_review.text,
+            items=zaken_with_suggestions,
         )
         # send notification
         message = _("{author} has reviewed the destruction list.").format(

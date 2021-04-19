@@ -1,6 +1,7 @@
 import csv
 import io
 from datetime import date, datetime
+from itertools import chain
 from typing import ByteString, List, Optional
 
 from django.conf import settings
@@ -225,6 +226,7 @@ def create_destruction_report(destruction_list: DestructionList) -> DestructionR
     report_content_html = create_html_report_content(
         zaken_data_for_report, destruction_list.contains_sensitive_info
     )
+    audittrail_html = create_audittrail_report(destruction_list)
     report_content_csv = create_csv_report_content(
         zaken_data_for_report, destruction_list.contains_sensitive_info
     )
@@ -243,7 +245,8 @@ def create_destruction_report(destruction_list: DestructionList) -> DestructionR
         title=report_subject,
         process_owner=process_owner_review.author if process_owner_review else None,
         content_pdf=ContentFile(
-            content=convert_to_pdf(report_content_html), name=f"{report_filename}.pdf"
+            content=convert_to_pdf(report_content_html + audittrail_html),
+            name=f"{report_filename}.pdf",
         ),
         content_csv=ContentFile(
             content=report_content_csv.read(), name=f"{report_filename}.csv"
@@ -261,3 +264,17 @@ def get_absolute_url(path: str, request: Optional[HttpRequest] = None) -> str:
     site = Site.objects.get_current()
     protocol = "https" if settings.IS_HTTPS else "http"
     return f"{protocol}://{site.domain}{path}"
+
+
+def create_audittrail_report(destruction_list: DestructionList):
+    list_logs = destruction_list.logs.all()
+    reviews_logs = [review.logs.all() for review in destruction_list.reviews.all()]
+    all_logs = sorted(
+        chain(*reviews_logs, list_logs), key=lambda instance: instance.timestamp
+    )
+
+    return render(
+        request=None,
+        template_name="report/audittrail/audittrail.html",
+        context={"logs": all_logs},
+    ).content.decode("utf8")

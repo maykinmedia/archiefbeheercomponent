@@ -566,7 +566,7 @@ class UpdateZaakTests(TestCase):
         log = TimelineLog.objects.get()
         self.assertEqual(log.content_object, list_item)
         self.assertEqual(log.extra_data, {"zaak": "foobar"})
-        self.assertEqual(log.template, "destruction/logs/item_update_succeeded.txt")
+        self.assertEqual(log.template, "destruction/logs/item_update_succeeded.html")
 
         mock_update_zaak.assert_called_once_with(
             list_item.zaak, archive_data, "Change archive params"
@@ -590,6 +590,6 @@ class UpdateZaakTests(TestCase):
         extra_data = log.extra_data
         self.assertEqual(extra_data["zaak"], None)
         self.assertTrue("something went wrong" in extra_data["error"])
-        self.assertEqual(log.template, "destruction/logs/item_update_failed.txt")
+        self.assertEqual(log.template, "destruction/logs/item_update_failed.html")
 
         mock_update_zaak.assert_called_once_with(list_item.zaak, archive_data, None)

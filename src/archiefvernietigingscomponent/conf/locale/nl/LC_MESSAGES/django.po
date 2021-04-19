@@ -339,15 +339,15 @@ msgid "destruction lists"
 msgstr "vernietigingslijsten"
 
 #: archiefvernietigingscomponent/destruction/models.py:115
-#: archiefvernietigingscomponent/destruction/tests/test_destruction_list_create.py:67
-#: archiefvernietigingscomponent/destruction/tests/test_destruction_list_detail.py:99
-#: archiefvernietigingscomponent/destruction/tests/test_review_create.py:114
+#: archiefvernietigingscomponent/destruction/tests/test_destruction_list_create.py:71
+#: archiefvernietigingscomponent/destruction/tests/test_destruction_list_detail.py:113
+#: archiefvernietigingscomponent/destruction/tests/test_review_create.py:127
 msgid "You are assigned for review."
 msgstr "Je bent als reviewer aangewezen."
 
 #: archiefvernietigingscomponent/destruction/models.py:120
-#: archiefvernietigingscomponent/destruction/tests/test_review_create.py:174
-#: archiefvernietigingscomponent/destruction/tests/test_review_create.py:229
+#: archiefvernietigingscomponent/destruction/tests/test_review_create.py:201
+#: archiefvernietigingscomponent/destruction/tests/test_review_create.py:270
 msgid "There is a review to process."
 msgstr "Er is een te verwerken beoordeling."
 
@@ -544,59 +544,118 @@ msgstr "De vernietigingslijst is nog niet beoordeeld."
 msgid "Download destruction report: "
 msgstr "Download verklaring van vernietiging"
 
-#: archiefvernietigingscomponent/destruction/templates/destruction/logs/aborted.txt:7
+#: archiefvernietigingscomponent/destruction/templates/destruction/logs/aborted.html:7
 #, python-format
 msgid ""
-"<span class=\"log-item__user\">%(user)s</span> has aborted the list <strong>"
-"%(list)s</strong> with %(counter)s zaak."
+"User with role <strong>%(role)s</strong> has aborted the list <strong>"
+"%(list)s</strong> with %(counter)s case."
 msgid_plural ""
-"<span class=\"log-item__user\">%(user)s</span> has aborted the list <strong>"
-"%(list)s</strong> with %(counter)s zaken."
+"User with role <strong>%(role)s</strong> has aborted the list <strong>"
+"%(list)s</strong> with %(counter)s cases."
 msgstr[0] ""
-"<span class=\"log-item__user\">%(user)s</span> heeft de vernietigingslijst "
-"<strong>%(list)s</strong> met %(counter)s zaak geannuleerd."
+"Gebruiker met rol <strong>%(role)s</strong> heeft de lijst <strong>%(list)s</"
+"strong> met %(counter)s zaak geannuleerd."
 msgstr[1] ""
-"<span class=\"log-item__user\">%(user)s</span> heeft de vernietigingslijst "
-"<strong>%(list)s</strong> met %(counter)s zakem geannuleerd."
+"Gebruiker met rol <strong>%(role)s</strong> heeft de lijst <strong>%(list)s</"
+"strong> met %(counter)s zaken geannuleerd."
 
-#: archiefvernietigingscomponent/destruction/templates/destruction/logs/created.txt:7
-#, python-format
+#: archiefvernietigingscomponent/destruction/templates/destruction/logs/created.html:7
 msgid ""
-"<span class=\"log-item__user\">%(user)s</span> heeft de lijst <strong>"
-"%(list)s</strong> met %(counter)s zaak aangemaakt."
+"User with role <strong>%(role)s</strong> created the list <strong>%(list)s</"
+"strong> with %(counter)s case:"
 msgid_plural ""
-"<span class=\"log-item__user\">%(user)s</span> heeft de lijst <strong>"
-"%(list)s</strong> met %(counter)s zaken aangemaakt."
+"User with role <strong>%(role)s</strong> created the list <strong>%(list)s</"
+"strong> with %(counter)s cases:"
 msgstr[0] ""
+"Gebruiker met rol <strong>%(role)s</strong> heeft de lijst <strong>%(list)s</"
+"strong> met %(counter)s zaak aangemaakt:"
 msgstr[1] ""
+"Gebruiker met rol <strong>%(role)s</strong> heeft de lijst <strong>%(list)s</"
+"strong> met %(counter)s zaken aangemaakt:"
 
-#: archiefvernietigingscomponent/destruction/templates/destruction/logs/review_created.txt:7
+#: archiefvernietigingscomponent/destruction/templates/destruction/logs/item_destruction_failed.html:7
 #, python-format
-msgid ""
-"<span class=\"log-item__user\">%(user)s</span> has created the review "
-"<strong>%(review)s</strong> and requested changes for %(counter)s item."
-msgid_plural ""
-"<span class=\"log-item__user\">%(user)s</span> has created the review "
-"<strong>%(review)s</strong> and requested changes for %(counter)s items."
-msgstr[0] ""
-"<span class=\"log-item__user\">%(user)s</span> heeft de review <strong>"
-"%(review)s</strong> opgevoerd. Er zijn aanpassingen gevraagd voor "
-"%(counter)s record."
-msgstr[1] ""
-"<span class=\"log-item__user\">%(user)s</span> heeft de review <strong>"
-"%(review)s</strong> opgevoerd. Er zijn aanpassingen gevraagd voor "
-"%(counter)s records."
+msgid "Case <strong>%(zaak)s</strong> was not deleted."
+msgstr "Zaak <strong>%(zaak)s</strong> is niet verwijderd."
 
-#: archiefvernietigingscomponent/destruction/templates/destruction/logs/updated.txt:7
+#: archiefvernietigingscomponent/destruction/templates/destruction/logs/item_destruction_succeeded.html:7
+#, python-format
+msgid "Case <strong>%(zaak)s</strong> was deleted."
+msgstr "Zaak <strong>%(zaak)s</strong> is verwijderd."
+
+#: archiefvernietigingscomponent/destruction/templates/destruction/logs/item_update_failed.html:7
+#, python-format
+msgid "Case <strong>%(zaak)s</strong> was not updated."
+msgstr "Zaak <strong>%(zaak)s</strong> is niet aangepast."
+
+#: archiefvernietigingscomponent/destruction/templates/destruction/logs/item_update_succeeded.html:7
+#, python-format
+msgid "Case <strong>%(zaak)s</strong> was updated."
+msgstr "Zaak <strong>%(zaak)s</strong> is aangepast."
+
+#: archiefvernietigingscomponent/destruction/templates/destruction/logs/review_created.html:8
+msgid ""
+"User with role <strong>%(role)s</strong> has rejected the list <strong>"
+"%(list)s</strong>."
+msgstr ""
+"Gebruiker met rol <strong>%(role)s</strong> heeft de lijst <strong>%(list)s</"
+"strong> afgewezen."
+
+#: archiefvernietigingscomponent/destruction/templates/destruction/logs/review_created.html:12
+msgid ""
+"User with role <strong>%(role)s</strong> has reviewed the list <strong>"
+"%(list)s</strong> and requested changes for %(counter)s item:"
+msgid_plural ""
+"User with role <strong>%(role)s</strong> has reviewed the list <strong>"
+"%(list)s</strong> and requested changes for %(counter)s items:"
+msgstr[0] ""
+"Gebruiker met rol <strong>%(role)s</strong> heeft de lijst <strong>%(list)s</"
+"strong> beoordeeld en heeft wijzigingen voor %(counter)s zaak vereist:"
+msgstr[1] ""
+"Gebruiker met rol <strong>%(role)s</strong> heeft de lijst <strong>%(list)s</"
+"strong> beoordeeld en heeft wijzigingen voor %(counter)s zaken vereist:"
+
+#: archiefvernietigingscomponent/destruction/templates/destruction/logs/review_created.html:26
 #, python-format
 msgid ""
-"<span class=\"log-item__user\">%(user)s</span> has updated the list <strong>"
-"%(list)s</strong> with %(counter)s zaak removed."
+"User with role <strong>%(role)s</strong> has approved the list <strong>"
+"%(list)s</strong>."
+msgstr ""
+"Gebruiker met rol <strong>%(role)s</strong> heeft de lijst <strong>%(list)s</"
+"strong> goedgekeurd."
+
+#: archiefvernietigingscomponent/destruction/templates/destruction/logs/review_created.html:33
+#, python-format
+msgid "<strong>Reviewer's comment</strong>: %(text)s"
+msgstr "<strong>Opmerking van de reviewer</strong>: %(text)s"
+
+#: archiefvernietigingscomponent/destruction/templates/destruction/logs/updated.html:8
+msgid ""
+"User with role <strong>%(role)s</strong> has updated the list <strong>"
+"%(list)s</strong> and removed %(counter)s case:"
 msgid_plural ""
-"<span class=\"log-item__user\">%(user)s</span> has updated the list <strong>"
-"%(list)s</strong> with %(counter)s zaken removed."
+"User with role <strong>%(role)s</strong> has updated the list <strong>"
+"%(list)s</strong> and removed %(counter)s cases:"
 msgstr[0] ""
+"Gebruiker met rol <strong>%(role)s</strong> heeft de lijst <strong>%(list)s</"
+"strong> aangepast en heeft %(counter)s zaak weggehaald:"
 msgstr[1] ""
+"Gebruiker met rol <strong>%(role)s</strong> heeft de lijst <strong>%(list)s</"
+"strong> aangepast en heeft %(counter)s zaken weggehaald:"
+
+#: archiefvernietigingscomponent/destruction/templates/destruction/logs/updated.html:22
+#, python-format
+msgid ""
+"User with role <strong>%(role)s</strong> has resubmitted the list <strong>"
+"%(list)s</strong> for review."
+msgstr ""
+"Gebruiker met rol <strong>%(role)s</strong> heeft de lijst <strong>%(list)s</"
+"strong> opnieuw ingediend."
+
+#: archiefvernietigingscomponent/destruction/templates/destruction/logs/updated.html:30
+#, python-format
+msgid "<strong>Author's comment</strong>: %(text)s"
+msgstr "<strong>Opmerking van de auteur</strong>: %(text)s"
 
 #: archiefvernietigingscomponent/destruction/templates/destruction/recordmanager_list.html:13
 #: archiefvernietigingscomponent/destruction/templates/destruction/reviewer_list.html:14
@@ -827,7 +886,7 @@ msgid "Destruction list for which the report was created."
 msgstr "Vernietingslijst waarvoor de verklaring van vernietiging is gemaakt."
 
 #: archiefvernietigingscomponent/report/models.py:52
-#: archiefvernietigingscomponent/report/templates/report/vernietigings_rapport.html:30
+#: archiefvernietigingscomponent/report/templates/report/vernietigings_rapport.html:29
 msgid "Destruction report"
 msgstr "Verklaring van vernietiging"
 
@@ -842,79 +901,79 @@ msgstr ""
 "vernietiging"
 
 #: archiefvernietigingscomponent/report/templates/report/vernietigings_rapport.html:32
-#: archiefvernietigingscomponent/report/utils.py:169
+#: archiefvernietigingscomponent/report/utils.py:170
 msgid "Unique ID"
 msgstr "Uniek kenmerk"
 
 #: archiefvernietigingscomponent/report/templates/report/vernietigings_rapport.html:34
-#: archiefvernietigingscomponent/report/utils.py:170
+#: archiefvernietigingscomponent/report/utils.py:171
 msgid "Description"
 msgstr "Beschrijving"
 
 #: archiefvernietigingscomponent/report/templates/report/vernietigings_rapport.html:36
-#: archiefvernietigingscomponent/report/utils.py:171
+#: archiefvernietigingscomponent/report/utils.py:172
 msgid "Duration"
 msgstr "Looptijd"
 
 #: archiefvernietigingscomponent/report/templates/report/vernietigings_rapport.html:37
-#: archiefvernietigingscomponent/report/utils.py:172
+#: archiefvernietigingscomponent/report/utils.py:173
 msgid "Destruction category Selectielijst"
 msgstr "Vernietigings-Categorie Selectielijst"
 
 #: archiefvernietigingscomponent/report/templates/report/vernietigings_rapport.html:38
-#: archiefvernietigingscomponent/report/utils.py:173
+#: archiefvernietigingscomponent/report/utils.py:174
 msgid "Explanation"
 msgstr "Toelichting"
 
 #: archiefvernietigingscomponent/report/templates/report/vernietigings_rapport.html:40
-#: archiefvernietigingscomponent/report/utils.py:174
+#: archiefvernietigingscomponent/report/utils.py:175
 msgid "Remarks SAD"
 msgstr "Opmerkingen SAD"
 
 #: archiefvernietigingscomponent/report/templates/report/vernietigings_rapport.html:42
-#: archiefvernietigingscomponent/report/utils.py:175
+#: archiefvernietigingscomponent/report/utils.py:176
 msgid "Reaction caretaker"
 msgstr "Reactie zorgdrager"
 
 #: archiefvernietigingscomponent/report/templates/report/vernietigings_rapport.html:43
-#: archiefvernietigingscomponent/report/utils.py:176
+#: archiefvernietigingscomponent/report/utils.py:177
 msgid "Case type"
 msgstr "Zaaktype"
 
 #: archiefvernietigingscomponent/report/templates/report/vernietigings_rapport.html:44
-#: archiefvernietigingscomponent/report/utils.py:177
+#: archiefvernietigingscomponent/report/utils.py:178
 msgid "Archive action period"
 msgstr "Archiefactietermijn"
 
 #: archiefvernietigingscomponent/report/templates/report/vernietigings_rapport.html:45
-#: archiefvernietigingscomponent/report/utils.py:178
+#: archiefvernietigingscomponent/report/utils.py:179
 msgid "Result type"
 msgstr "Resultaattype"
 
 #: archiefvernietigingscomponent/report/templates/report/vernietigings_rapport.html:46
-#: archiefvernietigingscomponent/report/utils.py:179
+#: archiefvernietigingscomponent/report/utils.py:180
 msgid "Organisation responsible"
 msgstr "Verantwoordelijke organisatie"
 
 #: archiefvernietigingscomponent/report/templates/report/vernietigings_rapport.html:47
-#: archiefvernietigingscomponent/report/utils.py:180
+#: archiefvernietigingscomponent/report/utils.py:181
 msgid "Relations"
 msgstr "Relaties"
 
-#: archiefvernietigingscomponent/report/utils.py:121
+#: archiefvernietigingscomponent/report/utils.py:122
 #, python-format
 msgid "%(looptijd)s days"
 msgstr "%(looptijd)s dagen"
 
-#: archiefvernietigingscomponent/report/utils.py:143
+#: archiefvernietigingscomponent/report/utils.py:144
 msgid "Yes"
 msgstr "Ja"
 
-#: archiefvernietigingscomponent/report/utils.py:145
+#: archiefvernietigingscomponent/report/utils.py:146
 msgid "No"
 msgstr "Nee"
 
-#: archiefvernietigingscomponent/report/utils.py:210
+#: archiefvernietigingscomponent/report/utils.py:211
 #, python-format
 msgid "Declaration of destruction - %(name)s (%(date)s)"
 msgstr "Verklaring van vernietiging - %(name)s (%(date)s)"

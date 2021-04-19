@@ -2,6 +2,8 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
+from timeline_logger.models import TimelineLog
+
 from archiefvernietigingscomponent.accounts.tests.factories import UserFactory
 from archiefvernietigingscomponent.notifications.models import Notification
 
@@ -21,6 +23,7 @@ class CreateDestructionListTests(TestCase):
     def test_create_list(self):
         reviewers = UserFactory.create_batch(2, role__can_review_destruction=True)
         zaken = [f"http://some.zaken.nl/api/v1/zaken/{i}" for i in range(1, 3)]
+        zaken_identificaties = ["ZAAK-1", "ZAAK-2", "ZAAK-3"]
 
         url = reverse("destruction:record-manager-create")
         data = {
@@ -28,6 +31,7 @@ class CreateDestructionListTests(TestCase):
             "zaken": ",".join(zaken),
             "reviewer_1": reviewers[0].id,
             "reviewer_2": reviewers[1].id,
+            "zaken_identificaties": ",".join(zaken_identificaties),
         }
 
         response = self.client.post(url, data)
@@ -59,12 +63,21 @@ class CreateDestructionListTests(TestCase):
         # check that a log entry was created
         timeline_log = destruction_list.logs.get()
         self.assertEqual(timeline_log.user, self.user)
-        self.assertEqual(timeline_log.template, "destruction/logs/created.txt")
+        self.assertEqual(timeline_log.template, "destruction/logs/created.html")
 
         # check that notifications were sent
         notification = Notification.objects.get()
         self.assertEqual(notification.user, destruction_list.assignee)
         self.assertEqual(notification.message, _("You are assigned for review."))
+
+        logs = TimelineLog.objects.all()
+
+        self.assertEqual(1, logs.count())
+
+        log = logs.first()
+
+        self.assertIn("items", log.extra_data)
+        self.assertEqual(zaken_identificaties, sorted(log.extra_data["items"]))
 
     def test_list_with_short_review_process(self):
         archive_config = ArchiveConfig.get_solo()

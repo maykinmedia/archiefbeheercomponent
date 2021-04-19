@@ -1,0 +1,38 @@
+{% load i18n %}
+<code class="log-item__title" title="{{ log.timestamp.isoformat }}">
+    <strong>[{{ log.timestamp|date:'Y-m-d H:i' }}]:</strong>
+</code>
+
+<div class="log-item__body">
+    {% if log.content_object.status == "rejected" %}
+        {% blocktrans with list=log.content_object.destruction_list role=log.user.role trimmed %}
+            User with role <strong>{{ role }}</strong> has rejected the list <strong>{{ list }}</strong>.
+        {% endblocktrans %}
+    {% elif log.extra_data.n_items and log.content_object.status == "changes_requested" %}
+        {% blocktrans with list=log.content_object.destruction_list role=log.user.role count counter=log.extra_data.n_items trimmed %}
+            User with role <strong>{{ role }}</strong> has reviewed the list <strong>{{ list }}</strong>
+            and requested changes for {{ counter }} item:
+        {% plural %}
+            User with role <strong>{{ role }}</strong> has reviewed the list <strong>{{ list }}</strong>
+            and requested changes for {{ counter }} items:
+        {% endblocktrans %}
+
+        <div class="log-item__cases">
+            {% for item in log.extra_data.items %}
+                {{ item }}{% if forloop.last %}. {% else %}, {% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        {% blocktrans with list=log.content_object.destruction_list role=log.user.role trimmed %}
+            User with role <strong>{{ role }}</strong> has approved the list <strong>{{ list }}</strong>.
+        {% endblocktrans %}
+    {% endif %}
+
+    {% if log.extra_data.text %}
+        <div class="log-item__review-text">
+            {% blocktrans with text=log.extra_data.text trimmed %}
+                <strong>Reviewer's comment</strong>: {{ text }}
+            {% endblocktrans %}
+        </div>
+    {% endif %}
+</div>

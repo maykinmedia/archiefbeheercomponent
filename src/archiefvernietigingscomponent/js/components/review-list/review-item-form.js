@@ -64,6 +64,11 @@ const ReviewItemForm = ({ index, data }) => {
                         name={name_prefix("text")}
                         value={comment}
                     />
+                    <HiddenInput
+                        id={id_prefix("identificatie")}
+                        name={name_prefix("identificatie")}
+                        value={zaak.identificatie}
+                    />
                 </td>
             </tr>
 
