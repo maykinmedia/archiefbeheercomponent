@@ -24,7 +24,6 @@ django-solo
 django-sniplates
 django-timeline-logger
 django-privates
-maykin-django-better-admin-arrayfield
 
 # API libraries
 # djangorestframework

@@ -132,12 +132,8 @@ humanize==0.5.1
     # via flower
 idna==2.9
     # via requests
-importlib-metadata==3.7.3
-    # via kombu
 kombu==4.6.10
     # via celery
-maykin-django-better-admin-arrayfield==1.0.5
-    # via -r requirements/base.in
 pillow==8.1.1
     # via
     #   -r requirements/base.in
@@ -196,8 +192,6 @@ tinycss2==1.1.0
     #   weasyprint
 tornado==6.0.4
     # via flower
-typing-extensions==3.7.4.3
-    # via importlib-metadata
 urllib3==1.25.9
     # via
     #   elastic-apm
@@ -218,8 +212,6 @@ webencodings==0.5.1
     #   tinycss2
 zgw-consumers==0.10.2
     # via -r requirements/base.in
-zipp==3.4.1
-    # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

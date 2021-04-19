@@ -1,12 +1,11 @@
 from typing import Optional
 
 from django.contrib.contenttypes.fields import GenericRelation
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from django_better_admin_arrayfield.models.fields import ArrayField
 from django_fsm import FSMField, transition
 from ordered_model.models import OrderedModel
 from solo.models import SingletonModel
