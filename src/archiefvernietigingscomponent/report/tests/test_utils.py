@@ -718,11 +718,15 @@ class DestructionReportUtilsTests(TestCase):
         record_manager = UserFactory.create(role__type=RoleTypeChoices.record_manager)
         archivaris = UserFactory.create(role__type=RoleTypeChoices.archivist)
 
-        destruction_list_1 = DestructionListFactory.create(author=record_manager)
+        destruction_list_1 = DestructionListFactory.create(
+            author=record_manager, name="Incredible list 1"
+        )
         review_1 = DestructionListReviewFactory.create(
             destruction_list=destruction_list_1, author=archivaris
         )
-        destruction_list_2 = DestructionListFactory.create(author=record_manager)
+        destruction_list_2 = DestructionListFactory.create(
+            author=record_manager, name="Incredible list 2"
+        )
         review_2 = DestructionListReviewFactory.create(
             destruction_list=destruction_list_2, author=archivaris
         )
@@ -755,8 +759,8 @@ class DestructionReportUtilsTests(TestCase):
         html_report = document_fromstring(report)
 
         self.assertEqual(2, len(html_report.find_class("log-item")))
-        self.assertIn(destruction_list_1.name, report)
-        self.assertNotIn(destruction_list_2.name, report)
+        self.assertIn("Incredible list 1", report)
+        self.assertNotIn("Incredible list 2", report)
 
     def test_logs_are_in_correct_order(self):
         record_manager = UserFactory.create(role__type=RoleTypeChoices.record_manager)
