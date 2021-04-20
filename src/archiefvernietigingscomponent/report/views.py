@@ -30,10 +30,12 @@ class DownloadDestructionReportView(UserPassesTestMixin, DetailView):
 
         report = self.get_object()
 
+        if user.is_superuser:
+            return True
+
         if (
             user == report.process_owner
             or user.role.type == RoleTypeChoices.functional_admin
-            or user.is_superuser
         ):
             return True
 
