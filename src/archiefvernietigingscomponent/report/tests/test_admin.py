@@ -55,3 +55,23 @@ class DestructionReportAdminTests(WebTest):
         response = self.client.get(url)
 
         self.assertEqual(403, response.status_code)
+
+    def test_superuser_without_role_can_download(self):
+        superuser = UserFactory.create(is_staff=True, is_superuser=True)
+        superuser.role = None
+        superuser.save()
+
+        report = DestructionReportFactory.create()
+
+        url = reverse("admin:report_destructionreport_change", args=[report.pk])
+
+        response = self.app.get(url, user=superuser)
+
+        self.assertEqual(200, response.status_code)
+
+        url = reverse("report:download-report", args=[report.pk])
+
+        response = self.app.get(f"{url}?type=pdf", user=superuser)
+
+        self.assertEqual(200, response.status_code)
+        self.assertGreater(len(response.content), 0)
