@@ -26,9 +26,18 @@ const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, index, comment, setComm
                 <header className="zaak-detail__header">
                     <h1 className="title modal__title">Beoordeel de zaak</h1>
                 </header>
+                {zaak.zac_link !== null &&
                     <div className="zaak-detail__link">
-                        Link naar de zaak in de zaakafhandelcomponent (ZAC): <a href={zaak.zac_link}>{zaak.identificatie}</a>
+                        Zaak:&nbsp;
+                        <a
+                            title="Open de geconfigureerde externe applicatie voor het bekijken van de zaak."
+                            target="_blank"
+                            href={zaak.zac_link}>
+                            {zaak.identificatie}
+                            <span className="material-icons">launch</span>
+                        </a>
                     </div>
+                }
                     <div className="zaak-detail__comment">
                         <label htmlFor="id_comment">Opmerkingen:</label>
                         <TextInput
