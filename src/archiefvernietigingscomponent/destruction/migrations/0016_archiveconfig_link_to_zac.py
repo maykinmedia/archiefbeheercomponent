@@ -14,8 +14,10 @@ class Migration(migrations.Migration):
             model_name="archiveconfig",
             name="link_to_zac",
             field=models.CharField(
-                default="http://example-zac.nl/zaak/{{ uuid }}",
-                help_text="Form of the link to a case in a zaakafhandelcomponent, for example: http://myzaken.nl/zaak/{{ uuid }}",
+                blank=True,
+                help_text="External link to view zaak details. Possible variables to use are: {{ uuid }}, "
+                "{{ bronorganisatie }} and {{ identificatie }}. "
+                "For example: https://gemeente.lan/mijnzaken/zaak/{{ uuid }}",
                 max_length=1000,
                 verbose_name="Link to zaakafhandelcomponent",
             ),

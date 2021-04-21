@@ -1,5 +1,6 @@
 import logging
 import re
+from typing import Optional
 
 from django.utils.translation import ugettext_lazy as _
 
@@ -46,7 +47,12 @@ def get_additional_zaak_info(zaak: dict) -> dict:
     return zaak
 
 
-def get_zaak_link_for_zaakafhandelcomponent(zaak: dict, link_template: str) -> str:
+def get_zaak_link_for_zaakafhandelcomponent(
+    zaak: dict, link_template: Optional[str]
+) -> Optional[str]:
+    if not link_template:
+        return None
+
     for pattern in ZAC_TEMPLATE_ELEMENTS:
         if re.search(pattern, link_template):
             re_pattern = re.compile(pattern)

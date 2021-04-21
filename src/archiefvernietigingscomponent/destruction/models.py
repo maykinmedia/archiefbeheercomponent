@@ -379,9 +379,10 @@ class ArchiveConfig(SingletonModel):
         _("Link to zaakafhandelcomponent"),
         max_length=1000,
         help_text=_(
-            "Form of the link to a case in a zaakafhandelcomponent, for example: http://myzaken.nl/zaak/{{ uuid }}"
+            "External link to view zaak details. Possible variables to use are: {{ uuid }}, {{ bronorganisatie }} "
+            "and {{ identificatie }}. For example: https://gemeente.lan/mijnzaken/zaak/{{ uuid }}"
         ),
-        default="http://example-zac.nl/zaak/{{ uuid }}",
+        blank=True,
     )
 
     class Meta:
