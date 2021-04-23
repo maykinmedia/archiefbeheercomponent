@@ -160,7 +160,7 @@ class ZakenFiltersForm(forms.Form):
 class ArchiveConfigForm(forms.ModelForm):
     class Meta:
         model = ArchiveConfig
-        fields = ("archive_date", "short_review_zaaktypes")
+        fields = ("archive_date", "link_to_zac", "short_review_zaaktypes")
 
     def save(self, commit=True):
         instance = super().save(commit)

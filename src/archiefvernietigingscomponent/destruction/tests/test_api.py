@@ -7,6 +7,7 @@ from zgw_consumers.models import Service
 
 from archiefvernietigingscomponent.accounts.tests.factories import UserFactory
 from archiefvernietigingscomponent.constants import RoleTypeChoices
+from archiefvernietigingscomponent.destruction.models import ArchiveConfig
 from archiefvernietigingscomponent.destruction.tests.factories import (
     DestructionListAssigneeFactory,
     DestructionListFactory,
@@ -23,6 +24,8 @@ SELECTIELIJST_ROOT = "https://oz.nl/selectielijst/api/v1/"
 
 ZAAK_1 = {
     "url": f"{ZAKEN_ROOT}zaken/uuid-1",
+    "uuid": "uuid-1",
+    "bronorganisatie": "123456789",
     "identificatie": "ZAAK-001",
     "omschrijving": "A nice zaak",
     "archiefnominatie": "vernietigen",
@@ -35,6 +38,8 @@ ZAAK_1 = {
 
 ZAAK_2 = {
     "url": f"{ZAKEN_ROOT}zaken/uuid-2",
+    "uuid": "uuid-2",
+    "bronorganisatie": "987654321",
     "identificatie": "ZAAK-002",
     "omschrijving": "A beautiful zaak",
     "archiefnominatie": "vernietigen",
@@ -364,3 +369,54 @@ class FetchListItemsTests(TransactionTestCase):
 
         zaak_2_data = response_data["items"][1]["zaak"]
         self.assertIn("omschrijving", zaak_2_data)
+
+    def test_zaakafhandelcomponent_link(self, m):
+        self._set_up_services()
+
+        config = ArchiveConfig.get_solo()
+        config.link_to_zac = (
+            "http://example.nl/{{ bronorganisatie }}/{{ identificatie }}/{{ uuid }}"
+        )
+        config.save()
+
+        user = UserFactory.create(
+            username="user",
+            password="user",
+            email="aaa@aaa.aaa",
+            role__can_start_destruction=True,
+            role__can_review_destruction=True,
+        )
+
+        destruction_list = DestructionListFactory.create(author=user, assignee=user)
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list, zaak=ZAAK_1["url"]
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list, zaak=ZAAK_2["url"]
+        )
+
+        self._set_up_mocks(m)
+
+        url = reverse("destruction:fetch-list-items", args=[destruction_list.id])
+
+        self.client.force_login(user)
+        response = self.client.get(url)
+
+        self.assertEqual(200, response.status_code)
+
+        response_data = response.json()
+
+        self.assertIn("items", response_data)
+        self.assertEqual(2, len(response_data["items"]))
+
+        zaak_1_data = response_data["items"][0]["zaak"]
+        self.assertIn("zac_link", zaak_1_data)
+        self.assertEqual(
+            "http://example.nl/123456789/ZAAK-001/uuid-1", zaak_1_data["zac_link"]
+        )
+
+        zaak_2_data = response_data["items"][1]["zaak"]
+        self.assertIn("zac_link", zaak_2_data)
+        self.assertEqual(
+            "http://example.nl/987654321/ZAAK-002/uuid-2", zaak_2_data["zac_link"]
+        )

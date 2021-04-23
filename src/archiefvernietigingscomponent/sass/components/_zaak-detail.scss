@@ -3,7 +3,12 @@
 
 .zaak-detail {
 
-  @include element("header") {
+  .material-icons {
+      font-size: 1rem;
+      padding: 0 0.1rem;
+    }
+
+  @include element("link") {
     padding: 1em;
   }
 

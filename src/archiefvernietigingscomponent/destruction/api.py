@@ -26,7 +26,7 @@ from .service import (
     get_zaaktypen,
     get_zaken,
 )
-from .utils import get_additional_zaak_info
+from .utils import get_additional_zaak_info, get_zaak_link_for_zaakafhandelcomponent
 
 
 def get_zaken_chunks(zaken):
@@ -144,6 +144,8 @@ class FetchListItemsView(AuthorOrAssigneeRequiredMixin, View):
         return get_object_or_404(DestructionList, id=self.kwargs["list_id"])
 
     def get(self, request, list_id):
+        config = ArchiveConfig.get_solo()
+
         destruction_list = DestructionList.objects.get(id=list_id)
         last_review = destruction_list.last_review()
 
@@ -181,6 +183,11 @@ class FetchListItemsView(AuthorOrAssigneeRequiredMixin, View):
 
             # return only general information
             zaak_data = {attr: zaak.get(attr) for attr in NO_DETAIL_ZAAK_ATTRS}
+            # Add link to zaak in ZAC
+            zaak_data["zac_link"] = get_zaak_link_for_zaakafhandelcomponent(
+                zaak, config.link_to_zac
+            )
+
             zaaktype_data = {
                 attr: zaaktype.get(attr) for attr in NO_DETAIL_ZAAKTYPE_ATTRS
             }

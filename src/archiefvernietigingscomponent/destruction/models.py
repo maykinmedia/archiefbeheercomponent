@@ -347,6 +347,17 @@ class DestructionListAssignee(models.Model):
         return f"{self.destruction_list}: {self.assignee}"
 
 
+UUID_TEMPLATE_ELEMENT = "{{ uuid }}"
+IDENTIFICATIE_TEMPLATE_ELEMENT = "{{ identificatie }}"
+BRONORGANISATIE_TEMPLATE_ELEMENT = "{{ bronorganisatie }}"
+
+ZAC_TEMPLATE_ELEMENTS = (
+    UUID_TEMPLATE_ELEMENT,
+    IDENTIFICATIE_TEMPLATE_ELEMENT,
+    BRONORGANISATIE_TEMPLATE_ELEMENT,
+)
+
+
 class ArchiveConfig(SingletonModel):
     archive_date = models.DateField(
         _("archive date"),
@@ -363,6 +374,15 @@ class ArchiveConfig(SingletonModel):
         help_text=_(
             "Cases for which a second reviewer of the destruction list is optional"
         ),
+    )
+    link_to_zac = models.CharField(
+        _("Link to zaakafhandelcomponent"),
+        max_length=1000,
+        help_text=_(
+            "External link to view zaak details. Possible variables to use are: {{ uuid }}, {{ bronorganisatie }} "
+            "and {{ identificatie }}. For example: https://gemeente.lan/mijnzaken/zaak/{{ uuid }}"
+        ),
+        blank=True,
     )
 
     class Meta:

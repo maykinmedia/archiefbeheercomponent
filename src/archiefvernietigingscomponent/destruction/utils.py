@@ -1,9 +1,17 @@
 import logging
+import re
+from typing import Optional
 
 from django.utils.translation import ugettext_lazy as _
 
 from zds_client import ClientError
 
+from archiefvernietigingscomponent.destruction.models import (
+    BRONORGANISATIE_TEMPLATE_ELEMENT,
+    IDENTIFICATIE_TEMPLATE_ELEMENT,
+    UUID_TEMPLATE_ELEMENT,
+    ZAC_TEMPLATE_ELEMENTS,
+)
 from archiefvernietigingscomponent.destruction.service import (
     fetch_process_type,
     fetch_resultaat,
@@ -37,3 +45,25 @@ def get_additional_zaak_info(zaak: dict) -> dict:
         zaak["resultaat"] = fetch_resultaat(zaak["resultaat"])
 
     return zaak
+
+
+def get_zaak_link_for_zaakafhandelcomponent(
+    zaak: dict, link_template: Optional[str]
+) -> Optional[str]:
+    if not link_template:
+        return None
+
+    for pattern in ZAC_TEMPLATE_ELEMENTS:
+        if re.search(pattern, link_template):
+            re_pattern = re.compile(pattern)
+
+            if pattern == UUID_TEMPLATE_ELEMENT:
+                value = zaak["uuid"]
+            elif pattern == IDENTIFICATIE_TEMPLATE_ELEMENT:
+                value = zaak["identificatie"]
+            elif pattern == BRONORGANISATIE_TEMPLATE_ELEMENT:
+                value = zaak["bronorganisatie"]
+
+            link_template = re.sub(re_pattern, value, link_template)
+
+    return link_template

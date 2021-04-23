@@ -16,7 +16,7 @@ def convert_log_templates(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("destruction", "0015_auto_20210326_1603"),
+        ("destruction", "0016_archiveconfig_link_to_zac"),
         ("timeline_logger", "0004_alter_fields"),
     ]
 
