@@ -2,10 +2,7 @@ from django.contrib import admin
 
 from solo.admin import SingletonModelAdmin
 
-from archiefvernietigingscomponent.emails.forms import (
-    AutomaticEmailForm,
-    EmailPreferenceAdminForm,
-)
+from archiefvernietigingscomponent.emails.forms import AutomaticEmailForm
 from archiefvernietigingscomponent.emails.models import (
     AutomaticEmail,
     EmailConfig,
@@ -29,14 +26,6 @@ class EmailPreferenceAdmin(admin.ModelAdmin):
     search_fields = ("user",)
 
     fields = ("user", "preference")
-
-
-class EmailPreferenceInline(admin.StackedInline):
-    model = EmailPreference
-    form = EmailPreferenceAdminForm
-
-    def has_delete_permission(self, request, obj=None):
-        return False
 
 
 @admin.register(EmailConfig)

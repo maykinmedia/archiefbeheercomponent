@@ -4,17 +4,13 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
-from archiefvernietigingscomponent.emails.constants import (
-    EmailPreferenceChoices,
-    EmailTypeChoices,
-)
+from archiefvernietigingscomponent.emails.constants import EmailTypeChoices
 from archiefvernietigingscomponent.emails.models import (
     EMAIL_TEMPLATE_ELEMENTS,
     LINK_REPORT_TEMPLATE_ELEMENT,
     MUNICIPALITY_TEMPLATE_ELEMENT,
     AutomaticEmail,
     EmailConfig,
-    EmailPreference,
 )
 
 
@@ -49,13 +45,3 @@ class AutomaticEmailForm(forms.ModelForm):
                             "When using the municipality variable, a municipality name needs to be configured."
                         )
                     )
-
-
-class EmailPreferenceAdminForm(forms.ModelForm):
-    preference = forms.ChoiceField(
-        label=_("Notify via email:"), choices=EmailPreferenceChoices.choices
-    )
-
-    class Meta:
-        model = EmailPreference
-        fields = ("preference",)
