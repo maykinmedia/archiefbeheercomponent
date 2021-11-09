@@ -23,6 +23,11 @@
                     <i class="material-icons btn__icon btn__icon--left">playlist_add</i> Opstellen
                 </a>
             </nav>
+            <nav class="destruction-list__nav">
+                <a class="btn btn--centered-content" href="{% url 'destruction:zaken-without-archive-date' %}">
+                    <i class="material-icons btn__icon btn__icon--left">search</i> {% trans 'Cases without archive date' %}
+                </a>
+            </nav>
         </header>
 
         {% for object in object_list %}
