@@ -10,7 +10,7 @@ from django.urls import reverse, reverse_lazy
 from django.utils.timesince import timesince
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import CreateView
-from django.views.generic.base import RedirectView
+from django.views.generic.base import RedirectView, TemplateView
 
 from django_filters.views import FilterView
 from extra_views import (
@@ -307,6 +307,11 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
             transaction.on_commit(lambda: update_zaken.delay(update_data))
 
         return response
+
+
+class ZakenWithoutArchiveDateView(RoleRequiredMixin, TemplateView):
+    template_name = "destruction/zaken_without_archive_date_list.html"
+    role_permission = "can_start_destruction"
 
 
 # Reviewer views
