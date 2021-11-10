@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404
@@ -13,7 +12,7 @@ from archiefvernietigingscomponent.accounts.mixins import (
 
 from ..constants import RoleTypeChoices
 from .constants import ListItemStatus
-from .models import ArchiveConfig, DestructionList, DestructionListItem
+from .models import ArchiveConfig, DestructionList
 from .service import (
     fetch_zaak,
     get_besluiten,
@@ -22,41 +21,21 @@ from .service import (
     get_zaaktypen,
     get_zaken,
 )
-from .utils import get_additional_zaak_info, get_zaak_link_for_zaakafhandelcomponent
-
-
-def get_zaken_chunks(zaken):
-    return (
-        zaken[pos : pos + settings.ZAKEN_PER_QUERY]
-        for pos in range(0, len(zaken), settings.ZAKEN_PER_QUERY)
-    )
+from .utils import (
+    get_additional_zaak_info,
+    get_zaak_link_for_zaakafhandelcomponent,
+    set_zaken_availability,
+)
 
 
 class FetchZakenView(LoginRequiredMixin, View):
-    @staticmethod
-    def set_zaken_availability(zaken):
-        """check if selected zaken are used in other DLs"""
-        zaak_urls = [zaak["url"] for zaak in zaken]
-        selected_zaken = []
-        for chunk in get_zaken_chunks(zaak_urls):
-            selected_zaken += list(
-                DestructionListItem.objects.filter(
-                    status__in=[ListItemStatus.suggested, ListItemStatus.processing]
-                )
-                .filter(zaak__in=chunk)
-                .values_list("zaak", flat=True)
-            )
-
-        for zaak in zaken:
-            zaak["available"] = zaak["url"] not in selected_zaken
-
     def get(self, request):
         zaken = get_zaken(request.GET)
 
         with parallel() as executor:
             zaken_with_extra_info = list(executor.map(get_additional_zaak_info, zaken))
 
-        self.set_zaken_availability(zaken_with_extra_info)
+        set_zaken_availability(zaken_with_extra_info)
 
         return JsonResponse({"zaken": zaken_with_extra_info})
 
