@@ -14,6 +14,8 @@
 ///   `.block.block--modifier {...}`
 ///   `.block .block__element {...}`
 ///
+@use "sass:list" as list;
+@use "sass:string" as string;
 
 // https://stackoverflow.com/a/42295154
 @function str-split($string, $separator) {
@@ -60,7 +62,11 @@
 ///   The name of the modifier to apply.
 @mixin modifier($modifier) {
   $selector: null;
-  $bits: str-split(quote(&), " ");
+
+  // we grab the _first_ selector list item - & can refer to multiple, but that's very
+  // un-bem like and unsupported here.
+  $target: list.nth(&, 1);
+  $bits: str-split(string.quote(#{$target}), " ");
 
   @if ( length($bits) == 1 ) {
     // block
