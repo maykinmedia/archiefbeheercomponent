@@ -62,6 +62,7 @@
     "mocha": "latest",
     "postcss-loader": "latest",
     "postcss-selector-lint": "latest",
+    "sass": "^1.43.4",
     "sass-loader": "latest",
     "simulant": "latest",
     "sinon": "latest",
