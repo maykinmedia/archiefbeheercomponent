@@ -1,19 +1,34 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState} from 'react';
 
-import {CheckboxInput, DateInput} from "../../forms/inputs";
-import { ZakenTable } from "./zaken-table";
-import { CreateModal} from "./create-modal";
-import { ZaaktypeSelect} from "./zaaktype-select";
-import { countObjectKeys } from "../../utils";
+import {CheckboxInput, DateInput} from '../../forms/inputs';
+import { ZakenTable } from './zaken-table';
+import { CreateModal} from './create-modal';
+import { ZaaktypeSelect} from './zaaktype-select';
+import { countObjectKeys } from '../../utils';
 
 
-function getFullUrl(url, filters) {
-    const query = Object.keys(filters).filter(k=>filters[k]).map(k => `${k}=${filters[k]}`).join('&');
-    return `${url}?${query}`;
+function getSearchZakenUrl(path, filters, currentDate) {
+    let searchUrl = new URL(window.location.href);
+    searchUrl.pathname = path;
+
+    let queryParams = {
+        'archiefnominatie': 'vernietigen',
+        'archiefactiedatum__lt': currentDate,
+    };
+    if (filters.zaaktypen.length) queryParams['zaaktype__in'] = filters.zaaktypen;
+    if (filters.bronorganisaties.length) queryParams['bronorganisatie__in'] = filters.bronorganisaties;
+    if (filters.startdatum) queryParams['startdatum__gte'] = filters.startdatum;
+
+    const urlSearchParams = new URLSearchParams(queryParams);
+
+    for (const [paramKey, paramValue] of urlSearchParams.entries()) {
+        searchUrl.searchParams.set(paramKey, paramValue);
+    }
+    return searchUrl;
 }
 
 
-const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, csrftoken }) => {
+const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, currentDate, csrftoken }) => {
 
     //filters
     const [selectedZaaktypen, setSelectedZaaktypen] = useState([]);
@@ -43,7 +58,7 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, csrftoken }) => 
 
     // fetch zaken
     useEffect(() => {
-        const fullUrl = getFullUrl(zakenUrl, filters);
+        const fullUrl = getSearchZakenUrl(zakenUrl, filters, currentDate);
         window.fetch(fullUrl)
             .then(res => res.json())
             .then(
