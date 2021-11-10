@@ -7,7 +7,8 @@ from .views import (
     DestructionListRedirectView,
     RecordManagerDestructionListView,
     ReviewCreateView,
-    ReviewerDestructionListView, ZakenWithoutArchiveDateView,
+    ReviewerDestructionListView,
+    ZakenWithoutArchiveDateView,
 )
 
 app_name = "destruction"

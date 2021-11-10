@@ -153,12 +153,6 @@ class ListItemForm(forms.ModelForm):
         return list_item
 
 
-class ZakenFiltersForm(forms.Form):
-    zaaktypen = SimpleArrayField(forms.URLField(), required=False)
-    bronorganisaties = SimpleArrayField(forms.CharField(max_length=9), required=False)
-    startdatum = forms.DateField(required=False)
-
-
 class ArchiveConfigForm(forms.ModelForm):
     class Meta:
         model = ArchiveConfig
