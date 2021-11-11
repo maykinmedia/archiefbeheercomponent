@@ -8,7 +8,6 @@ from django.core.management.base import BaseCommand
 from zgw_consumers.constants import APITypes
 from zgw_consumers.models import Service
 
-from .check_creation import check_creation as check
 
 CATALOGUS = {
     "domein": "CATAL",
@@ -36,8 +35,7 @@ class Command(BaseCommand):
 
         # Create a catalogus if one doesn't exist already
         catalogi_list = ztc_client.list(resource="catalogus")
-        domein = CATALOGUS["domein"]
-        rsin = CATALOGUS["rsin"]
+
         for result in catalogi_list["results"]:
             if result["domein"] is None and result["rsin"] is None:
                 catalogus = ztc_client.create(resource="catalogus", data=CATALOGUS)
