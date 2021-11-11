@@ -17,6 +17,7 @@ CATALOGUS = {
 }
 date = datetime.now()
 
+
 class Command(BaseCommand):
     help = "Create demo data in Open-Zaak"
 
@@ -34,16 +35,16 @@ class Command(BaseCommand):
         drc_client = drc_service.build_client()
 
         # Create a catalogus if one doesn't exist already
-        catalogi_list = ztc_client.list(resource='catalogus')
-        domein = CATALOGUS['domein']
-        rsin = CATALOGUS['rsin']
-        for result in catalogi_list['results']:
-            if result['domein'] is None and result['rsin'] is None:
-                catalogus = ztc_client.create(resource="catalogus",
-                                              data=CATALOGUS)
+        catalogi_list = ztc_client.list(resource="catalogus")
+        domein = CATALOGUS["domein"]
+        rsin = CATALOGUS["rsin"]
+        for result in catalogi_list["results"]:
+            if result["domein"] is None and result["rsin"] is None:
+                catalogus = ztc_client.create(resource="catalogus", data=CATALOGUS)
             else:
-                catalogus=ztc_client.retrieve(resource="catalogus",
-                             url=catalogi_list['results'][0]['url'])
+                catalogus = ztc_client.retrieve(
+                    resource="catalogus", url=catalogi_list["results"][0]["url"]
+                )
         # Create zaaktypes and informatie objecttypes
         zaaktype_1 = ztc_client.create(
             resource="zaaktype",
@@ -71,28 +72,28 @@ class Command(BaseCommand):
         )
         zaaktype_2 = ztc_client.create(
             resource="zaaktype",
-                data={
-                    "omschrijving": f"Zaaktype 2 {date}",
-                    "vertrouwelijkheidaanduiding": "openbaar",
-                    "doel": "Zaaktype doel 2",
-                    "aanleiding": "aanleiding 2",
-                    "indicatieInternOfExtern": "intern",
-                    "handelingInitiator": "aangeven",
-                    "onderwerp": "onderwerp 2",
-                    "handelingBehandelaar": "behandelen",
-                    "doorlooptijd": "P30D",
-                    "opschortingEnAanhoudingMogelijk": False,
-                    "verlengingMogelijk": False,
-                    "publicatieIndicatie": True,
-                    "productenOfDiensten": [],
-                    "catalogus": catalogus["url"],
-                    "besluittypen": [],
-                    "gerelateerdeZaaktypen": [],
-                    "beginGeldigheid": "2021-01-01",
-                    "versiedatum": "2021-01-01",
-                    "referentieproces": {"naam": "Proces naam 1", "link": ""},
-                },
-            )
+            data={
+                "omschrijving": f"Zaaktype 2 {date}",
+                "vertrouwelijkheidaanduiding": "openbaar",
+                "doel": "Zaaktype doel 2",
+                "aanleiding": "aanleiding 2",
+                "indicatieInternOfExtern": "intern",
+                "handelingInitiator": "aangeven",
+                "onderwerp": "onderwerp 2",
+                "handelingBehandelaar": "behandelen",
+                "doorlooptijd": "P30D",
+                "opschortingEnAanhoudingMogelijk": False,
+                "verlengingMogelijk": False,
+                "publicatieIndicatie": True,
+                "productenOfDiensten": [],
+                "catalogus": catalogus["url"],
+                "besluittypen": [],
+                "gerelateerdeZaaktypen": [],
+                "beginGeldigheid": "2021-01-01",
+                "versiedatum": "2021-01-01",
+                "referentieproces": {"naam": "Proces naam 1", "link": ""},
+            },
+        )
 
         informatieobjecttype_1 = ztc_client.create(
             resource="informatieobjecttype",
@@ -103,7 +104,7 @@ class Command(BaseCommand):
                 "beginGeldigheid": "2021-01-01",
             },
         )
-        #pdb.set_trace()
+        # pdb.set_trace()
         informatieobjecttype_2 = ztc_client.create(
             resource="informatieobjecttype",
             data={
@@ -256,11 +257,17 @@ class Command(BaseCommand):
         # Relate the documents to the zaken
         zrc_client.create(
             resource="zaakinformatieobject",
-            data={"zaak": zaak_1["url"], "informatieobject": document_1["url"],},
+            data={
+                "zaak": zaak_1["url"],
+                "informatieobject": document_1["url"],
+            },
         )
         zrc_client.create(
             resource="zaakinformatieobject",
-            data={"zaak": zaak_2["url"], "informatieobject": document_2["url"],},
+            data={
+                "zaak": zaak_2["url"],
+                "informatieobject": document_2["url"],
+            },
         )
 
         # Create 2 zaken for the second zaaktype
@@ -268,7 +275,7 @@ class Command(BaseCommand):
             resource="zaak",
             data={
                 "bronorganisatie": "517439943",
-                "omschrijving": f"Test zaak 3 {date}"
+                "omschrijving": f"Test zaak 3 {date}",
                 "zaaktype": zaaktype_2["url"],
                 "vertrouwelijkheidaanduiding": "openbaar",
                 "startdatum": "2019-01-01",
@@ -324,11 +331,17 @@ class Command(BaseCommand):
         # Relate the documents to the zaken
         zrc_client.create(
             resource="zaakinformatieobject",
-            data={"zaak": zaak_3["url"], "informatieobject": document_3["url"],},
+            data={
+                "zaak": zaak_3["url"],
+                "informatieobject": document_3["url"],
+            },
         )
         zrc_client.create(
             resource="zaakinformatieobject",
-            data={"zaak": zaak_4["url"], "informatieobject": document_4["url"],},
+            data={
+                "zaak": zaak_4["url"],
+                "informatieobject": document_4["url"],
+            },
         )
 
         self.stdout.write(self.style.SUCCESS("Successfully created demo data."))
