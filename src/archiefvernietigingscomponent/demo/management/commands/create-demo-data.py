@@ -1,16 +1,21 @@
 from base64 import b64encode
 
+from datetime import datetime
+import pdb
+
 from django.core.management.base import BaseCommand
 
 from zgw_consumers.constants import APITypes
 from zgw_consumers.models import Service
+
+from .check_creation import check_creation as check
 
 CATALOGUS = {
     "domein": "CATAL",
     "rsin": "104567387",
     "contactpersoonBeheerNaam": "Jane Doe",
 }
-
+date = datetime.now()
 
 class Command(BaseCommand):
     help = "Create demo data in Open-Zaak"
@@ -20,7 +25,6 @@ class Command(BaseCommand):
         ztc_service = Service.objects.filter(api_type=APITypes.ztc).first()
         assert ztc_service, "No service defined for the Catalogi API"
         ztc_client = ztc_service.build_client()
-
         zrc_service = Service.objects.filter(api_type=APITypes.zrc).first()
         assert zrc_service, "No service defined for the Zaken API"
         zrc_client = zrc_service.build_client()
@@ -29,14 +33,22 @@ class Command(BaseCommand):
         assert drc_service, "No service defined for the Documenten API"
         drc_client = drc_service.build_client()
 
-        # Create a catalogus
-        catalogus = ztc_client.create(resource="catalogus", data=CATALOGUS)
-
+        # Create a catalogus if one doesn't exist already
+        catalogi_list = ztc_client.list(resource='catalogus')
+        domein = CATALOGUS['domein']
+        rsin = CATALOGUS['rsin']
+        for result in catalogi_list['results']:
+            if result['domein'] is None and result['rsin'] is None:
+                catalogus = ztc_client.create(resource="catalogus",
+                                              data=CATALOGUS)
+            else:
+                catalogus=ztc_client.retrieve(resource="catalogus",
+                             url=catalogi_list['results'][0]['url'])
         # Create zaaktypes and informatie objecttypes
         zaaktype_1 = ztc_client.create(
             resource="zaaktype",
             data={
-                "omschrijving": "Zaaktype 1",
+                "omschrijving": f"Zaaktype 1 {date}",
                 "vertrouwelijkheidaanduiding": "openbaar",
                 "doel": "Zaaktype doel 1",
                 "aanleiding": "aanleiding 1",
@@ -57,46 +69,46 @@ class Command(BaseCommand):
                 "referentieproces": {"naam": "Proces naam 1", "link": ""},
             },
         )
-
         zaaktype_2 = ztc_client.create(
             resource="zaaktype",
-            data={
-                "omschrijving": "Zaaktype 2",
-                "vertrouwelijkheidaanduiding": "openbaar",
-                "doel": "Zaaktype doel 2",
-                "aanleiding": "aanleiding 2",
-                "indicatieInternOfExtern": "intern",
-                "handelingInitiator": "aangeven",
-                "onderwerp": "onderwerp 2",
-                "handelingBehandelaar": "behandelen",
-                "doorlooptijd": "P30D",
-                "opschortingEnAanhoudingMogelijk": False,
-                "verlengingMogelijk": False,
-                "publicatieIndicatie": True,
-                "productenOfDiensten": [],
-                "catalogus": catalogus["url"],
-                "besluittypen": [],
-                "gerelateerdeZaaktypen": [],
-                "beginGeldigheid": "2021-01-01",
-                "versiedatum": "2021-01-01",
-                "referentieproces": {"naam": "Proces naam 1", "link": ""},
-            },
-        )
+                data={
+                    "omschrijving": f"Zaaktype 2 {date}",
+                    "vertrouwelijkheidaanduiding": "openbaar",
+                    "doel": "Zaaktype doel 2",
+                    "aanleiding": "aanleiding 2",
+                    "indicatieInternOfExtern": "intern",
+                    "handelingInitiator": "aangeven",
+                    "onderwerp": "onderwerp 2",
+                    "handelingBehandelaar": "behandelen",
+                    "doorlooptijd": "P30D",
+                    "opschortingEnAanhoudingMogelijk": False,
+                    "verlengingMogelijk": False,
+                    "publicatieIndicatie": True,
+                    "productenOfDiensten": [],
+                    "catalogus": catalogus["url"],
+                    "besluittypen": [],
+                    "gerelateerdeZaaktypen": [],
+                    "beginGeldigheid": "2021-01-01",
+                    "versiedatum": "2021-01-01",
+                    "referentieproces": {"naam": "Proces naam 1", "link": ""},
+                },
+            )
 
         informatieobjecttype_1 = ztc_client.create(
             resource="informatieobjecttype",
             data={
                 "catalogus": catalogus["url"],
-                "omschrijving": "IOT type 1",
+                "omschrijving": f"IOT type 1 {date}",
                 "vertrouwelijkheidaanduiding": "openbaar",
                 "beginGeldigheid": "2021-01-01",
             },
         )
+        #pdb.set_trace()
         informatieobjecttype_2 = ztc_client.create(
             resource="informatieobjecttype",
             data={
                 "catalogus": catalogus["url"],
-                "omschrijving": "IOT type 2",
+                "omschrijving": f"IOT type 2 {date}",
                 "vertrouwelijkheidaanduiding": "openbaar",
                 "beginGeldigheid": "2021-01-01",
             },
@@ -105,7 +117,7 @@ class Command(BaseCommand):
             resource="informatieobjecttype",
             data={
                 "catalogus": catalogus["url"],
-                "omschrijving": "IOT type 3",
+                "omschrijving": f"IOT type 3 {date}",
                 "vertrouwelijkheidaanduiding": "openbaar",
                 "beginGeldigheid": "2021-01-01",
             },
@@ -114,7 +126,7 @@ class Command(BaseCommand):
             resource="informatieobjecttype",
             data={
                 "catalogus": catalogus["url"],
-                "omschrijving": "IOT type 4",
+                "omschrijving": f"IOT type 4 {date}",
                 "vertrouwelijkheidaanduiding": "openbaar",
                 "beginGeldigheid": "2021-01-01",
             },
@@ -188,7 +200,7 @@ class Command(BaseCommand):
             resource="zaak",
             data={
                 "bronorganisatie": "095847261",
-                "omschrijving": "Test zaak 1",
+                "omschrijving": f"Test zaak 1 {date}",
                 "zaaktype": zaaktype_1["url"],
                 "vertrouwelijkheidaanduiding": "openbaar",
                 "startdatum": "2021-05-01",
@@ -202,7 +214,7 @@ class Command(BaseCommand):
             resource="zaak",
             data={
                 "bronorganisatie": "517439943",
-                "omschrijving": "Test zaak 2",
+                "omschrijving": f"Test zaak 2 {date}",
                 "zaaktype": zaaktype_1["url"],
                 "vertrouwelijkheidaanduiding": "geheim",
                 "startdatum": "2021-02-01",
@@ -220,7 +232,7 @@ class Command(BaseCommand):
                 "bronorganisatie": "517439943",
                 "creatiedatum": "2021-01-01",
                 "titel": "Test document 1",
-                "Auteur": "John Doe",
+                "auteur": "John Doe",
                 "taal": "nld",
                 "formaat": "txt",
                 "inhoud": b64encode(b"Test text file").decode("utf-8"),
@@ -233,7 +245,7 @@ class Command(BaseCommand):
                 "bronorganisatie": "517439943",
                 "creatiedatum": "2021-07-01",
                 "titel": "Test document 2",
-                "Auteur": "John Doe",
+                "auteur": "John Doe",
                 "taal": "nld",
                 "formaat": "txt",
                 "inhoud": b64encode(b"Test text file").decode("utf-8"),
@@ -256,7 +268,7 @@ class Command(BaseCommand):
             resource="zaak",
             data={
                 "bronorganisatie": "517439943",
-                "omschrijving": "Test zaak 3",
+                "omschrijving": f"Test zaak 3 {date}"
                 "zaaktype": zaaktype_2["url"],
                 "vertrouwelijkheidaanduiding": "openbaar",
                 "startdatum": "2019-01-01",
@@ -270,7 +282,7 @@ class Command(BaseCommand):
             resource="zaak",
             data={
                 "bronorganisatie": "376924512",
-                "omschrijving": "Test zaak 4",
+                "omschrijving": f"Test zaak 4 {date}",
                 "zaaktype": zaaktype_2["url"],
                 "vertrouwelijkheidaanduiding": "geheim",
                 "startdatum": "2021-01-01",
@@ -288,7 +300,7 @@ class Command(BaseCommand):
                 "bronorganisatie": "517439943",
                 "creatiedatum": "2021-01-01",
                 "titel": "Test document 3",
-                "Auteur": "John Doe",
+                "auteur": "John Doe",
                 "taal": "nld",
                 "formaat": "txt",
                 "inhoud": b64encode(b"Test text file").decode("utf-8"),
@@ -301,7 +313,7 @@ class Command(BaseCommand):
                 "bronorganisatie": "517439943",
                 "creatiedatum": "2021-07-01",
                 "titel": "Test document 4",
-                "Auteur": "John Doe",
+                "auteur": "John Doe",
                 "taal": "nld",
                 "formaat": "txt",
                 "inhoud": b64encode(b"Test text file").decode("utf-8"),
