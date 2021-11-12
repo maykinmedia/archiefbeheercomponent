@@ -32,7 +32,7 @@ class Command(BaseCommand):
 
         # Create a catalogus if one doesn't exist already
         catalogus_list = ztc_client.list(
-            resource="catalogus", query_params={"domein": "CATAL", "rsin": "104567387",}
+            resource="catalogus", query_params={"domein": CATALOGUS['domein'], "rsin": CATALOGUS['rsin'],}
         )
 
         if len(catalogus_list["results"]) == 0:
