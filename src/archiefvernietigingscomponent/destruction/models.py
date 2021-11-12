@@ -11,6 +11,7 @@ from ordered_model.models import OrderedModel
 from solo.models import SingletonModel
 from timeline_logger.models import TimelineLog
 
+from archiefvernietigingscomponent.accounts.models import User
 from archiefvernietigingscomponent.notifications.models import Notification
 
 from ..emails.constants import EmailTypeChoices
@@ -102,29 +103,32 @@ class DestructionList(models.Model):
         #  all reviews have approve status -> list is about to be completed
         return None
 
-    def assign(self, assignee):
-        self.assignee = assignee
-        is_reviewer = assignee != self.author
+    def assign(self, assigned_user: Optional[User] = None) -> None:
+        self.assignee = assigned_user
+        is_reviewer = assigned_user != self.author
+        if assigned_user:
 
-        if assignee:
             if is_reviewer:
+                assignee = self.assignees.get(assignee=assigned_user)
+                assignee.assigned_on = timezone.now()
+                assignee.save()
                 message = _("You are assigned for review.")
                 email = AutomaticEmail.objects.filter(
                     type=EmailTypeChoices.review_required
                 ).first()
+
             else:
                 message = _("There is a review to process.")
                 email = AutomaticEmail.objects.filter(
                     type=EmailTypeChoices.changes_required
                 ).first()
-
             # TODO: this should only go through if the object is saved!
             Notification.objects.create(
-                destruction_list=self, user=assignee, message=message,
+                destruction_list=self, user=assigned_user, message=message,
             )
 
             if email:
-                email.send(recipient=assignee, destruction_list=self)
+                email.send(recipient=assigned_user, destruction_list=self)
 
     def last_review(self, reviewer=None):
         if reviewer:
@@ -337,6 +341,7 @@ class DestructionListAssignee(models.Model):
         "accounts.User", on_delete=models.PROTECT, verbose_name=_("assignee"),
     )
     order = models.PositiveSmallIntegerField(_("order"))
+    assigned_on = models.DateTimeField(_("assigned on"), blank=True, null=True)
 
     class Meta:
         verbose_name = _("destruction list assignee")
@@ -383,6 +388,13 @@ class ArchiveConfig(SingletonModel):
             "and {{ identificatie }}. For example: https://gemeente.lan/mijnzaken/zaak/{{ uuid }}"
         ),
         blank=True,
+    )
+    days_until_reminder = models.PositiveIntegerField(
+        _("days until reminder"),
+        default=7,
+        help_text=_(
+            "Number of days until an email is sent reminding that the list needs to be dealt with"
+        ),
     )
 
     class Meta:
