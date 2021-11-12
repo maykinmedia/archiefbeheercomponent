@@ -384,11 +384,14 @@ class ArchiveConfig(SingletonModel):
         ),
         blank=True,
     )
-    days_until_expiry = models.PositiveIntegerField(
-        _("days until expiry"),
-        default = 48,
-        help_text = _("Number of days until an email is sent reminding that the list needs to be dealt with")
-        )
+    days_until_reminder = models.PositiveIntegerField(
+        _("days until reminder"),
+        default=7,
+        help_text=_(
+            "Number of days until an email is sent reminding that the list needs to be dealt with"
+        ),
+    )
+
     class Meta:
         verbose_name = _("archive configuration")
 
