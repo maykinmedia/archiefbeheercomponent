@@ -11,7 +11,6 @@ CATALOGUS = {
     "rsin": "104567387",
     "contactpersoonBeheerNaam": "Jane Doe",
 }
-date = datetime.now()
 
 
 class Command(BaseCommand):
@@ -19,6 +18,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Get the Clients for the Catalogi, Zaken and Documenten APIs.
+        date = datetime.now()
         ztc_service = Service.objects.filter(api_type=APITypes.ztc).first()
         assert ztc_service, "No service defined for the Catalogi API"
         ztc_client = ztc_service.build_client()
@@ -31,15 +31,14 @@ class Command(BaseCommand):
         drc_client = drc_service.build_client()
 
         # Create a catalogus if one doesn't exist already
-        catalogi_list = ztc_client.list(resource="catalogus")
+        catalogus_list = ztc_client.list(
+            resource="catalogus", query_params={"domein": "CATAL", "rsin": "104567387",}
+        )
 
-        for result in catalogi_list["results"]:
-            if result["domein"] is None and result["rsin"] is None:
-                catalogus = ztc_client.create(resource="catalogus", data=CATALOGUS)
-            else:
-                catalogus = ztc_client.retrieve(
-                    resource="catalogus", url=catalogi_list["results"][0]["url"]
-                )
+        if len(catalogus_list["results"]) == 0:
+            catalogus = ztc_client.create(resource="catalogus", data=CATALOGUS)
+        else:
+            catalogus = catalogus_list["results"][0]
         # Create zaaktypes and informatie objecttypes
         zaaktype_1 = ztc_client.create(
             resource="zaaktype",
