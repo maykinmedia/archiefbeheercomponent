@@ -60,7 +60,7 @@ def get_zaken(query_params=None) -> list:
             client, "zaak", minimum=25, query_params=query_params
         )
 
-    "resolve zaaktype url"
+    # Resolve zaaktype url
     fetched_zaaktypen = get_zaaktypen(dict_response=True)
     for zaak in zaken:
         zaak["zaaktype"] = fetched_zaaktypen[zaak["zaaktype"]]

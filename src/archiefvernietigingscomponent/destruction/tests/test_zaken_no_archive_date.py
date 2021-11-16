@@ -5,7 +5,6 @@ from archiefvernietigingscomponent.accounts.tests.factories import UserFactory
 
 
 class ZakenWithoutArchiveDateViewTests(TestCase):
-
     def test_cant_access_without_can_start_destruction(self):
         user = UserFactory(role__can_start_destruction=False)
         self.client.force_login(user)
