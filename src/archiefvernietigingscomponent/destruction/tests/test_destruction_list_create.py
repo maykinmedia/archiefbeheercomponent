@@ -109,7 +109,7 @@ class CreateDestructionListTests(TestCase):
         }
 
         response = self.client.post(url, data)
-
+        self.assertRedirects(response, reverse("destruction:record-manager-list"))
         destruction_list = DestructionList.objects.get()
         assignee = destruction_list.assignees.order_by("id").first()
         assignee_last = destruction_list.assignees.order_by("id").last()
