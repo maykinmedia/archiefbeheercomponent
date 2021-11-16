@@ -112,9 +112,9 @@ class CreateDestructionListTests(TestCase):
         self.assertRedirects(response, reverse("destruction:record-manager-list"))
         destruction_list = DestructionList.objects.get()
 
-        assignees = destruction_list.assignees.order_by("id").first()
+        assignees = destruction_list.assignees.order_by("id")
 
         self.assertIsNotNone(assignees.first().assigned_on)
-        self.assertIsNone(assignees.first().assigned_on)
+        self.assertIsNone(assignees.last().assigned_on)
 
         # self.assert is none
