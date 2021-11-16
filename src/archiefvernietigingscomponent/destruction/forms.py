@@ -1,8 +1,9 @@
 import itertools
 from typing import List, Tuple
-
+import pdb
 from django import forms
 from django.contrib.postgres.forms import SimpleArrayField
+from django.utils import timezone
 
 from archiefvernietigingscomponent.accounts.models import User
 
@@ -85,7 +86,10 @@ class DestructionListForm(forms.ModelForm):
             if reviewer:
                 assignees.append(
                     DestructionListAssignee(
-                        destruction_list=destruction_list, order=i, assignee=reviewer,
+                        destruction_list=destruction_list,
+                        order=i,
+                        assignee=reviewer,
+                        assigned_on=timezone.now(),
                     )
                 )
         destruction_list_assignees = DestructionListAssignee.objects.bulk_create(
@@ -100,7 +104,7 @@ class DestructionListForm(forms.ModelForm):
 
         self.save_items(destruction_list)
         self.save_assignees(destruction_list)
-
+        # pdb.set_trace()
         return destruction_list
 
 
@@ -160,7 +164,12 @@ class ZakenFiltersForm(forms.Form):
 class ArchiveConfigForm(forms.ModelForm):
     class Meta:
         model = ArchiveConfig
-        fields = ("archive_date", "link_to_zac", "short_review_zaaktypes")
+        fields = (
+            "archive_date",
+            "link_to_zac",
+            "short_review_zaaktypes",
+            "days_until_reminder",
+        )
 
     def save(self, commit=True):
         instance = super().save(commit)

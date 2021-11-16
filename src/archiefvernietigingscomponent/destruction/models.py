@@ -1,4 +1,6 @@
 from typing import Optional
+from datetime import datetime
+import pdb
 
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.postgres.fields import ArrayField, JSONField
@@ -103,9 +105,11 @@ class DestructionList(models.Model):
         return None
 
     def assign(self, assignee):
+
         self.assignee = assignee
         is_reviewer = assignee != self.author
-
+        print("hi")
+        assignee.save()
         if assignee:
             if is_reviewer:
                 message = _("You are assigned for review.")
@@ -117,7 +121,6 @@ class DestructionList(models.Model):
                 email = AutomaticEmail.objects.filter(
                     type=EmailTypeChoices.changes_required
                 ).first()
-
             # TODO: this should only go through if the object is saved!
             Notification.objects.create(
                 destruction_list=self, user=assignee, message=message,
@@ -125,6 +128,7 @@ class DestructionList(models.Model):
 
             if email:
                 email.send(recipient=assignee, destruction_list=self)
+            # print(assignee.assigned_on, assignee)
 
     def last_review(self, reviewer=None):
         if reviewer:
@@ -337,6 +341,7 @@ class DestructionListAssignee(models.Model):
         "accounts.User", on_delete=models.PROTECT, verbose_name=_("assignee"),
     )
     order = models.PositiveSmallIntegerField(_("order"))
+    assigned_on = models.DateTimeField(_("assigned on"), default=None, null=True,)
 
     class Meta:
         verbose_name = _("destruction list assignee")

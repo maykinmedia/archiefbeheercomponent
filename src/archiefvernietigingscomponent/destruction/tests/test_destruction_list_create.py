@@ -1,6 +1,8 @@
+import pdb
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import gettext as _
+from django.utils import timezone
 
 from timeline_logger.models import TimelineLog
 
@@ -9,6 +11,9 @@ from archiefvernietigingscomponent.notifications.models import Notification
 
 from ..constants import ListItemStatus, ListStatus
 from ..models import ArchiveConfig, DestructionList
+from ..forms import DestructionListForm
+
+from .factories import DestructionListFactory
 
 
 class CreateDestructionListTests(TestCase):
@@ -93,3 +98,36 @@ class CreateDestructionListTests(TestCase):
             b'<script id="short-review-zaaktypes" type="application/json">["http://example.com/zaak/uuid-1"]</script>',
             response.content,
         )
+
+    def test_reminder(self):
+        reviewers = UserFactory.create_batch(2, role__can_review_destruction=True)
+        zaken = [f"http://some.zaken.nl/api/v1/zaken/{i}" for i in range(1, 3)]
+        zaken_identificaties = ["ZAAK-1", "ZAAK-2", "ZAAK-3"]
+
+        url = reverse("destruction:record-manager-create")
+        data = {
+            "name": "test list",
+            "zaken": ",".join(zaken),
+            "reviewer_1": reviewers[0].id,
+            "reviewer_2": reviewers[1].id,
+            "zaken_identificaties": ",".join(zaken_identificaties),
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertRedirects(response, reverse("destruction:record-manager-list"))
+
+        destruction_list = DestructionList.objects.get()
+
+        self.assertEqual(destruction_list.name, "test list")
+        self.assertEqual(destruction_list.author, self.user)
+        self.assertEqual(destruction_list.status, ListStatus.in_progress)
+        self.assertEqual(destruction_list.items.count(), len(zaken))
+
+        response = self.client.get(url, data)
+        destruction_list = DestructionList.objects.get()
+        assignees = destruction_list.assignees.order_by("id")
+        a = 0
+        for i in assignees:
+            print(i.assigned_on, i)
+        # self.assert is none
