@@ -94,7 +94,7 @@ class CreateDestructionListTests(TestCase):
             response.content,
         )
 
-    def test_reminder(self):
+    def test_assigned_on_field_population_on_assignment(self):
         reviewers = UserFactory.create_batch(2, role__can_review_destruction=True)
         zaken = [f"http://some.zaken.nl/api/v1/zaken/{i}" for i in range(1, 3)]
         zaken_identificaties = ["ZAAK-1", "ZAAK-2", "ZAAK-3"]
@@ -110,16 +110,6 @@ class CreateDestructionListTests(TestCase):
 
         response = self.client.post(url, data)
 
-        self.assertRedirects(response, reverse("destruction:record-manager-list"))
-
-        destruction_list = DestructionList.objects.get()
-
-        self.assertEqual(destruction_list.name, "test list")
-        self.assertEqual(destruction_list.author, self.user)
-        self.assertEqual(destruction_list.status, ListStatus.in_progress)
-        self.assertEqual(destruction_list.items.count(), len(zaken))
-
-        response = self.client.get(url, data)
         destruction_list = DestructionList.objects.get()
         assignee = destruction_list.assignees.order_by("id").first()
         assignee_last = destruction_list.assignees.order_by("id").last()
