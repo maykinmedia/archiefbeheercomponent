@@ -103,7 +103,6 @@ class DestructionListForm(forms.ModelForm):
 
         self.save_items(destruction_list)
         self.save_assignees(destruction_list)
-        # pdb.set_trace()
         return destruction_list
 
 
