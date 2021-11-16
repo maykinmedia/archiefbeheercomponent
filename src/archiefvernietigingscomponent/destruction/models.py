@@ -107,7 +107,6 @@ class DestructionList(models.Model):
         self.assignee = assignee
         is_reviewer = assignee != self.author
 
-        assignee.save()
         if assignee:
             if is_reviewer:
                 message = _("You are assigned for review.")
