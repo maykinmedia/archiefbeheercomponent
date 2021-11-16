@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CheckboxInput } from "../../forms/inputs";
 import { Loader } from '../loader';
+import ErrorMessage from '../ErrorMessage';
 
 
 const displayZaaktype = (zaaktype) => {
@@ -16,7 +17,7 @@ function ZakenTable({ zaken, isLoaded, error, checkboxes, setCheckboxes }) {
     const [selectAll, setSelectAll] = useState(false);
 
     if (error) {
-        return <div>Error in fetching zaken: {error.message}</div>;
+        return <ErrorMessage />;
     }
 
     if (!isLoaded) {

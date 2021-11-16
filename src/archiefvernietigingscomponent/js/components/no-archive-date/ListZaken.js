@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import {get} from '../../utils/api';
 import {ZakenTable} from '../destruction-list-create/zaken-table';
+import ErrorMessage from "../ErrorMessage";
 
 
 
@@ -17,7 +18,7 @@ const ListZaken = ({zakenUrl}) => {
         const response = await get(zakenUrl, {'archiefactiedatum__isnull': true, 'einddatum__isnull': false});
 
         if (!response.ok) {
-            setError(response.data);
+            setError(true);
             return;
         }
 
@@ -37,13 +38,17 @@ const ListZaken = ({zakenUrl}) => {
             <div className="destruction-create__content">
                 <section className="destruction-create__zaken">
                     <h2 className="section-title section-title--highlight">Zaakdossiers</h2>
-                    <ZakenTable
-                        zaken={zaken}
-                        isLoaded={!loading}
-                        error={error}
-                        checkboxes={checkboxes}
-                        setCheckboxes={setCheckboxes}
-                    />
+                    {
+                        !error
+                        ? (<ZakenTable
+                            zaken={zaken}
+                            isLoaded={!loading}
+                            error={error}
+                            checkboxes={checkboxes}
+                            setCheckboxes={setCheckboxes}
+                        />)
+                        : <ErrorMessage />
+                    }
                 </section>
             </div>
         </>
