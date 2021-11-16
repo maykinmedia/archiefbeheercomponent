@@ -1,5 +1,4 @@
 from unittest.mock import patch
-from datetime import date
 
 from django.test import TestCase
 from django.urls import reverse
@@ -126,21 +125,6 @@ class DestructionListUpdateTests(TestCase):
                 )
             ]
         )
-
-    def reminder_list(self, m):
-        destruction_list = DestructionListFactory.create(
-            author=self.user, assignee=self.user
-        )
-        assignee = DestructionListAssigneeFactory.create(
-            destruction_list=destruction_list
-        )
-        archive_config = ArchiveConfig(
-            archive_date=date.today(),
-            link_to_zac="637dfda6-89a1-49e9-b161-bd2ebed55327",
-            days_until_reminder=7,
-        )
-
-        pass
 
     def test_abort_destruction_list(self, m):
         destruction_list = DestructionListFactory.create(

@@ -1,8 +1,6 @@
-import pdb
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import gettext as _
-from django.utils import timezone
 
 from timeline_logger.models import TimelineLog
 
@@ -11,9 +9,6 @@ from archiefvernietigingscomponent.notifications.models import Notification
 
 from ..constants import ListItemStatus, ListStatus
 from ..models import ArchiveConfig, DestructionList
-from ..forms import DestructionListForm
-
-from .factories import DestructionListFactory
 
 
 class CreateDestructionListTests(TestCase):
@@ -126,8 +121,9 @@ class CreateDestructionListTests(TestCase):
 
         response = self.client.get(url, data)
         destruction_list = DestructionList.objects.get()
-        assignees = destruction_list.assignees.order_by("id")
-        a = 0
-        for i in assignees:
-            print(i.assigned_on, i)
+        assignee = destruction_list.assignees.order_by("id").first()
+        assignee_last = destruction_list.assignees.order_by("id").last()
+        self.assertIsNotNone(assignee.assigned_on)
+        self.assertIsNone(assignee_last.assigned_on)
+
         # self.assert is none

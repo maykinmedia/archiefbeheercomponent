@@ -1,6 +1,6 @@
 import itertools
 from typing import List, Tuple
-import pdb
+
 from django import forms
 from django.contrib.postgres.forms import SimpleArrayField
 from django.utils import timezone
@@ -86,12 +86,11 @@ class DestructionListForm(forms.ModelForm):
             if reviewer:
                 assignees.append(
                     DestructionListAssignee(
-                        destruction_list=destruction_list,
-                        order=i,
-                        assignee=reviewer,
-                        assigned_on=timezone.now(),
+                        destruction_list=destruction_list, order=i, assignee=reviewer,
                     )
                 )
+        if assignees:
+            assignees[0].assigned_on = timezone.now()
         destruction_list_assignees = DestructionListAssignee.objects.bulk_create(
             assignees
         )

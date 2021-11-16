@@ -1,6 +1,4 @@
 from typing import Optional
-from datetime import datetime
-import pdb
 
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.postgres.fields import ArrayField, JSONField
@@ -108,7 +106,7 @@ class DestructionList(models.Model):
 
         self.assignee = assignee
         is_reviewer = assignee != self.author
-        print("hi")
+
         assignee.save()
         if assignee:
             if is_reviewer:
@@ -128,7 +126,6 @@ class DestructionList(models.Model):
 
             if email:
                 email.send(recipient=assignee, destruction_list=self)
-            # print(assignee.assigned_on, assignee)
 
     def last_review(self, reviewer=None):
         if reviewer:
