@@ -88,8 +88,6 @@ class DestructionListForm(forms.ModelForm):
                         destruction_list=destruction_list, order=i, assignee=reviewer,
                     )
                 )
-        """if assignees:
-            assignees[0].assigned_on = timezone.now()"""
         destruction_list_assignees = DestructionListAssignee.objects.bulk_create(
             assignees
         )
