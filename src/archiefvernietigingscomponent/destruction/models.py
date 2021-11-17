@@ -107,10 +107,9 @@ class DestructionList(models.Model):
 
         self.assignee = assigned_user
         is_reviewer = assigned_user != self.author
-        assignees = self.assignees.get(assignee=assigned_user)
-        print(assignees)
-        assignees.assigned_on = timezone.now()
-        assignees.save()
+        assignee = self.assignees.get(assignee=assigned_user)
+        assignee.assigned_on = timezone.now()
+        assignee.save()
         if assigned_user:
             if is_reviewer:
                 message = _("You are assigned for review.")
