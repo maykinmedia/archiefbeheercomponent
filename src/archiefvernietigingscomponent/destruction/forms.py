@@ -3,7 +3,6 @@ from typing import List, Tuple
 
 from django import forms
 from django.contrib.postgres.forms import SimpleArrayField
-from django.utils import timezone
 
 from archiefvernietigingscomponent.accounts.models import User
 
@@ -89,8 +88,8 @@ class DestructionListForm(forms.ModelForm):
                         destruction_list=destruction_list, order=i, assignee=reviewer,
                     )
                 )
-        if assignees:
-            assignees[0].assigned_on = timezone.now()
+        """if assignees:
+            assignees[0].assigned_on = timezone.now()"""
         destruction_list_assignees = DestructionListAssignee.objects.bulk_create(
             assignees
         )

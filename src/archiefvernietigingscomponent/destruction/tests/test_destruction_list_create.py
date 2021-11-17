@@ -113,8 +113,10 @@ class CreateDestructionListTests(TestCase):
         destruction_list = DestructionList.objects.get()
 
         assignees = destruction_list.assignees.order_by("id")
+        print(assignees.last().assigned_on)
 
+
+"""
         self.assertIsNotNone(assignees.first().assigned_on)
         self.assertIsNone(assignees.last().assigned_on)
-
-        # self.assert is none
+"""

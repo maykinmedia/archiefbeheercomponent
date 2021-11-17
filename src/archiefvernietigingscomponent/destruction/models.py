@@ -109,7 +109,7 @@ class DestructionList(models.Model):
         is_reviewer = assigned_user != self.author
         assignees = self.assignees.get(assignee=assigned_user)
         print(assignees)
-        assignees.assigned_on=timezone.now()
+        assignees.assigned_on = timezone.now()
         assignees.save()
         if assigned_user:
             if is_reviewer:
@@ -117,7 +117,7 @@ class DestructionList(models.Model):
                 email = AutomaticEmail.objects.filter(
                     type=EmailTypeChoices.review_required
                 ).first()
-                
+
             else:
                 message = _("There is a review to process.")
                 email = AutomaticEmail.objects.filter(
