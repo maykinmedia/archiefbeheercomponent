@@ -107,10 +107,10 @@ class DestructionList(models.Model):
 
         self.assignee = assigned_user
         is_reviewer = assigned_user != self.author
-        assignee = self.assignees.get(assignee=assigned_user)
-        assignee.assigned_on = timezone.now()
-        assignee.save()
         if assigned_user:
+            assignee = self.assignees.get(assignee=assigned_user)
+            assignee.assigned_on = timezone.now()
+            assignee.save()
             if is_reviewer:
                 message = _("You are assigned for review.")
                 email = AutomaticEmail.objects.filter(
@@ -130,6 +130,7 @@ class DestructionList(models.Model):
             if email:
                 email.send(recipient=assigned_user, destruction_list=self)
 
+                
     def last_review(self, reviewer=None):
         if reviewer:
             return self.reviews.filter(author=reviewer).order_by("-id").first()
