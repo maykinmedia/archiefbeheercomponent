@@ -108,7 +108,7 @@ class DestructionList(models.Model):
         self.assignee = assigned_user
         is_reviewer = assigned_user != self.author
         if assigned_user:
-           
+
             if is_reviewer:
                 assignee = self.assignees.get(assignee=assigned_user)
                 assignee.assigned_on = timezone.now()
@@ -339,8 +339,10 @@ class DestructionListAssignee(models.Model):
         verbose_name=_("destruction list"),
     )
     assignee = models.ForeignKey(
-        "accounts.User", on_delete=models.PROTECT, verbose_name=_("assignee"),
-        blank =True,
+        "accounts.User",
+        on_delete=models.PROTECT,
+        verbose_name=_("assignee"),
+        blank=True,
         null=True,
     )
     order = models.PositiveSmallIntegerField(_("order"))
