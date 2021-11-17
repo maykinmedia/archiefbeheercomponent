@@ -117,3 +117,11 @@ class CreateDestructionListTests(TestCase):
 
         self.assertIsNotNone(assignees.first().assigned_on)
         self.assertIsNone(assignees.last().assigned_on)
+
+    def test_assigned_on_none(self):
+
+        destruction_list = DestructionList(
+            name="test1", author=UserFactory.create(), assignee=None,
+        )
+
+        destruction_list.assign(None)
