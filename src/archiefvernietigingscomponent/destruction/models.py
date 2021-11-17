@@ -107,13 +107,17 @@ class DestructionList(models.Model):
 
         self.assignee = assigned_user
         is_reviewer = assigned_user != self.author
-
+        assignees = self.assignees.get(assignee=assigned_user)
+        print(assignees)
+        assignees.assigned_on=timezone.now()
+        assignees.save()
         if assigned_user:
             if is_reviewer:
                 message = _("You are assigned for review.")
                 email = AutomaticEmail.objects.filter(
                     type=EmailTypeChoices.review_required
                 ).first()
+                
             else:
                 message = _("There is a review to process.")
                 email = AutomaticEmail.objects.filter(
@@ -338,7 +342,7 @@ class DestructionListAssignee(models.Model):
         "accounts.User", on_delete=models.PROTECT, verbose_name=_("assignee"),
     )
     order = models.PositiveSmallIntegerField(_("order"))
-    assigned_on = models.DateTimeField(_("assigned on"), blank=True, null=True,)
+    assigned_on = models.DateTimeField(_("assigned on"), blank=True, null=True)
 
     class Meta:
         verbose_name = _("destruction list assignee")
