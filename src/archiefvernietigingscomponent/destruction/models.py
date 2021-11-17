@@ -129,8 +129,14 @@ class DestructionList(models.Model):
 
             if email:
                 email.send(recipient=assigned_user, destruction_list=self)
+        else:
+            message = _("No more reviews to process!")
+            email = AutomaticEmail.objects.filter(
+                type=EmailTypeChoices.finished_review
+            ).first()
+            if email:
+                email.send(recipient=self.assignees.get().first(), destruction_list=self)
 
-                
     def last_review(self, reviewer=None):
         if reviewer:
             return self.reviews.filter(author=reviewer).order_by("-id").first()
@@ -340,6 +346,8 @@ class DestructionListAssignee(models.Model):
     )
     assignee = models.ForeignKey(
         "accounts.User", on_delete=models.PROTECT, verbose_name=_("assignee"),
+        blank =True,
+        null=True,
     )
     order = models.PositiveSmallIntegerField(_("order"))
     assigned_on = models.DateTimeField(_("assigned on"), blank=True, null=True)
