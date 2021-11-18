@@ -7,6 +7,7 @@ class EmailTypeChoices(DjangoChoices):
     report_available = ChoiceItem("report_available", _("Report available"))
     review_required = ChoiceItem("review_required", _("Review required"))
     changes_required = ChoiceItem("changes_required", _("Changes required"))
+    update_required = ChoiceItem("update_required", _("Update required"))
 
 
 class EmailPreferenceChoices(DjangoChoices):

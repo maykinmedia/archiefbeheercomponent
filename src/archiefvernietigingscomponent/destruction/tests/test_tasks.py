@@ -30,10 +30,12 @@ from ..tasks import (
     complete_and_notify,
     process_destruction_list,
     process_list_item,
+    send_email_after_time,
     update_zaak_from_list_item,
     update_zaken,
 )
 from .factories import (
+    DestructionListAssigneeFactory,
     DestructionListFactory,
     DestructionListItemFactory,
     DestructionListItemReviewFactory,
@@ -285,6 +287,23 @@ class NotifyTests(TestCase):
             api_root="https://oz.nl/catalogi/api/v1",
             oas="https://oz.nl/catalogi/api/v1/schema/openapi.json",
         )
+
+    @patch.object(timezone, "now", return_value=datetime.datetime(2021, 11, 1, 00))
+    def time_past(self, m):
+        return timezone.make_aware(timezone.now())
+
+    def test_email_when_delayed(self, m):
+        AutomaticEmailFactory.create(type=EmailTypeChoices.update_required)
+        time_past = self.time_past()
+        destruction_list = DestructionListFactory.create()
+        assignees = DestructionListAssigneeFactory.create_batch(
+            size=2, destruction_list=destruction_list
+        )
+        assignees[0].assigned_on = time_past
+        destruction_list.save()
+        assignees[0].save()
+        send_email_after_time(destruction_list.id)
+        self.assertEqual(len(mail.outbox), 1)
 
     def test_complete_and_notify(self, m):
         destruction_list = DestructionListFactory.create()

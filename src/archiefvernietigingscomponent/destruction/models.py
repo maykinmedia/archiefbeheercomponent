@@ -104,7 +104,6 @@ class DestructionList(models.Model):
         return None
 
     def assign(self, assigned_user: User) -> None:
-
         self.assignee = assigned_user
         is_reviewer = assigned_user != self.author
         if assigned_user:

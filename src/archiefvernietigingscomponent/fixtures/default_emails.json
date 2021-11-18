@@ -32,5 +32,15 @@
       "body": "Geachte gemeentearchivaris {{ user }},\nIngevolge het bepaalde in artikel 8 van het Archiefbesluit 1995, zoals gemandateerd aan de hoofden van de organisatieonderdelen in de mandaatregeling van Gemeente {{ municipality }}, verklaar ik hierbij dat de vernietiging zoals omschreven in {{ list }} is uitgevoerd. De zaken zijn onherstelbaar vernietigd. U kunt de vernietigingslijst in PDF formaat via deze link downloaden: {{ link_report }}",
       "subject": "Zaken op vernietigingslijst vernietigd"
     }
+  },
+  {
+    "model": "emails.automaticemail",
+    "pk": 4,
+    "fields": {
+      "type": "update_required",
+      "body": "Beste, \n Uw vernietigingslijst {{destruction_list}} heeft uw attentie nodig!",
+      "subject": "Uw vernietigingslijst heeft uw attentie nodig"
+    }
   }
+  
 ]

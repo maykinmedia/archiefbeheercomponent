@@ -3,6 +3,7 @@ import traceback
 
 from django.conf import settings
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from celery import chain
@@ -17,7 +18,12 @@ from ..emails.constants import EmailTypeChoices
 from ..emails.models import AutomaticEmail
 from ..report.utils import create_destruction_report, get_absolute_url
 from .constants import ListItemStatus, ListStatus, ReviewStatus
-from .models import DestructionList, DestructionListItem, DestructionListReview
+from .models import (
+    ArchiveConfig,
+    DestructionList,
+    DestructionListItem,
+    DestructionListReview,
+)
 from .service import fetch_resultaat, fetch_zaak, remove_zaak, update_zaak
 
 logger = logging.getLogger(__name__)
@@ -47,6 +53,35 @@ def process_destruction_list(list_id):
     chunk_tasks = process_list_item.chunks(list_item_ids, settings.ZAKEN_PER_TASK)
     notify_task = complete_and_notify.si(list_id)
     chain(chunk_tasks.group(), notify_task)()
+
+
+@app.task
+def send_email_after_time(list_id):
+    destruction_list = DestructionList.objects.get(id=list_id)
+    destruction_list.save()
+    archive_config = ArchiveConfig.get_solo()
+    number_days = archive_config.days_until_reminder
+    assignees = destruction_list.assignees.order_by("id")
+    for assignee in assignees:
+        if assignee.assigned_on:
+            delta = timezone.localdate(timezone.now()) - timezone.localdate(
+                assignee.assigned_on
+            )
+
+    if int(delta.days) > int(number_days):
+
+        if assignees:
+
+            if assignees.first():
+                recipient = assignees.first().assignee
+            elif assignees.last():
+                recipient = assignees.last().assignee
+            email = AutomaticEmail.objects.filter(
+                type=EmailTypeChoices.update_required
+            ).first()
+
+            if email:
+                email.send(recipient=recipient, destruction_list=destruction_list)
 
 
 @app.task
@@ -132,10 +167,8 @@ def process_list_item(list_item_id):
 @app.task
 def complete_and_notify(list_id):
     destruction_list = DestructionList.objects.get(id=list_id)
-
     destruction_list.complete()
     destruction_list.save()
-
     logger.info("Destruction list %r is processed", destruction_list.id)
 
     notification = Notification.objects.create(
