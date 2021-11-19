@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 
 import requests_mock
+from freezegun import freeze_time
 from privates.test import temp_private_root
 from timeline_logger.models import TimelineLog
 from zds_client.client import ClientError
@@ -27,10 +28,10 @@ from ...tests.utils import mock_service_oas_get
 from ..constants import ListItemStatus, ListStatus, ReviewStatus
 from ..models import DestructionList, DestructionListItem
 from ..tasks import (
+    check_if_reviewers_need_reminder,
     complete_and_notify,
     process_destruction_list,
     process_list_item,
-    send_email_after_time,
     update_zaak_from_list_item,
     update_zaken,
 )
@@ -275,6 +276,83 @@ class ProcessListItemTests(TestCase):
 
 @requests_mock.Mocker()
 @temp_private_root()
+class AutomaticEmailTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        AutomaticEmailFactory.create(type=EmailTypeChoices.review_reminder)
+        Service.objects.create(
+            label="Catalogi API",
+            api_type=APITypes.ztc,
+            api_root="https://oz.nl/catalogi/api/v1",
+            oas="https://oz.nl/catalogi/api/v1/schema/openapi.json",
+        )
+
+    def test_email_when_delayed(self, m):
+        time_past = timezone.make_aware(datetime.datetime(2021, 11, 12, 0, 0))
+        destruction_list = DestructionListFactory.create()
+        assignees = DestructionListAssigneeFactory.create_batch(
+            size=2, destruction_list=destruction_list
+        )
+        assignees[0].assigned_on = time_past
+        destruction_list.save()
+        assignees[0].save()
+        check_if_reviewers_need_reminder()
+        self.assertEqual(len(mail.outbox), 1)
+
+    @freeze_time("2021-11-16", tz_offset=0)
+    def test_two_lists_one_assignee_each(self, m):
+
+        dates = (
+            timezone.make_aware(datetime.datetime(2021, 11, 12, 0, 0)),
+            timezone.make_aware(datetime.datetime(2021, 11, 4, 0, 0)),
+        )
+        destruction_lists = DestructionListFactory.create_batch(size=2)
+        for lst, date in zip(destruction_lists, dates):
+            assignee = DestructionListAssigneeFactory.create(destruction_list=lst)
+            assignee.assigned_on = date
+            assignee.save()
+            lst.save()
+        check_if_reviewers_need_reminder()
+
+        self.assertEqual(len(mail.outbox), 1)
+
+    @freeze_time("2021-11-16", tz_offset=0)
+    def test_no_reminder_needed(self, m):
+
+        destruction_list = DestructionListFactory.create()
+        destruction_list.save()
+        assignee = DestructionListAssigneeFactory.create(
+            destruction_list=destruction_list
+        )
+        assignee.assigned_on = timezone.make_aware(
+            datetime.datetime(2021, 11, 12, 0, 0)
+        )
+        assignee.save()
+        destruction_list.save()
+
+        check_if_reviewers_need_reminder()
+
+        self.assertEqual(len(mail.outbox), 0)
+
+    @freeze_time("2021-11-16", tz_offset=0)
+    def test_one_list_two_assignees(self, m):
+        destruction_list = DestructionListFactory.create()
+        assignees = DestructionListAssigneeFactory.create_batch(
+            size=2, destruction_list=destruction_list
+        )
+        assignees[0].assigned_on = timezone.make_aware(
+            datetime.datetime(2021, 11, 4, 0, 0)
+        )
+        assignees[0].save()
+        destruction_list.save()
+        check_if_reviewers_need_reminder()
+
+        self.assertEqual(len(mail.outbox), 1)
+
+
+@requests_mock.Mocker()
+@temp_private_root()
 @override_settings(LANGUAGE_CODE="en")
 class NotifyTests(TestCase):
     @classmethod
@@ -287,23 +365,6 @@ class NotifyTests(TestCase):
             api_root="https://oz.nl/catalogi/api/v1",
             oas="https://oz.nl/catalogi/api/v1/schema/openapi.json",
         )
-
-    @patch.object(timezone, "now", return_value=datetime.datetime(2021, 11, 1, 00))
-    def time_past(self, m):
-        return timezone.make_aware(timezone.now())
-
-    def test_email_when_delayed(self, m):
-        AutomaticEmailFactory.create(type=EmailTypeChoices.update_required)
-        time_past = self.time_past()
-        destruction_list = DestructionListFactory.create()
-        assignees = DestructionListAssigneeFactory.create_batch(
-            size=2, destruction_list=destruction_list
-        )
-        assignees[0].assigned_on = time_past
-        destruction_list.save()
-        assignees[0].save()
-        send_email_after_time(destruction_list.id)
-        self.assertEqual(len(mail.outbox), 1)
 
     def test_complete_and_notify(self, m):
         destruction_list = DestructionListFactory.create()

@@ -56,32 +56,32 @@ def process_destruction_list(list_id):
 
 
 @app.task
-def send_email_after_time(list_id):
-    destruction_list = DestructionList.objects.get(id=list_id)
-    destruction_list.save()
-    archive_config = ArchiveConfig.get_solo()
-    number_days = archive_config.days_until_reminder
-    assignees = destruction_list.assignees.order_by("id")
-    for assignee in assignees:
-        if assignee.assigned_on:
-            delta = timezone.localdate(timezone.now()) - timezone.localdate(
-                assignee.assigned_on
-            )
+def check_if_reviewers_need_reminder():
+    destruction_lists = DestructionList.objects.all()
+    for destruction_list in destruction_lists:
+        destruction_list.save()
+        archive_config = ArchiveConfig.get_solo()
+        number_days = archive_config.days_until_reminder
+        assignees = destruction_list.assignees.order_by("id")
+        for assignee in assignees:
+            if assignee.assigned_on:
+                delta = timezone.now() - assignee.assigned_on
+                if int(delta.days) >= int(number_days):
 
-    if int(delta.days) > int(number_days):
+                    if assignees:
 
-        if assignees:
+                        if assignees.first():
+                            recipient = assignees.first().assignee
+                        elif assignees.last():
+                            recipient = assignees.last().assignee
+                        email = AutomaticEmail.objects.filter(
+                            type=EmailTypeChoices.review_reminder
+                        ).first()
 
-            if assignees.first():
-                recipient = assignees.first().assignee
-            elif assignees.last():
-                recipient = assignees.last().assignee
-            email = AutomaticEmail.objects.filter(
-                type=EmailTypeChoices.update_required
-            ).first()
-
-            if email:
-                email.send(recipient=recipient, destruction_list=destruction_list)
+                        if email:
+                            email.send(
+                                recipient=recipient, destruction_list=destruction_list
+                            )
 
 
 @app.task

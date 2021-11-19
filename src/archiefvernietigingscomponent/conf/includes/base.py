@@ -429,7 +429,7 @@ SOLO_CACHE_TIMEOUT = 60 * 5  # 5 mins
 CELERY_BROKER_URL = config("CELERY_BROKER_URL", "redis://localhost:6379/0")
 CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND", "redis://localhost:6379/0")
 CELERY_BEAT_SCHEDULE = {
-    "task": "archiefvernietigingscomponent.destruction.tasks.send_email_after_time",
+    "task": "archiefvernietigingscomponent.destruction.tasks.check_if_reviewers_need_reminder",
     # run every 24 hours, executing the task at 9:00
     "schedule": crontab(hour=9, minute=0),
 }

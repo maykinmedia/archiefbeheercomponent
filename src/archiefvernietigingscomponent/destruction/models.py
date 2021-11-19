@@ -103,7 +103,7 @@ class DestructionList(models.Model):
         #  all reviews have approve status -> list is about to be completed
         return None
 
-    def assign(self, assigned_user: User) -> None:
+    def assign(self, assigned_user: Optional[User] = None) -> None:
         self.assignee = assigned_user
         is_reviewer = assigned_user != self.author
         if assigned_user:
@@ -338,11 +338,7 @@ class DestructionListAssignee(models.Model):
         verbose_name=_("destruction list"),
     )
     assignee = models.ForeignKey(
-        "accounts.User",
-        on_delete=models.PROTECT,
-        verbose_name=_("assignee"),
-        blank=True,
-        null=True,
+        "accounts.User", on_delete=models.PROTECT, verbose_name=_("assignee"),
     )
     order = models.PositiveSmallIntegerField(_("order"))
     assigned_on = models.DateTimeField(_("assigned on"), blank=True, null=True)
