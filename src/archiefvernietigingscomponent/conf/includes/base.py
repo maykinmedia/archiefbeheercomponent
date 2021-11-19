@@ -2,6 +2,7 @@ import os
 
 from django.urls import reverse_lazy
 
+from celery.schedules import crontab
 from sentry_sdk.integrations import django, redis
 
 from .environ import config
@@ -427,6 +428,11 @@ SOLO_CACHE_TIMEOUT = 60 * 5  # 5 mins
 #
 CELERY_BROKER_URL = config("CELERY_BROKER_URL", "redis://localhost:6379/0")
 CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND", "redis://localhost:6379/0")
+CELERY_BEAT_SCHEDULE = {
+    "task": "archiefvernietigingscomponent.destruction.tasks.send_email_after_time",
+    # run every 24 hours, executing the task at 9:00
+    "schedule": crontab(hour=9, minute=0),
+}
 # Add a 10 minutes timeout to all Celery tasks.
 CELERY_TASK_SOFT_TIME_LIMIT = 600
 
