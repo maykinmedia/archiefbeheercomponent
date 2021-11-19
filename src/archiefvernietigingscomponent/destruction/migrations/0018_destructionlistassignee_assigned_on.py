@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('destruction', '0017_archiveconfig_days_until_reminder'),
+        ("destruction", "0017_archiveconfig_days_until_reminder"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='destructionlistassignee',
-            name='assigned_on',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='assigned on'),
+            model_name="destructionlistassignee",
+            name="assigned_on",
+            field=models.DateTimeField(
+                blank=True, null=True, verbose_name="assigned on"
+            ),
         ),
     ]
