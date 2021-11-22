@@ -167,7 +167,7 @@ pyyaml==5.4
     # via gemma-zds-client
 redis==3.5.3
     # via django-redis
-requests==2.23.0
+requests==2.26.0
     # via
     #   django-auth-adfs
     #   django-rosetta
