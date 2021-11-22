@@ -312,7 +312,7 @@ regex==2020.5.14
     # via black
 requests-mock==1.8.0
     # via -r requirements/ci.txt
-requests==2.23.0
+requests==2.26.0
     # via
     #   -r requirements/ci.txt
     #   django-auth-adfs
