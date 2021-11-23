@@ -7,9 +7,10 @@ from zgw_consumers.models import Service
 from archiefvernietigingscomponent.tests.utils import (
     generate_oas_component,
     mock_service_oas_get,
+    paginated_response,
 )
 
-from ..service import fetch_resultaat, update_zaak
+from ..service import fetch_resultaat, get_zaken, update_zaak
 
 ZAKEN_ROOT = "https://oz.nl/zaken/api/v1/"
 CATALOGI_ROOT = "https://oz.nl/catalogi/api/v1/"
@@ -17,12 +18,12 @@ SELECTIELIJST_ROOT = "https://oz.nl/selectielijst/api/v1/"
 
 ZAAKTYPE_1 = {
     "url": f"{CATALOGI_ROOT}zaaktypen/uuid-1",
-    "omschrijving": "A great zaaktype",
+    "omschrijving": "Zaaktype 1",
     "versiedatum": "2020-10-10",
 }
 ZAAKTYPE_2 = {
     "url": f"{CATALOGI_ROOT}zaaktypen/uuid-2",
-    "omschrijving": "A magnificent zaaktype",
+    "omschrijving": "Zaaktype 2",
     "versiedatum": "2020-08-08",
     "selectielijstProcestype": f"{SELECTIELIJST_ROOT}procestypen/uuid-1",
 }
@@ -31,7 +32,7 @@ ZAKEN = [
         "url": f"{ZAKEN_ROOT}1",
         "identificatie": "ZAAK-2020-0000000001",
         "omschrijving": "test1",
-        "zaaktype": ZAAKTYPE_1["url"],
+        "zaaktype": ZAAKTYPE_2["url"],
         "bronorganisatie": "095847261",
         "startdatum": "2020-12-12",
         "registratiedatum": "2020-11-12",
@@ -43,24 +44,6 @@ ZAKEN = [
         "zaaktype": ZAAKTYPE_1["url"],
         "bronorganisatie": "517439943",
         "startdatum": "2020-11-12",
-        "registratiedatum": "2020-10-12",
-    },
-    {
-        "url": f"{ZAKEN_ROOT}3",
-        "identificatie": "ZAAK-2020-0000000003",
-        "omschrijving": "test3",
-        "zaaktype": ZAAKTYPE_2["url"],
-        "bronorganisatie": "095847261",
-        "startdatum": "2020-11-12",
-        "registratiedatum": "2020-10-12",
-    },
-    {
-        "url": f"{ZAKEN_ROOT}4",
-        "identificatie": "ZAAK-2020-0000000004",
-        "omschrijving": "test4",
-        "zaaktype": ZAAKTYPE_2["url"],
-        "bronorganisatie": "517439943",
-        "startdatum": "2020-12-12",
         "registratiedatum": "2020-10-12",
     },
 ]
@@ -153,3 +136,45 @@ class ServiceGetZakenTest(TestCase):
             "selectielijst",
             oas_url=f"{SELECTIELIJST_ROOT}schema/openapi.json",
         )
+
+    def test_retrieve_ordered_zaken(self, m):
+        self._set_up_mocks(m)
+        m.get(
+            f"{ZAKEN_ROOT}zaken", json=paginated_response(ZAKEN),
+        )
+        m.get(
+            url=f"{CATALOGI_ROOT}zaaktypen",
+            json=paginated_response([ZAAKTYPE_1, ZAAKTYPE_2]),
+        )
+
+        zaken = get_zaken(query_params={"sort_by_zaaktype": True})
+
+        for zaak in zaken:
+            self.assertIsInstance(zaak["zaaktype"], dict)
+
+        # Order on the omschrijving of the zaaktype
+        zaken_expected_order = ["test2", "test1"]
+        zaken_order = [zaak["omschrijving"] for zaak in zaken]
+
+        self.assertEqual(zaken_expected_order, zaken_order)
+
+    def test_retrieve_unordered_zaken(self, m):
+        self._set_up_mocks(m)
+        m.get(
+            f"{ZAKEN_ROOT}zaken", json=paginated_response(ZAKEN),
+        )
+        m.get(
+            url=f"{CATALOGI_ROOT}zaaktypen",
+            json=paginated_response([ZAAKTYPE_1, ZAAKTYPE_2]),
+        )
+
+        zaken = get_zaken()
+
+        for zaak in zaken:
+            self.assertIsInstance(zaak["zaaktype"], dict)
+
+        # Order on the omschrijving of the zaaktype
+        zaken_expected_order = ["test1", "test2"]
+        zaken_order = [zaak["omschrijving"] for zaak in zaken]
+
+        self.assertEqual(zaken_expected_order, zaken_order)
