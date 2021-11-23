@@ -7,10 +7,9 @@ from zgw_consumers.models import Service
 from archiefvernietigingscomponent.tests.utils import (
     generate_oas_component,
     mock_service_oas_get,
-    paginated_response,
 )
 
-from ..service import fetch_resultaat, get_zaken, update_zaak
+from ..service import fetch_resultaat, update_zaak
 
 ZAKEN_ROOT = "https://oz.nl/zaken/api/v1/"
 CATALOGI_ROOT = "https://oz.nl/catalogi/api/v1/"
@@ -154,27 +153,3 @@ class ServiceGetZakenTest(TestCase):
             "selectielijst",
             oas_url=f"{SELECTIELIJST_ROOT}schema/openapi.json",
         )
-
-    def test_retrieve_ordered_zaken(self, m):
-        self._set_up_mocks(m)
-        m.get(
-            f"{ZAKEN_ROOT}zaken?archiefactiedatum__isnull=true&einddatum__isnull=false",
-            json=paginated_response(ZAKEN),
-        )
-        m.get(
-            url=f"{CATALOGI_ROOT}zaaktypen",
-            json=paginated_response([ZAAKTYPE_1, ZAAKTYPE_2]),
-        )
-
-        zaken = get_zaken(
-            query_params={"einddatum__isnull": False, "archiefactiedatum__isnull": True}
-        )
-
-        for zaak in zaken:
-            self.assertIsInstance(zaak["zaaktype"], dict)
-
-        # Order on registratiedatum, then on startdatum, then on identificatie and then reversed
-        zaken_expected_order = ["test1", "test4", "test3", "test2"]
-        zaken_order = [zaak["omschrijving"] for zaak in zaken]
-
-        self.assertEqual(zaken_expected_order, zaken_order)
