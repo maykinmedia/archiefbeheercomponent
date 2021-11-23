@@ -99,7 +99,7 @@ django-solo==1.1.3
     #   zgw-consumers
 django-timeline-logger==1.1.2
     # via -r requirements/base.in
-django==2.2.20
+django==2.2.24
     # via
     #   -r requirements/base.in
     #   django-appconf
@@ -134,7 +134,7 @@ idna==2.9
     # via requests
 kombu==4.6.10
     # via celery
-pillow==8.1.1
+pillow==8.3.2
     # via
     #   -r requirements/base.in
     #   cairosvg
@@ -167,7 +167,7 @@ pyyaml==5.4
     # via gemma-zds-client
 redis==3.5.3
     # via django-redis
-requests==2.23.0
+requests==2.26.0
     # via
     #   django-auth-adfs
     #   django-rosetta
@@ -192,7 +192,7 @@ tinycss2==1.1.0
     #   weasyprint
 tornado==6.0.4
     # via flower
-urllib3==1.25.9
+urllib3==1.26.5
     # via
     #   elastic-apm
     #   requests
