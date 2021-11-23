@@ -15,7 +15,11 @@ const ListZaken = ({zakenUrl}) => {
 
     // Fetch zaken
     const {loading} = useAsync( async () => {
-        const response = await get(zakenUrl, {'archiefactiedatum__isnull': true, 'einddatum__isnull': false});
+        const response = await get(zakenUrl, {
+            'archiefactiedatum__isnull': true,
+            'einddatum__isnull': false,
+            'sort_by_zaaktype': true
+        });
 
         if (!response.ok) {
             setError(true);

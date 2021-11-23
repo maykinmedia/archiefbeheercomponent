@@ -52,6 +52,9 @@ def fetch_zaaktype(url: str) -> dict:
 # ZRC
 def get_zaken(query_params=None) -> list:
     query_params = query_params or {}
+    if sort_by_zaaktype := query_params.get("sort_by_zaaktype"):
+        query_params = query_params.copy()
+        del query_params["sort_by_zaaktype"]
 
     zaken = []
     for zrc in Service.objects.filter(api_type=APITypes.zrc):
@@ -64,6 +67,9 @@ def get_zaken(query_params=None) -> list:
     fetched_zaaktypen = get_zaaktypen(dict_response=True)
     for zaak in zaken:
         zaak["zaaktype"] = fetched_zaaktypen[zaak["zaaktype"]]
+
+    if sort_by_zaaktype:
+        zaken = sorted(zaken, key=lambda zaak: (zaak["zaaktype"]["omschrijving"]))
 
     return zaken
 
