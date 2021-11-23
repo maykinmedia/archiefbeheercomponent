@@ -5,11 +5,6 @@ import {DateInput} from "../../forms/inputs";
 import {RadioSelect} from "../../forms/select";
 
 
-const SUGGESTION_DISPLAY = {
-    "remove": "Verwijderen",
-    "change_and_remove": "Aanpassen en verwijderen"
-};
-
 const ARCHIEFNOMINATIE_CHOICES = [
     ["blijvend_bewaren", "blijvend bewaren"],
     ["vernietigen", "vernietigen"]
@@ -35,9 +30,6 @@ const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, setAction, archi
                 <div className="modal__section">
                     <section className="content-panel modal__item">
                         <h2 className="section-title section-title--highlight">Beoordeling</h2>
-
-                        <h3>Voorstel</h3>
-                        <p>{SUGGESTION_DISPLAY[listItem.review_suggestion] || "Geen voorstel"}</p>
 
                         <h3>Opmerkingen</h3>
                         <p>
@@ -77,7 +69,7 @@ const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, setAction, archi
                             closeModal();
                         }}
                         className="btn"
-                    >{SUGGESTION_DISPLAY[currentAction]}
+                    >Zaak uitzonderen
                     </button>
 
                     <button
