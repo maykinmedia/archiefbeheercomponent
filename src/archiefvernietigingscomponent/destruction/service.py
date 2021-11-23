@@ -65,15 +65,6 @@ def get_zaken(query_params=None) -> list:
     for zaak in zaken:
         zaak["zaaktype"] = fetched_zaaktypen[zaak["zaaktype"]]
 
-    zaken = sorted(
-        zaken,
-        key=lambda zaak: (
-            zaak["registratiedatum"],
-            zaak["startdatum"],
-            zaak["identificatie"],
-        ),
-        reverse=True,
-    )
     return zaken
 
 

@@ -14,6 +14,7 @@ function getSearchZakenUrl(path, filters, currentDate) {
     let queryParams = {
         'archiefnominatie': 'vernietigen',
         'archiefactiedatum__lt': currentDate,
+        'ordering': 'registratiedatum,startdatum,identificatie'
     };
     if (filters.zaaktypen.length) queryParams['zaaktype__in'] = filters.zaaktypen;
     if (filters.bronorganisaties.length) queryParams['bronorganisatie__in'] = filters.bronorganisaties;
