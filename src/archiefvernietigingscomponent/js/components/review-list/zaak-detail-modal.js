@@ -53,13 +53,7 @@ const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, index, comment, setComm
                             type="button"
                             className="btn"
                             onClick={(e) => suggestClose("change_and_remove")}
-                        >Aanpassen
-                        </button>
-                        <button
-                            type="button"
-                            className="btn"
-                            onClick={(e) => suggestClose("remove")}
-                        >Uitzonderen
+                        >Voorstel tot aanpassen
                         </button>
                         <button
                             type="button"
