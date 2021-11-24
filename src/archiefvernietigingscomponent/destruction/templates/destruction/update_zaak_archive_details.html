@@ -1,0 +1,16 @@
+{% extends "master.html" %}
+
+{% block content %}
+    <header class="destruction-create__header">
+        <h1 class="title destruction-create__title">Zaak archiefgegevens aanpassen</h1>
+    </header>
+
+    <div class="destruction-create__content">
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
+{% endblock %}

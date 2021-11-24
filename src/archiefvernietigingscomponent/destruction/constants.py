@@ -47,3 +47,8 @@ class ListStateDisplay(DjangoChoices):
     rejected = ChoiceItem("rejected", _("Rejected"))
     approved = ChoiceItem("approved", _("Approved"))
     finished = ChoiceItem("finished", _("Finished"))
+
+
+class ZaakArchiefnominatieChoices(DjangoChoices):
+    blijvend_bewaren = ChoiceItem("blijvend_bewaren", _("Continue to store"))
+    vernietigen = ChoiceItem("vernietigen", _("Destroy"))

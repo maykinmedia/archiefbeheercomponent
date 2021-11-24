@@ -12,6 +12,7 @@ from django.utils.timesince import timesince
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import CreateView
 from django.views.generic.base import RedirectView, TemplateView
+from django.views.generic.edit import FormView
 
 from django_filters.views import FilterView
 from extra_views import (
@@ -36,6 +37,7 @@ from .forms import (
     ReviewCommentForm,
     ReviewForm,
     ReviewItemBaseForm,
+    ZaakArchiveDetailsForm,
     get_reviewer_choices,
     get_zaaktype_choices,
 )
@@ -315,6 +317,34 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
 class ZakenWithoutArchiveDateView(RoleRequiredMixin, TemplateView):
     template_name = "destruction/zaken_without_archive_date_list.html"
     role_permission = "can_start_destruction"
+
+
+class UpdateZaakArchiveDetailsView(RoleRequiredMixin, FormView):
+    # TODO: style form
+    template_name = "destruction/update_zaak_archive_details.html"
+    role_permission = "can_start_destruction"
+    form_class = ZaakArchiveDetailsForm
+    success_url = reverse_lazy("destruction:zaken-without-archive-date")
+
+    def get_initial(self):
+        initial_data = super().get_initial()
+
+        if self.request.GET:
+            form = self.form_class(data=self.request.GET)
+            if form.is_valid():
+                initial_data.update(form.cleaned_data)
+
+        return initial_data
+
+    def form_valid(self, form):
+        # TODO: make post request to OZ to update zaak
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+
+        # Todo: update context data with zaak details for displaying
+        return context_data
 
 
 # Reviewer views

@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 
 from archiefvernietigingscomponent.accounts.models import User
 
-from .constants import Suggestion
+from .constants import Suggestion, ZaakArchiefnominatieChoices
 from .models import (
     ArchiveConfig,
     DestructionList,
@@ -207,3 +207,14 @@ class ArchiveConfigForm(forms.ModelForm):
                 instance.save()
 
         return instance
+
+
+class ZaakArchiveDetailsForm(forms.Form):
+    zaak_uuid = forms.UUIDField(required=True)
+    archiefnominatie = forms.ChoiceField(
+        choices=ZaakArchiefnominatieChoices.choices, required=False
+    )
+    archiefactiedatum = forms.DateField(required=False)
+
+    class Meta:
+        fields = ("zaak_uuid", "archiefnominatie", "archiefactiedatum")
