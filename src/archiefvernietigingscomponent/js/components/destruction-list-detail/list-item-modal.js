@@ -1,14 +1,9 @@
-import React from "react";
+import React from 'react';
 import Modal from 'react-modal';
 
-import {DateInput} from "../../forms/inputs";
-import {RadioSelect} from "../../forms/select";
-
-
-const ARCHIEFNOMINATIE_CHOICES = [
-    ["blijvend_bewaren", "blijvend bewaren"],
-    ["vernietigen", "vernietigen"]
-];
+import {DateInput} from '../../forms/inputs';
+import {RadioSelect} from '../../forms/select';
+import {ARCHIEFNOMINATIE_CHOICES} from '../constants';
 
 
 const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, setAction, archiveInputs}) => {

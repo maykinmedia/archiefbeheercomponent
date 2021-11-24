@@ -67,6 +67,7 @@ const ListZaken = ({zakenUrl}) => {
                             error={error}
                             checkboxes={checkboxes}
                             setCheckboxes={setCheckboxes}
+                            canUpdateZaak={true}
                         />)
                         : <ErrorMessage />
                     }
