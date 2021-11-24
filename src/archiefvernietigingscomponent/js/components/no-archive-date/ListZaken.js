@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 
 import {get} from '../../utils/api';
 import {ZakenTable} from '../destruction-list-create/zaken-table';
-import ErrorMessage from "../ErrorMessage";
+import ErrorMessage from '../ErrorMessage';
+import ZaakIdentificatieFilter from './ZaakIdentificatieFilter';
 
 
 
@@ -12,6 +13,7 @@ const ListZaken = ({zakenUrl}) => {
     const [error, setError] = useState(null);
     const [zaken, setZaken] = useState([]);
     const [checkboxes, setCheckboxes] = useState([]);
+    const [identificatieFilter, setIdentificatieFilter] = useState([]);
 
     // Fetch zaken
     const {loading} = useAsync( async () => {
@@ -40,12 +42,27 @@ const ListZaken = ({zakenUrl}) => {
                 <h1 className="title destruction-create__title">Zaken zonder archiefactiedatum</h1>
             </header>
             <div className="destruction-create__content">
+                <aside className="destruction-create__filters filter-group">
+                    <h2 className="section-title section-title--highlight">Filters</h2>
+                    <div className="filter-group__item">
+                        <label htmlFor={"id_zaaktypen"}>Zaak identificatie</label>
+                        <ZaakIdentificatieFilter
+                            zakenIdentificaties={zaken.map((zaak, index) => {
+                                return zaak['identificatie']
+                            })}
+                            selected={identificatieFilter}
+                            onChange={setIdentificatieFilter}
+                        />
+                    </div>
+                </aside>
                 <section className="destruction-create__zaken">
                     <h2 className="section-title section-title--highlight">Zaakdossiers</h2>
                     {
                         !error
                         ? (<ZakenTable
-                            zaken={zaken}
+                            zaken={zaken.filter((zaak, index) => {
+                                return (identificatieFilter.includes(zaak.identificatie) || !identificatieFilter.length);
+                            })}
                             isLoaded={!loading}
                             error={error}
                             checkboxes={checkboxes}
