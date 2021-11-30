@@ -210,11 +210,16 @@ class ArchiveConfigForm(forms.ModelForm):
 
 
 class ZaakArchiveDetailsForm(forms.Form):
-    zaak_uuid = forms.UUIDField(required=True)
+    url = forms.URLField(required=True)
     archiefnominatie = forms.ChoiceField(
-        choices=ZaakArchiefnominatieChoices.choices, required=False
+        choices=ZaakArchiefnominatieChoices.choices,
+        widget=forms.RadioSelect,
+        required=False,
     )
-    archiefactiedatum = forms.DateField(required=False)
+    archiefactiedatum = forms.DateField(widget=forms.SelectDateWidget, required=False)
+    comment = forms.CharField(
+        widget=forms.Textarea(attrs={"cols": "50", "rows": "5"}), required=False
+    )
 
     class Meta:
-        fields = ("zaak_uuid", "archiefnominatie", "archiefactiedatum")
+        fields = ("url", "archiefnominatie", "archiefactiedatum", "comment")

@@ -21,6 +21,7 @@ from extra_views import (
     UpdateWithInlinesView,
 )
 from timeline_logger.models import TimelineLog
+from zds_client.client import ClientError
 
 from archiefvernietigingscomponent.accounts.mixins import (
     AuthorOrAssigneeRequiredMixin,
@@ -50,7 +51,7 @@ from .models import (
     DestructionListReviewComment,
     StandardReviewAnswer,
 )
-from .tasks import process_destruction_list, update_zaken
+from .tasks import process_destruction_list, update_zaak, update_zaken
 
 # Views that route to the appriopriate specialized view
 
@@ -320,7 +321,6 @@ class ZakenWithoutArchiveDateView(RoleRequiredMixin, TemplateView):
 
 
 class UpdateZaakArchiveDetailsView(RoleRequiredMixin, FormView):
-    # TODO: style form
     template_name = "destruction/update_zaak_archive_details.html"
     role_permission = "can_start_destruction"
     form_class = ZaakArchiveDetailsForm
@@ -337,14 +337,27 @@ class UpdateZaakArchiveDetailsView(RoleRequiredMixin, FormView):
         return initial_data
 
     def form_valid(self, form):
-        # TODO: make post request to OZ to update zaak
+        updated_data = {}
+        if archiefnominatie := form.cleaned_data.get("archiefnominatie"):
+            updated_data["archiefnominatie"] = archiefnominatie
+
+        if archiefactiedatum := form.cleaned_data.get("archiefactiedatum"):
+            updated_data["archiefactiedatum"] = archiefactiedatum.isoformat()
+
+        try:
+            update_zaak(
+                form.cleaned_data["url"],
+                updated_data,
+                audit_comment=form.cleaned_data["comment"],
+            )
+        except ClientError:
+            form.add_error(
+                field=None,
+                error=_("An error has occurred. The case could not be updated."),
+            )
+            return super().form_invalid(form)
+
         return super().form_valid(form)
-
-    def get_context_data(self, **kwargs):
-        context_data = super().get_context_data(**kwargs)
-
-        # Todo: update context data with zaak details for displaying
-        return context_data
 
 
 # Reviewer views
