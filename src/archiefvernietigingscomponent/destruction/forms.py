@@ -100,6 +100,7 @@ class DestructionListForm(forms.ModelForm):
 
         self.save_items(destruction_list)
         self.save_assignees(destruction_list)
+
         return destruction_list
 
 

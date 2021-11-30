@@ -479,7 +479,7 @@ class NotifyTests(TestCase):
         destruction_list = DestructionListFactory.create(
             status=ListStatus.processing,
             name="Nice list",
-            created=timezone.make_aware(datetime.datetime(2021, 2, 15, 10, 30)),
+            created=timezone.make_aware(datetime(2021, 2, 15, 10, 30)),
         )
         DestructionListItemFactory.create(
             destruction_list=destruction_list,

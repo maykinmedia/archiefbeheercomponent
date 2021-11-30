@@ -185,7 +185,6 @@ six==1.15.0
     #   python-dateutil
 sqlparse==0.3.1
     # via django
-
 tinycss2==1.1.0
     # via
     #   cairosvg

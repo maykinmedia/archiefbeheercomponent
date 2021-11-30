@@ -106,8 +106,8 @@ class DestructionList(models.Model):
     def assign(self, assigned_user: Optional[User]) -> None:
         self.assignee = assigned_user
         is_reviewer = assigned_user != self.author
-        if assigned_user:
 
+        if assigned_user:
             if is_reviewer:
                 assignee = self.assignees.get(assignee=assigned_user)
                 assignee.assigned_on = timezone.now()
@@ -116,12 +116,12 @@ class DestructionList(models.Model):
                 email = AutomaticEmail.objects.filter(
                     type=EmailTypeChoices.review_required
                 ).first()
-
             else:
                 message = _("There is a review to process.")
                 email = AutomaticEmail.objects.filter(
                     type=EmailTypeChoices.changes_required
                 ).first()
+
             # TODO: this should only go through if the object is saved!
             Notification.objects.create(
                 destruction_list=self, user=assigned_user, message=message,
