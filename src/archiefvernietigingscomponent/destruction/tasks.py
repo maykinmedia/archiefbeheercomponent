@@ -1,8 +1,11 @@
 import logging
 import traceback
+from datetime import timedelta
 
 from django.conf import settings
+from django.db.models import F
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from celery import chain
@@ -17,7 +20,13 @@ from ..emails.constants import EmailTypeChoices
 from ..emails.models import AutomaticEmail
 from ..report.utils import create_destruction_report, get_absolute_url
 from .constants import ListItemStatus, ListStatus, ReviewStatus
-from .models import DestructionList, DestructionListItem, DestructionListReview
+from .models import (
+    ArchiveConfig,
+    DestructionList,
+    DestructionListAssignee,
+    DestructionListItem,
+    DestructionListReview,
+)
 from .service import fetch_resultaat, fetch_zaak, remove_zaak, update_zaak
 
 logger = logging.getLogger(__name__)
@@ -47,6 +56,28 @@ def process_destruction_list(list_id):
     chunk_tasks = process_list_item.chunks(list_item_ids, settings.ZAKEN_PER_TASK)
     notify_task = complete_and_notify.si(list_id)
     chain(chunk_tasks.group(), notify_task)()
+
+
+@app.task
+def check_if_reviewers_need_reminder():
+    archive_config = ArchiveConfig.get_solo()
+    number_days = archive_config.days_until_reminder
+
+    email = AutomaticEmail.objects.filter(type=EmailTypeChoices.review_reminder).first()
+
+    if not email:
+        return
+
+    assignees = DestructionListAssignee.objects.filter(
+        assignee=F("destruction_list__assignee"),
+        assigned_on__lt=timezone.now() - timedelta(days=number_days),
+        assignee__role__can_review_destruction=True,
+    ).select_related("assignee")
+
+    for assignee in assignees:
+        email.send(
+            recipient=assignee.assignee, destruction_list=assignee.destruction_list
+        )
 
 
 @app.task

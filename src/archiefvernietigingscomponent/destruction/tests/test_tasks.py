@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from unittest.mock import patch
 
 from django.conf import settings
@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 
 import requests_mock
+from freezegun import freeze_time
 from privates.test import temp_private_root
 from timeline_logger.models import TimelineLog
 from zds_client.client import ClientError
@@ -17,16 +18,17 @@ from zgw_consumers.models import Service
 
 from archiefvernietigingscomponent.notifications.models import Notification
 
-from ...accounts.tests.factories import UserFactory
+from ...accounts.tests.factories import RoleFactory, UserFactory
 from ...constants import RoleTypeChoices
 from ...emails.constants import EmailTypeChoices
-from ...emails.models import EmailConfig
+from ...emails.models import AutomaticEmail, EmailConfig
 from ...emails.tests.factories import AutomaticEmailFactory
 from ...report.models import DestructionReport
 from ...tests.utils import mock_service_oas_get
 from ..constants import ListItemStatus, ListStatus, ReviewStatus
-from ..models import DestructionList, DestructionListItem
+from ..models import ArchiveConfig, DestructionList, DestructionListItem
 from ..tasks import (
+    check_if_reviewers_need_reminder,
     complete_and_notify,
     process_destruction_list,
     process_list_item,
@@ -34,6 +36,7 @@ from ..tasks import (
     update_zaken,
 )
 from .factories import (
+    DestructionListAssigneeFactory,
     DestructionListFactory,
     DestructionListItemFactory,
     DestructionListItemReviewFactory,
@@ -271,6 +274,120 @@ class ProcessListItemTests(TestCase):
         mock_remove_zaken.assert_not_called()
 
 
+@freeze_time("2021-11-16 12:00")
+class ReviewersReminderEmailsTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+
+        AutomaticEmailFactory.create(type=EmailTypeChoices.review_reminder)
+
+        config = ArchiveConfig.get_solo()
+        config.days_until_reminder = 2
+        config.save()
+
+    def test_email_reviewer_when_assigned_too_long(self):
+        role = RoleFactory.create(can_review_destruction=True)
+        destruction_list = DestructionListFactory.create()
+        assignees = DestructionListAssigneeFactory.create_batch(
+            size=2, destruction_list=destruction_list, assignee__role=role
+        )
+        first_reviewer = assignees[0]
+        destruction_list.assignee = first_reviewer.assignee
+        destruction_list.save()
+        first_reviewer.assigned_on = timezone.make_aware(datetime(2021, 11, 12))
+        first_reviewer.save()
+
+        check_if_reviewers_need_reminder()
+
+        self.assertEqual(1, len(mail.outbox))
+        self.assertEqual(first_reviewer.assignee.email, mail.outbox[0].to[0])
+
+    def test_multiple_lists_with_assignees_that_need_reminders(self):
+        role = RoleFactory.create(can_review_destruction=True)
+
+        # Create 2 destruction lists
+        destruction_list_1 = DestructionListFactory.create()
+        destruction_list_2 = DestructionListFactory.create()
+        assignees_1 = DestructionListAssigneeFactory.create_batch(
+            size=2, destruction_list=destruction_list_1, assignee__role=role
+        )
+        assignees_2 = DestructionListAssigneeFactory.create_batch(
+            size=2, destruction_list=destruction_list_2, assignee__role=role
+        )
+
+        # Create 2 reviewers per list and assign one of them
+        first_reviewer_1 = assignees_1[0]
+        destruction_list_1.assignee = first_reviewer_1.assignee
+        destruction_list_1.save()
+        first_reviewer_1.assigned_on = timezone.make_aware(datetime(2021, 11, 12))
+        first_reviewer_1.save()
+
+        first_reviewer_2 = assignees_2[0]
+        destruction_list_2.assignee = first_reviewer_2.assignee
+        destruction_list_2.save()
+        first_reviewer_2.assigned_on = timezone.make_aware(datetime(2021, 11, 12))
+        first_reviewer_2.save()
+
+        check_if_reviewers_need_reminder()
+
+        self.assertEqual(len(mail.outbox), 2)
+        recipients = [email_sent.to[0] for email_sent in mail.outbox]
+        self.assertCountEqual(
+            recipients,
+            [first_reviewer_1.assignee.email, first_reviewer_2.assignee.email],
+        )
+
+    def test_no_reminder_needed(self):
+        role = RoleFactory.create(can_review_destruction=True)
+        destruction_list = DestructionListFactory.create()
+        assignees = DestructionListAssigneeFactory.create_batch(
+            size=2, destruction_list=destruction_list, assignee__role=role
+        )
+        first_reviewer = assignees[0]
+        destruction_list.assignee = first_reviewer.assignee
+        destruction_list.save()
+        first_reviewer.assigned_on = timezone.make_aware(datetime(2021, 11, 15))
+        first_reviewer.save()
+
+        check_if_reviewers_need_reminder()
+
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_assignee_not_reviewer(self):
+        role = RoleFactory.create(can_review_destruction=False)
+        destruction_list = DestructionListFactory.create()
+        not_reviewer = DestructionListAssigneeFactory.create(
+            destruction_list=destruction_list, assignee__role=role
+        )
+        destruction_list.assignee = not_reviewer.assignee
+        destruction_list.save()
+        not_reviewer.assigned_on = timezone.make_aware(datetime(2021, 11, 12))
+        not_reviewer.save()
+
+        check_if_reviewers_need_reminder()
+
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_no_email_template_configured(self):
+        AutomaticEmail.objects.all().delete()
+
+        role = RoleFactory.create(can_review_destruction=True)
+        destruction_list = DestructionListFactory.create()
+        assignees = DestructionListAssigneeFactory.create_batch(
+            size=2, destruction_list=destruction_list, assignee__role=role
+        )
+        first_reviewer = assignees[0]
+        destruction_list.assignee = first_reviewer.assignee
+        destruction_list.save()
+        first_reviewer.assigned_on = timezone.make_aware(datetime(2021, 11, 12))
+        first_reviewer.save()
+
+        check_if_reviewers_need_reminder()
+
+        self.assertEqual(0, len(mail.outbox))
+
+
 @requests_mock.Mocker()
 @temp_private_root()
 @override_settings(LANGUAGE_CODE="en")
@@ -380,7 +497,7 @@ class NotifyTests(TestCase):
         destruction_list = DestructionListFactory.create(
             status=ListStatus.processing,
             name="Nice list",
-            created=timezone.make_aware(datetime.datetime(2021, 2, 15, 10, 30)),
+            created=timezone.make_aware(datetime(2021, 2, 15, 10, 30)),
         )
         DestructionListItemFactory.create(
             destruction_list=destruction_list,

@@ -93,3 +93,27 @@ class CreateDestructionListTests(TestCase):
             b'<script id="short-review-zaaktypes" type="application/json">["http://example.com/zaak/uuid-1"]</script>',
             response.content,
         )
+
+    def test_assigned_on_field_population_on_assignment(self):
+        reviewers = UserFactory.create_batch(2, role__can_review_destruction=True)
+        zaken = [f"http://some.zaken.nl/api/v1/zaken/{i}" for i in range(1, 3)]
+        zaken_identificaties = ["ZAAK-1", "ZAAK-2", "ZAAK-3"]
+
+        url = reverse("destruction:record-manager-create")
+        data = {
+            "name": "test list",
+            "zaken": ",".join(zaken),
+            "reviewer_1": reviewers[0].id,
+            "reviewer_2": reviewers[1].id,
+            "zaken_identificaties": ",".join(zaken_identificaties),
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertRedirects(response, reverse("destruction:record-manager-list"))
+
+        destruction_list = DestructionList.objects.get()
+        assignees = destruction_list.assignees.order_by("id")
+
+        self.assertIsNotNone(assignees.first().assigned_on)
+        self.assertIsNone(assignees.last().assigned_on)

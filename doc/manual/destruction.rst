@@ -160,12 +160,13 @@ when important events happen, such as being the next assignee on the list or whe
 destruction report is ready.
 
 If configured, automatic emails can also be sent to notify the reviewers
-and/or the record manager when there is work that needs their attention. There are three
+and/or the record manager when there is work that needs their attention. There are four
 types of automatic emails that can be configured:
 
 - An email for the reviewer for when a destruction list needs to be reviewed.
 - An email for the record manager for when there are changes requested by a reviewer.
 - An email for the archivist with as attachment a report of destruction.
+- An email that will be sent as a reminder to any reviewer that wait too long before reviewing a list.
 
 Each user can also update their email preferences. They can decide whether to receive an
 email as soon as there is work waiting for them or to never receive emails. The link to the

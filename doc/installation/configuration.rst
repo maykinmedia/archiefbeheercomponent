@@ -313,6 +313,10 @@ purposes, so the Archiefvernietigingscomponent supports specifying the "current 
 Navigate to **Configuratie > Archiveringsconfiguratie** to specify the
 "current date".
 
+In the archive configuration it is possible to set the number of days after which a reviewer assigned to a list
+should receive an email reminder.
+For the email to be sent, a template also needs to be configured (see :ref:`Automatic emails`).
+
 Theme settings
 ==============
 
@@ -335,11 +339,12 @@ Automatic emails
 The system administrator can decide to configure automatic emails to be sent to the reviewers and/or the
 record manager. This can be done through the admin, under **Configuratie > Automatische emails**
 
-If there are already automatic emails present, they can be edited. There are three types of automatic emails:
+If there are already automatic emails present, they can be edited. There are four types of automatic emails:
 
 - Review required: for when a reviewer has a destruction list to review.
 - Changes required: for when a record manager needs to process the feedback form a reviewer.
 - Report available: for when a destruction report is sent to the archivist.
+- Review reminder: for when a reviewer waits too long before reviewing a list and needs a reminder.
 
 A custom email subject and email body can be configured for each type of email. If no automatic emails are present
 in the admin in **Configuratie > Automatische emails**, then no emails will be sent.
