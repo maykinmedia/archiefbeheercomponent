@@ -281,8 +281,9 @@ class ReviewersReminderEmailsTests(TestCase):
         super().setUpTestData()
 
         AutomaticEmailFactory.create(type=EmailTypeChoices.review_reminder)
+
         config = ArchiveConfig.get_solo()
-        config.days_until_reminder = 1
+        config.days_until_reminder = 2
         config.save()
 
     def test_email_reviewer_when_assigned_too_long(self):
@@ -292,85 +293,78 @@ class ReviewersReminderEmailsTests(TestCase):
             size=2, destruction_list=destruction_list, assignee__role=role
         )
         first_reviewer = assignees[0]
-        destruction_list.assign(first_reviewer.assignee)
+        destruction_list.assignee = first_reviewer.assignee
         destruction_list.save()
         first_reviewer.assigned_on = timezone.make_aware(datetime(2021, 11, 12))
         first_reviewer.save()
 
         check_if_reviewers_need_reminder()
 
-        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(1, len(mail.outbox))
+        self.assertEqual(first_reviewer.assignee.email, mail.outbox[0].to[0])
 
-    def test_two_lists_one_assignee_each(self):
+    def test_multiple_lists_with_assignees_that_need_reminders(self):
+        role = RoleFactory.create(can_review_destruction=True)
 
-        destruction_lists = DestructionListFactory.create_batch(size=2)
+        # Create 2 destruction lists
+        destruction_list_1 = DestructionListFactory.create()
+        destruction_list_2 = DestructionListFactory.create()
+        assignees_1 = DestructionListAssigneeFactory.create_batch(
+            size=2, destruction_list=destruction_list_1, assignee__role=role
+        )
+        assignees_2 = DestructionListAssigneeFactory.create_batch(
+            size=2, destruction_list=destruction_list_2, assignee__role=role
+        )
 
-        assignee1 = DestructionListAssigneeFactory.create(
-            destruction_list=destruction_lists[0]
-        )
-        destruction_lists[0].assign(assignee1.assignee)
-        assignee1.assigned_on = timezone.make_aware(
-            datetime.datetime(2021, 11, 12, 0, 0)
-        )
-        assignee1.save()
-        destruction_lists[0].save()
+        # Create 2 reviewers per list and assign one of them
+        first_reviewer_1 = assignees_1[0]
+        destruction_list_1.assignee = first_reviewer_1.assignee
+        destruction_list_1.save()
+        first_reviewer_1.assigned_on = timezone.make_aware(datetime(2021, 11, 12))
+        first_reviewer_1.save()
 
-        assignee2 = DestructionListAssigneeFactory.create(
-            destruction_list=destruction_lists[1]
-        )
-        destruction_lists[1].assign(assignee2.assignee)
-        assignee2.assigned_on = timezone.make_aware(
-            datetime.datetime(2021, 11, 4, 0, 0)
-        )
-        assignee2.save()
-        destruction_lists[1].save()
+        first_reviewer_2 = assignees_2[0]
+        destruction_list_2.assignee = first_reviewer_2.assignee
+        destruction_list_2.save()
+        first_reviewer_2.assigned_on = timezone.make_aware(datetime(2021, 11, 12))
+        first_reviewer_2.save()
 
         check_if_reviewers_need_reminder()
 
         self.assertEqual(len(mail.outbox), 2)
+        recipients = [email_sent.to[0] for email_sent in mail.outbox]
+        self.assertCountEqual(
+            recipients,
+            [first_reviewer_1.assignee.email, first_reviewer_2.assignee.email],
+        )
 
     def test_no_reminder_needed(self):
-
+        role = RoleFactory.create(can_review_destruction=True)
         destruction_list = DestructionListFactory.create()
-        assignee = DestructionListAssigneeFactory.create(
-            destruction_list=destruction_list
+        assignees = DestructionListAssigneeFactory.create_batch(
+            size=2, destruction_list=destruction_list, assignee__role=role
         )
-        assignee.assigned_on = timezone.make_aware(
-            datetime.datetime(2021, 11, 12, 0, 0)
-        )
-        destruction_list.assign(assignee.assignee)
-        assignee.save()
+        first_reviewer = assignees[0]
+        destruction_list.assignee = first_reviewer.assignee
         destruction_list.save()
+        first_reviewer.assigned_on = timezone.make_aware(datetime(2021, 11, 15))
+        first_reviewer.save()
 
         check_if_reviewers_need_reminder()
 
         self.assertEqual(len(mail.outbox), 0)
 
-    def test_one_list_two_assignees(self):
-        destruction_list = DestructionListFactory.create()
-        assignees = DestructionListAssigneeFactory.create_batch(
-            size=2, destruction_list=destruction_list
-        )
-        destruction_list.assign(assignees[0].assignee)
-        destruction_list.save()
-        assignees[0].assigned_on = timezone.make_aware(
-            datetime.datetime(2021, 11, 4, 0, 0)
-        )
-        assignees[0].save()
-        destruction_list.save()
-        check_if_reviewers_need_reminder()
-
-        self.assertEqual(len(mail.outbox), 1)
-
     def test_assignee_not_reviewer(self):
+        role = RoleFactory.create(can_review_destruction=False)
         destruction_list = DestructionListFactory.create()
-        assignee = DestructionListAssigneeFactory.create(
-            destruction_list=destruction_list, is_reviewer=False
+        not_reviewer = DestructionListAssigneeFactory.create(
+            destruction_list=destruction_list, assignee__role=role
         )
-        destruction_list.assign(assignee.assignee)
+        destruction_list.assignee = not_reviewer.assignee
         destruction_list.save()
-        assignee.assigned_on = timezone.make_aware(datetime.datetime(2021, 11, 4, 0, 0))
-        assignee.save()
+        not_reviewer.assigned_on = timezone.make_aware(datetime(2021, 11, 12))
+        not_reviewer.save()
+
         check_if_reviewers_need_reminder()
 
         self.assertEqual(len(mail.outbox), 0)

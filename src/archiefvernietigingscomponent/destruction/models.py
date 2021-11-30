@@ -103,7 +103,7 @@ class DestructionList(models.Model):
         #  all reviews have approve status -> list is about to be completed
         return None
 
-    def assign(self, assigned_user: Optional[User] = None) -> None:
+    def assign(self, assigned_user: Optional[User]) -> None:
         self.assignee = assigned_user
         is_reviewer = assigned_user != self.author
         if assigned_user:
