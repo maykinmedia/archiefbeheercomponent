@@ -21,7 +21,7 @@ from archiefvernietigingscomponent.notifications.models import Notification
 from ...accounts.tests.factories import RoleFactory, UserFactory
 from ...constants import RoleTypeChoices
 from ...emails.constants import EmailTypeChoices
-from ...emails.models import EmailConfig
+from ...emails.models import AutomaticEmail, EmailConfig
 from ...emails.tests.factories import AutomaticEmailFactory
 from ...report.models import DestructionReport
 from ...tests.utils import mock_service_oas_get
@@ -368,6 +368,24 @@ class ReviewersReminderEmailsTests(TestCase):
         check_if_reviewers_need_reminder()
 
         self.assertEqual(len(mail.outbox), 0)
+
+    def test_no_email_template_configured(self):
+        AutomaticEmail.objects.all().delete()
+
+        role = RoleFactory.create(can_review_destruction=True)
+        destruction_list = DestructionListFactory.create()
+        assignees = DestructionListAssigneeFactory.create_batch(
+            size=2, destruction_list=destruction_list, assignee__role=role
+        )
+        first_reviewer = assignees[0]
+        destruction_list.assignee = first_reviewer.assignee
+        destruction_list.save()
+        first_reviewer.assigned_on = timezone.make_aware(datetime(2021, 11, 12))
+        first_reviewer.save()
+
+        check_if_reviewers_need_reminder()
+
+        self.assertEqual(0, len(mail.outbox))
 
 
 @requests_mock.Mocker()

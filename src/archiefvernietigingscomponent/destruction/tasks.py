@@ -65,6 +65,9 @@ def check_if_reviewers_need_reminder():
 
     email = AutomaticEmail.objects.filter(type=EmailTypeChoices.review_reminder).first()
 
+    if not email:
+        return
+
     assignees = DestructionListAssignee.objects.filter(
         assignee=F("destruction_list__assignee"),
         assigned_on__lt=timezone.now() - timedelta(days=number_days),
