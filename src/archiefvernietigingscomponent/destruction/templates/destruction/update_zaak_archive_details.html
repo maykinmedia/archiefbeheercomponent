@@ -1,16 +1,49 @@
 {% extends "master.html" %}
+{% load i18n %}
 
 {% block content %}
     <header class="destruction-create__header">
         <h1 class="title destruction-create__title">Zaak archiefgegevens aanpassen</h1>
     </header>
 
-    <div class="destruction-create__content">
-        <form action="" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="Submit">
-        </form>
-    </div>
+    <section class="content-panel">
+        <div class="destruction-create__content">
+            <div class="archive-form">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                        <div class="archive-form__errors error-message">
+                            <span class="material-icons">error_outline</span>{{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+                    {{ form.url.as_hidden }}
+                    <div class="archive-form__content">
+                        <div class="archive-form__field">
+                            {{ form.archiefnominatie.errors }}
+                            <label for="{{ form.archiefnominatie.id_for_label }}">
+                                <div class="archive-form__label">Archiefnominatie</div>
+                                <div class="archive-form__value">{{ form.archiefnominatie }}</div>
+                            </label>
+                        </div>
+                        <div class="archive-form__field">
+                            <label for="{{ form.archiefactiedatum.id_for_label }}">
+                                <div class="archive-form__label">Archiefactiedatum</div>
+                                <div class="archive-form__value">{{ form.archiefactiedatum }}</div>
+                            </label>
+                            <div class="archive-form__field-error">{{ form.archiefactiedatum.errors }}</div>
+                        </div>
+                        <div class="archive-form__field">
+                            {{ form.comment.errors }}
+                            <label class="archive-form__label" for="{{ form.comment.id_for_label }}">
+                                <div class="archive-form__label">{% trans "Comment" %}</div>
+                                <div class="archive-form__value">{{ form.comment }}</div>
+                            </label>
+                        </div>
+                    </div>
+                    <button class="btn archive-form__button" type="submit">{% trans "Submit" %}</button>
+                </form>
+            </div>
+        </div>
+    </section>
 
 {% endblock %}

@@ -13,12 +13,14 @@ const displayZaaktype = (zaaktype) => {
 
 
 const ZaakRecord = ({zaak, canUpdate, isChecked, onCheckboxUpdate}) => {
+    const canUpdateZaak = canUpdate && zaak.available;
+
     const onZaakClick = () => {
-        if (!canUpdate) return;
+        if (!canUpdateZaak) return;
 
         let currentLocation = new URL(window.location)
         currentLocation.pathname = '/vernietigen/lijsten/update-zaak-archive-details/';
-        currentLocation.searchParams.set('zaak_uuid', zaak.uuid);
+        currentLocation.searchParams.set('url', zaak.url);
         if (zaak.archiefactiedatum) currentLocation.searchParams.set('archiefactiedatum', zaak.archiefactiedatum);
         if (zaak.archiefnominatie) currentLocation.searchParams.set('archiefnominatie', zaak.archiefnominatie);
 
@@ -39,7 +41,18 @@ const ZaakRecord = ({zaak, canUpdate, isChecked, onCheckboxUpdate}) => {
                       disabled={!zaak.available}
                   />
                 </td>
-                <td><div className="zaak-record__edit" onClick={onZaakClick}>{ zaak.identificatie }</div></td>
+                <td>
+                    {
+                        canUpdateZaak
+                        ? (<a
+                                className="link"
+                                onClick={onZaakClick}
+                                title="Archiefgegevens aanpassen"
+                                href="#"
+                            >{ zaak.identificatie }</a>)
+                        : <div>{ zaak.identificatie }</div>
+                    }
+                </td>
                 <td>{displayZaaktype(zaak.zaaktype)}</td>
                 <td>{zaak.omschrijving}</td>
                 <td>{ zaak.looptijd }</td>
