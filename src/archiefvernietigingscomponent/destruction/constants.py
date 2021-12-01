@@ -49,6 +49,40 @@ class ListStateDisplay(DjangoChoices):
     finished = ChoiceItem("finished", _("Finished"))
 
 
-class ZaakArchiefnominatieChoices(DjangoChoices):
-    blijvend_bewaren = ChoiceItem("blijvend_bewaren", _("Continue to store"))
-    vernietigen = ChoiceItem("vernietigen", _("Destroy"))
+# Taken from VNG API common
+class Archiefnominatie(DjangoChoices):
+    blijvend_bewaren = ChoiceItem(
+        "blijvend_bewaren",
+        _(
+            "Het zaakdossier moet bewaard blijven en op de Archiefactiedatum overgedragen worden naar een "
+            "archiefbewaarplaats."
+        ),
+    )
+    vernietigen = ChoiceItem(
+        "vernietigen",
+        _("Het zaakdossier moet op of na de Archiefactiedatum vernietigd worden."),
+    )
+
+
+class Archiefstatus(DjangoChoices):
+    nog_te_archiveren = ChoiceItem(
+        "nog_te_archiveren",
+        _("De zaak cq. het zaakdossier is nog niet als geheel gearchiveerd."),
+    )
+    gearchiveerd = ChoiceItem(
+        "gearchiveerd",
+        _(
+            "De zaak cq. het zaakdossier is als geheel niet-wijzigbaar bewaarbaar gemaakt."
+        ),
+    )
+    gearchiveerd_procestermijn_onbekend = ChoiceItem(
+        "gearchiveerd_procestermijn_onbekend",
+        _(
+            "De zaak cq. het zaakdossier is als geheel niet-wijzigbaar bewaarbaar gemaakt maar de vernietigingsdatum "
+            "kan nog niet bepaald worden."
+        ),
+    )
+    overgedragen = ChoiceItem(
+        "overgedragen",
+        _("De zaak cq. het zaakdossier is overgebracht naar een archiefbewaarplaats."),
+    )

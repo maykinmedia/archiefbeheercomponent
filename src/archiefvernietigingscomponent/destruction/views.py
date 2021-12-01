@@ -1,3 +1,4 @@
+from datetime import date
 from typing import List, Tuple
 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -39,6 +40,7 @@ from .forms import (
     ReviewForm,
     ReviewItemBaseForm,
     ZaakArchiveDetailsForm,
+    ZaakUrlForm,
     get_reviewer_choices,
     get_zaaktype_choices,
 )
@@ -51,6 +53,7 @@ from .models import (
     DestructionListReviewComment,
     StandardReviewAnswer,
 )
+from .service import fetch_zaak
 from .tasks import process_destruction_list, update_zaak, update_zaken
 
 # Views that route to the appriopriate specialized view
@@ -333,23 +336,45 @@ class UpdateZaakArchiveDetailsView(RoleRequiredMixin, FormView):
     form_class = ZaakArchiveDetailsForm
     success_url = reverse_lazy("destruction:zaken-without-archive-date")
 
+    _zaak = None
+
+    @property
+    def zaak(self):
+        if not self._zaak:
+            form = ZaakUrlForm(data=self.request.GET)
+            if form.is_valid():
+                full_zaak = fetch_zaak(form.cleaned_data["url"])
+                needed_fields = [
+                    "url",
+                    "identificatie",
+                    "archiefnominatie",
+                    "archiefactiedatum",
+                    "archiefstatus",
+                ]
+                self._zaak = {field: full_zaak.get(field) for field in needed_fields}
+        return self._zaak
+
+    def get_context_data(self, **kwargs) -> dict:
+        context = super().get_context_data(**kwargs)
+        context.update({"zaak": self.zaak})
+        return context
+
     def get_initial(self):
         initial_data = super().get_initial()
 
-        if self.request.GET:
-            form = self.form_class(data=self.request.GET)
-            if form.is_valid():
-                initial_data.update(form.cleaned_data)
-
+        form = self.form_class(data=self.zaak)
+        if form.is_valid():
+            initial_data.update(form.cleaned_data)
         return initial_data
 
     def form_valid(self, form):
         updated_data = {}
-        if archiefnominatie := form.cleaned_data.get("archiefnominatie"):
-            updated_data["archiefnominatie"] = archiefnominatie
-
-        if archiefactiedatum := form.cleaned_data.get("archiefactiedatum"):
-            updated_data["archiefactiedatum"] = archiefactiedatum.isoformat()
+        fields = ["archiefnominatie", "archiefstatus", "archiefactiedatum"]
+        for field in fields:
+            if value := form.cleaned_data.get(field):
+                if isinstance(value, date):
+                    value = value.isoformat()
+                updated_data[field] = value
 
         try:
             update_zaak(

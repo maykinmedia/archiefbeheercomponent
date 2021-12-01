@@ -3,7 +3,9 @@
 
 {% block content %}
     <header class="destruction-create__header">
-        <h1 class="title destruction-create__title">Zaak archiefgegevens aanpassen</h1>
+        <h1 class="title destruction-create__title">
+            {% blocktrans with case=zaak.identificatie %}Modify case {{ case }} archiving details{% endblocktrans %}
+        </h1>
     </header>
 
     <section class="content-panel">
@@ -31,6 +33,13 @@
                                 <div class="archive-form__value">{{ form.archiefactiedatum }}</div>
                             </label>
                             <div class="archive-form__field-error">{{ form.archiefactiedatum.errors }}</div>
+                        </div>
+                        <div class="archive-form__field">
+                            {{ form.archiefstatus.errors }}
+                            <label for="{{ form.archiefstatus.id_for_label }}">
+                                <div class="archive-form__label">Archiefstatus</div>
+                                <div class="archive-form__value">{{ form.archiefstatus }}</div>
+                            </label>
                         </div>
                         <div class="archive-form__field">
                             {{ form.comment.errors }}

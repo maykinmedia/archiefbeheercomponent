@@ -21,8 +21,6 @@ const ZaakRecord = ({zaak, canUpdate, isChecked, onCheckboxUpdate}) => {
         let currentLocation = new URL(window.location)
         currentLocation.pathname = '/vernietigen/lijsten/update-zaak-archive-details/';
         currentLocation.searchParams.set('url', zaak.url);
-        if (zaak.archiefactiedatum) currentLocation.searchParams.set('archiefactiedatum', zaak.archiefactiedatum);
-        if (zaak.archiefnominatie) currentLocation.searchParams.set('archiefnominatie', zaak.archiefnominatie);
 
         window.location.href = currentLocation;
     };
