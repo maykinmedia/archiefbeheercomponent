@@ -3,6 +3,7 @@
 {% block content %}
 
 <article id="content-main">
+        {{ zaaktypen|json_script:"zaaktype-choices" }}
 
         <div class="zaken-without-archive-date"
              id="react-zaken-without-archive-date"

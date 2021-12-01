@@ -319,6 +319,13 @@ class ZakenWithoutArchiveDateView(RoleRequiredMixin, TemplateView):
     template_name = "destruction/zaken_without_archive_date_list.html"
     role_permission = "can_start_destruction"
 
+    def get_context_data(self, **kwargs) -> dict:
+        context = super().get_context_data(**kwargs)
+
+        # add zaaktypen
+        context.update({"zaaktypen": get_zaaktype_choices()})
+        return context
+
 
 class UpdateZaakArchiveDetailsView(RoleRequiredMixin, FormView):
     template_name = "destruction/update_zaak_archive_details.html"
