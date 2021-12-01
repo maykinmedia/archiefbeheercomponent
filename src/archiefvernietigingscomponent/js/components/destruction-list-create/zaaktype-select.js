@@ -59,7 +59,7 @@ const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen, che
 
     const ZaaktypeItem = ({value, label, group}) => (
         <li>
-            <label>
+            <div className="zaaktype-select__description">
                 <CheckboxInput
                     initial={value}
                     name={checkboxName}
@@ -73,8 +73,8 @@ const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen, che
                         }
                     }}
                 />
-                {label}
-            </label>
+                <div className="zaaktype-select__label">{label}</div>
+            </div>
         </li>
     );
 
@@ -88,34 +88,34 @@ const ZaaktypeSelect = ({zaaktypen, selectedZaaktypen, setSelectedZaaktypen, che
 
         return (
             <li key={index}>
-                <button
-                    className="zaaktype-select__btn"
-                    type="button"
-                    onClick={(event) => {
-                        const action = expandedGroups.includes(description) ? collapse : expand;
-                        action(description);
-                    }}
-                >{buttonIcon}
-                </button>
-                <label className="zaaktype-select__group">
-                    <CheckboxInput
-                        initial={description}
-                        name="zaaktype-group"
-                        checked={selectedGroups.includes(description)}
-                        onChange={(event) => {
-                            if (event.target.checked) {
-                                addGroup(description);
-                                const newZaaktypenSet = new Set([...selectedZaaktypen, ...choiceValues]);
-                                setSelectedZaaktypen([...newZaaktypenSet]);
-                            } else {
-                                removeGroup(description);
-                                const newZaaktypen = selectedZaaktypen.filter((value)=> !choiceValues.includes(value));
-                                setSelectedZaaktypen(newZaaktypen);
-                            }
+                <div className="zaaktype-select__description">
+                    <button
+                        className="zaaktype-select__btn"
+                        type="button"
+                        onClick={(event) => {
+                            const action = expandedGroups.includes(description) ? collapse : expand;
+                            action(description);
                         }}
-                    />
-                    {`${description}`}
-                </label>
+                    >{buttonIcon}
+                    </button>
+                        <CheckboxInput
+                            initial={description}
+                            name="zaaktype-group"
+                            checked={selectedGroups.includes(description)}
+                            onChange={(event) => {
+                                if (event.target.checked) {
+                                    addGroup(description);
+                                    const newZaaktypenSet = new Set([...selectedZaaktypen, ...choiceValues]);
+                                    setSelectedZaaktypen([...newZaaktypenSet]);
+                                } else {
+                                    removeGroup(description);
+                                    const newZaaktypen = selectedZaaktypen.filter((value)=> !choiceValues.includes(value));
+                                    setSelectedZaaktypen(newZaaktypen);
+                                }
+                            }}
+                        />
+                    <div className="zaaktype-select__label">{description}</div>
+                </div>
 
                 <Collapse isOpened={expandedGroups.includes(description)}>
                     <ul className="zaaktype-select__items">
