@@ -1,3 +1,4 @@
+from datetime import timedelta
 from typing import Optional
 
 from django.contrib.contenttypes.fields import GenericRelation
@@ -177,6 +178,20 @@ class DestructionList(models.Model):
         if review:
             comment = review.comments.last()
             return comment
+
+    @property
+    def is_review_overdue(self):
+        if not self.assignee:
+            return False
+
+        archive_config = ArchiveConfig.get_solo()
+        number_days = archive_config.days_until_reminder
+
+        return self.assignees.filter(
+            assignee=self.assignee,
+            assignee__role__can_review_destruction=True,
+            assigned_on__lt=timezone.now() - timedelta(days=number_days),
+        ).exists()
 
 
 class DestructionListItem(models.Model):
