@@ -26,9 +26,13 @@
         </header>
 
         {% for object in object_list %}
-            <div class="destruction-list-preview destruction-list-preview--status-{{ object.status }} ">
+            {% with is_review_overdue=object.is_review_overdue %}
+            <div class="destruction-list-preview destruction-list-preview--status-{{ object.status }} {% if is_review_overdue %}destruction-list-preview--review-overdue{% endif %}">
 
-                <a class="destruction-list-preview__title" href="{% url 'destruction:record-manager-detail' object.id %}">{{ object.name }}</a>
+                <span class="destruction-list-preview__header">
+                    <a class="destruction-list-preview__title" href="{% url 'destruction:record-manager-detail' object.id %}">{{ object.name }}</a>
+                    {% if is_review_overdue %}<i class="material-icons" title="{% trans "Reminder sent to the assigned reviewer" %}">access_time</i>{% endif %}
+                </span>
 
                 <span class="destruction-list-preview__indicators">
 
@@ -64,6 +68,7 @@
                 </div>
 
             </div>
+            {% endwith %}
         {% endfor %}
 
         {% include "includes/pagination.html" %}

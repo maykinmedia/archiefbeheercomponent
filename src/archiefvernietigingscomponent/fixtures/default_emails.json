@@ -38,9 +38,9 @@
     "pk": 4,
     "fields": {
       "type": "review_reminder",
-      "body": "Beste, \n U heeft kortgeleden een notificatie ontvangen over de Vernietigingslijst die wacht op uw goedkeuring.\n Wij zien dat u nog niet geregeerd heeft, wilt u zo spoedig mogelijk op de Vernietigingslijst reageren.",
-      "subject": "This field is left for the next meeting"
+      "body": "Beste {{ user }}, \nU heeft kortgeleden een notificatie ontvangen over de Vernietigingslijst die wacht op uw goedkeuring. \nWij zien dat u nog niet geregeerd heeft, wilt u zo spoedig mogelijk op de Vernietigingslijst reageren.",
+      "subject": "Uw accordering van een vernietigingslijst wordt gevraagd (herinnering)"
     }
   }
-  
+
 ]

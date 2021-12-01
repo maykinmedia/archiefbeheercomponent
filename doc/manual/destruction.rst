@@ -113,6 +113,13 @@ disagree with their review.
 After the last reviewer has given their approval, the list is submitted for actual
 destruction to the background worker queue.
 
+Reminders
+---------
+
+If a reviewer is assigned to review a list, but doesn't do so within a certain period of time (which can be configured),
+they will be sent an email reminder. To facilitate the task of the record manager to keep track of lists that remain
+in progress for too long, any list for which a reminder has been sent is highlighted in the homepage.
+
 After destruction
 -----------------
 
