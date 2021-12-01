@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import ListZaken from './ListZaken';
+import {jsonScriptToVar} from '../../utils';
 
 
 
@@ -10,10 +11,12 @@ const mount = () => {
     if (!node) return;
 
     const { zakenUrl } = node.dataset;
+    const zaaktypeChoices = jsonScriptToVar('zaaktype-choices');
 
     ReactDOM.render(
         <ListZaken
             zakenUrl={zakenUrl}
+            zaaktypeChoices={zaaktypeChoices}
         />,
         node
     );

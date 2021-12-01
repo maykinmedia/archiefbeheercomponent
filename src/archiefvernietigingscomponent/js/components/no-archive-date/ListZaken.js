@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import PropTypes from 'prop-types';
 
@@ -6,14 +6,16 @@ import {get} from '../../utils/api';
 import {ZakenTable} from '../destruction-list-create/zaken-table';
 import ErrorMessage from '../ErrorMessage';
 import {Input} from '../../forms/inputs';
+import {ZaaktypeSelect} from "../destruction-list-create/zaaktype-select";
 
 
 
-const ListZaken = ({zakenUrl}) => {
+const ListZaken = ({zakenUrl, zaaktypeChoices}) => {
     const [error, setError] = useState(null);
     const [zaken, setZaken] = useState([]);
     const [checkboxes, setCheckboxes] = useState([]);
     const [identificatieSearch, setIdentificatieSearch] = useState('');
+    const [selectedZaaktypen, setSelectedZaaktypen] = useState([]);
 
     // Fetch zaken
     const {loading} = useAsync( async () => {
@@ -36,6 +38,12 @@ const ListZaken = ({zakenUrl}) => {
 
     }, []);
 
+    const filterZaken = (currentZaak, index) => {
+        const inIdentificatieFilter = (currentZaak.identificatie.includes(identificatieSearch) || !identificatieSearch.length);
+        const inZaaktypeFilter = (selectedZaaktypen.includes(currentZaak.zaaktype.url) || !selectedZaaktypen.length);
+        return inIdentificatieFilter && inZaaktypeFilter;
+    };
+
     return (
         <>
             <header className="destruction-create__header">
@@ -56,15 +64,23 @@ const ListZaken = ({zakenUrl}) => {
                             />
                         </div>
                     </div>
+                    <div className="filter-group__item">
+                        <label htmlFor={"id_zaaktypen"}>Zaaktypen</label>
+                        <ZaaktypeSelect
+                            zaaktypen={zaaktypeChoices}
+                            selectedZaaktypen={selectedZaaktypen}
+                            setSelectedZaaktypen={(selected) => {
+                                setSelectedZaaktypen(selected);
+                            }}
+                        />
+                    </div>
                 </aside>
                 <section className="destruction-create__zaken">
                     <h2 className="section-title section-title--highlight">Zaakdossiers</h2>
                     {
                         !error
                         ? (<ZakenTable
-                            zaken={zaken.filter((zaak, index) => {
-                                return (zaak.identificatie.includes(identificatieSearch) || !identificatieSearch.length);
-                            })}
+                            zaken={zaken.filter(filterZaken)}
                             isLoaded={!loading}
                             error={error}
                             checkboxes={checkboxes}
