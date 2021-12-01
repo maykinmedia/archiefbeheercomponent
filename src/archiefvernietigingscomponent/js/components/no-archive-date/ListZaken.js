@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import {get} from '../../utils/api';
 import {ZakenTable} from '../destruction-list-create/zaken-table';
 import ErrorMessage from '../ErrorMessage';
-import ZaakIdentificatieFilter from './ZaakIdentificatieFilter';
+import {Input} from '../../forms/inputs';
 
 
 
@@ -13,7 +13,7 @@ const ListZaken = ({zakenUrl}) => {
     const [error, setError] = useState(null);
     const [zaken, setZaken] = useState([]);
     const [checkboxes, setCheckboxes] = useState([]);
-    const [identificatieFilter, setIdentificatieFilter] = useState([]);
+    const [identificatieSearch, setIdentificatieSearch] = useState('');
 
     // Fetch zaken
     const {loading} = useAsync( async () => {
@@ -46,13 +46,15 @@ const ListZaken = ({zakenUrl}) => {
                     <h2 className="section-title section-title--highlight">Filters</h2>
                     <div className="filter-group__item">
                         <label htmlFor={"id_zaaktypen"}>Zaak identificatie</label>
-                        <ZaakIdentificatieFilter
-                            zakenIdentificaties={zaken.map((zaak, index) => {
-                                return zaak['identificatie']
-                            })}
-                            selected={identificatieFilter}
-                            onChange={setIdentificatieFilter}
-                        />
+                        <div className="zaak-search-field">
+                            <i className="material-icons zaak-search-field__icon">search</i>
+                            <Input
+                                type="text"
+                                name="zaak-identificatie"
+                                id="id_zaak-identificatie"
+                                onChange={(event) => setIdentificatieSearch(event.target.value)}
+                            />
+                        </div>
                     </div>
                 </aside>
                 <section className="destruction-create__zaken">
@@ -61,7 +63,7 @@ const ListZaken = ({zakenUrl}) => {
                         !error
                         ? (<ZakenTable
                             zaken={zaken.filter((zaak, index) => {
-                                return (identificatieFilter.includes(zaak.identificatie) || !identificatieFilter.length);
+                                return (zaak.identificatie.includes(identificatieSearch) || !identificatieSearch.length);
                             })}
                             isLoaded={!loading}
                             error={error}

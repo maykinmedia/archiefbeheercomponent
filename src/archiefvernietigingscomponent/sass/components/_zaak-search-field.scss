@@ -1,0 +1,14 @@
+@import "../lib/bem";
+
+.zaak-search-field {
+  display: flex;
+  align-items: center;
+
+  @include element("icon") {
+    font-size: large;
+  }
+
+  input[type="text"] {
+    width: 100%;
+  }
+}
