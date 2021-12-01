@@ -1,6 +1,7 @@
 @import "../lib/bem";
 @import "../lib/colors";
 @import "../lib/typography";
+@import "../settings";
 
 
 .destruction-list-preview {
@@ -13,13 +14,20 @@
   padding: 0.5em 1em;
   border-radius: 3px;
 
-  @include element("title") {
-    color: $color-primary;
-    font-size: 1.1rem;
+  @include modifier("review-overdue") {
+    background-color: $color-danger-light;
+  }
+
+  @include element("header") {
+    display: flex;
+    align-items: center;
+    flex-grow: 3;
   }
 
   @include element("title") {
-    flex-grow: 3;
+    color: $color-primary;
+    font-size: 1.1rem;
+    padding-right: 0.5em;
   }
 
   @include element("indicators") {
