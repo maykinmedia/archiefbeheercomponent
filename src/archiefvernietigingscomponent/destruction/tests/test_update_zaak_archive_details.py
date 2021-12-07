@@ -71,7 +71,10 @@ class UpdateZaakArchiveDetailsTests(WebTest):
         self.assertEqual("2", form["archiefactiedatum_month"].value)
         self.assertEqual("2030", form["archiefactiedatum_year"].value)
 
-    @patch("archiefvernietigingscomponent.destruction.views.fetch_zaak")
+    @patch(
+        "archiefvernietigingscomponent.destruction.views.fetch_zaak",
+        return_value={"url": "http://openzaak.nl/some/zaak"},
+    )
     @patch("archiefvernietigingscomponent.destruction.views.update_zaak",)
     def test_submit_successful_form_redirects(self, m_update_zaak, m_fetch_zaak):
         user = UserFactory(role__can_start_destruction=True)
@@ -90,9 +93,7 @@ class UpdateZaakArchiveDetailsTests(WebTest):
 
         response = form.submit()
 
-        self.assertRedirects(
-            response, reverse("destruction:zaken-without-archive-date")
-        )
+        self.assertRedirects(response, view_url.url, fetch_redirect_response=False)
         m_update_zaak.assert_called_with(
             "http://openzaak.nl/some/valid/zaak/url",
             {
@@ -102,6 +103,12 @@ class UpdateZaakArchiveDetailsTests(WebTest):
             },
             audit_comment="Some interesting comment",
         )
+
+        response = response.follow()
+        messages = list(response.context.get("messages"))
+
+        self.assertEqual(1, len(messages))
+        self.assertEqual(messages[0].tags, "success")
 
     @patch("archiefvernietigingscomponent.destruction.views.fetch_zaak")
     @patch(
@@ -130,7 +137,10 @@ class UpdateZaakArchiveDetailsTests(WebTest):
             response, "An error has occurred. The case could not be updated."
         )
 
-    @patch("archiefvernietigingscomponent.destruction.views.fetch_zaak")
+    @patch(
+        "archiefvernietigingscomponent.destruction.views.fetch_zaak",
+        return_value={"url": "http://openzaak.nl/some/zaak"},
+    )
     @patch("archiefvernietigingscomponent.destruction.views.update_zaak",)
     def test_empty_archiefactiedatum(self, m_update_zaak, m_fetch_zaak):
         user = UserFactory(role__can_start_destruction=True)
@@ -145,11 +155,15 @@ class UpdateZaakArchiveDetailsTests(WebTest):
 
         response = form.submit()
 
-        self.assertRedirects(
-            response, reverse("destruction:zaken-without-archive-date")
-        )
+        self.assertRedirects(response, view_url.url, fetch_redirect_response=False)
         m_update_zaak.assert_called_with(
             "http://openzaak.nl/some/valid/zaak/url",
             {"archiefnominatie": Archiefnominatie.blijvend_bewaren},
             audit_comment="Some interesting comment",
         )
+
+        response = response.follow()
+        messages = list(response.context.get("messages"))
+
+        self.assertEqual(1, len(messages))
+        self.assertEqual(messages[0].tags, "success")
