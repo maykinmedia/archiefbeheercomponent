@@ -342,16 +342,19 @@ class UpdateZaakArchiveDetailsView(RoleRequiredMixin, FormView):
     def zaak(self):
         if not self._zaak:
             form = ZaakUrlForm(data=self.request.GET)
-            if form.is_valid():
-                full_zaak = fetch_zaak(form.cleaned_data["url"])
-                needed_fields = [
-                    "url",
-                    "identificatie",
-                    "archiefnominatie",
-                    "archiefactiedatum",
-                    "archiefstatus",
-                ]
-                self._zaak = {field: full_zaak.get(field) for field in needed_fields}
+
+            if not form.is_valid():
+                raise PermissionDenied("No zaak URL provided.")
+
+            full_zaak = fetch_zaak(form.cleaned_data["url"])
+            needed_fields = [
+                "url",
+                "identificatie",
+                "archiefnominatie",
+                "archiefactiedatum",
+                "archiefstatus",
+            ]
+            self._zaak = {field: full_zaak.get(field) for field in needed_fields}
         return self._zaak
 
     def get_context_data(self, **kwargs) -> dict:
