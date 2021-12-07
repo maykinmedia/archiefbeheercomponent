@@ -413,6 +413,49 @@ class ArchiveConfig(SingletonModel):
         ),
     )
 
+    # Configuration for the zaak to be created once a destruction list is deleted
+    create_zaak = models.BooleanField(
+        _("create zaak"),
+        default=False,
+        help_text=_(
+            "Should a case be created once a destruction list has been deleted?"
+        ),
+    )
+    source_organisation = models.CharField(
+        _("source organisation"),
+        max_length=9,
+        blank=True,
+        help_text=_("Source organisation RSIN"),
+    )
+    case_type = models.URLField(
+        _("case type"),
+        blank=True,
+        help_text=_(
+            "The case type URL to use when creating the case for the destruction list deletion."
+        ),
+    )
+    status_type = models.URLField(
+        _("status type"),
+        blank=True,
+        help_text=_(
+            "The status type URL to use when creating the case for the destruction list deletion."
+        ),
+    )
+    result_type = models.URLField(
+        _("result type"),
+        blank=True,
+        help_text=_(
+            "The result type URL to use when creating the case for the destruction list deletion."
+        ),
+    )
+    document_type = models.URLField(
+        _("document type"),
+        blank=True,
+        help_text=_(
+            "The document type URL to use when creating the case for the destruction list deletion."
+        ),
+    )
+
     class Meta:
         verbose_name = _("archive configuration")
 
