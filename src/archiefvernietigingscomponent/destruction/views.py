@@ -2,6 +2,7 @@ from datetime import date
 from typing import List, Tuple
 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.db import models, transaction
 from django.db.models import Q
@@ -21,6 +22,7 @@ from extra_views import (
     InlineFormSetFactory,
     UpdateWithInlinesView,
 )
+from furl import furl
 from timeline_logger.models import TimelineLog
 from zds_client.client import ClientError
 
@@ -330,13 +332,18 @@ class ZakenWithoutArchiveDateView(RoleRequiredMixin, TemplateView):
         return context
 
 
-class UpdateZaakArchiveDetailsView(RoleRequiredMixin, FormView):
+class UpdateZaakArchiveDetailsView(SuccessMessageMixin, RoleRequiredMixin, FormView):
     template_name = "destruction/update_zaak_archive_details.html"
     role_permission = "can_start_destruction"
     form_class = ZaakArchiveDetailsForm
-    success_url = reverse_lazy("destruction:zaken-without-archive-date")
+    success_message = _("Archiving details successfully updated!")
 
     _zaak = None
+
+    def get_success_url(self):
+        return_url = furl(reverse("destruction:update-zaak-archive-details"))
+        return_url.args["url"] = self.zaak["url"]
+        return return_url.url
 
     @property
     def zaak(self):

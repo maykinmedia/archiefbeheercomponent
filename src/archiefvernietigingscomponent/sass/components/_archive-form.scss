@@ -1,5 +1,6 @@
 @import "../lib/bem";
 @import "../lib/colors";
+@import "../settings";
 
 .archive-form {
   padding: 2em;
@@ -12,6 +13,16 @@
       list-style-type: none;
       padding-inline-start: 0;
       margin: 0;
+    }
+  }
+
+  @include element("messages") {
+    background-color: $color-success-light;
+    list-style-type: none;
+    padding: 1em 0;
+
+    li {
+      padding-left: 1em;
     }
   }
 
