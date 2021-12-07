@@ -3,6 +3,8 @@ from typing import List, Tuple
 
 from django import forms
 from django.contrib.postgres.forms import SimpleArrayField
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 from archiefvernietigingscomponent.accounts.models import User
 
@@ -165,7 +167,37 @@ class ArchiveConfigForm(forms.ModelForm):
             "link_to_zac",
             "short_review_zaaktypes",
             "days_until_reminder",
+            "create_zaak",
+            "source_organisation",
+            "case_type",
+            "status_type",
+            "result_type",
+            "document_type",
         )
+
+    def clean(self):
+        super().clean()
+        if self.cleaned_data["create_zaak"]:
+            error = ValidationError(
+                _(
+                    "If '%(create_zaak_label)s' is checked, "
+                    "all the other destruction case settings need to be configured."
+                )
+                % {"create_zaak_label": self.fields["create_zaak"].label},
+                code="invalid",
+            )
+
+            required_fields = [
+                "source_organisation",
+                "case_type",
+                "status_type",
+                "result_type",
+                "document_type",
+            ]
+            for required_field in required_fields:
+                if not self.cleaned_data.get(required_field):
+                    self.add_error("create_zaak", error)
+                    return
 
     def save(self, commit=True):
         instance = super().save(commit)
