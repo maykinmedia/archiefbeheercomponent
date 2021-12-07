@@ -302,6 +302,8 @@ class ReviewersReminderEmailsTests(TestCase):
 
         self.assertEqual(1, len(mail.outbox))
         self.assertEqual(first_reviewer.assignee.email, mail.outbox[0].to[0])
+        first_reviewer.refresh_from_db()
+        self.assertTrue(first_reviewer.reminder_sent)
 
     def test_multiple_lists_with_assignees_that_need_reminders(self):
         role = RoleFactory.create(can_review_destruction=True)
@@ -381,6 +383,22 @@ class ReviewersReminderEmailsTests(TestCase):
         destruction_list.assignee = first_reviewer.assignee
         destruction_list.save()
         first_reviewer.assigned_on = timezone.make_aware(datetime(2021, 11, 12))
+        first_reviewer.save()
+
+        check_if_reviewers_need_reminder()
+
+        self.assertEqual(0, len(mail.outbox))
+
+    def test_only_one_reminder_sent(self):
+        role = RoleFactory.create(can_review_destruction=True)
+        destruction_list = DestructionListFactory.create()
+        first_reviewer = DestructionListAssigneeFactory.create(
+            destruction_list=destruction_list, assignee__role=role
+        )
+        destruction_list.assignee = first_reviewer.assignee
+        destruction_list.save()
+        first_reviewer.assigned_on = timezone.make_aware(datetime(2021, 11, 12))
+        first_reviewer.reminder_sent = True
         first_reviewer.save()
 
         check_if_reviewers_need_reminder()
