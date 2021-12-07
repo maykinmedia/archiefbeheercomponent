@@ -5,7 +5,7 @@ import ErrorMessage from '../ErrorMessage';
 import ZaakRecord from "../no-archive-date/ZaakRecord";
 
 
-function ZakenTable({ zaken, isLoaded, error, checkboxes, setCheckboxes, canUpdateZaak=false }) {
+function ZakenTable({ zaken, isLoaded, error, checkboxes, setCheckboxes }) {
     const [selectAll, setSelectAll] = useState(false);
 
     if (error) {
@@ -60,7 +60,6 @@ function ZakenTable({ zaken, isLoaded, error, checkboxes, setCheckboxes, canUpda
                               setSelectAll(false);
                             }
                         }}
-                        canUpdate={canUpdateZaak}
                     />
                 ))}
 

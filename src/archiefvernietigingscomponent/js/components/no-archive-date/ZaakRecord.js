@@ -12,8 +12,8 @@ const displayZaaktype = (zaaktype) => {
 };
 
 
-const ZaakRecord = ({zaak, canUpdate, isChecked, onCheckboxUpdate}) => {
-    const canUpdateZaak = canUpdate && zaak.available;
+const ZaakRecord = ({zaak, isChecked, onCheckboxUpdate}) => {
+    const canUpdateZaak = zaak.available;
 
     const onZaakClick = () => {
         if (!canUpdateZaak) return;
