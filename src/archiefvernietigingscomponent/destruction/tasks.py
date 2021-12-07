@@ -72,12 +72,16 @@ def check_if_reviewers_need_reminder():
         assignee=F("destruction_list__assignee"),
         assigned_on__lt=timezone.now() - timedelta(days=number_days),
         assignee__role__can_review_destruction=True,
+        reminder_sent=False,
     ).select_related("assignee")
 
     for assignee in assignees:
         email.send(
             recipient=assignee.assignee, destruction_list=assignee.destruction_list
         )
+        assignee.reminder_sent = True
+
+    DestructionListAssignee.objects.bulk_update(assignees, ["reminder_sent"])
 
 
 @app.task

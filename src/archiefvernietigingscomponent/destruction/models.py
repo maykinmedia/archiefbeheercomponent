@@ -357,6 +357,7 @@ class DestructionListAssignee(models.Model):
     )
     order = models.PositiveSmallIntegerField(_("order"))
     assigned_on = models.DateTimeField(_("assigned on"), blank=True, null=True)
+    reminder_sent = models.BooleanField(_("reminder sent"), default=False)
 
     class Meta:
         verbose_name = _("destruction list assignee")
