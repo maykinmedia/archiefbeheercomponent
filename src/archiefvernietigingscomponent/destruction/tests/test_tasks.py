@@ -16,20 +16,27 @@ from zds_client.client import ClientError
 from zgw_consumers.constants import APITypes
 from zgw_consumers.models import Service
 
+from archiefvernietigingscomponent.accounts.tests.factories import (
+    RoleFactory,
+    UserFactory,
+)
+from archiefvernietigingscomponent.emails.constants import EmailTypeChoices
+from archiefvernietigingscomponent.emails.models import AutomaticEmail, EmailConfig
+from archiefvernietigingscomponent.emails.tests.factories import AutomaticEmailFactory
 from archiefvernietigingscomponent.notifications.models import Notification
+from archiefvernietigingscomponent.report.models import DestructionReport
+from archiefvernietigingscomponent.report.tests.factories import (
+    DestructionReportFactory,
+)
 
-from ...accounts.tests.factories import RoleFactory, UserFactory
 from ...constants import RoleTypeChoices
-from ...emails.constants import EmailTypeChoices
-from ...emails.models import AutomaticEmail, EmailConfig
-from ...emails.tests.factories import AutomaticEmailFactory
-from ...report.models import DestructionReport
 from ...tests.utils import mock_service_oas_get
 from ..constants import ListItemStatus, ListStatus, ReviewStatus
 from ..models import ArchiveConfig, DestructionList, DestructionListItem
 from ..tasks import (
     check_if_reviewers_need_reminder,
     complete_and_notify,
+    create_destruction_zaak,
     process_destruction_list,
     process_list_item,
     update_zaak_from_list_item,
@@ -766,3 +773,64 @@ class UpdateZaakTests(TestCase):
         self.assertEqual(log.template, "destruction/logs/item_update_failed.html")
 
         mock_update_zaak.assert_called_once_with(list_item.zaak, archive_data, None)
+
+
+@requests_mock.Mocker()
+class CreateZaakTaskTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        Service.objects.create(
+            label="Zaken API",
+            api_type=APITypes.zrc,
+            api_root="https://oz.nl/zaken/api/v1/",
+            oas="https://oz.nl/zaken/api/v1/schema/openapi.json",
+        )
+        Service.objects.create(
+            label="Documenten API",
+            api_type=APITypes.drc,
+            api_root="https://oz.nl/documenten/api/v1/",
+            oas="https://oz.nl/documenten/api/v1/schema/openapi.json",
+        )
+
+    def _set_up_mocks(self, m):
+        mock_service_oas_get(
+            m,
+            "https://oz.nl/zaken/api/v1/",
+            "zrc",
+            oas_url="https://oz.nl/zaken/api/v1/schema/openapi.json",
+        )
+        mock_service_oas_get(
+            m,
+            "https://oz.nl/documenten/api/v1/",
+            "drc",
+            oas_url="https://oz.nl/documenten/api/v1/schema/openapi.json",
+        )
+        m.post(
+            "https://oz.nl/zaken/api/v1/zaken",
+            json={"url": "https://oz.nl/zaken/api/v1/zaken/123"},
+            status_code=201,
+        )
+        m.post(
+            "https://oz.nl/documenten/api/v1/enkelvoudiginformatieobjecten",
+            json={
+                "url": "https://oz.nl/documenten/api/v1/enkelvoudiginformatieobjecten/123"
+            },
+            status_code=201,
+        )
+        m.post("https://oz.nl/zaken/api/v1/zaakinformatieobjecten", status_code=201)
+        m.post("https://oz.nl/zaken/api/v1/resultaten", status_code=201)
+        m.post("https://oz.nl/zaken/api/v1/statussen", status_code=201)
+
+    def test_create_zaak_from_destruction_list(self, m):
+        self._set_up_mocks(m)
+
+        destruction_list = DestructionListFactory.create()
+        DestructionReportFactory.create(destruction_list=destruction_list)
+
+        create_destruction_zaak(destruction_list.id)
+
+        # Can't refresh from database due to fsm field
+        destruction_list = DestructionList.objects.get(id=destruction_list.id)
+        self.assertEqual(
+            "https://oz.nl/zaken/api/v1/zaken/123", destruction_list.zaak_url
+        )
