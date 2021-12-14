@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
 
 from fsm_admin.mixins import FSMTransitionMixin
 from ordered_model.admin import OrderedModelAdmin
@@ -104,6 +105,32 @@ class DestructionListAssigneeAdmin(admin.ModelAdmin):
 class ArchiveConfigAdmin(SingletonModelAdmin):
     change_form_template = "destruction/admin/change_solo_form.html"
     form = ArchiveConfigForm
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "archive_date",
+                    "short_review_zaaktypes",
+                    "link_to_zac",
+                    "days_until_reminder",
+                )
+            },
+        ),
+        (
+            _("Optional destruction case settings"),
+            {
+                "fields": (
+                    "create_zaak",
+                    "source_organisation",
+                    "case_type",
+                    "status_type",
+                    "result_type",
+                    "document_type",
+                ),
+            },
+        ),
+    )
 
     def changeform_view(self, request, object_id=None, form_url="", extra_context=None):
         if not extra_context:

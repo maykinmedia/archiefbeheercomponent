@@ -99,7 +99,6 @@ class Command(BaseCommand):
                 "beginGeldigheid": "2021-01-01",
             },
         )
-        # pdb.set_trace()
         informatieobjecttype_2 = ztc_client.create(
             resource="informatieobjecttype",
             data={

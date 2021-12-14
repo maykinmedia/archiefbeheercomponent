@@ -16,20 +16,27 @@ from zds_client.client import ClientError
 from zgw_consumers.constants import APITypes
 from zgw_consumers.models import Service
 
+from archiefvernietigingscomponent.accounts.tests.factories import (
+    RoleFactory,
+    UserFactory,
+)
+from archiefvernietigingscomponent.emails.constants import EmailTypeChoices
+from archiefvernietigingscomponent.emails.models import AutomaticEmail, EmailConfig
+from archiefvernietigingscomponent.emails.tests.factories import AutomaticEmailFactory
 from archiefvernietigingscomponent.notifications.models import Notification
+from archiefvernietigingscomponent.report.models import DestructionReport
+from archiefvernietigingscomponent.report.tests.factories import (
+    DestructionReportFactory,
+)
 
-from ...accounts.tests.factories import RoleFactory, UserFactory
 from ...constants import RoleTypeChoices
-from ...emails.constants import EmailTypeChoices
-from ...emails.models import AutomaticEmail, EmailConfig
-from ...emails.tests.factories import AutomaticEmailFactory
-from ...report.models import DestructionReport
 from ...tests.utils import mock_service_oas_get
 from ..constants import ListItemStatus, ListStatus, ReviewStatus
 from ..models import ArchiveConfig, DestructionList, DestructionListItem
 from ..tasks import (
     check_if_reviewers_need_reminder,
     complete_and_notify,
+    create_destruction_zaak,
     process_destruction_list,
     process_list_item,
     update_zaak_from_list_item,
@@ -45,10 +52,13 @@ from .factories import (
 
 
 @patch("archiefvernietigingscomponent.destruction.tasks.chain")
+@patch("archiefvernietigingscomponent.destruction.tasks.create_destruction_zaak")
 @patch("archiefvernietigingscomponent.destruction.tasks.complete_and_notify")
 @patch("archiefvernietigingscomponent.destruction.tasks.process_list_item")
 class ProcessListTests(TestCase):
-    def test_process_list(self, mock_task_item, mock_notify, mock_chain):
+    def test_process_list_without_zaak_creation(
+        self, mock_task_item, mock_notify, mock_zaak, mock_chain
+    ):
         destruction_list = DestructionListFactory.create()
         list_items = DestructionListItemFactory.create_batch(
             5, destruction_list=destruction_list
@@ -66,9 +76,44 @@ class ProcessListTests(TestCase):
             mock_task_item.chunks(list_items_ids, settings.ZAKEN_PER_TASK).group(),
             mock_notify.si(destruction_list.id),
         )
+        self.assertEqual(1, mock_chain.call_count)
+
+    def test_process_list_with_zaak_creation(
+        self, mock_task_item, mock_notify, mock_zaak, mock_chain
+    ):
+        destruction_list = DestructionListFactory.create()
+        list_items = DestructionListItemFactory.create_batch(
+            5, destruction_list=destruction_list
+        )
+
+        def first_chain_part(*args, **kwargs):
+            return
+
+        mock_chain.return_value = first_chain_part
+
+        with patch(
+            "archiefvernietigingscomponent.destruction.models.ArchiveConfig.get_solo",
+            return_value=ArchiveConfig(create_zaak=True),
+        ):
+            process_destruction_list(destruction_list.id)
+
+        # can't use refresh_from_db() because of django-fsm
+        destruction_list = DestructionList.objects.get(id=destruction_list.id)
+        self.assertEqual(destruction_list.status, ListStatus.processing)
+
+        list_items_ids = [(list_item.id,) for list_item in list_items]
+
+        mock_chain.assert_any_call(
+            mock_task_item.chunks(list_items_ids, settings.ZAKEN_PER_TASK).group(),
+            mock_notify.si(destruction_list.id),
+        )
+        mock_chain.assert_any_call(
+            first_chain_part, mock_zaak.si(destruction_list.id),
+        )
+        self.assertEqual(2, mock_chain.call_count)
 
     def test_process_list_with_removed_items(
-        self, mock_task_item, mock_notify, mock_chain
+        self, mock_task_item, mock_notify, mock_zaak, mock_chain
     ):
         destruction_list = DestructionListFactory.create()
         list_item_1, list_item_2 = DestructionListItemFactory.create_batch(
@@ -728,3 +773,64 @@ class UpdateZaakTests(TestCase):
         self.assertEqual(log.template, "destruction/logs/item_update_failed.html")
 
         mock_update_zaak.assert_called_once_with(list_item.zaak, archive_data, None)
+
+
+@requests_mock.Mocker()
+class CreateZaakTaskTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        Service.objects.create(
+            label="Zaken API",
+            api_type=APITypes.zrc,
+            api_root="https://oz.nl/zaken/api/v1/",
+            oas="https://oz.nl/zaken/api/v1/schema/openapi.json",
+        )
+        Service.objects.create(
+            label="Documenten API",
+            api_type=APITypes.drc,
+            api_root="https://oz.nl/documenten/api/v1/",
+            oas="https://oz.nl/documenten/api/v1/schema/openapi.json",
+        )
+
+    def _set_up_mocks(self, m):
+        mock_service_oas_get(
+            m,
+            "https://oz.nl/zaken/api/v1/",
+            "zrc",
+            oas_url="https://oz.nl/zaken/api/v1/schema/openapi.json",
+        )
+        mock_service_oas_get(
+            m,
+            "https://oz.nl/documenten/api/v1/",
+            "drc",
+            oas_url="https://oz.nl/documenten/api/v1/schema/openapi.json",
+        )
+        m.post(
+            "https://oz.nl/zaken/api/v1/zaken",
+            json={"url": "https://oz.nl/zaken/api/v1/zaken/123"},
+            status_code=201,
+        )
+        m.post(
+            "https://oz.nl/documenten/api/v1/enkelvoudiginformatieobjecten",
+            json={
+                "url": "https://oz.nl/documenten/api/v1/enkelvoudiginformatieobjecten/123"
+            },
+            status_code=201,
+        )
+        m.post("https://oz.nl/zaken/api/v1/zaakinformatieobjecten", status_code=201)
+        m.post("https://oz.nl/zaken/api/v1/resultaten", status_code=201)
+        m.post("https://oz.nl/zaken/api/v1/statussen", status_code=201)
+
+    def test_create_zaak_from_destruction_list(self, m):
+        self._set_up_mocks(m)
+
+        destruction_list = DestructionListFactory.create()
+        DestructionReportFactory.create(destruction_list=destruction_list)
+
+        create_destruction_zaak(destruction_list.id)
+
+        # Can't refresh from database due to fsm field
+        destruction_list = DestructionList.objects.get(id=destruction_list.id)
+        self.assertEqual(
+            "https://oz.nl/zaken/api/v1/zaken/123", destruction_list.zaak_url
+        )

@@ -67,3 +67,7 @@ def get_zaak_link_for_zaakafhandelcomponent(
             link_template = re.sub(re_pattern, value, link_template)
 
     return link_template
+
+
+class ServiceNotConfiguredError(Exception):
+    pass
