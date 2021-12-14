@@ -210,7 +210,7 @@ class ArchiveConfigForm(forms.ModelForm):
 
 
 class ZaakArchiveDetailsForm(forms.Form):
-    url = forms.URLField(required=True)
+    url = forms.URLField(required=True, widget=forms.HiddenInput)
     archiefnominatie = forms.ChoiceField(
         choices=Archiefnominatie.choices, widget=forms.RadioSelect, required=False,
     )
