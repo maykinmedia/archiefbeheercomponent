@@ -55,7 +55,14 @@ def process_destruction_list(list_id):
     ]
     chunk_tasks = process_list_item.chunks(list_item_ids, settings.ZAKEN_PER_TASK)
     notify_task = complete_and_notify.si(list_id)
-    chain(chunk_tasks.group(), notify_task)()
+    task_chain = chain(chunk_tasks.group(), notify_task)
+
+    config = ArchiveConfig.get_solo()
+    if config.create_zaak:
+        create_zaak_task = create_destruction_zaak.si(list_id)
+        task_chain = chain(task_chain, create_zaak_task)
+
+    task_chain()
 
 
 @app.task
@@ -273,3 +280,8 @@ def update_zaak_from_list_item(list_item_id: str, archive_data: dict):
             template="destruction/logs/item_update_succeeded.html",
             extra_data={"zaak": zaak["identificatie"]},
         )
+
+
+@app.task
+def create_destruction_zaak(list_id):
+    pass
