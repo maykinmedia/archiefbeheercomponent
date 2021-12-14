@@ -320,6 +320,11 @@ def create_destruction_zaak(list_id):
             "archiefnominatie": "blijvend_bewaren",
         },
     )
+    logger.info(
+        "Created zaak %s for destruction list %r",
+        destruction_zaak["url"],
+        destruction_list.id,
+    )
     with destruction_report.content_pdf.open("rb") as f:
         destruction_document = drc_client.create(
             resource="enkelvoudiginformatieobject",
@@ -336,6 +341,11 @@ def create_destruction_zaak(list_id):
                 "indicatie_gebruiksrecht": False,
             },
         )
+    logger.info(
+        "Created document %s from destruction report of destruction list %r",
+        destruction_document["url"],
+        destruction_list.id,
+    )
 
     zrc_client.create(
         resource="zaakinformatieobject",
