@@ -1,5 +1,6 @@
 import logging
 import traceback
+from base64 import b64encode
 from datetime import timedelta
 
 from django.conf import settings
@@ -11,6 +12,8 @@ from django.utils.translation import gettext_lazy as _
 from celery import chain
 from timeline_logger.models import TimelineLog
 from zds_client.client import ClientError
+from zgw_consumers.constants import APITypes
+from zgw_consumers.models import Service
 
 from archiefvernietigingscomponent.notifications.models import Notification
 
@@ -18,6 +21,7 @@ from ..celery import app
 from ..constants import RoleTypeChoices
 from ..emails.constants import EmailTypeChoices
 from ..emails.models import AutomaticEmail
+from ..report.models import DestructionReport
 from ..report.utils import create_destruction_report, get_absolute_url
 from .constants import ListItemStatus, ListStatus, ReviewStatus
 from .models import (
@@ -28,6 +32,7 @@ from .models import (
     DestructionListReview,
 )
 from .service import fetch_resultaat, fetch_zaak, remove_zaak, update_zaak
+from .utils import ServiceNotConfiguredError
 
 logger = logging.getLogger(__name__)
 
@@ -284,4 +289,73 @@ def update_zaak_from_list_item(list_item_id: str, archive_data: dict):
 
 @app.task
 def create_destruction_zaak(list_id):
-    pass
+    destruction_list = DestructionList.objects.get(id=list_id)
+    destruction_report = DestructionReport.objects.get(
+        destruction_list=destruction_list
+    )
+    config = ArchiveConfig.get_solo()
+
+    zrc_service = Service.objects.filter(api_type=APITypes.zrc).first()
+    if not zrc_service:
+        raise ServiceNotConfiguredError("No service defined for the Zaken API")
+
+    drc_service = Service.objects.filter(api_type=APITypes.drc).first()
+    if not zrc_service:
+        raise ServiceNotConfiguredError("No service defined for the Documenten API")
+
+    zrc_client = zrc_service.build_client()
+    drc_client = drc_service.build_client()
+    today = timezone.now().date().isoformat()
+
+    destruction_zaak = zrc_client.create(
+        resource="zaak",
+        data={
+            "bronorganisatie": config.source_organisation,
+            "omschrijving": _("Destruction List: %(list_name)s")
+            % {"list_name": destruction_list.name},
+            "zaaktype": config.case_type,
+            "vertrouwelijkheidaanduiding": "openbaar",
+            "startdatum": today,
+            "verantwoordelijkeOrganisatie": config.source_organisation,
+            "archiefnominatie": "blijvend_bewaren",
+        },
+    )
+    with destruction_report.content_pdf.open("rb") as f:
+        destruction_document = drc_client.create(
+            resource="enkelvoudiginformatieobject",
+            data={
+                "bronorganisatie": config.source_organisation,
+                "creatiedatum": today,
+                "titel": _("Destruction Report: %(list_name)s")
+                % {"list_name": destruction_list.name},
+                "auteur": "Archiefbeheercomponent",
+                "taal": "nld",
+                "formaat": "pdf",
+                "inhoud": b64encode(f.read()).decode("utf-8"),
+                "informatieobjecttype": config.document_type,
+                "indicatie_gebruiksrecht": False,
+            },
+        )
+
+    zrc_client.create(
+        resource="zaakinformatieobject",
+        data={
+            "zaak": destruction_zaak["url"],
+            "informatieobject": destruction_document["url"],
+        },
+    )
+    zrc_client.create(
+        resource="resultaat",
+        data={"zaak": destruction_zaak["url"], "resultaattype": config.result_type},
+    )
+    zrc_client.create(
+        resource="status",
+        data={
+            "zaak": destruction_zaak["url"],
+            "statustype": config.status_type,
+            "datum_status_gezet": timezone.now().isoformat(),
+        },
+    )
+
+    destruction_list.zaak_url = destruction_zaak["url"]
+    destruction_list.save()

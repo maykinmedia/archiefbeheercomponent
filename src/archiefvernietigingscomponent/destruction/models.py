@@ -63,6 +63,13 @@ class DestructionList(models.Model):
         ),
         default=True,
     )
+    zaak_url = models.URLField(
+        _("zaak URL"),
+        help_text=_(
+            "The URL of the case containing the destruction report for this destruction list."
+        ),
+        blank=True,
+    )
 
     class Meta:
         verbose_name = _("destruction list")
