@@ -45,10 +45,13 @@ from .factories import (
 
 
 @patch("archiefvernietigingscomponent.destruction.tasks.chain")
+@patch("archiefvernietigingscomponent.destruction.tasks.create_destruction_zaak")
 @patch("archiefvernietigingscomponent.destruction.tasks.complete_and_notify")
 @patch("archiefvernietigingscomponent.destruction.tasks.process_list_item")
 class ProcessListTests(TestCase):
-    def test_process_list(self, mock_task_item, mock_notify, mock_chain):
+    def test_process_list_without_zaak_creation(
+        self, mock_task_item, mock_notify, mock_zaak, mock_chain
+    ):
         destruction_list = DestructionListFactory.create()
         list_items = DestructionListItemFactory.create_batch(
             5, destruction_list=destruction_list
@@ -66,9 +69,44 @@ class ProcessListTests(TestCase):
             mock_task_item.chunks(list_items_ids, settings.ZAKEN_PER_TASK).group(),
             mock_notify.si(destruction_list.id),
         )
+        self.assertEqual(1, mock_chain.call_count)
+
+    def test_process_list_with_zaak_creation(
+        self, mock_task_item, mock_notify, mock_zaak, mock_chain
+    ):
+        destruction_list = DestructionListFactory.create()
+        list_items = DestructionListItemFactory.create_batch(
+            5, destruction_list=destruction_list
+        )
+
+        def first_chain_part(*args, **kwargs):
+            return
+
+        mock_chain.return_value = first_chain_part
+
+        with patch(
+            "archiefvernietigingscomponent.destruction.models.ArchiveConfig.get_solo",
+            return_value=ArchiveConfig(create_zaak=True),
+        ):
+            process_destruction_list(destruction_list.id)
+
+        # can't use refresh_from_db() because of django-fsm
+        destruction_list = DestructionList.objects.get(id=destruction_list.id)
+        self.assertEqual(destruction_list.status, ListStatus.processing)
+
+        list_items_ids = [(list_item.id,) for list_item in list_items]
+
+        mock_chain.assert_any_call(
+            mock_task_item.chunks(list_items_ids, settings.ZAKEN_PER_TASK).group(),
+            mock_notify.si(destruction_list.id),
+        )
+        mock_chain.assert_any_call(
+            first_chain_part, mock_zaak.si(destruction_list.id),
+        )
+        self.assertEqual(2, mock_chain.call_count)
 
     def test_process_list_with_removed_items(
-        self, mock_task_item, mock_notify, mock_chain
+        self, mock_task_item, mock_notify, mock_zaak, mock_chain
     ):
         destruction_list = DestructionListFactory.create()
         list_item_1, list_item_2 = DestructionListItemFactory.create_batch(
