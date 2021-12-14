@@ -1,0 +1,16 @@
+{% extends "master.html" %}
+
+{% block content %}
+
+<article id="content-main">
+
+        <div class="zaken-without-archive-date"
+             id="react-zaken-without-archive-date"
+             data-zaken-url="{% url 'destruction:fetch-zaken' %}"
+        >
+{#             empty on purpose - react managed #}
+        </div>
+
+</article>
+
+{% endblock %}

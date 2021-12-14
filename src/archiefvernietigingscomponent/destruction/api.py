@@ -1,10 +1,6 @@
-import itertools
-
-from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404
-from django.utils import timezone
 from django.views import View
 
 from zgw_consumers.concurrent import parallel
@@ -16,8 +12,7 @@ from archiefvernietigingscomponent.accounts.mixins import (
 
 from ..constants import RoleTypeChoices
 from .constants import ListItemStatus
-from .forms import ZakenFiltersForm
-from .models import ArchiveConfig, DestructionList, DestructionListItem
+from .models import ArchiveConfig, DestructionList
 from .service import (
     fetch_zaak,
     get_besluiten,
@@ -26,95 +21,21 @@ from .service import (
     get_zaaktypen,
     get_zaken,
 )
-from .utils import get_additional_zaak_info, get_zaak_link_for_zaakafhandelcomponent
-
-
-def get_zaken_chunks(zaken):
-    return (
-        zaken[pos : pos + settings.ZAKEN_PER_QUERY]
-        for pos in range(0, len(zaken), settings.ZAKEN_PER_QUERY)
-    )
+from .utils import (
+    get_additional_zaak_info,
+    get_zaak_link_for_zaakafhandelcomponent,
+    set_zaken_availability,
+)
 
 
 class FetchZakenView(LoginRequiredMixin, View):
-    @staticmethod
-    def fetch_zaken(startdatum, zaaktypen, bronorganisaties):
-        config = ArchiveConfig.get_solo()
-        current_date = config.archive_date or timezone.now().date()
-        #  default params for archived zaken
-        query = {
-            "archiefnominatie": "vernietigen",
-            "archiefactiedatum__lt": current_date.isoformat(),
-        }
-
-        if startdatum:
-            query["startdatum__gte"] = startdatum.strftime("%Y-%m-%d")
-
-        queries = []
-        if zaaktypen and bronorganisaties:
-            for zaaktype in zaaktypen:
-                for bronorganisatie in bronorganisaties:
-                    queries.append(
-                        dict(
-                            query,
-                            **{
-                                "zaaktype": zaaktype,
-                                "bronorganisatie": bronorganisatie,
-                            },
-                        )
-                    )
-        elif zaaktypen:
-            queries = [dict(query, **{"zaaktype": zaaktype}) for zaaktype in zaaktypen]
-        elif bronorganisaties:
-            queries = [
-                dict(query, **{"bronorganisatie": bronorganisatie})
-                for bronorganisatie in bronorganisaties
-            ]
-
-        if len(queries) > 0:
-            with parallel() as executor:
-                zaken = list(executor.map(get_zaken, queries))
-
-            # flat the list
-            zaken = list(itertools.chain(*zaken))
-
-        else:
-            zaken = get_zaken(query_params=query)
-
-        return zaken
-
-    @staticmethod
-    def set_zaken_availability(zaken):
-        """check if selected zaken are used in other DLs"""
-        zaak_urls = [zaak["url"] for zaak in zaken]
-        selected_zaken = []
-        for chunk in get_zaken_chunks(zaak_urls):
-            selected_zaken += list(
-                DestructionListItem.objects.filter(
-                    status__in=[ListItemStatus.suggested, ListItemStatus.processing]
-                )
-                .filter(zaak__in=chunk)
-                .values_list("zaak", flat=True)
-            )
-
-        for zaak in zaken:
-            zaak["available"] = zaak["url"] not in selected_zaken
-
     def get(self, request):
-        form = ZakenFiltersForm(request.GET)
-        form.is_valid()
+        zaken = get_zaken(request.GET)
 
-        if form.errors:
-            return HttpResponseBadRequest("Invalid filter values")
+        with parallel() as executor:
+            zaken_with_extra_info = list(executor.map(get_additional_zaak_info, zaken))
 
-        startdatum = form.cleaned_data.get("startdatum")
-        zaaktypen = form.cleaned_data.get("zaaktypen")
-        bronorganisaties = form.cleaned_data.get("bronorganisaties")
-
-        zaken = self.fetch_zaken(startdatum, zaaktypen, bronorganisaties)
-        zaken_with_extra_info = [get_additional_zaak_info(zaak) for zaak in zaken]
-
-        self.set_zaken_availability(zaken_with_extra_info)
+        set_zaken_availability(zaken_with_extra_info)
 
         return JsonResponse({"zaken": zaken_with_extra_info})
 

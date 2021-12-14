@@ -1,0 +1,13 @@
+@import "../settings";
+
+.error-message {
+  background-color: $color-danger-light;
+  padding: 0.5em;
+  display: flex;
+  align-items: center;
+
+  .material-icons {
+    padding-right: 0.2em;
+    font-size: large;
+  }
+}

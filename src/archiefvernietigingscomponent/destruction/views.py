@@ -7,10 +7,11 @@ from django.db.models import Q
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.utils.timesince import timesince
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import CreateView
-from django.views.generic.base import RedirectView
+from django.views.generic.base import RedirectView, TemplateView
 
 from django_filters.views import FilterView
 from extra_views import (
@@ -129,6 +130,7 @@ class DestructionListCreateView(RoleRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
 
         archive_config = ArchiveConfig.get_solo()
+        current_date = archive_config.archive_date or timezone.now().date()
 
         # add zaaktypen
         context.update(
@@ -136,6 +138,7 @@ class DestructionListCreateView(RoleRequiredMixin, CreateView):
                 "zaaktypen": get_zaaktype_choices(),
                 "reviewers": get_reviewer_choices(self.request.user),
                 "short_review_zaaktypes": archive_config.short_review_zaaktypes,
+                "current_date": current_date.isoformat(),
             }
         )
 
@@ -307,6 +310,11 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
             transaction.on_commit(lambda: update_zaken.delay(update_data))
 
         return response
+
+
+class ZakenWithoutArchiveDateView(RoleRequiredMixin, TemplateView):
+    template_name = "destruction/zaken_without_archive_date_list.html"
+    role_permission = "can_start_destruction"
 
 
 # Reviewer views

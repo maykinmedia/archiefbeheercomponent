@@ -1,45 +1,69 @@
 import copy
-from datetime import date
 from unittest.mock import patch
 
+from django.http.request import QueryDict
 from django.test import TestCase
-from django.urls import reverse_lazy
+from django.urls import reverse
+
+from furl import furl
 
 from archiefvernietigingscomponent.accounts.tests.factories import UserFactory
+from archiefvernietigingscomponent.destruction.tests.factories import (
+    DestructionListItemFactory,
+)
 
-from ..models import ArchiveConfig
-from .factories import DestructionListItemFactory
+ZAKEN_ROOT = "https://oz.nl/zaken/api/v1/"
+CATALOGI_ROOT = "https://oz.nl/catalogi/api/v1/"
+SELECTIELIJST_ROOT = "https://oz.nl/selectielijst/api/v1/"
 
-ZAAKTYPE_1 = "https://some.catalogi.nl/api/v1/zaaktypen/aaa"
-ZAAKTYPE_2 = "https://some.catalogi.nl/api/v1/zaaktypen/bbb"
+ZAAKTYPE_1 = {
+    "url": f"{CATALOGI_ROOT}zaaktypen/uuid-1",
+    "omschrijving": "A great zaaktype",
+    "versiedatum": "2020-10-10",
+}
+
+ZAAKTYPE_2 = {
+    "url": f"{CATALOGI_ROOT}zaaktypen/uuid-2",
+    "omschrijving": "A magnificent zaaktype",
+    "versiedatum": "2020-08-08",
+    "selectielijstProcestype": f"{SELECTIELIJST_ROOT}procestypen/uuid-1",
+}
 ZAKEN = [
     {
         "url": "https://some.zaken.nl/api/v1/zaken/1",
         "identificatie": "ZAAK-2020-0000000001",
         "omschrijving": "test1",
-        "zaaktype": ZAAKTYPE_1,
+        "zaaktype": ZAAKTYPE_1["url"],
         "bronorganisatie": "095847261",
+        "startdatum": "2020-09-12",
+        "registratiedatum": "2020-12-12",
     },
     {
         "url": "https://some.zaken.nl/api/v1/zaken/2",
         "identificatie": "ZAAK-2020-0000000002",
         "omschrijving": "test2",
-        "zaaktype": ZAAKTYPE_1,
+        "zaaktype": ZAAKTYPE_1["url"],
         "bronorganisatie": "517439943",
+        "startdatum": "2020-12-12",
+        "registratiedatum": "2020-11-12",
     },
     {
         "url": "https://some.zaken.nl/api/v1/zaken/3",
         "identificatie": "ZAAK-2020-0000000003",
         "omschrijving": "test3",
-        "zaaktype": ZAAKTYPE_2,
+        "zaaktype": ZAAKTYPE_2["url"],
         "bronorganisatie": "095847261",
+        "startdatum": "2020-12-12",
+        "registratiedatum": "2020-10-12",
     },
     {
         "url": "https://some.zaken.nl/api/v1/zaken/4",
         "identificatie": "ZAAK-2020-0000000004",
         "omschrijving": "test4",
-        "zaaktype": ZAAKTYPE_2,
+        "zaaktype": ZAAKTYPE_2["url"],
         "bronorganisatie": "517439943",
+        "startdatum": "2020-12-12",
+        "registratiedatum": "2020-09-12",
     },
 ]
 
@@ -48,141 +72,57 @@ def mock_get_additional_zaak_info(arg):
     return arg
 
 
-@patch(
-    "archiefvernietigingscomponent.destruction.api.get_zaken",
-    return_value=copy.deepcopy(ZAKEN),
-)
-@patch(
-    "archiefvernietigingscomponent.destruction.api.get_additional_zaak_info",
-    side_effect=mock_get_additional_zaak_info,
-)
-class FetchZakenTests(TestCase):
-    url = reverse_lazy("destruction:fetch-zaken")
+class FetchZakenViewTests(TestCase):
+    def test_view_requires_login(self):
+        view_url = reverse("destruction:fetch-zaken")
+        expected_redirect_url = furl(reverse("admin:login"), args={"next": view_url})
 
-    @classmethod
-    def setUpTestData(cls):
-        cls.user = UserFactory.create(role__can_start_destruction=True)
+        response = self.client.get(view_url)
 
-        cls.config = ArchiveConfig.get_solo()
-        cls.config.archive_date = date(2020, 1, 1)
-        cls.config.save()
+        self.assertRedirects(response, expected_redirect_url.url)
 
-    def setUp(self):
-        super().setUp()
-        self.client.force_login(self.user)
+    @patch("archiefvernietigingscomponent.destruction.api.get_zaken")
+    def test_fetch_zaken_no_filters(self, m):
+        user = UserFactory.create(role__can_start_destruction=True)
+        self.client.force_login(user)
 
-        self.default_query = {
-            "archiefnominatie": "vernietigen",
-            "archiefactiedatum__lt": self.config.archive_date.isoformat(),
-        }
-        self.zaken_available = [
-            dict(list(zaak.items()) + [["available", True]]) for zaak in ZAKEN
-        ]
+        response = self.client.get(reverse("destruction:fetch-zaken"))
 
-    def test_fetch_zaken_no_filters(self, m_get_zaak_additional_info, m_get_zaken):
-        response = self.client.get(self.url)
+        self.assertEqual(200, response.status_code)
+        m.assert_called_once_with({})
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"zaken": self.zaken_available})
+    @patch("archiefvernietigingscomponent.destruction.api.get_zaken")
+    def test_query_params_are_forwarded(self, m):
+        user = UserFactory.create(role__can_start_destruction=True)
+        self.client.force_login(user)
+        view_url = reverse("destruction:fetch-zaken")
 
-        m_get_zaken.assert_called_once_with(query_params=self.default_query)
-
-    def test_fetch_zaken_filter_by_zaaktype(
-        self, m_get_zaak_additional_info, m_get_zaken
-    ):
-        response = self.client.get(self.url, {"zaaktypen": ZAAKTYPE_1})
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"zaken": self.zaken_available})
-
-        query = self.default_query.copy()
-        query["zaaktype"] = ZAAKTYPE_1
-        m_get_zaken.assert_called_once_with(query)
-
-    def test_fetch_zaken_filter_by_invalid_zaaktype(
-        self, m_get_zaak_additional_info, m_get_zaken
-    ):
-        response = self.client.get(self.url, {"zaaktypen": "invalid-url"})
-
-        self.assertEqual(response.status_code, 400)
-
-    def test_fetch_zaken_filter_by_multiple_zaaktypen(
-        self, m_get_zaak_additional_info, m_get_zaken
-    ):
         response = self.client.get(
-            self.url, {"zaaktypen": f"{ZAAKTYPE_1},{ZAAKTYPE_2}"}
+            view_url, {"einddatum__isnull": False, "archiefactiedatum__isnull": True}
         )
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(2, m_get_zaken.call_count)
-
-        query = self.default_query.copy()
-        query["zaaktype"] = ZAAKTYPE_1
-        self.assertEqual(m_get_zaken.call_args_list[0].args[0], query)
-        query["zaaktype"] = ZAAKTYPE_2
-        self.assertEqual(m_get_zaken.call_args_list[1].args[0], query)
-
-    def test_fetch_zaken_filter_by_bronorganisatie(
-        self, m_get_zaak_additional_info, m_get_zaken
-    ):
-        response = self.client.get(self.url, {"bronorganisaties": "095847261"})
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"zaken": self.zaken_available})
-
-        query = self.default_query.copy()
-        query["bronorganisatie"] = "095847261"
-        m_get_zaken.assert_called_once_with(query)
-
-    def test_fetch_zaken_filter_by_multiple_bronorganisaties(
-        self, m_get_zaak_additional_info, m_get_zaken
-    ):
-        response = self.client.get(
-            self.url, {"bronorganisaties": "095847261,517439943"}
+        self.assertEqual(200, response.status_code)
+        expected_arguments = QueryDict(
+            "einddatum__isnull=False&archiefactiedatum__isnull=True", mutable=True
         )
+        m.assert_called_once_with(expected_arguments)
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(2, m_get_zaken.call_count)
-
-        query = self.default_query.copy()
-        query["bronorganisatie"] = "095847261"
-        self.assertEqual(m_get_zaken.call_args_list[0].args[0], query)
-        query["bronorganisatie"] = "517439943"
-        self.assertEqual(m_get_zaken.call_args_list[1].args[0], query)
-
-    def test_fetch_zaken_filter_by_bronorganisatie_and_zaaktype(
-        self, m_get_zaak_additional_info, m_get_zaken
-    ):
-        response = self.client.get(
-            self.url, {"bronorganisaties": "095847261", "zaaktypen": ZAAKTYPE_1}
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"zaken": self.zaken_available})
-
-        query = self.default_query.copy()
-        query["bronorganisatie"] = "095847261"
-        query["zaaktype"] = ZAAKTYPE_1
-        m_get_zaken.assert_called_once_with(query)
-
-    def test_fetch_zaken_filter_by_start_date(
-        self, m_get_zaak_additional_info, m_get_zaken
-    ):
-        response = self.client.get(self.url, {"startdatum": "2020-02-02"})
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"zaken": self.zaken_available})
-
-        query = self.default_query.copy()
-        query["startdatum__gte"] = "2020-02-02"
-        m_get_zaken.assert_called_once_with(query_params=query)
-
+    @patch(
+        "archiefvernietigingscomponent.destruction.api.get_zaken",
+        return_value=copy.deepcopy(ZAKEN),
+    )
+    @patch(
+        "archiefvernietigingscomponent.destruction.api.get_additional_zaak_info",
+        side_effect=mock_get_additional_zaak_info,
+    )
     def test_fetch_zaken_used_in_other_dl(
         self, m_get_zaak_additional_info, m_get_zaken
     ):
+        user = UserFactory.create(role__can_start_destruction=True)
+        self.client.force_login(user)
         DestructionListItemFactory.create(zaak="https://some.zaken.nl/api/v1/zaken/1")
 
-        response = self.client.get(self.url)
+        response = self.client.get(reverse("destruction:fetch-zaken"))
 
         self.assertEqual(response.status_code, 200)
         zaak1, zaak2, zaak3, zaak4 = response.json()["zaken"]

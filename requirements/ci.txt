@@ -39,7 +39,7 @@ cffi==1.14.0
     #   cairocffi
     #   cryptography
     #   weasyprint
-chardet==3.0.4
+charset-normalizer==2.0.7
     # via
     #   -r requirements/base.txt
     #   requests
@@ -168,6 +168,8 @@ flower==0.9.4
     # via -r requirements/base.txt
 freezegun==0.3.15
     # via -r requirements/test-tools.in
+furl==2.1.3
+    # via -r requirements/base.txt
 future==0.18.2
     # via
     #   -r requirements/base.txt
@@ -194,6 +196,10 @@ kombu==4.6.10
     #   celery
 lxml==4.6.3
     # via pyquery
+orderedmultidict==1.0.1
+    # via
+    #   -r requirements/base.txt
+    #   furl
 pillow==8.3.2
     # via
     #   -r requirements/base.txt
@@ -264,7 +270,9 @@ six==1.15.0
     #   django-extra-views
     #   django-rosetta
     #   freezegun
+    #   furl
     #   html5lib
+    #   orderedmultidict
     #   python-dateutil
     #   requests-mock
     #   webtest

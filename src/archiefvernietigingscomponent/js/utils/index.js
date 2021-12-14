@@ -1,3 +1,5 @@
+import './api';
+
 const jsonScriptToVar = (id) => {
     const node = document.getElementById(id);
     return JSON.parse(node.text);
