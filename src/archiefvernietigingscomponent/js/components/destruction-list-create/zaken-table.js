@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { CheckboxInput } from "../../forms/inputs";
+
+import { CheckboxInput } from '../../forms/inputs';
 import { Loader } from '../loader';
 import ErrorMessage from '../ErrorMessage';
-import ZaakRecord from "../no-archive-date/ZaakRecord";
+import ZaakRecord from '../no-archive-date/ZaakRecord';
 
 
 function ZakenTable({ zaken, isLoaded, error, checkboxes, setCheckboxes }) {

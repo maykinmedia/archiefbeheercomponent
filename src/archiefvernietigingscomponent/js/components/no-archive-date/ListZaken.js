@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import PropTypes from 'prop-types';
 
@@ -6,7 +6,7 @@ import {get} from '../../utils/api';
 import {ZakenTable} from '../destruction-list-create/zaken-table';
 import ErrorMessage from '../ErrorMessage';
 import {Input} from '../../forms/inputs';
-import {ZaaktypeSelect} from "../destruction-list-create/zaaktype-select";
+import {ZaaktypeSelect} from '../destruction-list-create/zaaktype-select';
 
 
 

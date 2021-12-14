@@ -29,7 +29,7 @@ const ZaakRecord = ({zaak, isChecked, onCheckboxUpdate}) => {
         <>
             <tr
               key={zaak.url}
-              className={"zaak-record" + (!zaak.available ? " zaak-record--disabled" : "")}
+              className={'zaak-record' + (!zaak.available ? ' zaak-record--disabled' : '')}
             >
                 <td>
                   <CheckboxInput
@@ -57,8 +57,8 @@ const ZaakRecord = ({zaak, isChecked, onCheckboxUpdate}) => {
                 <td>{ zaak.verantwoordelijkeOrganisatie }</td>
                 <td>{ zaak.resultaat ? zaak.resultaat.resultaattype.omschrijving : '-' }</td>
                 <td>{ zaak.resultaat ? zaak.resultaat.resultaattype.archiefactietermijn : '-'}</td>
-                <td>{ zaak.zaaktype.processtype ? zaak.zaaktype.processtype.nummer : "-" }</td>
-                <td>{ zaak.relevanteAndereZaken.length > 0 ? "Ja" : "Nee" }</td>
+                <td>{ zaak.zaaktype.processtype ? zaak.zaaktype.processtype.nummer : '-' }</td>
+                <td>{ zaak.relevanteAndereZaken.length > 0 ? 'Ja' : 'Nee' }</td>
             </tr>
         </>
     );
