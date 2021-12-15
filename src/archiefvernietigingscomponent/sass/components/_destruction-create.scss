@@ -1,3 +1,5 @@
+@import "../settings";
+
 .destruction-create {
   &__header {
     display: flex;
@@ -35,5 +37,10 @@
     width: 80%;
     padding: 0 1em;
     align-self: flex-start;
+  }
+
+  &__explanation {
+	  padding: 0.5em 0 1em 0;
+    font-size: $typography-font-size-text * 0.9;
   }
 }
