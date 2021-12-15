@@ -48,3 +48,19 @@ class ArchiefConfiguratieTest(WebTest):
         self.assertEqual(
             conf.document_type, "http://openzaak.nl/informatieobjecttype/1"
         )
+
+    def test_no_zaak_created_no_report_downloadable(self):
+        user = UserFactory.create(is_staff=True, is_superuser=True)
+        response = self.app.get(
+            reverse("admin:destruction_archiveconfig_change"), user=user
+        )
+        form = response.form
+        form["create_zaak"] = False
+        form["destruction_report_downloadable"] = False
+
+        response = form.submit()
+
+        self.assertEqual(200, response.status_code)
+        self.assertContains(
+            response, "form-row errors field-destruction_report_downloadable"
+        )
