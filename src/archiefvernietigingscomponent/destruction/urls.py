@@ -8,6 +8,7 @@ from .views import (
     RecordManagerDestructionListView,
     ReviewCreateView,
     ReviewerDestructionListView,
+    UpdateZaakArchiveDetailsView,
     ZakenWithoutArchiveDateView,
 )
 
@@ -33,6 +34,11 @@ urlpatterns = [
         "lijsten/zaken-zonder-archiedactiedatum/",
         ZakenWithoutArchiveDateView.as_view(),
         name="zaken-without-archive-date",
+    ),
+    path(
+        "lijsten/update-zaak-archive-details/",
+        UpdateZaakArchiveDetailsView.as_view(),
+        name="update-zaak-archive-details",
     ),
     path("reviews/", ReviewerDestructionListView.as_view(), name="reviewer-list"),
     path(

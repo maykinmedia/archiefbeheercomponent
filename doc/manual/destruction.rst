@@ -36,6 +36,10 @@ Filters are provided on the left hand side, while the main content shows a table
 cases matching the filter criteria. Only the cases that have their archive action date
 before or on the current date are available.
 
+It is possible to update the archiving details of a case by clicking on it. This will bring the user to a
+form where the ``archiefnominatie``, ``archiefactiedatum`` and the ``archiefstatus`` of a case can be updated.
+Upon submission, the case will be changed in the configured Open Zaak instance.
+
 Filters
 -------
 
@@ -187,3 +191,16 @@ they can use the 'abort' button in the top right hand corner of the list details
 Clicking this button will cancel only the list, i.e. the cases will *NOT* be destroyed.
 The cases that were part of the cancelled list will become available again to be included
 in other destruction lists.
+
+
+Cases without archiefactiedatum
+===============================
+
+From the main page, the record manager can click on the button 'Cases without archive date' to
+view a list of all cases without an ``archiefactiedatum``. The table shows cases ordered by case type,
+and it is also possible to filter the cases by case type.
+
+For convenience, there is also a search field for case identification.
+
+It is possible to change the archiving details of a case by clicking on it.
+

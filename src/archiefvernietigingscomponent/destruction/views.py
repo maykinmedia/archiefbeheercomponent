@@ -1,6 +1,8 @@
+from datetime import date
 from typing import List, Tuple
 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.db import models, transaction
 from django.db.models import Q
@@ -12,6 +14,7 @@ from django.utils.timesince import timesince
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import CreateView
 from django.views.generic.base import RedirectView, TemplateView
+from django.views.generic.edit import FormView
 
 from django_filters.views import FilterView
 from extra_views import (
@@ -19,7 +22,9 @@ from extra_views import (
     InlineFormSetFactory,
     UpdateWithInlinesView,
 )
+from furl import furl
 from timeline_logger.models import TimelineLog
+from zds_client.client import ClientError
 
 from archiefvernietigingscomponent.accounts.mixins import (
     AuthorOrAssigneeRequiredMixin,
@@ -36,6 +41,8 @@ from .forms import (
     ReviewCommentForm,
     ReviewForm,
     ReviewItemBaseForm,
+    ZaakArchiveDetailsForm,
+    ZaakUrlForm,
     get_reviewer_choices,
     get_zaaktype_choices,
 )
@@ -48,7 +55,8 @@ from .models import (
     DestructionListReviewComment,
     StandardReviewAnswer,
 )
-from .tasks import process_destruction_list, update_zaken
+from .service import fetch_zaak
+from .tasks import process_destruction_list, update_zaak, update_zaken
 
 # Views that route to the appriopriate specialized view
 
@@ -315,6 +323,83 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
 class ZakenWithoutArchiveDateView(RoleRequiredMixin, TemplateView):
     template_name = "destruction/zaken_without_archive_date_list.html"
     role_permission = "can_start_destruction"
+
+    def get_context_data(self, **kwargs) -> dict:
+        context = super().get_context_data(**kwargs)
+
+        # add zaaktypen
+        context.update({"zaaktypen": get_zaaktype_choices()})
+        return context
+
+
+class UpdateZaakArchiveDetailsView(SuccessMessageMixin, RoleRequiredMixin, FormView):
+    template_name = "destruction/update_zaak_archive_details.html"
+    role_permission = "can_start_destruction"
+    form_class = ZaakArchiveDetailsForm
+    success_message = _("Archiving details successfully updated!")
+
+    _zaak = None
+
+    def get_success_url(self):
+        return_url = furl(reverse("destruction:update-zaak-archive-details"))
+        return_url.args["url"] = self.zaak["url"]
+        return return_url.url
+
+    @property
+    def zaak(self):
+        if not self._zaak:
+            form = ZaakUrlForm(data=self.request.GET)
+
+            if not form.is_valid():
+                raise PermissionDenied("No zaak URL provided.")
+
+            full_zaak = fetch_zaak(form.cleaned_data["url"])
+            needed_fields = [
+                "url",
+                "identificatie",
+                "archiefnominatie",
+                "archiefactiedatum",
+                "archiefstatus",
+            ]
+            self._zaak = {field: full_zaak.get(field) for field in needed_fields}
+        return self._zaak
+
+    def get_context_data(self, **kwargs) -> dict:
+        context = super().get_context_data(**kwargs)
+        context.update({"zaak": self.zaak})
+        return context
+
+    def get_initial(self):
+        initial_data = super().get_initial()
+
+        form = self.form_class(data=self.zaak)
+        if form.is_valid():
+            initial_data.update(form.cleaned_data)
+        return initial_data
+
+    def form_valid(self, form):
+        updated_data = {}
+        fields = ["archiefnominatie", "archiefstatus", "archiefactiedatum"]
+        for field in fields:
+            if value := form.cleaned_data.get(field):
+                if isinstance(value, date):
+                    value = value.isoformat()
+                updated_data[field] = value
+
+        try:
+            update_zaak(
+                form.cleaned_data["url"],
+                updated_data,
+                audit_comment=form.cleaned_data["comment"],
+            )
+        except ClientError:
+            form.add_error(
+                field=None,
+                error=_("An error has occurred. The case could not be updated."),
+            )
+            return super().form_invalid(form)
+
+        return super().form_valid(form)
 
 
 # Reviewer views

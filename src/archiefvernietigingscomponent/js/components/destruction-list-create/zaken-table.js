@@ -1,16 +1,9 @@
 import React, { useState } from 'react';
-import { CheckboxInput } from "../../forms/inputs";
+
+import { CheckboxInput } from '../../forms/inputs';
 import { Loader } from '../loader';
 import ErrorMessage from '../ErrorMessage';
-
-
-const displayZaaktype = (zaaktype) => {
-    return (
-        <span className="zaak-record__zaaktype" title={`versie ${zaaktype.versiedatum}`}>
-            {zaaktype.omschrijving}
-        </span>
-    );
-}
+import ZaakRecord from '../no-archive-date/ZaakRecord';
 
 
 function ZakenTable({ zaken, isLoaded, error, checkboxes, setCheckboxes }) {
@@ -56,35 +49,19 @@ function ZakenTable({ zaken, isLoaded, error, checkboxes, setCheckboxes }) {
                 </tr>
             </thead>
             <tbody>
-                {zaken.map(zaak => (
-                <tr
-                  key={zaak.url}
-                  className={"zaak-record" + (!zaak.available ? " zaak-record--disabled" : "")}
-                >
-                    <td>
-                      <CheckboxInput
-                          checked={checkboxes[zaak.url] || false}
-                          name={zaak.url}
-                          onChange={(e) => {
-                              const isChecked = !checkboxes[zaak.url];
-                              setCheckboxes({...checkboxes, [zaak.url]: isChecked});
-                              if (!isChecked) {
-                                  setSelectAll(false);
-                              }
-                          }}
-                          disabled={!zaak.available}
-                      />
-                    </td>
-                    <td>{ zaak.identificatie }</td>
-                    <td>{displayZaaktype(zaak.zaaktype)}</td>
-                    <td>{zaak.omschrijving}</td>
-                    <td>{ zaak.looptijd }</td>
-                    <td>{ zaak.verantwoordelijkeOrganisatie }</td>
-                    <td>{ zaak.resultaat ? zaak.resultaat.resultaattype.omschrijving : '-' }</td>
-                    <td>{ zaak.resultaat ? zaak.resultaat.resultaattype.archiefactietermijn : '-'}</td>
-                    <td>{ zaak.zaaktype.processtype ? zaak.zaaktype.processtype.nummer : "-" }</td>
-                    <td>{ zaak.relevanteAndereZaken.length > 0 ? "Ja" : "Nee" }</td>
-                </tr>
+                {zaken.map((zaak, key) => (
+                    <ZaakRecord
+                        key={key}
+                        zaak={zaak}
+                        isChecked={checkboxes[zaak.url] || false}
+                        onCheckboxUpdate={(e) => {
+                            const isChecked = !checkboxes[zaak.url];
+                            setCheckboxes({...checkboxes, [zaak.url]: isChecked});
+                            if (!isChecked) {
+                              setSelectAll(false);
+                            }
+                        }}
+                    />
                 ))}
 
             </tbody>

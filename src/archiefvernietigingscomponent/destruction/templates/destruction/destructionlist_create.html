@@ -15,6 +15,7 @@
              id="react-destruction-list"
              data-zaken-url="{% url 'destruction:fetch-zaken' %}"
              data-url="{% url 'destruction:record-manager-create' %}"
+             data-archive-update-url="{% url 'destruction:update-zaak-archive-details' %}"
              data-current-date="{{ current_date }}"
              data-csrftoken="{{ csrf_token }}"
         >

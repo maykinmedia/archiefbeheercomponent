@@ -1,0 +1,45 @@
+{% extends "master.html" %}
+{% load i18n %}
+
+{% block content %}
+    <header class="destruction-create__header">
+        <h1 class="title destruction-create__title">
+            {% blocktrans with case=zaak.identificatie %}Modify case {{ case }} archiving details{% endblocktrans %}
+        </h1>
+    </header>
+
+    <section class="content-panel">
+        <div class="destruction-create__content">
+            <div class="archive-form">
+                {% if messages %}
+                    <ul class="archive-form__messages">
+                        {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                        <div class="archive-form__errors error-message">
+                            <span class="material-icons">error_outline</span>{{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+                    {{ form.url.as_hidden }}
+                    <div class="archive-form__content">
+                        {% for field in form.visible_fields %}
+                            <div class="archive-form__field">
+                                <label for="{{ field.id_for_label }}">
+                                    <div class="archive-form__label">{{ field.label }}</div>
+                                    <div class="archive-form__value">{{ field }}</div>
+                                </label>
+                                <div class="archive-form__field-error">{{ field.errors }}</div>
+                            </div>
+                        {% endfor %}
+                    <button class="btn archive-form__button" type="submit">{% trans "Submit" %}</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

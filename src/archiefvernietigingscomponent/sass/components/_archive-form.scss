@@ -1,0 +1,66 @@
+@import "../lib/bem";
+@import "../lib/colors";
+@import "../settings";
+@import "forms/select";
+
+.archive-form {
+  padding: 2em;
+  width: 100%;
+
+  @include element("errors") {
+    margin-bottom: 2em;
+
+    ul {
+      list-style-type: none;
+      padding-inline-start: 0;
+      margin: 0;
+    }
+  }
+
+  @include element("messages") {
+    background-color: $color-success-light;
+    list-style-type: none;
+    padding: 1em 0;
+
+    li {
+      padding-left: 1em;
+    }
+  }
+
+  @include element("field-error") {
+    color: $color-highlight;
+    font-size: large;
+    padding-top: 0.5em;
+  }
+
+  @include element("content"){
+    width: 100%;
+  }
+
+  @include element("label") {
+    font-weight: bold;
+    font-size: large;
+    padding-bottom: 0.5em;
+  }
+
+  @include element("field") {
+    padding-bottom: 2em;
+
+    ul {
+      list-style-type: none;
+      padding-inline-start: 0;
+      margin: 0;
+    }
+
+    select {
+      margin-right: 0.5em;
+
+      @include select;
+    }
+
+  }
+
+  @include element("button") {
+    margin-top: 1em;
+  }
+}
