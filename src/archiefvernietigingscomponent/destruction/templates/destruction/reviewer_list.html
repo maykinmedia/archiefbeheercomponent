@@ -57,7 +57,7 @@
                     {% endif %}
                     </span>
                 </div>
-                {% download_report_link object %}
+                {% if can_download_report %}{% download_report_link object %}{% endif %}
             </div>
         {% endfor %}
 

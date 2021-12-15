@@ -427,6 +427,13 @@ class ReviewerDestructionListView(RoleRequiredMixin, FilterView):
             review_status=models.Subquery(review_status[:1])
         ).order_by("-created")
 
+    def get_context_data(self, **kwargs) -> dict:
+        context = super().get_context_data(**kwargs)
+
+        config = ArchiveConfig.get_solo()
+        context.update({"can_download_report": config.destruction_report_downloadable})
+        return context
+
 
 class ReviewItemInline(InlineFormSetFactory):
     model = DestructionListItemReview
