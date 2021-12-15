@@ -317,6 +317,30 @@ In the archive configuration it is possible to set the number of days after whic
 should receive an email reminder.
 For the email to be sent, a template also needs to be configured (see :ref:`Automatic emails`).
 
+.. _optional destruction case settings:
+
+Optional destruction case settings
+----------------------------------
+
+In the bottom section of the **Configuratie > Archiveringsconfiguratie** page, it is possible to configure
+whether a case should be created in Open-Zaak once a destruction list is processed
+(i.e. all the cases have been deleted). If this feature is enabled, the following things will be created in Open-Zaak:
+
+- A zaak of the configured zaaktype
+- An enkelvoudiginformatieobject of configured informatieobjecttype from the destruction report
+- A zaakinformatieobject relating the created zaak and the enkelvoudiginformatieobject
+- A status of the configured statustype
+- A resultaat of the configured resultaattype
+
+In order to turn this feature on, the checkbox "create zaak" should be ticked.
+The RSIN of the bronorganisatie should be configured, as well as an URL for the desired zaaktype,
+informatieobjecttype, statustype and resultaattype.
+
+When this feature is NOT turned on, the destruction report can be downloaded from the application.
+If this feature IS turned on, it is possible to disable downloading the destruction report from the application. To do
+this, the checkbox "Destruction report downloadable" should be ticked.
+
+
 Theme settings
 ==============
 
