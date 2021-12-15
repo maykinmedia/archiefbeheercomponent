@@ -193,6 +193,21 @@ class ArchiveConfigForm(forms.ModelForm):
                     self.add_error("create_zaak", error)
                     return
 
+        if (
+            not self.cleaned_data["create_zaak"]
+            and not self.cleaned_data["destruction_report_downloadable"]
+        ):
+            self.add_error(
+                "destruction_report_downloadable",
+                ValidationError(
+                    _(
+                        "If no zaak is created after processing a destruction list, the destruction report should "
+                        "be downloadable through the app."
+                    ),
+                    code="invalid",
+                ),
+            )
+
     def save(self, commit=True):
         instance = super().save(commit)
 

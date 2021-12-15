@@ -462,6 +462,13 @@ class ArchiveConfig(SingletonModel):
             "The document type URL to use when creating the case for the destruction list deletion."
         ),
     )
+    destruction_report_downloadable = models.BooleanField(
+        _("destruction report downloadable"),
+        default=True,
+        help_text=_(
+            "Should the destruction report be downloadable through the application?"
+        ),
+    )
 
     class Meta:
         verbose_name = _("archive configuration")
