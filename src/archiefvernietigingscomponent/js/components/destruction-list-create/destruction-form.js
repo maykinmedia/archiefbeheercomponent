@@ -159,6 +159,10 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, currentDate, csr
 
                 <section className="destruction-create__zaken">
                     <h2 className="section-title section-title--highlight">Zaakdossiers</h2>
+                    <div className="destruction-create__explanation">
+                        De zaken in deze tabel hebben de archiefnominatie 'vernietigen' en
+                        de archiefactiedatum is voor vandaag.
+                    </div>
                     <ZakenTable
                         zaken={zaken}
                         isLoaded={isLoaded}

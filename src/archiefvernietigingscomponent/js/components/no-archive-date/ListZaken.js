@@ -77,6 +77,10 @@ const ListZaken = ({zakenUrl, zaaktypeChoices}) => {
                 </aside>
                 <section className="destruction-create__zaken">
                     <h2 className="section-title section-title--highlight">Zaakdossiers</h2>
+                    <div className="destruction-create__explanation">
+                        De zaken in deze tabel zijn gesloten (ze hebben een einddatum)
+                        maar ze hebben geen archiefactiedatum.
+                    </div>
                     {
                         !error
                         ? (<ZakenTable
