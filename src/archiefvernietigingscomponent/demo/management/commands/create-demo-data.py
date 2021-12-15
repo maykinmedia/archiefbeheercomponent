@@ -6,11 +6,8 @@ from django.core.management.base import BaseCommand
 from zgw_consumers.constants import APITypes
 from zgw_consumers.models import Service
 
-CATALOGUS = {
-    "domein": "CATAL",
-    "rsin": "104567387",
-    "contactpersoonBeheerNaam": "Jane Doe",
-}
+from ..constants import DEFAULT_CATALOGUS
+from ..utils import get_or_create_catalogus, uuid_from_url
 
 
 class Command(BaseCommand):
@@ -30,16 +27,8 @@ class Command(BaseCommand):
         assert drc_service, "No service defined for the Documenten API"
         drc_client = drc_service.build_client()
 
-        # Create a catalogus if one doesn't exist already
-        catalogus_list = ztc_client.list(
-            resource="catalogus",
-            query_params={"domein": CATALOGUS["domein"], "rsin": CATALOGUS["rsin"],},
-        )
+        catalogus = get_or_create_catalogus(DEFAULT_CATALOGUS, ztc_client)
 
-        if len(catalogus_list["results"]) == 0:
-            catalogus = ztc_client.create(resource="catalogus", data=CATALOGUS)
-        else:
-            catalogus = catalogus_list["results"][0]
         # Create zaaktypes and informatie objecttypes
         zaaktype_1 = ztc_client.create(
             resource="zaaktype",
@@ -176,18 +165,18 @@ class Command(BaseCommand):
             ztc_client.operation(
                 operation_id="informatieobjecttype_publish",
                 data={},
-                uuid=iot["url"].split("/")[-1],
+                uuid=uuid_from_url(iot["url"]),
             )
 
         ztc_client.operation(
             operation_id="zaaktype_publish",
             data={},
-            uuid=zaaktype_1["url"].split("/")[-1],
+            uuid=uuid_from_url(zaaktype_1["url"]),
         )
         ztc_client.operation(
             operation_id="zaaktype_publish",
             data={},
-            uuid=zaaktype_2["url"].split("/")[-1],
+            uuid=uuid_from_url(zaaktype_2["url"]),
         )
 
         # Create 2 zaken for the first zaaktype
