@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useContext} from 'react';
 
 import {CheckboxInput} from '../../forms/inputs';
+import {ArchiveUpdateUrlContext} from '../context';
 
 
 const displayZaaktype = (zaaktype) => {
@@ -13,16 +14,16 @@ const displayZaaktype = (zaaktype) => {
 
 
 const ZaakRecord = ({zaak, isChecked, onCheckboxUpdate}) => {
+    const archiveUpdateUrl = useContext(ArchiveUpdateUrlContext);
     const canUpdateZaak = zaak.available;
 
-    const onZaakClick = () => {
-        if (!canUpdateZaak) return;
+    const getZaakUpdateUrl = (zaak) => {
+        if (!canUpdateZaak) return '#';
 
         let currentLocation = new URL(window.location)
-        currentLocation.pathname = '/vernietigen/lijsten/update-zaak-archive-details/';
+        currentLocation.pathname = archiveUpdateUrl;
         currentLocation.searchParams.set('url', zaak.url);
-
-        window.location.href = currentLocation;
+        return currentLocation.href;
     };
 
     return (
@@ -44,9 +45,8 @@ const ZaakRecord = ({zaak, isChecked, onCheckboxUpdate}) => {
                         canUpdateZaak
                         ? (<a
                                 className="link"
-                                onClick={onZaakClick}
                                 title="Archiefgegevens aanpassen"
-                                href="#"
+                                href={getZaakUpdateUrl(zaak)}
                             >{ zaak.identificatie }</a>)
                         : <div>{ zaak.identificatie }</div>
                     }
