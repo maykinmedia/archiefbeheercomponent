@@ -7,6 +7,10 @@ $main-content-background-color: #fefefe;
   font-size: $typography-font-size-text-small;
   overflow-x: scroll;
 
+  // best effort - see https://caniuse.com/#feat=css-scrollbar
+  scrollbar-width: $scrollbar-width;
+  scrollbar-color: $scrollbar-color #eee;
+
   @include element("description") {
     display: flex;
     align-items: center;

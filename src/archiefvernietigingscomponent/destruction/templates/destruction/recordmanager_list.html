@@ -10,7 +10,7 @@
 <article class="destruction-list">
     <section class="destruction-list__filters">
         <form action="" method="get">
-            <label>{% trans "Status" %}</label>
+            <label>{% trans "Status filter" %}</label>
             {{ filter.form.list_status }}
             <button type="submit" class="btn">Filter</button>
         </form>
@@ -24,8 +24,8 @@
                 </a>
             </nav>
             <nav class="destruction-list__nav">
-                <a class="btn btn--centered-content" href="{% url 'destruction:zaken-without-archive-date' %}">
-                    <i class="material-icons btn__icon btn__icon--left">search</i> {% trans 'Cases without archive date' %}
+                <a class="btn btn--centered-content" href="{% url 'destruction:zaken-without-archive-date' %}" title="{% trans 'List cases without archive date' %}">
+                    <i class="material-icons btn__icon btn__icon--left">search</i> {% trans 'No archive date' %}
                 </a>
             </nav>
         </header>
@@ -80,7 +80,6 @@
     </section>
 
     <aside class="destruction-list__notif">
-        {# <h2 class="section-title section-title--highlight">Notificaties</h2> #}
         {% render_notifications request.user %}
     </aside>
 
