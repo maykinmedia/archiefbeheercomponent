@@ -252,3 +252,7 @@ class ZaakUrlForm(forms.Form):
 
     class Meta:
         fields = ("url",)
+
+
+class ZakenUrlsForm(forms.Form):
+    zaken_urls = SimpleArrayField(forms.URLField(), required=True)

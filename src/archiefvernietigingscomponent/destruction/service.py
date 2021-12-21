@@ -1,6 +1,7 @@
-from typing import Optional, Union
+from typing import List, Optional, Union
 
 from zds_client.client import ClientError
+from zgw_consumers.concurrent import parallel
 from zgw_consumers.constants import APITypes
 from zgw_consumers.models import Service
 from zgw_consumers.service import get_paginated_results
@@ -78,6 +79,17 @@ def fetch_zaak(url: str) -> dict:
     client = _client_from_url(url)
     response = client.retrieve("zaak", url=url)
     return response
+
+
+def fetch_zaken(zaken_urls: List[str]) -> List[dict]:
+    with parallel() as executor:
+        _zaken = executor.map(fetch_zaak, zaken_urls)
+    zaken = list(_zaken)
+
+    fetched_zaaktypen = get_zaaktypen(dict_response=True)
+    for zaak in zaken:
+        zaak["zaaktype"] = fetched_zaaktypen[zaak["zaaktype"]]
+    return zaken
 
 
 def update_zaak(url: str, data: dict, audit_comment: Optional[str]) -> dict:
