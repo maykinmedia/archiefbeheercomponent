@@ -12,5 +12,11 @@ const countObjectKeys = (obj) => {
     0);
 };
 
+const getObjectKeys = (obj) => {
+    return Object.keys(obj).filter(
+        (key, index) => obj[key]
+    );
+};
 
-export { jsonScriptToVar, countObjectKeys };
+
+export { jsonScriptToVar, countObjectKeys, getObjectKeys };

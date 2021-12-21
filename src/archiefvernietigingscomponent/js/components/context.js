@@ -1,5 +1,5 @@
 import React from 'react';
 
-const ArchiveUpdateUrlContext = React.createContext('');
+const UrlsContext = React.createContext({});
 
-export {ArchiveUpdateUrlContext};
+export {UrlsContext};

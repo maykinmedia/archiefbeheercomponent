@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 
 import {CheckboxInput} from '../../forms/inputs';
-import {ArchiveUpdateUrlContext} from '../context';
+import {UrlsContext} from '../context';
 
 
 const displayZaaktype = (zaaktype) => {
@@ -14,7 +14,8 @@ const displayZaaktype = (zaaktype) => {
 
 
 const ZaakRecord = ({zaak, isChecked, onCheckboxUpdate}) => {
-    const archiveUpdateUrl = useContext(ArchiveUpdateUrlContext);
+    const urlsContext = useContext(UrlsContext);
+    const archiveUpdateUrl = urlsContext.archiveUpdateUrl;
     const canUpdateZaak = zaak.available;
 
     const getZaakUpdateUrl = (zaak) => {
