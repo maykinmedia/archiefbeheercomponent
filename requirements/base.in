@@ -45,3 +45,6 @@ zgw-consumers
 
 # PDF document creation
 WeasyPrint
+
+# Excel files
+xlsxwriter
