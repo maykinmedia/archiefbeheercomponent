@@ -8,7 +8,7 @@ from django.urls import include, path
 
 from archiefvernietigingscomponent.accounts.views import StartPageView
 from archiefvernietigingscomponent.demo.views import DemoLoginView
-from archiefvernietigingscomponent.destruction.views import EnterView
+from archiefvernietigingscomponent.destruction.views.redirect import EnterView
 
 handler500 = "archiefvernietigingscomponent.utils.views.server_error"
 admin.site.site_header = "archiefvernietigingscomponent admin"
