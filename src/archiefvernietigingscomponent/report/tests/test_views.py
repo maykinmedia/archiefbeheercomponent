@@ -13,7 +13,9 @@ from .factories import DestructionReportFactory
 
 
 @temp_private_root()
-@patch("archiefvernietigingscomponent.destruction.views.ArchiveConfig.get_solo")
+@patch(
+    "archiefvernietigingscomponent.destruction.views.reviewer.ArchiveConfig.get_solo"
+)
 class DownloadDestructionReportTests(TestCase):
     def test_non_authenticated_redirected_to_login(self, m_archive_config):
         m_archive_config.return_value = ArchiveConfig(

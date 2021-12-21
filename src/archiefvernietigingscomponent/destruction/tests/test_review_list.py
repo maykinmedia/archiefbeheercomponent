@@ -14,7 +14,9 @@ from ..models import ArchiveConfig
 from .factories import DestructionListFactory, DestructionListReviewFactory
 
 
-@patch("archiefvernietigingscomponent.destruction.views.ArchiveConfig.get_solo")
+@patch(
+    "archiefvernietigingscomponent.destruction.views.reviewer.ArchiveConfig.get_solo"
+)
 class DownloadButtonInReviewerViewTests(WebTest):
     @classmethod
     def setUpTestData(cls):

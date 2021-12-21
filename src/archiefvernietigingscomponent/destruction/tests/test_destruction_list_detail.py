@@ -29,7 +29,9 @@ MANAGEMENT_FORM_DATA = {
 }
 
 
-@patch("archiefvernietigingscomponent.destruction.views.update_zaken.delay")
+@patch(
+    "archiefvernietigingscomponent.destruction.views.record_manager.update_zaken.delay"
+)
 class DestructionListUpdateTests(TestCase):
     def setUp(self) -> None:
         super().setUp()

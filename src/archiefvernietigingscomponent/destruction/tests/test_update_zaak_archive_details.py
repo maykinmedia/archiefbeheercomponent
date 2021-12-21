@@ -29,7 +29,7 @@ class UpdateZaakArchiveDetailsTests(WebTest):
 
         self.assertEqual(403, response.status_code)
 
-    @patch("archiefvernietigingscomponent.destruction.views.fetch_zaak")
+    @patch("archiefvernietigingscomponent.destruction.views.record_manager.fetch_zaak")
     def test_can_access_with_can_start_destruction_and_zaak_url(self, m_fetch_zaak):
         user = UserFactory(role__can_start_destruction=True)
         self.client.force_login(user)
@@ -42,7 +42,7 @@ class UpdateZaakArchiveDetailsTests(WebTest):
         self.assertEqual(200, response.status_code)
 
     @patch(
-        "archiefvernietigingscomponent.destruction.views.fetch_zaak",
+        "archiefvernietigingscomponent.destruction.views.record_manager.fetch_zaak",
         return_value={
             "url": "http://openzaak.nl/some/valid/zaak/url",
             "identificatie": "ZAAK-1",
@@ -72,10 +72,12 @@ class UpdateZaakArchiveDetailsTests(WebTest):
         self.assertEqual("2030", form["archiefactiedatum_year"].value)
 
     @patch(
-        "archiefvernietigingscomponent.destruction.views.fetch_zaak",
+        "archiefvernietigingscomponent.destruction.views.record_manager.fetch_zaak",
         return_value={"url": "http://openzaak.nl/some/zaak"},
     )
-    @patch("archiefvernietigingscomponent.destruction.views.update_zaak",)
+    @patch(
+        "archiefvernietigingscomponent.destruction.views.record_manager.update_zaak",
+    )
     def test_submit_successful_form_redirects(self, m_update_zaak, m_fetch_zaak):
         user = UserFactory(role__can_start_destruction=True)
         view_url = furl(reverse("destruction:update-zaak-archive-details"))
@@ -110,9 +112,9 @@ class UpdateZaakArchiveDetailsTests(WebTest):
         self.assertEqual(1, len(messages))
         self.assertEqual(messages[0].tags, "success")
 
-    @patch("archiefvernietigingscomponent.destruction.views.fetch_zaak")
+    @patch("archiefvernietigingscomponent.destruction.views.record_manager.fetch_zaak")
     @patch(
-        "archiefvernietigingscomponent.destruction.views.update_zaak",
+        "archiefvernietigingscomponent.destruction.views.record_manager.update_zaak",
         side_effect=ClientError,
     )
     @override_settings(LANGUAGE_CODE="en")
@@ -138,10 +140,12 @@ class UpdateZaakArchiveDetailsTests(WebTest):
         )
 
     @patch(
-        "archiefvernietigingscomponent.destruction.views.fetch_zaak",
+        "archiefvernietigingscomponent.destruction.views.record_manager.fetch_zaak",
         return_value={"url": "http://openzaak.nl/some/zaak"},
     )
-    @patch("archiefvernietigingscomponent.destruction.views.update_zaak",)
+    @patch(
+        "archiefvernietigingscomponent.destruction.views.record_manager.update_zaak",
+    )
     def test_empty_archiefactiedatum(self, m_update_zaak, m_fetch_zaak):
         user = UserFactory(role__can_start_destruction=True)
         view_url = furl(reverse("destruction:update-zaak-archive-details"))
