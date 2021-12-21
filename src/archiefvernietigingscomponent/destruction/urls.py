@@ -1,6 +1,7 @@
 from django.urls import include, path
 
 from .api import FetchListItemsView, FetchZaakDetail, FetchZakenView
+from .views.export import ExportZakenWithoutArchiveDateView
 from .views.record_manager import (
     DestructionListCreateView,
     DestructionListDetailView,
@@ -38,6 +39,11 @@ urlpatterns = [
         "lijsten/update-zaak-archive-details/",
         UpdateZaakArchiveDetailsView.as_view(),
         name="update-zaak-archive-details",
+    ),
+    path(
+        "lijsten/export-zaken-zonder-archiedactiedatum/",
+        ExportZakenWithoutArchiveDateView.as_view(),
+        name="export-zaken-without-archive-date",
     ),
     path("reviews/", ReviewerDestructionListView.as_view(), name="reviewer-list"),
     path(

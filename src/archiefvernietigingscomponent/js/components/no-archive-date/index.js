@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import ListZaken from './ListZaken';
 import {jsonScriptToVar} from '../../utils';
-import { ArchiveUpdateUrlContext } from '../context';
+import { UrlsContext } from '../context';
 
 
 
@@ -11,16 +11,16 @@ const mount = () => {
     const node = document.getElementById('react-zaken-without-archive-date');
     if (!node) return;
 
-    const { zakenUrl, archiveUpdateUrl } = node.dataset;
+    const { zakenUrl, archiveUpdateUrl, exportZakenUrl } = node.dataset;
     const zaaktypeChoices = jsonScriptToVar('zaaktype-choices');
 
     ReactDOM.render(
-        <ArchiveUpdateUrlContext.Provider value={archiveUpdateUrl}>
+        <UrlsContext.Provider value={{archiveUpdateUrl: archiveUpdateUrl, exportZakenUrl:exportZakenUrl}}>
             <ListZaken
                 zakenUrl={zakenUrl}
                 zaaktypeChoices={zaaktypeChoices}
             />
-        </ArchiveUpdateUrlContext.Provider>,
+        </UrlsContext.Provider>,
         node
     );
 };

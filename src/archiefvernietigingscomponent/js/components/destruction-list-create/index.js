@@ -5,7 +5,7 @@ import Modal from 'react-modal';
 import { jsonScriptToVar } from '../../utils';
 import { DestructionForm } from './destruction-form';
 import { ShortReviewZaaktypesContext } from './context';
-import { ArchiveUpdateUrlContext } from '../context';
+import { UrlsContext } from '../context';
 
 
 const mount = () => {
@@ -22,7 +22,7 @@ const mount = () => {
 
     ReactDOM.render(
         <ShortReviewZaaktypesContext.Provider value={shortReviewZaaktypes}>
-            <ArchiveUpdateUrlContext.Provider value={archiveUpdateUrl}>
+            <UrlsContext.Provider value={{archiveUpdateUrl: archiveUpdateUrl}}>
                 <DestructionForm
                     zaaktypen={zaaktypen}
                     reviewers={reviewers}
@@ -31,7 +31,7 @@ const mount = () => {
                     currentDate={currentDate}
                     csrftoken={csrftoken}
                 />
-            </ArchiveUpdateUrlContext.Provider>
+            </UrlsContext.Provider>
         </ShortReviewZaaktypesContext.Provider>,
         node
     );

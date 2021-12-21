@@ -323,6 +323,8 @@ webob==1.8.6
     # via webtest
 webtest==2.0.35
     # via django-webtest
+xlsxwriter==3.0.2
+    # via -r requirements/base.txt
 zgw-consumers==0.10.2
     # via -r requirements/base.txt
 

@@ -60,4 +60,9 @@ $btn-background-color--hover: $color-border;
       margin-right: 0.5em;
     }
   }
+
+  @include modifier("disabled") {
+    opacity: .65;
+    cursor: auto;
+  }
 }

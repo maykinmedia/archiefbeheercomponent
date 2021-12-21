@@ -432,6 +432,8 @@ webtest==2.0.35
     # via
     #   -r requirements/ci.txt
     #   django-webtest
+xlsxwriter==3.0.2
+    # via -r requirements/ci.txt
 zgw-consumers==0.10.2
     # via -r requirements/ci.txt
 

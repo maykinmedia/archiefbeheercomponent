@@ -216,6 +216,8 @@ webencodings==0.5.1
     #   cssselect2
     #   html5lib
     #   tinycss2
+xlsxwriter==3.0.2
+    # via -r requirements/base.in
 zgw-consumers==0.10.2
     # via -r requirements/base.in
 
