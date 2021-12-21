@@ -16,7 +16,7 @@ class ZakenWithoutArchiveDateViewTests(TestCase):
         self.assertEqual(403, response.status_code)
 
     @patch(
-        "archiefvernietigingscomponent.destruction.views.get_zaaktype_choices",
+        "archiefvernietigingscomponent.destruction.views.record_manager.get_zaaktype_choices",
         return_value=[{"url": "http://test.zaaktype.nl"}],
     )
     def test_can_access_with_can_start_destruction(self, m_choices):

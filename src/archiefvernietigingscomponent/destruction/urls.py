@@ -1,16 +1,15 @@
 from django.urls import include, path
 
 from .api import FetchListItemsView, FetchZaakDetail, FetchZakenView
-from .views import (
+from .views.record_manager import (
     DestructionListCreateView,
     DestructionListDetailView,
-    DestructionListRedirectView,
     RecordManagerDestructionListView,
-    ReviewCreateView,
-    ReviewerDestructionListView,
     UpdateZaakArchiveDetailsView,
     ZakenWithoutArchiveDateView,
 )
+from .views.redirect import DestructionListRedirectView
+from .views.reviewer import ReviewCreateView, ReviewerDestructionListView
 
 app_name = "destruction"
 

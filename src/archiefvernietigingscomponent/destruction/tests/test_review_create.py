@@ -270,7 +270,7 @@ class ReviewCreateTests(DLMixin, TestCase):
         self.assertEqual(notifications[1].message, _("There is a review to process."))
 
     @patch(
-        "archiefvernietigingscomponent.destruction.views.process_destruction_list.delay"
+        "archiefvernietigingscomponent.destruction.views.reviewer.process_destruction_list.delay"
     )
     def test_create_review_approve_last(self, m):
         destruction_list = self._create_destruction_list()
@@ -445,7 +445,7 @@ class SendTaskReviewCreateTests(DLMixin, TestCase):
         self.client.force_login(self.user)
 
     @patch(
-        "archiefvernietigingscomponent.destruction.views.process_destruction_list.delay"
+        "archiefvernietigingscomponent.destruction.views.reviewer.process_destruction_list.delay"
     )
     def test_create_review_approve_last(self, m):
         destruction_list = self._create_destruction_list()
