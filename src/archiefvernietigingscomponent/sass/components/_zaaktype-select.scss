@@ -1,9 +1,10 @@
 @import "../lib/bem";
+@import "../settings";
 
 $main-content-background-color: #fefefe;
 
 .zaaktype-select {
-  font-size: 0.8rem;
+  font-size: $typography-font-size-text-small;
   overflow-x: scroll;
 
   @include element("description") {
@@ -15,6 +16,11 @@ $main-content-background-color: #fefefe;
   @include element("groups") {
     list-style-type: none;
     padding-inline-start: 0;
+    margin-left: 0;
+  }
+
+  @include element("label") {
+    padding-left: 0.3rem;
   }
 
   @include element("items") {

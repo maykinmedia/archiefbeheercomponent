@@ -5,6 +5,7 @@ from django.views.generic import DetailView
 from django_sendfile import sendfile
 
 from archiefvernietigingscomponent.constants import RoleTypeChoices
+from archiefvernietigingscomponent.destruction.models import ArchiveConfig
 from archiefvernietigingscomponent.report.forms import ReportTypeForm
 from archiefvernietigingscomponent.report.models import DestructionReport
 
@@ -23,16 +24,18 @@ class DownloadDestructionReportView(UserPassesTestMixin, DetailView):
     model = DestructionReport
 
     def test_func(self):
-        user = self.request.user
-
-        if not user.is_authenticated:
+        config = ArchiveConfig.get_solo()
+        if not config.destruction_report_downloadable:
             return False
 
-        report = self.get_object()
+        user = self.request.user
+        if not user.is_authenticated:
+            return False
 
         if user.is_superuser:
             return True
 
+        report = self.get_object()
         if (
             user == report.process_owner
             or user.role.type == RoleTypeChoices.functional_admin

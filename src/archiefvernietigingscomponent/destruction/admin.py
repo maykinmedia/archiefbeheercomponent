@@ -127,6 +127,7 @@ class ArchiveConfigAdmin(SingletonModelAdmin):
                     "status_type",
                     "result_type",
                     "document_type",
+                    "destruction_report_downloadable",
                 ),
             },
         ),

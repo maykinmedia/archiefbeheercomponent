@@ -1,19 +1,2 @@
-.zaaktype-select__btn {
-  border: none;
-  background-color: #fefefe;
-  cursor: pointer;
-  width: 20px;
-  height: 20px;
-  text-align: center;
-}
+@import "../components/zaaktype-select";
 
-.zaaktype-select__group {
-  display: inline-flex;
-  max-width: calc(100% - 24px);
-}
-
-.zaaktype-select__groups {
-  list-style-type: none;
-  -webkit-padding-start: 0;
-          padding-inline-start: 0;
-}
