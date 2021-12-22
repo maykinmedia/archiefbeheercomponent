@@ -163,7 +163,7 @@ django-timeline-logger==1.1.2
     # via -r requirements/ci.txt
 django-webtest==1.9.7
     # via -r requirements/ci.txt
-django==2.2.24
+django==2.2.25
     # via
     #   -r requirements/ci.txt
     #   django-appconf
@@ -207,7 +207,7 @@ future==0.18.2
     # via
     #   -r requirements/ci.txt
     #   celery
-gemma-zds-client==0.13.1
+gemma-zds-client==0.14.0
     # via
     #   -r requirements/ci.txt
     #   zgw-consumers
@@ -233,7 +233,7 @@ kombu==4.6.10
     # via
     #   -r requirements/ci.txt
     #   celery
-lxml==4.6.3
+lxml==4.6.5
     # via
     #   -r requirements/ci.txt
     #   pyquery

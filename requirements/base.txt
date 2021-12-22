@@ -99,7 +99,7 @@ django-solo==1.1.3
     #   zgw-consumers
 django-timeline-logger==1.1.2
     # via -r requirements/base.in
-django==2.2.24
+django==2.2.25
     # via
     #   -r requirements/base.in
     #   django-appconf
@@ -126,7 +126,7 @@ furl==2.1.3
     # via -r requirements/base.in
 future==0.18.2
     # via celery
-gemma-zds-client==0.13.1
+gemma-zds-client==0.14.0
     # via zgw-consumers
 html5lib==1.1
     # via weasyprint
