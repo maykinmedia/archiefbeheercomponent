@@ -115,7 +115,23 @@ class UpdateZaakArchiveDetailsTests(WebTest):
     @patch("archiefvernietigingscomponent.destruction.views.record_manager.fetch_zaak")
     @patch(
         "archiefvernietigingscomponent.destruction.views.record_manager.update_zaak",
-        side_effect=ClientError,
+        side_effect=ClientError(
+            {
+                "type": "http://127.0.0.1:8123/ref/fouten/ValidationError/",
+                "code": "invalid",
+                "title": "Invalid input.",
+                "status": 400,
+                "detail": "",
+                "instance": "urn:uuid:c8d9bf6b-4469-4b93-8411-1ebb5e4f4a40",
+                "invalidParams": [
+                    {
+                        "name": "nonFieldErrors",
+                        "code": "documents-not-archived",
+                        "reason": "Some error message",
+                    }
+                ],
+            }
+        ),
     )
     @override_settings(LANGUAGE_CODE="en")
     def test_client_error_during_update(self, m_update_zaak, m_fetch_zaak):
@@ -137,6 +153,9 @@ class UpdateZaakArchiveDetailsTests(WebTest):
         self.assertEqual(200, response.status_code)
         self.assertContains(
             response, "An error has occurred. The case could not be updated."
+        )
+        self.assertContains(
+            response, "Some error message",
         )
 
     @patch(
@@ -171,3 +190,32 @@ class UpdateZaakArchiveDetailsTests(WebTest):
 
         self.assertEqual(1, len(messages))
         self.assertEqual(messages[0].tags, "success")
+
+    @patch("archiefvernietigingscomponent.destruction.views.record_manager.fetch_zaak")
+    @patch(
+        "archiefvernietigingscomponent.destruction.views.record_manager.update_zaak",
+        side_effect=ClientError({"some_unexpected_keys": "some_unexpected_values"}),
+    )
+    @override_settings(LANGUAGE_CODE="en")
+    def test_unexpected_client_error_format_does_not_cause_error(
+        self, m_update_zaak, m_fetch_zaak
+    ):
+        user = UserFactory(role__can_start_destruction=True)
+        view_url = furl(reverse("destruction:update-zaak-archive-details"))
+        view_url.args.set("url", "http://openzaak.nl/some/zaak")
+
+        form = self.app.get(view_url.url, user=user).form
+
+        form["url"] = "http://openzaak.nl/some/valid/zaak/url"
+        form["archiefnominatie"] = Archiefnominatie.blijvend_bewaren
+        form["archiefactiedatum_day"] = "1"
+        form["archiefactiedatum_month"] = "1"
+        form["archiefactiedatum_year"] = "2030"
+        form["comment"] = "Some interesting comment"
+
+        response = form.submit()
+
+        self.assertEqual(200, response.status_code)
+        self.assertContains(
+            response, "An error has occurred. The case could not be updated."
+        )
