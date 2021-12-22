@@ -14,7 +14,7 @@ services:
   web:
     build: .
     environment: &web_env
-      - DJANGO_SETTINGS_MODULE=archiefvernietigingscomponent.conf.docker
+      - DJANGO_SETTINGS_MODULE=archiefbeheercomponent.conf.docker
       - SECRET_KEY=${SECRET_KEY:-145cqii@)+z$b&9dcmdctpm+&be1#9zslxm+x)0+u*^qf!qz(6}
       - CACHE_DEFAULT=redis:6379/0
       - CACHE_AXES=redis:6379/0
@@ -47,7 +47,7 @@ services:
     depends_on:
       - web
 
-# See: src/archiefvernietigingscomponent/conf/docker.py
+# See: src/archiefbeheercomponent/conf/docker.py
 # Optional containers below:
 #  elasticsearch:
 #    # NOTE: No persistance storage configured.

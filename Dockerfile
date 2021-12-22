@@ -71,7 +71,7 @@ COPY --from=backend-build /usr/local/bin/celery /usr/local/bin/celery
 COPY --from=backend-build /app/src/ /app/src/
 
 # copy frontend build statics
-COPY --from=frontend-build /app/src/archiefvernietigingscomponent/static /app/src/archiefvernietigingscomponent/static
+COPY --from=frontend-build /app/src/archiefbeheercomponent/static /app/src/archiefbeheercomponent/static
 
 # copy source code
 COPY ./src /app/src
@@ -84,7 +84,7 @@ USER maykin
 
 ARG COMMIT_HASH
 ENV GIT_SHA=${COMMIT_HASH}
-ENV DJANGO_SETTINGS_MODULE=archiefvernietigingscomponent.conf.docker
+ENV DJANGO_SETTINGS_MODULE=archiefbeheercomponent.conf.docker
 
 ARG SECRET_KEY=dummy
 

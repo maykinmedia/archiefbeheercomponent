@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: maykinmedia/archiefvernietigingscomponent
+  IMAGE_NAME: maykinmedia/archiefbeheercomponent
 
 jobs:
   tests:
@@ -45,7 +45,7 @@ jobs:
           python src/manage.py collectstatic --noinput --link
           coverage run src/manage.py test src
         env:
-          DJANGO_SETTINGS_MODULE: archiefvernietigingscomponent.conf.ci
+          DJANGO_SETTINGS_MODULE: archiefbeheercomponent.conf.ci
           SECRET_KEY: dummy
           DB_USER: postgres
           DB_PASSWORD: ''

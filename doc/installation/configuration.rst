@@ -14,12 +14,12 @@ described in the :ref:`more-configuration`.
 Services
 --------
 
-The Archiefvernietigingscomponent must be connected to an instance of Open Zaak.
+The ArchiefBeheerComponent must be connected to an instance of Open Zaak.
 
-1. Navigate to the Archiefvernietigingscomponent admin.
+1. Navigate to the ArchiefBeheerComponent admin.
 
 2. Configure the credentials for the Zaken API (so the
-   Archiefvernietigingscomponent can access the Zaken API):
+   ArchiefBeheerComponent can access the Zaken API):
 
    a. Navigate to **API Autorisaties > Services**
    b. Click **Service toevoegen**.
@@ -35,7 +35,7 @@ The Archiefvernietigingscomponent must be connected to an instance of Open Zaak.
       - **OAS**: URL that points to the OAS, same URL as the *API root url* with ``/schema/openapi.yaml`` added to it
         *for example:* ``https://example.com/api/v1/schema/openapi.yaml``
       - **User ID**: *Same as the Client ID*
-      - **User representation**: *For example:* ``Archiefvernietigingscomponent``
+      - **User representation**: *For example:* ``ArchiefBeheerComponent``
 
    d. Click **Opslaan**.
 
@@ -69,18 +69,18 @@ Open Zaak
 
 1. Navigate to the Open Zaak admin.
 
-2. Configure the credentials for the Archiefvernietigingscomponent (so the
-   Archiefvernietigingscomponent can access the various Open Zaak APIs):
+2. Configure the credentials for the ArchiefBeheerComponent (so the
+   ArchiefBeheerComponent can access the various Open Zaak APIs):
 
    a. Navigate to **API Autorisaties > Applicaties**
    b. Click **Applicatie toevoegen**.
    c. Fill out the form:
 
-      - **Label**: ``Archiefvernietigingscomponent``
+      - **Label**: ``ArchiefBeheerComponent``
       - **Heeft alle autorisaties**: *Checked*
 
-      - **Client ID**: *The same as configured in the Archiefvernietigingscomponent.*
-      - **Secret**: *The same as configured in the Archiefvernietigingscomponent.*
+      - **Client ID**: *The same as configured in the ArchiefBeheerComponent.*
+      - **Secret**: *The same as configured in the ArchiefBeheerComponent.*
 
    d. Click **Opslaan**.
 
@@ -92,7 +92,7 @@ More configuration
 .. note:: This part of the configuration documentation is aimed at (functional)
    administrators.
 
-The Archiefvernietigingscomponent supports run-time configuration for maximum flexibility to make it fit your
+The ArchiefBeheerComponent supports run-time configuration for maximum flexibility to make it fit your
 environment. This does also mean that a fresh installation is empty and not useful
 without any configuration.
 
@@ -107,7 +107,7 @@ Accounts, roles and permissions
 Permissions
 -----------
 
-The Archiefvernietigingscomponent has a simple permission system, consisting of the following permissions:
+The ArchiefBeheerComponent has a simple permission system, consisting of the following permissions:
 
 **can start destruction**
 
@@ -191,7 +191,7 @@ known to the system. You can perform administrative actions such as:
 ADFS
 ----
 
-The Archiefvernietigingscomponent admin interface and frontend support logging in through ADFS-backed single sign
+The ArchiefBeheerComponent admin interface and frontend support logging in through ADFS-backed single sign
 on (SSO).
 
 ADFS 2012 and 2016, and Azure AD are supported. See the `ADFS config guides`_ for
@@ -204,18 +204,18 @@ The ADFS configuration can be found under **Admin > Configuration > ADFS Configu
 Services
 ========
 
-The Archiefvernietigingscomponent does not store, synchronize or copy case data. All data is retrieved through the
+The ArchiefBeheerComponent does not store, synchronize or copy case data. All data is retrieved through the
 Zaken, Catalogi and Documenten API. As such, these services need to be configured.
 
 Navigate to **Configuratie > Services** and add the details for your
 environment.
 
-.. note:: Archiefvernietigingscomponent supports multiple services of the same type.
+.. note:: ArchiefBeheerComponent supports multiple services of the same type.
 
 Catalogi API
 ------------
 
-The Archiefvernietigingscomponent uses the Catalogi API to provide filter options based on "zaaktype".
+The ArchiefBeheerComponent uses the Catalogi API to provide filter options based on "zaaktype".
 
 Add a service of the type ``ZTC``, and make sure to fill out:
 
@@ -249,7 +249,7 @@ Documenten API
 
 Cases ("zaken") almost always have relations to documents. If the case is being
 destroyed, documents related to it (and no other cases) also need to be destroyed. For
-that purpose, the Archiefvernietigingscomponent needs access to the Documents API.
+that purpose, the ArchiefBeheerComponent needs access to the Documents API.
 
 Add a service of the type ``DRC``. The configuration steps for the Catalogi API apply
 here, with the exception of "Extra configuration" - this is not required.
@@ -281,7 +281,7 @@ Required scopes
 ---------------
 
 The Catalogi, Zaken and Documenten API enforce authorization checks. For the correct
-functioning of the Archiefvernietigingscomponent, it needs the following scopes:
+functioning of the ArchiefBeheerComponent, it needs the following scopes:
 
 **Zaken API**
 
@@ -306,9 +306,9 @@ functioning of the Archiefvernietigingscomponent, it needs the following scopes:
 Archive configuration
 =====================
 
-The Archiefvernietigingscomponent only offers cases of which the archive action date has passed, to prevent
+The ArchiefBeheerComponent only offers cases of which the archive action date has passed, to prevent
 destruction of cases before their scheduled archiving. This is annoying for testing
-purposes, so the Archiefvernietigingscomponent supports specifying the "current date".
+purposes, so the ArchiefBeheerComponent supports specifying the "current date".
 
 Navigate to **Configuratie > Archiveringsconfiguratie** to specify the
 "current date".
@@ -353,7 +353,7 @@ Setting the domain
 ==================
 
 In the admin, under **Configuratie > Websites**, make sure to change the existing `Site` to the domain under which
-the Archiefvernietigingscomponent will be deployed.
+the ArchiefBeheerComponent will be deployed.
 
 .. _Automatic emails:
 
@@ -374,7 +374,7 @@ A custom email subject and email body can be configured for each type of email. 
 in the admin in **Configuratie > Automatische emails**, then no emails will be sent.
 
 To load default automatic emails, a fixture is present. This can be loaded with the following command (from the
-``archiefvernietigingscomponent/`` directory):
+``archiefbeheercomponent/`` directory):
 
     .. tabs::
 

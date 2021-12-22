@@ -17,14 +17,14 @@ Each case has an "archive action date", which is the date after which the determ
 action needs to be performed.
 
 The derivation of these parameters is part of the standard for
-"API's voor Zaakgericht Werken". The Archiefvernietigingscomponent provides the tooling to perform the destruction
+"API's voor Zaakgericht Werken". The ArchiefBeheerComponent provides the tooling to perform the destruction
 of the cases past the archive action date.
 
 .. note:: When we mention destruction, we mean permanent destruction. The API calls made
    to the involved API's cause the data to be erased from the database and documents to
    be removed from the file systems.
 
-The next sections document the process as implemented in the Archiefvernietigingscomponent.
+The next sections document the process as implemented in the ArchiefBeheerComponent.
 
 Destruction list creation
 =========================
@@ -148,7 +148,7 @@ The fields with asterisk are optional. They are only present if the record manag
 The destruction report is generated both as a PDF and a CSV file. It contains the information mentioned above
 for each case that was destroyed.
 The link to the report is sent via email to the archivist who reviewed the list and the process owner can
-download the report within the AVC app. The link can be found in the page with path ``vernietigen/reviews/`` after
+download the report within the ABC app. The link can be found in the page with path ``vernietigen/reviews/`` after
 filtering for lists that have already been reviewed. All lists with an associated report will have a link
 (see image below).
 

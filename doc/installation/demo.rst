@@ -15,7 +15,7 @@ Prerequisites
 
 You will need:
 
-* A working Archiefvernietigingscomponent, for example as installed via the :ref:`quickstart`,
+* A working ArchiefBeheerComponent, for example as installed via the :ref:`quickstart`,
 * Full access to all `API's voor Zaakgericht werken`_, like an `Open Zaak`_ instance,
 * Access to a Selectielijst API, like: https://selectielijst.openzaak.nl.
 
@@ -31,7 +31,7 @@ Setting up demo mode
 1. Enable demo mode.
 
    The demo mode can be activated by setting the environment variable
-   ``AVC_DEMO_MODE`` to ``1``. By default ``AVC_DEMO_MODE=0``.
+   ``ABC_DEMO_MODE`` to ``1``. By default ``ABC_DEMO_MODE=0``.
 
     .. tabs::
 
@@ -43,10 +43,10 @@ Setting up demo mode
             .. code:: yaml
 
                   web:
-                  image: maykinmedia/archiefvernietigingscomponent:latest
+                  image: maykinmedia/archiefbeheercomponent:latest
                   environment: &web_env
-                     - AVC_DEMO_MODE=1
-                     - DJANGO_SETTINGS_MODULE=archiefvernietigingscomponent.conf.docker
+                     - ABC_DEMO_MODE=1
+                     - DJANGO_SETTINGS_MODULE=archiefbeheercomponent.conf.docker
                      # etc...
 
             and stop and start the docker containers (do not just restart).
@@ -60,7 +60,7 @@ Setting up demo mode
 
             .. code:: shell
 
-                  $ AVC_DEMO_MODE=1 python src/manage.py runserver
+                  $ ABC_DEMO_MODE=1 python src/manage.py runserver
 
 
 2. Navigate to ``http://127.0.0.1:8000`` and you will see that demo mode is

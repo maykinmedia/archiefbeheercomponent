@@ -5,7 +5,7 @@
 #     ansible-playbook app.yml --become --ask-become-pass
 #
 
-- name: Archiefvernietigingscomponent
+- name: ArchiefBeheerComponent
   hosts: all
 
   collections:
@@ -16,9 +16,9 @@
     django_app_docker_name_prefix: archiefvc
     django_app_docker_domain: TODO
     django_app_docker_secret_key: 'TODO'
-    django_app_docker_package_name: archiefvernietigingscomponent
+    django_app_docker_package_name: archiefbeheercomponent
     django_app_docker_https: false
-    
+
     ## Application database settings
     django_app_docker_db_host: TODO
     django_app_docker_db_name: archiefvc
@@ -27,7 +27,7 @@
 
     ## Application docker container
     django_app_docker_version: latest
-    django_app_docker_image_name: maykinmedia/archiefvernietigingscomponent
+    django_app_docker_image_name: maykinmedia/archiefbeheercomponent
     django_app_docker_replicas: 1
     django_app_docker_port_start: 12000
 
@@ -52,10 +52,10 @@
     #   - "postgresql-{{ postgresql_version }}"
     #   - "postgresql-contrib-{{ postgresql_version }}"
     #   - libpq-dev
-    # 
+    #
     # postgresql_python_library: python3-psycopg2
     # postgresql_hba_entries: []  # do not touch pg_hba.conf
-    # 
+    #
     # postgresql_users:
     #   - name: "{{ django_app_docker_db_username }}"
     #     password: "{{ django_app_docker_db_password }}"
@@ -68,7 +68,7 @@
     # Nginx
     django_app_nginx_letsencrypt_enabled: false
     # django_app_nginx_ssl_certificate: /path/to/ssl-cert-chain.pem
-    # django_app_nginx_ssl_key: /path/to/ssl-key.pem    
+    # django_app_nginx_ssl_key: /path/to/ssl-key.pem
     django_app_nginx_include_templates:
       - "templates/nginx-includes.conf.tpl"
 
