@@ -1,3 +1,4 @@
+import logging
 from datetime import date
 
 from django.contrib.messages.views import SuccessMessageMixin
@@ -42,6 +43,8 @@ from ..models import (
 )
 from ..service import fetch_zaak
 from ..tasks import update_zaak, update_zaken
+
+logger = logging.getLogger(__name__)
 
 # Record manager views
 
@@ -323,11 +326,29 @@ class UpdateZaakArchiveDetailsView(SuccessMessageMixin, RoleRequiredMixin, FormV
                 updated_data,
                 audit_comment=form.cleaned_data["comment"],
             )
-        except ClientError:
+        except ClientError as exc:
+            # The client raised a 4xx error
             form.add_error(
                 field=None,
                 error=_("An error has occurred. The case could not be updated."),
             )
+            self.parse_errors(exc, form)
             return super().form_invalid(form)
 
         return super().form_valid(form)
+
+    @staticmethod
+    def parse_errors(exc, form):
+        error = exc.args[0]
+
+        try:
+            for param in error["invalidParams"]:
+                field_name = param["name"]
+                if field_name == "nonFieldErrors":
+                    field_name = None
+
+                form.add_error(
+                    field=field_name, error=param["reason"],
+                )
+        except KeyError as err:
+            logger.error("Encountered missing key %s in ClientError: %s", err, exc)

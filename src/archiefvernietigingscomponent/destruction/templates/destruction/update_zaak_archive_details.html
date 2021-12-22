@@ -21,8 +21,10 @@
                 <form action="" method="post">
                     {% csrf_token %}
                     {% if form.non_field_errors %}
-                        <div class="archive-form__errors error-message">
-                            <span class="material-icons">error_outline</span>{{ form.non_field_errors }}
+                        <div class="archive-form__errors">
+                            {% for error in form.non_field_errors %}
+                                <div class="error-message"><span class="material-icons">error_outline</span>{{ error }}</div>
+                            {% endfor %}
                         </div>
                     {% endif %}
                     {{ form.url.as_hidden }}
