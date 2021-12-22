@@ -1,7 +1,5 @@
 @import "../lib/colors";
-
-$scrollbar-width: 6px;
-$scrollbar-color: darken($color-primary, 10%);
+@import "../settings";
 
 .destruction-list {
   display: flex;
@@ -25,18 +23,13 @@ $scrollbar-color: darken($color-primary, 10%);
 
   &__header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 2em;
   }
 
   &__title {
     flex: 1;
-  }
-
-  &__nav {
-    flex: 1;
-    text-align: left;
-    margin-right: 1.5em;
   }
 
   &__content {

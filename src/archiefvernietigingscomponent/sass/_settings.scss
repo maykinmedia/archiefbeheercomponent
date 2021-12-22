@@ -247,3 +247,6 @@ $util-shadow-default-offset-x: 0 !default;
 $util-shadow-default-offset-y: 0.5rem !default;
 $util-shadow-default-blur: 1rem !default;
 $util-shadow-default-spread: 0 !default;
+
+$scrollbar-width: 6px;
+$scrollbar-color: darken($color-primary, 10%);
