@@ -1,8 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404
+from django.utils.translation import gettext as _
 from django.views import View
 
+from zds_client.client import ClientError
 from zgw_consumers.concurrent import parallel
 
 from archiefbeheercomponent.accounts.mixins import (
@@ -74,7 +76,14 @@ class FetchListItemsView(AuthorOrAssigneeRequiredMixin, View):
 
         zaak_urls = [item.zaak for item in destruction_list.items.all()]
         with parallel() as executor:
-            zaken = list(executor.map(fetch_zaak, zaak_urls))
+            _zaken = executor.map(fetch_zaak, zaak_urls)
+
+        try:
+            zaken = list(_zaken)
+        except ClientError:
+            return JsonResponse(
+                {"error": _("One or more cases could not be retrieved.")}
+            )
 
         zaken = {zaak["url"]: zaak for zaak in zaken}
 
