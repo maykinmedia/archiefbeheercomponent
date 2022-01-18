@@ -118,7 +118,7 @@ class ArchiveConfigAdmin(SingletonModelAdmin):
             },
         ),
         (
-            _("Optional destruction case settings"),
+            _("Settings for creating a case upon a list destruction"),
             {
                 "fields": (
                     "create_zaak",
