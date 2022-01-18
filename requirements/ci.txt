@@ -88,7 +88,7 @@ django-compat==1.0.15
     #   django-hijack-admin
 django-extra-views==0.13.0
     # via -r requirements/base.txt
-django-filter==2.3.0
+django-filter==2.4.0
     # via -r requirements/base.txt
 django-fsm-admin==1.2.4
     # via -r requirements/base.txt
@@ -137,7 +137,7 @@ django-timeline-logger==1.1.2
     # via -r requirements/base.txt
 django-webtest==1.9.7
     # via -r requirements/test-tools.in
-django==2.2.25
+django==2.2.26
     # via
     #   -r requirements/base.txt
     #   django-appconf
@@ -200,7 +200,7 @@ orderedmultidict==1.0.1
     # via
     #   -r requirements/base.txt
     #   furl
-pillow==8.3.2
+pillow==9.0.0
     # via
     #   -r requirements/base.txt
     #   cairosvg
