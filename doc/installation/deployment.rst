@@ -8,8 +8,8 @@ Deployment is done via `Ansible`_. Currently, only single server deployments
 are described but you can just as easily deploy the application in a Kubernetes
 environment.
 
-.. warning:: The deployment configuration (called a "playbook") is very 
-   simplistic and also contains sensitive values. This makes the playbook more 
+.. warning:: The deployment configuration (called a "playbook") is very
+   simplistic and also contains sensitive values. This makes the playbook more
    readable but is not following good practices!
 
 Server preparation
@@ -51,7 +51,7 @@ Installation
 
    .. code:: shell
 
-      $ git clone git@github.com:maykinmedia/archiefvernietigingscomponent.git
+      $ git clone git@github.com:maykinmedia/archiefbeheercomponent.git
 
 2. Setup virtual environment:
 
@@ -61,8 +61,8 @@ Installation
       $ source env/bin/activate
       $ pip install ansible
 
-   .. note:: Sometimes, additional or updates packages are needed if they 
-      are not installed by the Ansible setup installation. You can do so like 
+   .. note:: Sometimes, additional or updates packages are needed if they
+      are not installed by the Ansible setup installation. You can do so like
       this:
 
       .. code:: shell
@@ -90,4 +90,4 @@ Installation
 
 
 .. _`Ansible`: https://www.ansible.com/
-.. _`deployment files`: https://github.com/maykinmedia/archiefvernietigingscomponent/tree/master/deployment
+.. _`deployment files`: https://github.com/maykinmedia/archiefbeheercomponent/tree/master/deployment

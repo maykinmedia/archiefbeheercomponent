@@ -1,2 +1,2 @@
 #!/bin/bash
-celery flower --app archiefvernietigingscomponent --workdir src
+celery flower --app archiefbeheercomponent --workdir src

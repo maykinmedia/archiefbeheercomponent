@@ -1,4 +1,4 @@
-.. Archiefvernietigingscomponent documentation master file, created by
+.. ArchiefBeheerComponent documentation master file, created by
    sphinx-quickstart on Tue Jul 14 14:47:03 2020.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
@@ -6,8 +6,8 @@
 Documentation
 =============
 
-The **Archiefvernietigingscomponent** (Archive destruction component) for 
-"Zaakgericht werken" (case-oriented working) allows you to destroy case 
+The **ArchiefBeheerComponent** (Archive destruction component) for
+"Zaakgericht werken" (case-oriented working) allows you to destroy case
 information, documents and decisions, as dictated by the Dutch law.
 
 Getting started

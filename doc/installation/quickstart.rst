@@ -23,13 +23,13 @@ Getting started with Docker
 
          .. code:: shell
 
-            $ wget https://raw.githubusercontent.com/maykinmedia/archiefvernietigingscomponent/master/docker-compose-quickstart.yml -O docker-compose.yml
+            $ wget https://raw.githubusercontent.com/maykinmedia/archiefbeheercomponent/master/docker-compose-quickstart.yml -O docker-compose.yml
 
       .. group-tab:: Windows (Powershell 3)
 
          .. code:: shell
 
-            PS> wget https://raw.githubusercontent.com/maykinmedia/archiefvernietigingscomponent/master/docker-compose-quickstart.yml -Odocker-compose.yml
+            PS> wget https://raw.githubusercontent.com/maykinmedia/archiefbeheercomponent/master/docker-compose-quickstart.yml -Odocker-compose.yml
 
 2. Start the docker containers with ``docker-compose``. If you want to run the containers in the background, add the ``-d`` flag to the command below.
 

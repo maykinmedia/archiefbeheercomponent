@@ -4,8 +4,8 @@
 # overwrites the existing one.
 #
 # You can load this fixture with:
-# $ src/manage.py loaddata src/archiefvernietigingscomponent/fixtures/admin_index.json
+# $ src/manage.py loaddata src/archiefbeheercomponent/fixtures/admin_index.json
 #
 # Run this script from the root of the repository
 
-src/manage.py dumpdata --indent=4 --natural-foreign --natural-primary admin_index.AppGroup admin_index.AppLink > src/archiefvernietigingscomponent/fixtures/admin_index.json
+src/manage.py dumpdata --indent=4 --natural-foreign --natural-primary admin_index.AppGroup admin_index.AppLink > src/archiefbeheercomponent/fixtures/admin_index.json

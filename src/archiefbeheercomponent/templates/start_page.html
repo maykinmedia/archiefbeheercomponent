@@ -1,0 +1,266 @@
+{% load static demo_tutorial %}<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="{% static 'libs/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'libs/fontawesome/css/all.min.css' %}">
+
+    <link rel="icon" type="image/png" href="{% static 'ico/favicon.png' %}">
+
+    {% block extra_style %}{% endblock %}
+
+    <title>{% block title %}{% if title %}{{ title }}{% else %}{{ settings.SITE_TITLE }}{% endif %} | {{ settings.PROJECT_NAME }}{% endblock %}</title>
+  </head>
+  <body>
+
+    {% if not settings.SITE_TITLE or not settings.PROJECT_NAME %}
+      <div class="container">
+        <div class="alert alert-danger">
+          Please add the variables <em>SITE_TITLE</em> and <em>PROJECT_NAME</em> to your <em>settings.py</em> and make
+          sure they are available via <em>context processors</em>.
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+      <h1 class="display-4">{{ settings.PROJECT_NAME }}</h1>
+      <p class="lead">{{ settings.SITE_TITLE }}</p>
+    </div>
+
+    <div class="container text-center">
+
+      <ul class="nav nav-tabs justify-content-center" id="languageChoice" role="tablist">
+        <li class="nav-item ">
+          <a class="nav-link text-info" id="en-tab" data-toggle="tab" href="#en" role="tab" aria-controls="en" aria-selected="true">English</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active text-info" id="nl-tab" data-toggle="tab" href="#nl" role="tab" aria-controls="nl" aria-selected="false">Nederlands</a>
+        </li>
+      </ul>
+      <div class="tab-content" id="description">
+        <div class="tab-pane fade" id="en" role="tabpanel" aria-labelledby="en-tab">
+
+          <!-- English -->
+          <br>
+          <p>
+            Record management is the practice of destroying data-records that have met their
+            end-of-life time. "Zaakgericht werken" prescribes the archiving terms for cases
+            that have been brought to an end.
+          </p>
+          <p>
+            The ArchiefBeheerComponent (ABC) provides functionality for record
+            managers to schedule destruction of cases according to the archiving parameters.
+            It implements a multi-step, multi-role accordance process.
+          </p>
+
+          {% if settings.ABC_DEMO_MODE %}
+
+          <p>
+            The <strong>demo mode</strong> is enabled and allows you to use this application, as seen from different
+            roles. When you open the application, a tutorial is shown on the right side of the screen that explains all
+            steps. You can freely explore this demo and even see the results in the configured
+            <a class="text-info" href="https://opengem.nl/producten/open-zaak/">Open Zaak</a> instance. The demo data
+            will be reset multiple times per day.
+          </p>
+
+          <p>Here are the roles available in the demo:</p>
+
+          <div class="container text-left">
+
+            <ul class="nav nav-tabs justify-content-center" id="roleChoiceEnglish" role="tablist">
+              <li class="nav-item ">
+                <a class="nav-link active text-info" id="record-manager-en-tab" data-toggle="tab" href="#record-manager-en" role="tab" aria-controls="record-manager-en" aria-selected="true">Record manager</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-info" id="process-owner-en-tab" data-toggle="tab" href="#process-owner-en" role="tab" aria-controls="process-owner-en" aria-selected="false">Process owner</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-info" id="archivist-en-tab" data-toggle="tab" href="#archivist-en" role="tab" aria-controls="archivist-en" aria-selected="false">Municipal archivist/supervisor</a>
+              </li>
+            </ul>
+
+            <div class="tab-content" id="roles-en">
+              <div class="tab-pane fade show active" id="record-manager-en" role="tabpanel" aria-labelledby="record-manager-en-tab">
+                <br>
+                <ul>
+                  <li>The recordmanager initiates the proces to destroy cases and generates the list of destruction.</li>
+                  <li>Executes quality control over the list, checks if there are relations that can’t be disconnected when the file is destroyed and if there are cases on the list that can’t be destroyed because of an exemption due to the criteria mentioned in the ‘selectielijst’ (this is the archiving policy list with all the storage periods per zaaktype/process and allowed exemptions).</li>
+                  <li>Makes sure the destruction list is forwarded to the process owner.</li>
+                </ul>
+              </div>
+              <div class="tab-pane fade" id="process-owner-en" role="tabpanel" aria-labelledby="process-owner-en-tab">
+                <br>
+                <ul>
+                  <li>As the owner of the information, checks if all the cases on the list can be destroyed. Asks the question: Is the file still needed for the current business operation?</li>
+                  <li>Exempts files that are still needed and gives the argumentation for that.</li>
+                  <li>Approves the list, so it can be forwarded (in exctracted form/proces verbaal) to the municipal archivist/supervisor. Or sends the list back to the record manager, if there are exceptions/exemptions.</li>
+                  <li>Approves (after the approval of the municipal archivist and the actual destruction) the proces verbaal.</li>
+                </ul>
+              </div>
+              <div class="tab-pane fade" id="archivist-en" role="tabpanel" aria-labelledby="archivist-en-tab">
+                <br>
+                <ul>
+                  <li>Checks the request/proces verbaal from the process owner.</li>
+                  <li>Rejects or gives approval for the destruction.</li>
+                </ul>
+              </div>
+            </div>
+
+            <hr>
+
+          </div>
+
+          <p>
+            <a href="{% demo_record_manager_login_url %}" class="btn btn-sm btn-info"><i class="fas fa-chalkboard-teacher"></i> Start tutorial</a>
+          </p>
+          {% endif %}
+
+        </div>
+        <div class="tab-pane fade show active" id="nl" role="tabpanel" aria-labelledby="nl-tab">
+
+          <!-- Dutch -->
+          <br>
+          <p>
+            Archiefbeheer draait om het vernietigen van gegevens die aan het einde van hun
+            levensduur zijn gekomen. Zaakgericht werken schrijft de archiveringsvoorwaarden
+            voor, voor zaken die zijn beëindigd.
+          </p>
+          <p>
+            De ArchiefBeheerComponent (ABC) biedt functionaliteit voor archiefbeheer
+            om de vernietiging van zaken in te plannen volgens de archiveringsvoorwaarden.
+            De ABC volgt een proces dat uit meerdere stappen bestaat, over verschillende
+            rollen.
+          </p>
+
+          {% if settings.ABC_DEMO_MODE %}
+
+          <p>
+            De <strong>demo mode</strong> is geactiveerd en stelt u in staat om deze applicatie te gebruiken vanuit het
+            perspectief van verschillende rollen. Wanneer u de applicatie opent, wordt er rechts zelfstudie scherm
+            weergegeven waar alle stappen staan uitgelegd. U kunt deze demo vrij verkennen en zelfs de resultaten zien in
+            de gekoppelde <a class="text-info" href="https://opengem.nl/producten/open-zaak/">Open Zaak</a>. Alle demo
+            data wordt meerdere keren per dag gereset.
+          </p>
+
+          <p>Hier vindt u de verschillende rollen die in de demo beschikbaar zijn:</p>
+
+          <div class="container text-left">
+
+            <ul class="nav nav-tabs justify-content-center" id="roleChoiceDutch" role="tablist">
+              <li class="nav-item ">
+                <a class="nav-link active text-info" id="record-manager-nl-tab" data-toggle="tab" href="#record-manager-nl" role="tab" aria-controls="record-manager-nl" aria-selected="false">Record manager</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-info" id="process-owner-nl-tab" data-toggle="tab" href="#process-owner-nl" role="tab" aria-controls="process-owner-nl" aria-selected="false">Proces eigenaar</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-info" id="archivist-nl-tab" data-toggle="tab" href="#archivist-nl" role="tab" aria-controls="archivist-nl" aria-selected="false">Gemeentearchivaris</a>
+              </li>
+            </ul>
+
+            <div class="tab-content" id="roles-nl">
+              <div class="tab-pane fade show active" id="record-manager-nl" role="tabpanel" aria-labelledby="record-manager-nl-tab">
+                <br>
+                <ul>
+                  <li>Initieert het vernietigingsproces door de vernietigingslijst van de betreffende archiefdelen (te vernietigen zaken) te genereren.</li>
+                  <li>Voert een kwaliteitscheck uit op de vernietigingslijst. Checkt de lijst of er geen relaties zijn die niet verbroken mogen worden en checkt of er geen zaken op de lijst staan die niet vernietigd mogen worden, zoals bijvoorbeeld hotspots. Zie uitzonderingscriteria op de vigerende selectielijst. Zorgt voor een juiste argumentatie bij de uitzonderingen en past de metadata van de betreffende zaak aan.</li>
+                  <li>Routeert de vernietigingslijst naar de juiste proceseigenaar.</li>
+                </ul>
+              </div>
+              <div class="tab-pane fade" id="process-owner-nl" role="tabpanel" aria-labelledby="process-owner-nl-tab">
+                <br>
+                <ul>
+                  <li>Checkt als informatie-eigenaar of de zaken op de vernietigingslijst daadwerkelijk vernietigd mogen worden. Stelt daarbij de vraag: Zijn er zaken nog relevant voor de bedrijfsvoering.</li>
+                  <li>Zondert die zaken, met een bedrijfsbelang beargumenteerd uit.</li>
+                  <li>Accordeert de Vernietigingslijst, zodat deze doorgezet wordt naar de gemeentearchivaris, of teruggezet wordt naar de recordmanager wanneer deze niet geaccordeerd is, of als er uitzonderingen zijn.</li>
+                  <li>Accordeert na toestemming van de gemeentearchivaris en de daadwerkelijke vernietiging het proces verbaal/vernietigingsverklaring.</li>
+                </ul>
+              </div>
+              <div class="tab-pane fade" id="archivist-nl" role="tabpanel" aria-labelledby="archivist-nl-tab">
+                <br>
+                <ul>
+                  <li>Toetst het vernietigingsverzoek aan de hand van de concept procesverbaal.</li>
+                  <li>Geeft aan de hand van het proces verbaal een negatief, of positief advies.</li>
+                </ul>
+              </div>
+            </div>
+
+            <hr>
+
+          </div>
+
+          <p>
+            <a href="{% demo_record_manager_login_url %}" class="btn btn-sm btn-info"><i class="fas fa-chalkboard-teacher"></i> Start zelfstudie</a>
+          </p>
+          {% endif %}
+
+        </div>
+      </div>
+
+      <p>
+        <b>Licensed under the <a class="text-info" href="https://github.com/maykinmedia/archiefbeheercomponent/blob/master/LICENSE.md">
+          European Union Public License (EUPL) 1.2</a></b>
+      </p>
+
+      <p>
+          <a href="{% url 'admin:login' %}?next={% url 'entry' %}" class="btn btn-sm btn-info"><i class="fas fa-lock"></i> Login</a>
+          <a href="{% url 'admin:index' %}" class="btn btn-sm btn-danger"><i class="fas fa-lock"></i> Administration</a>
+      </p>
+
+    </div>
+
+    <div class="container">
+      <footer class="pt-4 my-md-5 pt-md-5 border-top">
+        <div class="row">
+          <div class="col-4 col-md">
+            <img class="mb-2" src="{% static 'img/maykin_logo.png' %}" alt="Maykin Media logo" height="48">
+            <img class="mb-2" src="{% static 'img/opengem_logo.png' %}" alt="Open Gemeente Initiatief logo" height="48">
+            <small class="d-block mb-3 text-muted">
+              Developed by <a class="text-info" href="https://www.maykinmedia.nl">Maykin Media</a><br>
+              within the <a class="text-info" href="https://opengem.nl">Open Gemeente Initiatief</a> &copy; {% now "Y" %}<br>
+              commissioned by the <a class="text-info" href="https://www.utrecht.nl">Municipality of Utrecht</a> and <a class="text-info" href="https://www.delft.nl">Delft</a></a>
+            </small>
+          </div>
+          <div class="col-4 col-md">
+            <h5>{{ settings.PROJECT_NAME }}</h5>
+            <ul class="list-unstyled text-small">
+              <li><a class="text-muted" href="https://archiefbeheercomponent.readthedocs.io/">Documentation</a></li>
+              <li><a class="text-muted" href="https://commonground.nl/groups/view/729057dd-30b6-406e-8a42-dc6fe51dd27e/informatie-en-archiefbeheer">Community on CommonGround.nl</a></li>
+              <li><a class="text-muted" href="https://hub.docker.com/r/maykinmedia/archiefbeheercomponent">Docker images</a></li>
+              <li><a class="text-muted" href="https://github.com/maykinmedia/archiefbeheercomponent">Code on Github</a></li>
+            </ul>
+          </div>
+          <div class="col-4 col-md">
+            <h5>Other</h5>
+            <ul class="list-unstyled text-small">
+              <li>Report <a class="text-muted" href="https://github.com/maykinmedia/archiefbeheercomponent/issues">issues</a> for questions, bugs or wishes</li>
+              <li>Read more on <a class="text-muted" href="https://commonground.nl/">Common Ground</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6 text-muted">
+            <code>{{ settings.RELEASE }}</code>
+          </div>
+          <div class="col-6 text-muted text-right">
+            <code>{{ settings.GIT_SHA|default:"" }}</code>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script src="{% static 'libs/jquery/jquery-3.3.1.slim.min.js' %}"></script>
+    <script src="{% static 'libs/popper/popper.min.js' %}"></script>
+    <script src="{% static 'libs/bootstrap/js/bootstrap.min.js' %}"></script>
+
+    <script>
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      })
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+  </body>
+</html>

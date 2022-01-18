@@ -6,7 +6,7 @@ LOGLEVEL=${CELERY_LOGLEVEL:-INFO}
 
 echo "Starting celery worker"
 celery worker \
-    --app archiefvernietigingscomponent \
+    --app archiefbeheercomponent \
     -l $LOGLEVEL \
     --workdir src \
     -O fair \

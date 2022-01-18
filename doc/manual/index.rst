@@ -3,7 +3,7 @@
 Manual
 ======
 
-The Archiefvernietigingscomponent has typical roles and with these roles, one
+The ArchiefBeheerComponent has typical roles and with these roles, one
 can follow a certain destruction process.
 
 .. toctree::

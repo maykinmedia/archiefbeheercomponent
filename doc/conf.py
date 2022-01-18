@@ -12,7 +12,7 @@ import django
 
 sys.path.insert(0, os.path.abspath("../src"))
 
-import archiefvernietigingscomponent  # noqa isort:skip
+import archiefbeheercomponent  # noqa isort:skip
 
 # from objects.setup import setup_env  # noqa isort:skip
 
@@ -26,12 +26,12 @@ import archiefvernietigingscomponent  # noqa isort:skip
 
 # -- Project information -----------------------------------------------------
 
-project = "Archiefvernietigingscomponent"
+project = "ArchiefBeheerComponent"
 copyright = "2021, Maykin Media"
-author = archiefvernietigingscomponent.__author__
+author = archiefbeheercomponent.__author__
 
 # The full version, including alpha/beta/rc tags
-release = archiefvernietigingscomponent.__version__
+release = archiefbeheercomponent.__version__
 
 
 # -- General configuration ---------------------------------------------------

@@ -1,8 +1,8 @@
 {
-  "name": "archiefvernietigingscomponent",
+  "name": "archiefbeheercomponent",
   "version": "1.0.0",
-  "description": "Archiefvernietigingscomponent project",
-  "main": "src/static/archiefvernietigingscomponent/js/archiefvernietigingscomponent.js",
+  "description": "ArchiefBeheerComponent project",
+  "main": "src/static/archiefbeheercomponent/js/archiefbeheercomponent.js",
   "directories": {
     "doc": "doc"
   },
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:maykinmedia/archiefvernietigingscomponent.git"
+    "url": "git+ssh://git@github.com:maykinmedia/archiefbeheercomponent.git"
   },
   "author": "Maykin Media",
   "license": "UNLICENSED",

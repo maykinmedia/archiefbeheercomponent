@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys
 
-from archiefvernietigingscomponent.setup import setup_env
+from archiefbeheercomponent.setup import setup_env
 
 if __name__ == "__main__":
     setup_env()

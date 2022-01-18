@@ -4,7 +4,7 @@
 Roles
 =====
 
-Typically the Archiefvernietigingscomponent has 3 roles but you can rename 
+Typically the ArchiefBeheerComponent has 3 roles but you can rename
 these roles in the application or create roles with different permissions.
 
 Record manager

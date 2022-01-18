@@ -1,0 +1,66 @@
+{% load static i18n hijack_tags demo_tutorial theme %}<!DOCTYPE html>
+{% get_current_language as lang %}
+<html lang="{{ lang|slice:':2' }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <link href="https://fonts.googleapis.com/css?family=Fira+Sans:300,400,600|Material+Icons|Material+Icons+Outlined" rel="stylesheet">
+        {% block extra_style %}{% endblock %}
+
+        <link href="{% static 'css/screen.css' %}" media="screen" rel="stylesheet" type="text/css" />
+        <link href="{% static 'hijack/hijack-styles.css' %}" rel="stylesheet" type="text/css" />
+        {% block extra_css %}{% endblock %}
+
+        {% theme_stylesheet %}
+
+        <link href="{% static 'ico/favicon.png' %}" rel="shortcut icon">
+
+        <title>{% block title %}ArchiefBeheerComponent{% endblock %}</title>
+    </head>
+
+    <body class="{% block body-class %}{% endblock %}{% if settings.ABC_DEMO_MODE %} demo{% endif %}">
+        {% block body %}
+            {% if settings.ABC_DEMO_MODE %}
+                {% demo_tutorial user %}
+            {% endif %}
+
+            {% hijack_notification %}
+            <header>
+                {% theme_header %}
+            </header>
+            <main class="main">
+                <section class="main__content content-panel">
+
+                    {% block content %}
+                        Override <code>{% verbatim %}{% block content %}{% endverbatim %}</code>
+                        to get some actual content.
+                    {% endblock %}
+
+                    {% spaceless %}
+                    <nav class="main__links">
+                    {% block links %}{% endblock %}
+                        {% if user.is_staff %}
+                            <a href="{% url 'admin:index' %}" class="link">{% trans "Admin" %}</a>
+                        {% endif %}
+                    </nav>
+                    {% endspaceless %}
+
+                </section>
+
+            </main>
+
+            <footer class="footer">
+                <div class="footer__content">
+                    {% theme_footer %}
+                </div>
+            </footer>
+
+            <script src="{% static 'js/main.js' %}"></script>
+        {% endblock %}
+    </body>
+</html>
+
