@@ -4,6 +4,7 @@ import axios from "axios";
 import { ListItemForm } from "./list-item-form";
 import { ManagementForm } from "../../forms/management-form";
 import { FormsetConfigContext } from "./context";
+import ErrorMessage from "../ErrorMessage";
 
 
 const ListItemFormset = ({itemsUrl}) => {
@@ -25,21 +26,29 @@ const ListItemFormset = ({itemsUrl}) => {
 
     // fetch list items
     useEffect(() => {
-        axios.get(itemsUrl)
-            .then(
-                (result) => {
-                    setIsLoaded(true);
+        axios.get(itemsUrl).then(
+            (result) => {
+                setIsLoaded(true);
+                if (result.data.error) {
+                    setError(result.data.error);
+                } else {
                     setItems(result.data.items);
-                },
-                (error) => {
-                    setIsLoaded(true);
-                    setError(error);
                 }
-            )
+            },
+            (error) => {
+                setIsLoaded(true);
+                setError(error.message);
+            }
+        );
     }, []);
 
     if (error) {
-        return <div>Error in fetching zaken: {error.message}</div>;
+        return (
+            <section className="list-items">
+                <h2 className="list-items__header section-title">Zaakdossiers</h2>
+                <ErrorMessage message={error}/>
+            </section>
+        );
     }
 
     if (!isLoaded) {

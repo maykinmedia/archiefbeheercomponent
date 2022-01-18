@@ -3,6 +3,7 @@ import React, {useContext} from "react";
 import { ConstantsContext } from "./context";
 import { ReviewItemForm } from "./review-item-form";
 import { ManagementForm } from "../../forms/management-form";
+import ErrorMessage from "../ErrorMessage";
 
 
 const ReviewItemFormset = ({ error, isLoaded, items }) => {
@@ -18,7 +19,7 @@ const ReviewItemFormset = ({ error, isLoaded, items }) => {
     );
 
     if (error) {
-        return <div>Error in fetching zaken: {error.message}</div>;
+        return <ErrorMessage message={error} />;
     }
 
     if (!isLoaded) {

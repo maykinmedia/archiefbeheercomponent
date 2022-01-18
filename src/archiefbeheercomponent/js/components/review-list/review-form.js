@@ -42,14 +42,18 @@ const ReviewForm = ({ itemsUrl, destructionList, reviewComment, reviewChoices })
             .then(
                 (result) => {
                     setIsLoaded(true);
-                    setItems(result.data.items);
-                    setSuggestions(new Array(result.data.items.length).fill(""));
+                    if (result.data.error) {
+                        setError(result.data.error);
+                    } else {
+                        setItems(result.data.items);
+                        setSuggestions(new Array(result.data.items.length).fill(""));
+                    }
                 },
                 (error) => {
                     setIsLoaded(true);
-                    setError(error);
+                    setError(error.message);
                 }
-            )
+            );
     }, []);
 
     const getReviewComment = () => {
