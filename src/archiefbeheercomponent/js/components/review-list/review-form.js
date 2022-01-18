@@ -79,6 +79,7 @@ const ReviewForm = ({ itemsUrl, destructionList, reviewComment, reviewChoices })
                     <button
                         type="submit"
                         className="btn"
+                        disabled={!isLoaded}
                         onClick={(e) => {
                             setReviewStatus("rejected");
                         }}
@@ -86,6 +87,7 @@ const ReviewForm = ({ itemsUrl, destructionList, reviewComment, reviewChoices })
                     <button
                         type="submit"
                         className="btn"
+                        disabled={!isLoaded}
                         onClick={(e) => {
                             setReviewStatus("approved");
                         }}
@@ -94,7 +96,11 @@ const ReviewForm = ({ itemsUrl, destructionList, reviewComment, reviewChoices })
             );
         } else {
             return (
-                <button type="submit" className="review-create__btn btn" >{STATUS_TO_BUTTON[reviewStatus]}</button>
+                <button
+                    type="submit"
+                    className="review-create__btn btn"
+                    disabled={!isLoaded}
+                >{STATUS_TO_BUTTON[reviewStatus]}</button>
             );
         }
     };
