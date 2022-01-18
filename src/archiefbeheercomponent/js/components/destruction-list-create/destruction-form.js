@@ -18,7 +18,6 @@ function getSearchZakenUrl(path, filters, currentDate) {
     };
     if (filters.zaaktypen.length) queryParams['zaaktype__in'] = filters.zaaktypen;
     if (filters.bronorganisaties.length) queryParams['bronorganisatie__in'] = filters.bronorganisaties;
-    if (filters.startdatum) queryParams['startdatum__gte'] = filters.startdatum;
 
     const urlSearchParams = new URLSearchParams(queryParams);
 
@@ -33,11 +32,9 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, currentDate, csr
 
     //filters
     const [selectedZaaktypen, setSelectedZaaktypen] = useState([]);
-    const [selectedStartdatum, setSelectedStartdatum] = useState(null);
     const [selectedBronorganisatie, setSelectedBronorganisatie] = useState([]);
     const filters = {
         zaaktypen: selectedZaaktypen,
-        startdatum: selectedStartdatum,
         bronorganisaties: selectedBronorganisatie,
     };
 
@@ -85,7 +82,7 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, currentDate, csr
                     setError(error);
                 }
             );
-    }, [selectedZaaktypen, selectedStartdatum, selectedBronorganisatie]);
+    }, [selectedZaaktypen, selectedBronorganisatie]);
 
     const bronorganisatieCheckboxes = bronorganisaties.map((bronorganisatie, index) => {
         return (
@@ -140,21 +137,6 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, currentDate, csr
                         <label htmlFor={"id_bronorganisaties"}>Bronorganisatie</label>
                         {bronorganisatieCheckboxes}
                     </div>
-                    <div className="filter-group__item">
-                        <label htmlFor={"id_startdatum"}>Startdatum</label>
-                        <DateInput
-                            name={"startdatum"}
-                            id={"id_startdatum"}
-                            onBlur={(e) => {
-                                const eventStartdatum = e.target.value;
-                                if (eventStartdatum !== selectedStartdatum ) {
-                                    setIsLoaded(false);
-                                    setSelectedStartdatum(eventStartdatum);
-                                }
-                            }}
-                        />
-                    </div>
-
                 </aside>
 
                 <section className="destruction-create__zaken">
