@@ -9,6 +9,10 @@ import ErrorMessage from "../ErrorMessage";
 const ReviewItemFormset = ({ error, isLoaded, items }) => {
     const { formsetConfig, showOptionalColumns } = useContext(ConstantsContext);
 
+    if (error) {
+        return <ErrorMessage message={error} />;
+    }
+
     //set up forms
     const forms = items.map(
         (data, index) => <ReviewItemForm
@@ -17,10 +21,6 @@ const ReviewItemFormset = ({ error, isLoaded, items }) => {
             data={data}
         />
     );
-
-    if (error) {
-        return <ErrorMessage message={error} />;
-    }
 
     if (!isLoaded) {
         return <div>Loading...</div>;
