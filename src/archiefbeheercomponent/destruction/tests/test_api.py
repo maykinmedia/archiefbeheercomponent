@@ -417,3 +417,30 @@ class FetchListItemsTests(TransactionTestCase):
         self.assertEqual(
             "http://example.nl/987654321/ZAAK-002/uuid-2", zaak_2_data["zac_link"]
         )
+
+    def test_retrieve_missing_zaak(self, m):
+        self._set_up_services()
+        self._set_up_mocks(m)
+
+        user = UserFactory.create(
+            username="user",
+            password="user",
+            email="aaa@aaa.aaa",
+            role__can_start_destruction=True,
+            role__can_review_destruction=True,
+        )
+
+        destruction_list = DestructionListFactory.create(author=user, assignee=user)
+        missing_zaak_url = f"{ZAKEN_ROOT}zaken/uuid-3"
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list, zaak=missing_zaak_url
+        )
+        m.get(missing_zaak_url, status_code=404)
+
+        url = reverse("destruction:fetch-list-items", args=[destruction_list.id])
+
+        self.client.force_login(user)
+        response = self.client.get(url)
+
+        self.assertEqual(200, response.status_code)
+        self.assertIn("error", response.json())
