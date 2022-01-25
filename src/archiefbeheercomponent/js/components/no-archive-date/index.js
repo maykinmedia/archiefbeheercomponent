@@ -18,7 +18,7 @@ const mount = () => {
         <UrlsContext.Provider value={{archiveUpdateUrl: archiveUpdateUrl, exportZakenUrl:exportZakenUrl}}>
             <ListZaken
                 zakenUrl={zakenUrl}
-                zaaktypeChoices={zaaktypeChoices}
+                zaaktypen={zaaktypeChoices}
             />
         </UrlsContext.Provider>,
         node
