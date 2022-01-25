@@ -1,15 +1,16 @@
-import React, {useState, useEffect, useContext} from "react";
-import axios from "axios";
+import React, {useState, useEffect, useContext} from 'react';
+import useAsync from 'react-use/esm/useAsync';
 
-import {HiddenInput, TextInput} from "../../forms/inputs";
-import {ReviewItemFormset} from "./review-item-formset";
-import {ConstantsContext, SuggestionContext} from "./context";
-import {SelectInput, SelectWithCustomOption} from "../../forms/select";
+import {HiddenInput} from '../../forms/inputs';
+import {ReviewItemFormset} from './review-item-formset';
+import {ConstantsContext, SuggestionContext} from './context';
+import {SelectWithCustomOption} from '../../forms/select';
+import {get} from '../../utils/api';
 
 const STATUS_TO_BUTTON = {
-    "approved": "Accorderen",
-    "changes_requested": "Aanpassen",
-    "rejected": "Afwijzen",
+    'approved': 'Accorderen',
+    'changes_requested': 'Aanpassen',
+    'rejected': 'Afwijzen',
 };
 
 
@@ -18,7 +19,6 @@ const ReviewForm = ({ itemsUrl, destructionList, reviewComment, reviewChoices })
 
     // load list items
     const [error, setError] = useState(null);
-    const [isLoaded, setIsLoaded] = useState(false);
     const [items, setItems] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
 
@@ -26,88 +26,63 @@ const ReviewForm = ({ itemsUrl, destructionList, reviewComment, reviewChoices })
       return (suggestions.filter((value) => value).length);
     };
 
-    const [reviewStatus, setReviewStatus] = useState(areThereSuggestions() ? "changes_requested" : "approved");
+    const [reviewStatus, setReviewStatus] = useState(areThereSuggestions() ? 'changes_requested' : 'approved');
 
     useEffect(() => {
         if (areThereSuggestions()) {
-            setReviewStatus("changes_requested");
+            setReviewStatus('changes_requested');
         } else {
-            setReviewStatus("approved");
+            setReviewStatus('approved');
         }
     }, [suggestions]);
 
-    // fetch list items
-    useEffect(() => {
-        axios.get(itemsUrl)
-            .then(
-                (result) => {
-                    setIsLoaded(true);
-                    if (result.data.error) {
-                        setError(result.data.error);
-                    } else {
-                        setItems(result.data.items);
-                        setSuggestions(new Array(result.data.items.length).fill(""));
-                    }
-                },
-                (error) => {
-                    setIsLoaded(true);
-                    setError(error.message);
-                }
-            );
-    }, []);
+    const {loading} = useAsync( async () => {
+        const response = await get(itemsUrl);
 
-    const getReviewComment = () => {
-        if (reviewComment){
-            return (
-                <div className="review-create__review-comment">
-                    <div className={"header"}>{`${reviewComment.author} heeft een opmerking achtergelaten`}</div>
-                    <div className={"text"}>
-                        <i className="material-icons">comment &nbsp;</i>
-                        {reviewComment.text}
-                    </div>
-                </div>
-            );
+        if (!response.ok) {
+            setError(response.data);
+            return;
         }
-    };
 
-    const submitButtons = () => {
-        // If the reviewer cannot see zaak details, then
-        // they can only accept or reject the list (they can't add suggestions)
-        if(zaakDetailPermission === "False") {
-            return (
-                <div className="review-create__btns">
-                    <button
-                        type="submit"
-                        className="btn"
-                        disabled={!isLoaded}
-                        onClick={(e) => {
-                            setReviewStatus("rejected");
-                        }}
-                    >{STATUS_TO_BUTTON["rejected"]}</button>
-                    <button
-                        type="submit"
-                        className="btn"
-                        disabled={!isLoaded}
-                        onClick={(e) => {
-                            setReviewStatus("approved");
-                        }}
-                    >{STATUS_TO_BUTTON["approved"]}</button>
-                </div>
-            );
+        if (response.data.error) {
+            setError(response.data.error);
         } else {
-            return (
-                <button
-                    type="submit"
-                    className="review-create__btn btn"
-                    disabled={!isLoaded}
-                >{STATUS_TO_BUTTON[reviewStatus]}</button>
-            );
+            setItems(response.data.items);
+            setSuggestions(new Array(result.data.items.length).fill(''));
         }
-    };
+    }, []);
 
     return (
         <SuggestionContext.Provider value={{suggestions, setSuggestions}}>
-            {submitButtons()}
+            {
+                zaakDetailPermission === 'False'
+                ? (
+                    <div className="review-create__btns">
+                        <button
+                            type="submit"
+                            className="btn"
+                            disabled={loading}
+                            onClick={(e) => {
+                                setReviewStatus('rejected');
+                            }}
+                        >{STATUS_TO_BUTTON['rejected']}</button>
+                        <button
+                            type="submit"
+                            className="btn"
+                            disabled={loading}
+                            onClick={(e) => {
+                                setReviewStatus('approved');
+                            }}
+                        >{STATUS_TO_BUTTON["approved"]}</button>
+                    </div>)
+                : (
+                    <button
+                        type="submit"
+                        className="review-create__btn btn"
+                        disabled={loading}
+                    >{STATUS_TO_BUTTON[reviewStatus]}</button>
+                )
+            }
             <header className="review-create__header">
                 <div>
                     <h1 className="title">{`Lijst "${destructionList.name}"`}</h1>
@@ -117,13 +92,23 @@ const ReviewForm = ({ itemsUrl, destructionList, reviewComment, reviewChoices })
                 </div>
             </header>
 
-            {getReviewComment()}
+            {
+                reviewComment && (
+                    <div className="review-create__review-comment">
+                        <div className="header">{`${reviewComment.author} heeft een opmerking achtergelaten`}</div>
+                        <div className="text">
+                            <i className="material-icons">comment &nbsp;</i>
+                            {reviewComment.text}
+                        </div>
+                    </div>
+                )
+            }
 
             <div className="review-create__comment">
                 <SelectWithCustomOption
                     name="text"
                     id="id_text"
-                    required={reviewStatus !== "approved"}
+                    required={reviewStatus !== 'approved'}
                     choices={reviewChoices}
                     label="Opmerkingen"
                     customOtherChoiceLabel={'Anders'}
@@ -140,7 +125,7 @@ const ReviewForm = ({ itemsUrl, destructionList, reviewComment, reviewChoices })
 
                 <ReviewItemFormset
                     error={error}
-                    isLoaded={isLoaded}
+                    isLoaded={!loading}
                     items={items}
                 />
             </section>
