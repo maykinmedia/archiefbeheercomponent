@@ -17,25 +17,21 @@ const mount = () => {
 
     Modal.setAppElement('#react-destruction-list-detail');
 
-    const commentForm = () => {
-        if(canUpdate === 'True') {
-            return (
-                <div className="destruction-list-detail__review-comment">
-                    <TextInput
-                        name={"text"}
-                        required={false}
-                        label={"Opmerkingen"}
-                        helpText={"Opmerkingen voor de reviewer"}
-                        id={"id_text"}
-                    />
-                </div>
-            );
-        }
-    };
-
     ReactDOM.render(
         <React.Fragment>
-            {commentForm()}
+            {
+                canUpdate === 'True' && (
+                    <div className="destruction-list-detail__review-comment">
+                        <TextInput
+                            name={"text"}
+                            required={false}
+                            label={"Opmerkingen"}
+                            helpText={"Opmerkingen voor de reviewer"}
+                            id={"id_text"}
+                        />
+                    </div>
+                )
+            }
             <FormsetConfigContext.Provider value={formsetConfig}>
                 <CanUpdateContext.Provider value={canUpdate === 'True'}>
                     <ListItemFormset
