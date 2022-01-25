@@ -1,13 +1,87 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
+import { useImmerReducer } from 'use-immer';
+import useAsync from 'react-use/esm/useAsync';
 
-import {CheckboxInput, DateInput} from '../../forms/inputs';
 import { ZakenTable } from './zaken-table';
 import { CreateModal} from './create-modal';
 import { ZaaktypeSelect} from './zaaktype-select';
 import { countObjectKeys } from '../../utils';
+import {get} from '../../utils/api';
+import BronorganisatieSelect from './BronorganisatieSelect';
 
 
-function getSearchZakenUrl(path, filters, currentDate) {
+const INITIAL_STATE = {
+    filters: {
+        zaaktypen: [],
+        bronorganisaties: [],
+    },
+    bronorganisaties: [],
+    checkboxes: {},
+    error: null,
+    isLoaded: false,
+    zaken: [],
+    modalIsOpen: false,
+};
+
+
+const reducer = (draft, action) => {
+    switch (action.type) {
+        case 'ZAKEN_LOADED': {
+            const zaken = action.payload;
+            draft.zaken = zaken;
+
+            // Object with items:  zaak.url: bool which keeps track of which zaak have been selected
+            draft.checkboxes = zaken.filter(zaak => zaak.available).reduce((result, zaak) => {
+                return {...result, [zaak.url]: false};
+            }, {});
+
+            const uniqueBronorganisaties = new Set(zaken.map((zaak) => zaak.bronorganisatie));
+            draft.bronorganisaties = Array.from(uniqueBronorganisaties);
+
+            draft.isLoaded = true;
+            break;
+        }
+        case 'SET_ERROR': {
+            draft.isLoaded = true;
+            draft.error = action.payload;
+            break;
+        }
+        case 'START_FILTERING': {
+            draft.isLoaded = false;
+
+            const updatedFilters = action.payload;
+            draft.filters = {
+                ...draft.filters,
+                ...updatedFilters
+            };
+            break;
+        }
+        case 'FINISHED_FILTERING': {
+            const zaken = action.payload;
+            draft.zaken = zaken;
+            // Object with items:  zaak.url: bool which keeps track of which zaak have been selected
+            draft.checkboxes = zaken.filter(zaak => zaak.available).reduce((result, zaak) => {
+                return {...result, [zaak.url]: false};
+            }, {});
+            draft.isLoaded = true;
+            break;
+        }
+        case 'UPDATE_CHECKBOXES': {
+            draft.checkboxes = action.payload;
+            break;
+        }
+        case 'TOGGLE_MODAL': {
+            draft.modalIsOpen = action.payload;
+            break;
+        }
+        default: {
+          throw new Error(`Unknown action ${action.type}`);
+        }
+    }
+};
+
+
+const fetchZaken = async (path, filters, currentDate) => {
     let searchUrl = new URL(window.location.href);
     searchUrl.pathname = path;
 
@@ -24,86 +98,48 @@ function getSearchZakenUrl(path, filters, currentDate) {
     for (const [paramKey, paramValue] of urlSearchParams.entries()) {
         searchUrl.searchParams.set(paramKey, paramValue);
     }
-    return searchUrl;
-}
+
+    return await get(searchUrl);
+};
 
 
 const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, currentDate, csrftoken }) => {
+    const [state, dispatch] = useImmerReducer(reducer, INITIAL_STATE);
 
-    //filters
-    const [selectedZaaktypen, setSelectedZaaktypen] = useState([]);
-    const [selectedBronorganisatie, setSelectedBronorganisatie] = useState([]);
-    const filters = {
-        zaaktypen: selectedZaaktypen,
-        bronorganisaties: selectedBronorganisatie,
+    const selectedCount = countObjectKeys(state.checkboxes);
+
+    useAsync(async () => {
+        const response = await get(zakenUrl, {
+            'archiefnominatie': 'vernietigen',
+            'archiefactiedatum__lt': currentDate,
+            'ordering': 'registratiedatum,startdatum,identificatie'
+        });
+
+        if (!response.ok) {
+            dispatch({type: 'SET_ERROR', payload: response.data});
+            return;
+        }
+
+        dispatch({type: 'ZAKEN_LOADED', payload: response.data.zaken});
+    }, []);
+
+    const onFiltersChange = async (updatedFilters) => {
+        dispatch({type: 'START_FILTERING', payload: updatedFilters});
+
+        const filters = {
+            ...state.filters,
+            ...updatedFilters
+        };
+
+        const response = await fetchZaken(zakenUrl, filters, currentDate);
+
+        if (!response.ok) {
+            dispatch({type: 'SET_ERROR', payload: response.data});
+            return;
+        }
+
+        dispatch({type: 'FINISHED_FILTERING', payload: response.data.zaken});
     };
-
-    //load zaken
-    const [error, setError] = useState(null);
-    const [isLoaded, setIsLoaded] = useState(false);
-    const [zaken, setZaken] = useState([]);
-
-    // Available bronorganisaties
-    const [bronorganisaties, setBronorganisaties] = useState([]);
-
-    // checkboxes
-    const [checkboxes, setCheckboxes] = useState({});
-    const selectedCount = countObjectKeys(checkboxes);
-
-    // modal
-    const [modalIsOpen, setIsOpen] = React.useState(false);
-    const openModal = () => setIsOpen(true);
-
-    // fetch zaken
-    useEffect(() => {
-        const fullUrl = getSearchZakenUrl(zakenUrl, filters, currentDate);
-        window.fetch(fullUrl)
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    setIsLoaded(true);
-                    setZaken(result.zaken);
-
-                    // refresh checkboxes and deselect them
-                    const refreshedCheckboxes = result.zaken.filter(zaak => zaak.available).reduce((result, zaak) => {
-                            return {...result, [zaak.url]: false};
-                        }, {});
-                    setCheckboxes(refreshedCheckboxes);
-
-                    // Should only get the available bronorganisaties once
-                    if (bronorganisaties.length === 0) {
-                        // Get all the unique values of the bronorganisatie
-                        const uniqueBronorganisaties = new Set(result.zaken.map((zaak) => zaak.bronorganisatie));
-                        setBronorganisaties(Array.from(uniqueBronorganisaties));
-                    }
-                },
-                (error) => {
-                    setIsLoaded(true);
-                    setError(error);
-                }
-            );
-    }, [selectedZaaktypen, selectedBronorganisatie]);
-
-    const bronorganisatieCheckboxes = bronorganisaties.map((bronorganisatie, index) => {
-        return (
-            <label key={index}>
-                <CheckboxInput
-                    checked={selectedBronorganisatie.includes(bronorganisatie)}
-                    name={bronorganisatie}
-                    onChange={(e) => {
-                        if (e.target.checked){
-                            setSelectedBronorganisatie([...selectedBronorganisatie, bronorganisatie]);
-                        } else {
-                            setSelectedBronorganisatie(selectedBronorganisatie.filter((value) => {
-                                return value !== bronorganisatie;
-                            }));
-                        }
-                    }}
-                />
-                {bronorganisatie}
-            </label>
-        );
-    })
 
     return (
         <>
@@ -113,7 +149,7 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, currentDate, csr
                     <button
                         type="button"
                         className="btn"
-                        onClick={openModal}
+                        onClick={() => dispatch({type: 'TOGGLE_MODAL', payload: true})}
                         disabled={!selectedCount}
                     >Aanmaken</button>
                     <div>{selectedCount} zaken geselecteerd</div>
@@ -126,16 +162,23 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, currentDate, csr
                         <label htmlFor={"id_zaaktypen"}>Zaaktypen</label>
                         <ZaaktypeSelect
                             zaaktypen={zaaktypen}
-                            selectedZaaktypen={selectedZaaktypen}
-                            setSelectedZaaktypen={(selected) => {
-                                setIsLoaded(false);
-                                setSelectedZaaktypen(selected);
-                            }}
+                            selectedZaaktypen={state.filters.zaaktypen}
+                            setSelectedZaaktypen={
+                                (selectedZaaktypen) => onFiltersChange({zaaktypen: selectedZaaktypen})
+                            }
                         />
                     </div>
                     <div className="filter-group__item">
                         <label htmlFor={"id_bronorganisaties"}>Bronorganisatie</label>
-                        {bronorganisatieCheckboxes}
+                        <BronorganisatieSelect
+                            bronorganisaties={state.bronorganisaties}
+                            selectedBronorganisaties={state.filters.bronorganisaties}
+                            onChange={
+                                (selectedBronorganisaties) => onFiltersChange(
+                                    {bronorganisaties: selectedBronorganisaties}
+                                )
+                            }
+                        />
                     </div>
                 </aside>
 
@@ -146,20 +189,20 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, currentDate, csr
                         de archiefactiedatum is voor vandaag.
                     </div>
                     <ZakenTable
-                        zaken={zaken}
-                        isLoaded={isLoaded}
-                        error={error}
-                        checkboxes={checkboxes}
-                        setCheckboxes={setCheckboxes}
+                        zaken={state.zaken}
+                        isLoaded={state.isLoaded}
+                        error={state.error}
+                        checkboxes={state.checkboxes}
+                        setCheckboxes={(checkboxes) => dispatch({type: 'UPDATE_CHECKBOXES', payload: checkboxes})}
                     />
                 </section>
             </div>
 
             <CreateModal
-                zaken={zaken}
-                checkboxes={checkboxes}
-                modalIsOpen={modalIsOpen}
-                setIsOpen={setIsOpen}
+                zaken={state.zaken}
+                checkboxes={state.checkboxes}
+                modalIsOpen={state.modalIsOpen}
+                setIsOpen={(isOpen) => dispatch({type: 'TOGGLE_MODAL', payload: isOpen})}
                 reviewers={reviewers}
                 url={url}
                 csrftoken={csrftoken}
