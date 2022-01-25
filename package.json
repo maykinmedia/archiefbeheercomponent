@@ -20,12 +20,14 @@
   "homepage": "https://maykinmedia.nl",
   "dependencies": {
     "axios": "^0.21.2",
+    "immer": "^9.0.12",
     "microscope-sass": "latest",
     "react": "^16.13.1",
     "react-collapse": "^5.0.1",
     "react-dom": "^16.13.1",
     "react-modal": "^3.11.2",
-    "react-use": "^17.3.1"
+    "react-use": "^17.3.1",
+    "use-immer": "^0.6.0"
   },
   "devDependencies": {
     "@babel/core": "latest",
