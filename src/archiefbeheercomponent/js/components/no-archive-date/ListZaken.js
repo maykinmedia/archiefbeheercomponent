@@ -10,6 +10,7 @@ import {Input} from '../../forms/inputs';
 import {ZaaktypeSelect} from '../destruction-list-create/zaaktype-select';
 import {UrlsContext} from '../context';
 import ExportButton from './ExportButton';
+import {fetchZaken} from '../utils';
 
 
 const INITIAL_STATE = {
@@ -81,41 +82,20 @@ const reducer = (draft, action) => {
 };
 
 
-const fetchZaken = async (path, filters) => {
-    let searchUrl = new URL(window.location.href);
-    searchUrl.pathname = path;
-
-    let queryParams = {
-        'archiefactiedatum__isnull': true,
-        'einddatum__isnull': false,
-        'sort_by_zaaktype': true
-    };
-    if (filters.zaaktypen.length) queryParams['zaaktype__in'] = filters.zaaktypen;
-    if (!!filters.identificatie) queryParams['identificatie'] = filters.identificatie;
-
-    const urlSearchParams = new URLSearchParams(queryParams);
-
-    for (const [paramKey, paramValue] of urlSearchParams.entries()) {
-        searchUrl.searchParams.set(paramKey, paramValue);
-    }
-
-    return await get(searchUrl);
-};
-
-
-
 const ListZaken = ({zakenUrl, zaaktypen}) => {
     const [state, dispatch] = useImmerReducer(reducer, INITIAL_STATE);
 
     const urlContext = useContext(UrlsContext);
     const exportZakenUrl = urlContext.exportZakenUrl;
 
+    const queryParams = {
+        'archiefactiedatum__isnull': true,
+        'einddatum__isnull': false,
+        'sort_by_zaaktype': true
+    };
+
     useAsync(async () => {
-        const response = await get(zakenUrl, {
-            'archiefactiedatum__isnull': true,
-            'einddatum__isnull': false,
-            'sort_by_zaaktype': true
-        });
+        const response = await get(zakenUrl, queryParams);
 
         if (!response.ok) {
             dispatch({type: 'SET_ERROR', payload: response.data});
@@ -133,7 +113,7 @@ const ListZaken = ({zakenUrl, zaaktypen}) => {
             ...updatedFilters
         };
 
-        const response = await fetchZaken(zakenUrl, filters);
+        const response = await fetchZaken(zakenUrl, filters, queryParams);
 
         if (!response.ok) {
             dispatch({type: 'SET_ERROR', payload: response.data});

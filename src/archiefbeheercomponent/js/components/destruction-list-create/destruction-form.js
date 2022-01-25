@@ -8,6 +8,7 @@ import { ZaaktypeSelect} from './zaaktype-select';
 import { countObjectKeys } from '../../utils';
 import {get} from '../../utils/api';
 import BronorganisatieSelect from './BronorganisatieSelect';
+import {fetchZaken} from '../utils';
 
 
 const INITIAL_STATE = {
@@ -81,39 +82,18 @@ const reducer = (draft, action) => {
 };
 
 
-const fetchZaken = async (path, filters, currentDate) => {
-    let searchUrl = new URL(window.location.href);
-    searchUrl.pathname = path;
+const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, currentDate, csrftoken }) => {
+    const [state, dispatch] = useImmerReducer(reducer, INITIAL_STATE);
 
-    let queryParams = {
+    const queryParams = {
         'archiefnominatie': 'vernietigen',
         'archiefactiedatum__lt': currentDate,
         'ordering': 'registratiedatum,startdatum,identificatie'
     };
-    if (filters.zaaktypen.length) queryParams['zaaktype__in'] = filters.zaaktypen;
-    if (filters.bronorganisaties.length) queryParams['bronorganisatie__in'] = filters.bronorganisaties;
-
-    const urlSearchParams = new URLSearchParams(queryParams);
-
-    for (const [paramKey, paramValue] of urlSearchParams.entries()) {
-        searchUrl.searchParams.set(paramKey, paramValue);
-    }
-
-    return await get(searchUrl);
-};
-
-
-const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, currentDate, csrftoken }) => {
-    const [state, dispatch] = useImmerReducer(reducer, INITIAL_STATE);
-
     const selectedCount = countObjectKeys(state.checkboxes);
 
     useAsync(async () => {
-        const response = await get(zakenUrl, {
-            'archiefnominatie': 'vernietigen',
-            'archiefactiedatum__lt': currentDate,
-            'ordering': 'registratiedatum,startdatum,identificatie'
-        });
+        const response = await get(zakenUrl, queryParams);
 
         if (!response.ok) {
             dispatch({type: 'SET_ERROR', payload: response.data});
@@ -131,7 +111,7 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, currentDate, csr
             ...updatedFilters
         };
 
-        const response = await fetchZaken(zakenUrl, filters, currentDate);
+        const response = await fetchZaken(zakenUrl, filters, queryParams);
 
         if (!response.ok) {
             dispatch({type: 'SET_ERROR', payload: response.data});
