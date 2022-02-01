@@ -1,25 +1,24 @@
 import React from 'react';
 import Modal from 'react-modal';
+import PropTypes from 'prop-types';
 
 import {DateInput} from '../../forms/inputs';
 import {RadioSelect} from '../../forms/select';
 import {ARCHIEFNOMINATIE_CHOICES} from '../constants';
 
 
-const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, setAction, archiveInputs}) => {
-    const {archiefnominatie, setArchiefnominatie, archiefactiedatum, setArchiefactiedatum} = archiveInputs;
-    const closeModal = () => setIsOpen(false);
-
-    const currentAction = (
+const ListItemModal = ({modalIsOpen, listItem, zaak, archiefnominatie, archiefactiedatum, onChange}) => {
+    const archivingDetailsChanged = (
         archiefnominatie !== zaak.archiefnominatie || archiefactiedatum !== zaak.archiefactiedatum
-            ? "change_and_remove"
-            : "remove"
     );
 
     return (
         <Modal isOpen={modalIsOpen} className="modal" bodyOpenClassName="modal-background__open">
             <article className="list-item-modal">
-                <button onClick={closeModal} className="modal__close btn">&times;</button>
+                <button
+                    onClick={() => onChange({modalIsOpen: false})}
+                    className="modal__close btn"
+                >&times;</button>
                 <h1 className="title modal__title">{zaak.identificatie}</h1>
 
                 <div className="modal__section">
@@ -28,7 +27,7 @@ const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, setAction, archi
 
                         <h3>Opmerkingen</h3>
                         <p>
-                            { listItem.review_text ? listItem.review_text : "Geen opmerkingen"}
+                            { listItem.review_text ? listItem.review_text : 'Geen opmerkingen'}
                         </p>
                     </section>
                     <section className="content-panel modal__item">
@@ -40,7 +39,7 @@ const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, setAction, archi
                                 name="archiefnominatie"
                                 choices={ARCHIEFNOMINATIE_CHOICES}
                                 initialValue={archiefnominatie}
-                                onChange={(e) => setArchiefnominatie(e.target.value)}
+                                onChange={(e) => onChange({archiefnominatie: e.target.value})}
                             />
                         </label>
                         </div>
@@ -50,7 +49,7 @@ const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, setAction, archi
                                 <DateInput
                                     name="archiefactiedatum"
                                     initial={archiefactiedatum}
-                                    onChange={(e) => setArchiefactiedatum(e.target.value)}
+                                    onChange={(e) => onChange({archiefactiedatum: e.target.value})}
                                 />
                             </label>
                         </div>
@@ -60,8 +59,8 @@ const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, setAction, archi
                 <div className="modal__buttons">
                     <button
                         onClick={(e) => {
-                            setAction(currentAction);
-                            closeModal();
+                            const action = archivingDetailsChanged ? 'change_and_remove' : 'remove';
+                            onChange({action: action, modalIsOpen: false});
                         }}
                         className="btn"
                     >Zaak uitzonderen
@@ -69,10 +68,12 @@ const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, setAction, archi
 
                     <button
                         onClick={(e) => {
-                            setAction("");
-                            setArchiefnominatie(zaak.archiefnominatie);
-                            setArchiefactiedatum(zaak.archiefactiedatum);
-                            closeModal();
+                            onChange({
+                                action: '',
+                                archiefactiedatum: zaak.archiefactiedatum,
+                                archiefnominatie: zaak.archiefnominatie,
+                                modalIsOpen: false,
+                            });
                         }}
                         className="btn"
                     >Zaak behouden
@@ -83,6 +84,17 @@ const ListItemModal = ({modalIsOpen, setIsOpen, listItem, zaak, setAction, archi
         </Modal>
     );
 };
+
+
+ListItemModal.propTypes = {
+    modalIsOpen: PropTypes.bool.isRequired,
+    listItem: PropTypes.object.isRequired,
+    zaak: PropTypes.object.isRequired,
+    archiefnominatie: PropTypes.string.isRequired,
+    archiefactiedatum: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+}
+
 
 export { ListItemModal };
 

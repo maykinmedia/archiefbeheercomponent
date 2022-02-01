@@ -1,9 +1,11 @@
-import React, {useContext} from "react";
+import React, {useContext} from 'react';
+import PropTypes from 'prop-types';
 
-import { ConstantsContext } from "./context";
-import { ReviewItemForm } from "./review-item-form";
-import { ManagementForm } from "../../forms/management-form";
-import ErrorMessage from "../ErrorMessage";
+import { ConstantsContext } from './context';
+import { ReviewItemForm } from './review-item-form';
+import { ManagementForm } from '../../forms/management-form';
+import ErrorMessage from '../ErrorMessage';
+import {Loader} from '../loader';
 
 
 const ReviewItemFormset = ({ error, isLoaded, items }) => {
@@ -13,17 +15,8 @@ const ReviewItemFormset = ({ error, isLoaded, items }) => {
         return <ErrorMessage message={error} />;
     }
 
-    //set up forms
-    const forms = items.map(
-        (data, index) => <ReviewItemForm
-            key={data.listItem.id}
-            index={index}
-            data={data}
-        />
-    );
-
     if (!isLoaded) {
-        return <div>Loading...</div>;
+        return <Loader/>;
     }
 
     return (
@@ -54,12 +47,27 @@ const ReviewItemFormset = ({ error, isLoaded, items }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    { forms }
+                    {
+                        items.map((data, index) => (
+                            <ReviewItemForm
+                                key={data.listItem.id}
+                                index={index}
+                                data={data}
+                            />
+                        ))
+                    }
                 </tbody>
             </table>
         </>
     );
 
+};
+
+
+ReviewItemFormset.propTypes = {
+    error: PropTypes.string,
+    isLoaded: PropTypes.bool,
+    items: PropTypes.arrayOf(PropTypes.object),
 };
 
 

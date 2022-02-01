@@ -1,75 +1,126 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext} from 'react';
+import { useImmerReducer } from 'use-immer';
 import useAsync from 'react-use/esm/useAsync';
 import PropTypes from 'prop-types';
 
 import {get} from '../../utils/api';
-import { countObjectKeys, getObjectKeys } from '../../utils';
 import {ZakenTable} from '../destruction-list-create/zaken-table';
 import ErrorMessage from '../ErrorMessage';
 import {Input} from '../../forms/inputs';
 import {ZaaktypeSelect} from '../destruction-list-create/zaaktype-select';
 import {UrlsContext} from '../context';
+import ExportButton from './ExportButton';
+import {fetchZaken} from '../utils';
 
-const ExportButton = ({exportZakenUrl, checkboxes}) => {
-    const countSelectedCheckboxes = countObjectKeys(checkboxes);
 
-    const getExportUrl = () => {
-      let exportUrl = new URL(window.location.href);
-      exportUrl.pathname = exportZakenUrl;
-      exportUrl.searchParams.set('zaken_urls', getObjectKeys(checkboxes));
-      return exportUrl.href;
-    };
-
-    return (
-        <>
-            <a
-                href={countSelectedCheckboxes ? getExportUrl() : '#'}
-                type="button"
-                className={`btn ${countSelectedCheckboxes ? '' : 'btn--disabled'}`}
-                title="Exporteer de geselecteerde zaken als een Excel spreadsheet."
-            >Exporteren</a>
-            <div>{countSelectedCheckboxes} zaken geselecteerd</div>
-        </>
-    );
+const INITIAL_STATE = {
+    zaken: [],
+    checkboxes: {},
+    filters: {
+        identificatie: '',
+        zaaktypen: []
+    },
+    error: null,
+    isLoaded: false,
 };
 
 
+const reducer = (draft, action) => {
+    switch (action.type) {
+        case 'ZAKEN_LOADED': {
+            const zaken = action.payload;
+            draft.zaken = zaken;
 
-const ListZaken = ({zakenUrl, zaaktypeChoices}) => {
-    const [error, setError] = useState(null);
-    const [zaken, setZaken] = useState([]);
-    const [checkboxes, setCheckboxes] = useState([]);
-    const [identificatieSearch, setIdentificatieSearch] = useState('');
-    const [selectedZaaktypen, setSelectedZaaktypen] = useState([]);
+            // Object with items:  zaak.url: bool which keeps track of which zaak have been selected
+            draft.checkboxes = zaken.filter(zaak => zaak.available).reduce((result, zaak) => {
+                return {...result, [zaak.url]: false};
+            }, {});
+
+            const uniqueBronorganisaties = new Set(zaken.map((zaak) => zaak.bronorganisatie));
+            draft.bronorganisaties = Array.from(uniqueBronorganisaties);
+
+            draft.isLoaded = true;
+            break;
+        }
+        case 'SET_ERROR': {
+            draft.isLoaded = true;
+            draft.error = action.payload;
+            break;
+        }
+        case 'START_FILTERING': {
+            draft.isLoaded = false;
+
+            const updatedFilters = action.payload;
+            draft.filters = {
+                ...draft.filters,
+                ...updatedFilters
+            };
+            break;
+        }
+        case 'FINISHED_FILTERING': {
+            const zaken = action.payload;
+            draft.zaken = zaken;
+            // Object with items:  zaak.url: bool which keeps track of which zaak have been selected
+            draft.checkboxes = zaken.filter(zaak => zaak.available).reduce((result, zaak) => {
+                return {...result, [zaak.url]: false};
+            }, {});
+            draft.isLoaded = true;
+            break;
+        }
+        case 'UPDATE_CHECKBOXES': {
+            draft.checkboxes = action.payload;
+            break;
+        }
+        case 'TOGGLE_MODAL': {
+            draft.modalIsOpen = action.payload;
+            break;
+        }
+        default: {
+          throw new Error(`Unknown action ${action.type}`);
+        }
+    }
+};
+
+
+const ListZaken = ({zakenUrl, zaaktypen}) => {
+    const [state, dispatch] = useImmerReducer(reducer, INITIAL_STATE);
 
     const urlContext = useContext(UrlsContext);
     const exportZakenUrl = urlContext.exportZakenUrl;
 
-    // Fetch zaken
-    const {loading} = useAsync( async () => {
-        const response = await get(zakenUrl, {
-            'archiefactiedatum__isnull': true,
-            'einddatum__isnull': false,
-            'sort_by_zaaktype': true
-        });
+    const queryParams = {
+        'archiefactiedatum__isnull': true,
+        'einddatum__isnull': false,
+        'sort_by_zaaktype': true
+    };
+
+    useAsync(async () => {
+        const response = await get(zakenUrl, queryParams);
 
         if (!response.ok) {
-            setError(true);
+            dispatch({type: 'SET_ERROR', payload: response.data});
             return;
         }
 
-        setZaken(response.data.zaken);
-        const unselectedCheckboxes = response.data.zaken.filter(zaak => zaak.available).reduce((result, zaak) => {
-            return {...result, [zaak.url]: false};
-        }, {});
-        setCheckboxes(unselectedCheckboxes);
-
+        dispatch({type: 'ZAKEN_LOADED', payload: response.data.zaken});
     }, []);
 
-    const filterZaken = (currentZaak, index) => {
-        const inIdentificatieFilter = (currentZaak.identificatie.includes(identificatieSearch) || !identificatieSearch.length);
-        const inZaaktypeFilter = (selectedZaaktypen.includes(currentZaak.zaaktype.url) || !selectedZaaktypen.length);
-        return inIdentificatieFilter && inZaaktypeFilter;
+    const onFiltersChange = async (updatedFilters) => {
+        dispatch({type: 'START_FILTERING', payload: updatedFilters});
+
+        const filters = {
+            ...state.filters,
+            ...updatedFilters
+        };
+
+        const response = await fetchZaken(zakenUrl, filters, queryParams);
+
+        if (!response.ok) {
+            dispatch({type: 'SET_ERROR', payload: response.data});
+            return;
+        }
+
+        dispatch({type: 'FINISHED_FILTERING', payload: response.data.zaken});
     };
 
     return (
@@ -77,7 +128,7 @@ const ListZaken = ({zakenUrl, zaaktypeChoices}) => {
             <header className="destruction-create__header">
                 <h1 className="title destruction-create__title">Zaken zonder archiefactiedatum</h1>
                 <nav className="destruction-create__nav">
-                    <ExportButton exportZakenUrl={exportZakenUrl} checkboxes={checkboxes}/>
+                    <ExportButton exportZakenUrl={exportZakenUrl} checkboxes={state.checkboxes}/>
                 </nav>
             </header>
             <div className="destruction-create__content">
@@ -91,18 +142,18 @@ const ListZaken = ({zakenUrl, zaaktypeChoices}) => {
                                 type="text"
                                 name="zaak-identificatie"
                                 id="id_zaak-identificatie"
-                                onChange={(event) => setIdentificatieSearch(event.target.value)}
+                                onChange={(event) => onFiltersChange({identificatie: event.target.value})}
                             />
                         </div>
                     </div>
                     <div className="filter-group__item">
                         <label htmlFor={"id_zaaktypen"}>Zaaktypen</label>
                         <ZaaktypeSelect
-                            zaaktypen={zaaktypeChoices}
-                            selectedZaaktypen={selectedZaaktypen}
-                            setSelectedZaaktypen={(selected) => {
-                                setSelectedZaaktypen(selected);
-                            }}
+                            zaaktypen={zaaktypen}
+                            selectedZaaktypen={state.filters.zaaktypen}
+                            setSelectedZaaktypen={
+                                (selectedZaaktypen) => onFiltersChange({zaaktypen: selectedZaaktypen})
+                            }
                         />
                     </div>
                 </aside>
@@ -113,13 +164,13 @@ const ListZaken = ({zakenUrl, zaaktypeChoices}) => {
                         maar ze hebben geen archiefactiedatum.
                     </div>
                     {
-                        !error
+                        !state.error
                         ? (<ZakenTable
-                            zaken={zaken.filter(filterZaken)}
-                            isLoaded={!loading}
-                            error={error}
-                            checkboxes={checkboxes}
-                            setCheckboxes={setCheckboxes}
+                            zaken={state.zaken}
+                            isLoaded={state.isLoaded}
+                            error={state.error}
+                            checkboxes={state.checkboxes}
+                            setCheckboxes={(checkboxes) => dispatch({type: 'UPDATE_CHECKBOXES', payload: checkboxes})}
                             canUpdateZaak={true}
                         />)
                         : <ErrorMessage />
@@ -133,6 +184,7 @@ const ListZaken = ({zakenUrl, zaaktypeChoices}) => {
 
 ListZaken.propTypes = {
     zakenUrl: PropTypes.string.isRequired,
+    zaaktypen: PropTypes.arrayOf(PropTypes.array)
 };
 
 

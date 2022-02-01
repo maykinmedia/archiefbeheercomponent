@@ -1,45 +1,34 @@
-import React, {useContext, useEffect, useState} from "react";
-import axios from "axios";
+import React, {useContext, useState} from 'react';
+import useAsync from 'react-use/esm/useAsync';
+import PropTypes from 'prop-types';
 
-import { ListItemForm } from "./list-item-form";
-import { ManagementForm } from "../../forms/management-form";
-import { FormsetConfigContext } from "./context";
-import ErrorMessage from "../ErrorMessage";
+import { ListItemForm } from './list-item-form';
+import { ManagementForm } from '../../forms/management-form';
+import { FormsetConfigContext } from './context';
+import ErrorMessage from '../ErrorMessage';
+import {Loader} from '../loader';
+import {get} from '../../utils/api';
 
 
 const ListItemFormset = ({itemsUrl}) => {
+    const [items, setItems] = useState([]);
+    const [error, setError] = useState(null);
+
     const formsetConfig = useContext(FormsetConfigContext);
 
-    // load list items
-    const [error, setError] = useState(null);
-    const [isLoaded, setIsLoaded] = useState(false);
-    const [items, setItems] = useState([]);
+    const {loading} = useAsync(async () => {
+        const response = await get(itemsUrl);
 
-    //set up forms
-    const forms = items.map(
-        (data, index) => <ListItemForm
-            key={data.listItem.id}
-            index={index}
-            data={data}
-        />
-    );
+        if (!response.ok) {
+            setError(response.data);
+            return;
+        }
 
-    // fetch list items
-    useEffect(() => {
-        axios.get(itemsUrl).then(
-            (result) => {
-                setIsLoaded(true);
-                if (result.data.error) {
-                    setError(result.data.error);
-                } else {
-                    setItems(result.data.items);
-                }
-            },
-            (error) => {
-                setIsLoaded(true);
-                setError(error.message);
-            }
-        );
+        if (response.data.error) {
+            setError(response.data.error);
+        } else {
+            setItems(response.data.items);
+        }
     }, []);
 
     if (error) {
@@ -51,8 +40,13 @@ const ListItemFormset = ({itemsUrl}) => {
         );
     }
 
-    if (!isLoaded) {
-        return <div>Loading...</div>;
+    if (loading) {
+        return (
+            <section className="list-items">
+                <h2 className="list-items__header section-title">Zaakdossiers</h2>
+                <Loader/>
+            </section>
+        );
     }
 
     return (
@@ -86,12 +80,25 @@ const ListItemFormset = ({itemsUrl}) => {
                     </tr>
                 </thead>
                 <tbody>
-                    { forms }
+                    {
+                        items.map((data, index) => (
+                            <ListItemForm
+                                key={data.listItem.id}
+                                index={index}
+                                data={data}
+                            />
+                        ))
+                    }
                 </tbody>
             </table>
         </section>
     );
 
+};
+
+
+ListItemFormset.propTypes = {
+    itemsUrl: PropTypes.string,
 };
 
 
