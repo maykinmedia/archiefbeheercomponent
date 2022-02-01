@@ -1,5 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import {CheckboxInput} from '../../forms/inputs';
+
 
 const BronorganisatieSelect = ({bronorganisaties, selectedBronorganisaties, onChange}) => {
 
@@ -36,5 +39,13 @@ const BronorganisatieSelect = ({bronorganisaties, selectedBronorganisaties, onCh
         </>
     );
 };
+
+
+BronorganisatieSelect.propTypes = {
+    bronorganisaties: PropTypes.arrayOf(PropTypes.string).isRequired,
+    selectedBronorganisaties: PropTypes.arrayOf(PropTypes.string).isRequired,
+    onChange: PropTypes.func.isRequired,
+};
+
 
 export default BronorganisatieSelect;

@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
 import useAsync from 'react-use/esm/useAsync';
+import PropTypes from 'prop-types';
 
 import {HiddenInput} from '../../forms/inputs';
 import {ReviewItemFormset} from './review-item-formset';
@@ -131,6 +132,14 @@ const ReviewForm = ({ itemsUrl, destructionList, reviewComment, reviewChoices })
             </section>
         </SuggestionContext.Provider>
     )
+};
+
+
+ReviewForm.propTypes = {
+    itemsUrl: PropTypes.string.isRequired,
+    destructionList: PropTypes.object.isRequired,
+    reviewComment: PropTypes.string,
+    reviewChoices: PropTypes.array
 };
 
 

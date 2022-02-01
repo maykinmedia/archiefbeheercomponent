@@ -1,11 +1,11 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import Modal from "react-modal";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Modal from 'react-modal';
 
 import { jsonScriptToVar } from '../../utils';
-import { ListItemFormset } from "./list-item-formset";
-import { FormsetConfigContext, CanUpdateContext } from "./context";
-import {TextInput} from "../../forms/inputs";
+import { ListItemFormset } from './list-item-formset';
+import { FormsetConfigContext, CanUpdateContext } from './context';
+import {TextInput} from '../../forms/inputs';
 
 
 const mount = () => {

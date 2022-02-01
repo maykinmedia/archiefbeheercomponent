@@ -87,12 +87,12 @@ const ListItemModal = ({modalIsOpen, listItem, zaak, archiefnominatie, archiefac
 
 
 ListItemModal.propTypes = {
-    modalIsOpen: PropTypes.bool,
-    listItem: PropTypes.object,
-    zaak: PropTypes.object,
-    archiefnominatie: PropTypes.string,
-    archiefactiedatum: PropTypes.string,
-    onChange: PropTypes.func,
+    modalIsOpen: PropTypes.bool.isRequired,
+    listItem: PropTypes.object.isRequired,
+    zaak: PropTypes.object.isRequired,
+    archiefnominatie: PropTypes.string.isRequired,
+    archiefactiedatum: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
 }
 
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import {countObjectKeys, getObjectKeys} from '../../utils';
 
@@ -25,5 +26,12 @@ const ExportButton = ({exportZakenUrl, checkboxes}) => {
         </>
     );
 };
+
+
+ExportButton.propTypes = {
+    exportZakenUrl: PropTypes.string.isRequired,
+    checkboxes: PropTypes.object.isRequired,
+};
+
 
 export default ExportButton;
