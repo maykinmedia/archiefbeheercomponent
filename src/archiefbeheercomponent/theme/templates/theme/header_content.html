@@ -1,3 +1,5 @@
 <div class="logo">
-    <img class="logo__img" src="{% if config.logo %}{{ config.logo.url }}{% endif %}">
+    <a href="{% url 'entry' %}">
+        <img class="logo__img" src="{% if config.logo %}{{ config.logo.url }}{% endif %}">
+    </a>
 </div>
