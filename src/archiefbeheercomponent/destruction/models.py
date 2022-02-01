@@ -57,7 +57,7 @@ class DestructionList(models.Model):
     contains_sensitive_info = models.BooleanField(
         verbose_name=_("contains sensitive information"),
         help_text=_(
-            "Specify whether this list contains privacy sensitive data. "
+            "Specify whether this destruction list contains privacy sensitive data. "
             "If set to true, the report of destruction will NOT contain case "
             "descriptions or the remarks by the archivist."
         ),
@@ -416,7 +416,7 @@ class ArchiveConfig(SingletonModel):
         _("days until reminder"),
         default=7,
         help_text=_(
-            "Number of days until an email is sent reminding that the list needs to be dealt with"
+            "Number of days until an email is sent reminding that the destruction list needs to be dealt with"
         ),
     )
 
@@ -478,7 +478,9 @@ class StandardReviewAnswer(OrderedModel):
     reason = models.CharField(
         verbose_name=_("reason"),
         max_length=200,
-        help_text=_("Reason for the reviewer to request changes to a list."),
+        help_text=_(
+            "Reason for the reviewer to request changes to a destruction list."
+        ),
     )
 
     class Meta(OrderedModel.Meta):

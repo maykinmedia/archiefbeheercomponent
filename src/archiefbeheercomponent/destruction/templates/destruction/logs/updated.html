@@ -6,10 +6,10 @@
 <div class="log-item__body">
     {% if log.extra_data.n_items %}
         {% blocktrans with list=log.content_object role=log.user.role count counter=log.extra_data.n_items trimmed %}
-            User with role <strong>{{ role }}</strong> has updated the list <strong>{{ list }}</strong>
+            User with role <strong>{{ role }}</strong> has updated the destruction list <strong>{{ list }}</strong>
             and removed {{ counter }} case:
         {% plural %}
-            User with role <strong>{{ role }}</strong> has updated the list <strong>{{ list }}</strong>
+            User with role <strong>{{ role }}</strong> has updated the destruction list <strong>{{ list }}</strong>
             and removed {{ counter }} cases:
         {% endblocktrans %}
 
@@ -20,7 +20,7 @@
         </div>
     {% else %}
         {% blocktrans with list=log.content_object role=log.user.role trimmed %}
-            User with role <strong>{{ role }}</strong> has resubmitted the list <strong>{{ list }}</strong>
+            User with role <strong>{{ role }}</strong> has resubmitted the destruction list <strong>{{ list }}</strong>
             for review.
         {% endblocktrans %}
     {% endif %}

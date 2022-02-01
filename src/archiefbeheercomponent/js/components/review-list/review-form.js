@@ -86,7 +86,7 @@ const ReviewForm = ({ itemsUrl, destructionList, reviewComment, reviewChoices })
             }
             <header className="review-create__header">
                 <div>
-                    <h1 className="title">{`Lijst "${destructionList.name}"`}</h1>
+                    <h1 className="title">{`Vernietigingslijst "${destructionList.name}"`}</h1>
                     <span className="review-create__list-details">
                         {`${destructionList.created} geleden aangemaakt door ${destructionList.author}`}
                     </span>

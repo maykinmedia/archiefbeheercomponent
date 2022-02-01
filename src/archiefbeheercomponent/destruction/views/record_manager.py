@@ -191,7 +191,7 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
             if destruction_list.status == ListStatus.completed:
                 return HttpResponseBadRequest(
                     _(
-                        "The destruction of this list can't be aborted because it has already been completed."
+                        "The deletion of this destruction list can't be aborted because it has already been completed."
                     )
                 )
 

@@ -476,7 +476,9 @@ class NotifyTests(TestCase):
 
         self.assertEqual(notification.destruction_list, destruction_list)
         self.assertEqual(notification.user, destruction_list.author)
-        self.assertEqual(notification.message, _("Processing of the list is complete."))
+        self.assertEqual(
+            notification.message, _("Processing of the destruction list is complete.")
+        )
 
     def test_complete_and_notify_process_owner(self, m):
         process_owner = UserFactory.create(

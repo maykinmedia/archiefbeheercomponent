@@ -188,7 +188,7 @@ def complete_and_notify(list_id):
     notification = Notification.objects.create(
         destruction_list=destruction_list,
         user=destruction_list.author,
-        message=_("Processing of the list is complete."),
+        message=_("Processing of the destruction list is complete."),
     )
 
     # Create the destruction report
