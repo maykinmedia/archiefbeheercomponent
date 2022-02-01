@@ -1,9 +1,8 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, {useContext } from 'react';
 import Modal from 'react-modal';
-import axios from "axios";
 
-import {ConstantsContext, SuggestionContext} from "./context";
-import {TextInput} from "../../forms/inputs";
+import {SuggestionContext} from './context';
+import {TextInput} from '../../forms/inputs';
 
 
 const ZaakDetailModal = ({ modalIsOpen, setIsOpen, zaak, index, comment, setComment}) => {
