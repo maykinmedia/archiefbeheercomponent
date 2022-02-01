@@ -1,10 +1,11 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import Modal from "react-modal";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Modal from 'react-modal';
 
 import { jsonScriptToVar } from '../../utils';
-import { ConstantsContext } from "./context";
-import { ReviewForm } from "./review-form";
+import { ConstantsContext } from './context';
+import { ReviewForm } from './review-form';
+import ErrorBoundary from '../ErrorBoundary';
 
 
 const mount = () => {
@@ -24,12 +25,14 @@ const mount = () => {
 
     ReactDOM.render(
         <ConstantsContext.Provider value={constants}>
-            <ReviewForm
-                itemsUrl={itemsUrl}
-                destructionList={destructionList}
-                reviewComment={reviewComment}
-                reviewChoices={reviewChoices}
-            />
+            <ErrorBoundary>
+                <ReviewForm
+                    itemsUrl={itemsUrl}
+                    destructionList={destructionList}
+                    reviewComment={reviewComment}
+                    reviewChoices={reviewChoices}
+                />
+            </ErrorBoundary>
         </ConstantsContext.Provider>,
         node
     );

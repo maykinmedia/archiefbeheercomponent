@@ -6,6 +6,7 @@ import { jsonScriptToVar } from '../../utils';
 import { ListItemFormset } from './list-item-formset';
 import { FormsetConfigContext, CanUpdateContext } from './context';
 import {TextInput} from '../../forms/inputs';
+import ErrorBoundary from '../ErrorBoundary';
 
 
 const mount = () => {
@@ -34,9 +35,11 @@ const mount = () => {
             }
             <FormsetConfigContext.Provider value={formsetConfig}>
                 <CanUpdateContext.Provider value={canUpdate === 'True'}>
-                    <ListItemFormset
-                        itemsUrl={itemsUrl}
-                    />
+                    <ErrorBoundary>
+                        <ListItemFormset
+                            itemsUrl={itemsUrl}
+                        />
+                    </ErrorBoundary>
                 </CanUpdateContext.Provider>
             </FormsetConfigContext.Provider>
         </React.Fragment>,
