@@ -1,6 +1,8 @@
 """
 Test the various role landing pages.
 """
+from unittest.mock import patch
+
 from django.urls import reverse, reverse_lazy
 
 from django_webtest import WebTest
@@ -47,6 +49,21 @@ class RecordManagerTests(WebTest):
         self.assertTemplateUsed(response, "notifications/includes/notifications.html")
         self.assertContains(response, "foo!")
         self.assertNotContains(response, "bar!")
+
+    @patch("archiefbeheercomponent.theme.templatetags.theme.ThemeConfig.get_solo")
+    def test_link_to_entry_page(self, m_get_solo):
+        m_get_solo.return_value = {"logo": {"url": "/test/logo/url.png"}}
+
+        response = self.app.get(
+            reverse("destruction:record-manager-list"), user=self.user
+        )
+
+        logo_node = response.html.select("div.logo")
+        self.assertEqual(1, len(logo_node))
+
+        link_node = logo_node[0].find("a")
+        self.assertIsNotNone(link_node)
+        self.assertEqual(link_node.attrs["href"], "/")
 
     def test_notification_list_truncated(self):
         for i in range(0, 11):
