@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import ListZaken from './ListZaken';
 import {jsonScriptToVar} from '../../utils';
 import { UrlsContext } from '../context';
+import ErrorBoundary from '../ErrorBoundary';
 
 
 
@@ -16,10 +17,12 @@ const mount = () => {
 
     ReactDOM.render(
         <UrlsContext.Provider value={{archiveUpdateUrl: archiveUpdateUrl, exportZakenUrl:exportZakenUrl}}>
-            <ListZaken
-                zakenUrl={zakenUrl}
-                zaaktypen={zaaktypeChoices}
-            />
+            <ErrorBoundary>
+                <ListZaken
+                    zakenUrl={zakenUrl}
+                    zaaktypen={zaaktypeChoices}
+                />
+            </ErrorBoundary>
         </UrlsContext.Provider>,
         node
     );
