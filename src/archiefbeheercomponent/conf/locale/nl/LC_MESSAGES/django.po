@@ -327,8 +327,8 @@ msgid ""
 "If no zaak is created after processing a destruction list, the destruction "
 "report should be downloadable through the app."
 msgstr ""
-"Als er geen zaak wordt aangemaakt na het vernietigen van een lijst, zou "
-"de verklaring van vernietiging via de app kunnen worden gedownload."
+"Als er geen zaak wordt aangemaakt na het vernietigen van een lijst, dan "
+"kan de verklaring van vernietiging via de app kunnen worden gedownload."
 
 #: archiefbeheercomponent/destruction/models.py:35
 #: archiefbeheercomponent/destruction/models.py:276
@@ -559,11 +559,11 @@ msgid ""
 "Number of days until an email is sent reminding that the list needs to be "
 "dealt with"
 msgstr ""
-"Aantal dagen tot een email is verzonden als herinnering dat een actie is vereist voor een lijst"
+"Aantal dagen tot een email wordt verzonden als herinnering dat een actie is vereist voor een lijst"
 
 #: archiefbeheercomponent/destruction/models.py:425
 msgid "create zaak"
-msgstr "maak zaak aan"
+msgstr "zaak aanmaken"
 
 #: archiefbeheercomponent/destruction/models.py:428
 msgid "Should a case be created once a destruction list has been deleted?"
@@ -575,7 +575,7 @@ msgstr "bronorganisatie"
 
 #: archiefbeheercomponent/destruction/models.py:435
 msgid "Source organisation RSIN"
-msgstr "bronorganisatie RSIN"
+msgstr "Bronorganisatie RSIN"
 
 #: archiefbeheercomponent/destruction/models.py:438
 msgid "case type"
@@ -631,7 +631,7 @@ msgstr "verklaring van vernietiging downloadbaar"
 
 #: archiefbeheercomponent/destruction/models.py:469
 msgid "Should the destruction report be downloadable through the application?"
-msgstr "Zou de verklaring van vernietigen kunnen gedownload worden via de app?"
+msgstr "Zou de verklaring van vernietigen kunnen gedownload worden via de applicatie?"
 
 #: archiefbeheercomponent/destruction/models.py:474
 msgid "archive configuration"
@@ -932,7 +932,7 @@ msgstr "Aanvragende gebruiker"
 
 #: archiefbeheercomponent/destruction/views/record_manager.py:273
 msgid "Archiving details successfully updated!"
-msgstr "Archiefgegevens met succes aangepast!"
+msgstr "Archiefgegevens zijn met succes gewijzigd!"
 
 #: archiefbeheercomponent/destruction/views/record_manager.py:333
 msgid "An error has occurred. The case could not be updated."
