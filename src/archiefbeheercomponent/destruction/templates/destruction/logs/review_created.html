@@ -6,14 +6,14 @@
 <div class="log-item__body">
     {% if log.content_object.status == "rejected" %}
         {% blocktrans with list=log.content_object.destruction_list role=log.user.role trimmed %}
-            User with role <strong>{{ role }}</strong> has rejected the list <strong>{{ list }}</strong>.
+            User with role <strong>{{ role }}</strong> has rejected the destruction list <strong>{{ list }}</strong>.
         {% endblocktrans %}
     {% elif log.extra_data.n_items and log.content_object.status == "changes_requested" %}
         {% blocktrans with list=log.content_object.destruction_list role=log.user.role count counter=log.extra_data.n_items trimmed %}
-            User with role <strong>{{ role }}</strong> has reviewed the list <strong>{{ list }}</strong>
+            User with role <strong>{{ role }}</strong> has reviewed the destruction list <strong>{{ list }}</strong>
             and requested changes for {{ counter }} item:
         {% plural %}
-            User with role <strong>{{ role }}</strong> has reviewed the list <strong>{{ list }}</strong>
+            User with role <strong>{{ role }}</strong> has reviewed the destruction list <strong>{{ list }}</strong>
             and requested changes for {{ counter }} items:
         {% endblocktrans %}
 
@@ -24,7 +24,7 @@
         </div>
     {% else %}
         {% blocktrans with list=log.content_object.destruction_list role=log.user.role trimmed %}
-            User with role <strong>{{ role }}</strong> has approved the list <strong>{{ list }}</strong>.
+            User with role <strong>{{ role }}</strong> has approved the destruction list <strong>{{ list }}</strong>.
         {% endblocktrans %}
     {% endif %}
 

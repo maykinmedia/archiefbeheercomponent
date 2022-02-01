@@ -11,7 +11,9 @@ class ListStatus(DjangoChoices):
 
 class ListItemStatus(DjangoChoices):
     suggested = ChoiceItem("suggested", _("suggested for destruction"))
-    removed = ChoiceItem("removed", _("removed from the list during review"))
+    removed = ChoiceItem(
+        "removed", _("removed from the destruction list during review")
+    )
     processing = ChoiceItem("processing", _("is currently being destroyed"))
     destroyed = ChoiceItem("destroyed", _("successfully destroyed"))
     failed = ChoiceItem("failed", _("destruction did not succeed"))
@@ -25,7 +27,7 @@ class ReviewStatus(DjangoChoices):
 
 class Suggestion(DjangoChoices):
     remove = ChoiceItem("remove", _("remove"))
-    change_and_remove = ChoiceItem("change_and_remove", _("change_and_remove"))
+    change_and_remove = ChoiceItem("change_and_remove", _("change and remove"))
 
 
 class ReviewerDisplay(DjangoChoices):

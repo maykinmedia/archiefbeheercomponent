@@ -267,7 +267,7 @@ class DestructionListUpdateTests(TestCase):
         self.assertEqual(400, response.status_code)
         self.assertEqual(
             _(
-                "The destruction of this list can't be aborted because it has already been completed."
+                "The deletion of this destruction list can't be aborted because it has already been completed."
             ),
             response.content.decode("utf-8"),
         )

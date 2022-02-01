@@ -16,7 +16,7 @@
             </div>
 
         <header class="destruction-list-detail__header">
-            <h1 class="title">Lijst "{{ form.instance.name }}"</h1>
+            <h1 class="title">{% blocktrans with list_name=form.instance.name %}Destruction list "{{ list_name }}"{% endblocktrans %}</h1>
             <span>{% blocktrans with creation_date=form.instance.created %}Created on {{ creation_date }}{% endblocktrans %}</span>
         </header>
 
