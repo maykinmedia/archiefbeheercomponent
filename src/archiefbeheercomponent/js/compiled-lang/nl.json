@@ -1,0 +1,162 @@
+{
+  "6t7pHh": [
+    {
+      "type": 0,
+      "value": "Vernietigingslijst aanmaken "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "(1 zaak geselecteerd)"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "("
+            },
+            {
+              "type": 1,
+              "value": "numSelectedZaken"
+            },
+            {
+              "type": 0,
+              "value": " zaken geselecteerd)"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "numSelectedZaken"
+    }
+  ],
+  "B/qKYa": [
+    {
+      "type": 0,
+      "value": "Bronorganisatie"
+    }
+  ],
+  "CPeeyp": [
+    {
+      "offset": 0,
+      "options": {
+        "=0": {
+          "value": [
+            {
+              "type": 0,
+              "value": "Geen zaken geselecteerd"
+            }
+          ]
+        },
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "1 zaak geselecteerd"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 1,
+              "value": "numSelectedZaken"
+            },
+            {
+              "type": 0,
+              "value": " zaken geselecteerd"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "numSelectedZaken"
+    }
+  ],
+  "DKXNIo": [
+    {
+      "type": 0,
+      "value": "Eerste reviewer"
+    }
+  ],
+  "JaFqiP": [
+    {
+      "type": 0,
+      "value": "Bevat gevoelige gegevens"
+    }
+  ],
+  "LfHRE5": [
+    {
+      "type": 0,
+      "value": "Kies de eerste medewerker om de lijst te beoordelen"
+    }
+  ],
+  "MApOE3": [
+    {
+      "type": 0,
+      "value": "Aanmaken"
+    }
+  ],
+  "Mweqrj": [
+    {
+      "type": 0,
+      "value": "Naam"
+    }
+  ],
+  "PWRvgb": [
+    {
+      "type": 0,
+      "value": "Kies de tweede medewerker om de lijst te beoordelen"
+    }
+  ],
+  "S38Nt/": [
+    {
+      "type": 0,
+      "value": "De zaken in deze tabel hebben de archiefnominatie 'vernietigen' en de archiefactiedatum is voor vandaag."
+    }
+  ],
+  "T7zShQ": [
+    {
+      "type": 0,
+      "value": "Zaakdossiers"
+    }
+  ],
+  "b+xYJn": [
+    {
+      "type": 0,
+      "value": "Zaaktypen"
+    }
+  ],
+  "bN9DoH": [
+    {
+      "type": 0,
+      "value": "Geef de vernietigingslijst een herkenbare naam"
+    }
+  ],
+  "brRL0t": [
+    {
+      "type": 0,
+      "value": "Tweede reviewer"
+    }
+  ],
+  "pA4VEm": [
+    {
+      "type": 0,
+      "value": "Vernietigingslijst opstellen"
+    }
+  ],
+  "qurWp8": [
+    {
+      "type": 0,
+      "value": "Bevestig"
+    }
+  ]
+}

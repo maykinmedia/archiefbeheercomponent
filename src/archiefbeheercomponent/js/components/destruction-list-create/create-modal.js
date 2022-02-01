@@ -1,11 +1,13 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useState} from 'react';
 import Modal from 'react-modal';
+import {FormattedMessage} from 'react-intl';
 
-import { CsrfInput } from "../../forms/csrf";
-import {CheckboxInput, HiddenInput, Input, TextInput} from "../../forms/inputs";
-import { SelectInput } from "../../forms/select";
-import {Label} from "../../forms/label";
-import {ShortReviewZaaktypesContext} from "./context";
+import { CsrfInput } from '../../forms/csrf';
+import {CheckboxInput, HiddenInput, Input, TextInput} from '../../forms/inputs';
+import { SelectInput } from '../../forms/select';
+import {Label} from '../../forms/label';
+import {ShortReviewZaaktypesContext} from './context';
+
 
 
 const CreateModal = ({ zaken, checkboxes, modalIsOpen, setIsOpen, reviewers, url, csrftoken }) => {
@@ -50,7 +52,16 @@ const CreateModal = ({ zaken, checkboxes, modalIsOpen, setIsOpen, reviewers, url
     return (
         <Modal isOpen={modalIsOpen} className="modal">
             <button onClick={closeModal} className="modal__close btn">&times;</button>
-            <h1 className="title modal__title">Vernietigingslijst starten - {selectedCount} zaken</h1>
+            <h1 className="title modal__title">
+                <FormattedMessage
+                    description="Header modal create destruction list"
+                    defaultMessage="Create destruction list {numSelectedZaken, plural,
+                        one {(1 case selected)}
+                        other {({numSelectedZaken} cases selected)}
+                    }"
+                    values={{numSelectedZaken: selectedCount}}
+                />
+            </h1>
             <form method="post" encType="multipart/form-data" action={url} className="form">
                 <CsrfInput csrftoken={csrftoken}/>
                 <Input
@@ -69,19 +80,19 @@ const CreateModal = ({ zaken, checkboxes, modalIsOpen, setIsOpen, reviewers, url
 
                 <div className="form__field-group">
                     <TextInput
-                        label="Naam"
+                        label={<FormattedMessage description="destruction list 'Name' field label" defaultMessage="Name" />}
                         id={"id_name"}
                         name={"name"}
                         required={true}
-                        helpText="Geef de vernietigingslijst een herkenbare naam"
+                        helpText={<FormattedMessage description="destruction list 'Name' field help text" defaultMessage="Give the destruction list a recognisable name" />}
                     />
 
                     <div>
                         <SelectInput
                             name="reviewer_1"
                             selected={reviewer1}
-                            label="Eerste reviewer"
-                            helpText="Kies de eerste medewerker om de lijst te beoordelen"
+                            label={<FormattedMessage description="first reviewer" defaultMessage="First reviewer" />}
+                            helpText={<FormattedMessage description="first reviewer helptext" defaultMessage="Choose the first employee who should review the destruction list" />}
                             choices={reviewers}
                             id={"id_reviewer_1"}
                             required={true}
@@ -94,9 +105,9 @@ const CreateModal = ({ zaken, checkboxes, modalIsOpen, setIsOpen, reviewers, url
                         <SelectInput
                             name={"reviewer_2"}
                             selected={reviewer2}
-                            label="Tweede reviewer"
+                            label={<FormattedMessage description="second reviewer" defaultMessage="Second reviewer" />}
+                            helpText={<FormattedMessage description="second reviewer helptext" defaultMessage="Choose the second employee who should review the destruction list" />}
                             choices={reviewers2}
-                            helpText="Kies de tweede medewerker om de lijst te beoordelen"
                             id={"id_reviewer_2"}
                             required={isSecondReviewerMandatory()}
                             disabled={disable2}
@@ -118,7 +129,7 @@ const CreateModal = ({ zaken, checkboxes, modalIsOpen, setIsOpen, reviewers, url
                             onChange={(event) => {setContainsSensitiveInfo(event.target.checked);}}
                         />
                         <Label
-                            label={"Bevat gevoelige gegevens"}
+                            label={<FormattedMessage defaultMessage="Contains sensitive information" description="Label checkbox" />}
                             required={true}
                             idForLabel={"id_contains_sensitive_info"}
                         />
@@ -126,7 +137,7 @@ const CreateModal = ({ zaken, checkboxes, modalIsOpen, setIsOpen, reviewers, url
                 </div>
 
                 <div className="form__submit-row">
-                    <button type="submit" className="btn">Bevestig</button>
+                    <button type="submit" className="btn"><FormattedMessage defaultMessage="Confirm" description="Button 'confirm" /></button>
                 </div>
             </form>
 

@@ -17,4 +17,13 @@ const fetchZaken = async (path, filters, queryParams) => {
     return await get(searchUrl);
 };
 
-export {fetchZaken};
+function loadLocaleData(locale) {
+  switch (locale) {
+    case 'nl':
+      return import('../compiled-lang/nl.json');
+    default:
+      return import('../compiled-lang/en.json');
+  }
+}
+
+export {fetchZaken, loadLocaleData};

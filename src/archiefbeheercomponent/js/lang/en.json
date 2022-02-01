@@ -1,0 +1,82 @@
+{
+  "6t7pHh": {
+    "defaultMessage": "Create destruction list {numSelectedZaken, plural, one {(1 case selected)} other {({numSelectedZaken} cases selected)} }",
+    "description": "Header modal create destruction list",
+    "originalDefault": "Create destruction list {numSelectedZaken, plural, one {(1 case selected)} other {({numSelectedZaken} cases selected)} }"
+  },
+  "B/qKYa": {
+    "defaultMessage": "Source organisation",
+    "description": "Source organisation",
+    "originalDefault": "Source organisation"
+  },
+  "CPeeyp": {
+    "defaultMessage": "{numSelectedZaken, plural, =0 {No cases selected} one {1 case selected} other {{numSelectedZaken} cases selected} }",
+    "description": "How many cases selected",
+    "originalDefault": "{numSelectedZaken, plural, =0 {No cases selected} one {1 case selected} other {{numSelectedZaken} cases selected} }"
+  },
+  "DKXNIo": {
+    "defaultMessage": "First reviewer",
+    "description": "first reviewer",
+    "originalDefault": "First reviewer"
+  },
+  "JaFqiP": {
+    "defaultMessage": "Contains sensitive information",
+    "description": "Label checkbox",
+    "originalDefault": "Contains sensitive information"
+  },
+  "LfHRE5": {
+    "defaultMessage": "Choose the first employee who should review the destruction list",
+    "description": "first reviewer helptext",
+    "originalDefault": "Choose the first employee who should review the destruction list"
+  },
+  "MApOE3": {
+    "defaultMessage": "Create",
+    "description": "Button 'create'",
+    "originalDefault": "Create"
+  },
+  "Mweqrj": {
+    "defaultMessage": "Name",
+    "description": "destruction list 'Name' field label",
+    "originalDefault": "Name"
+  },
+  "PWRvgb": {
+    "defaultMessage": "Choose the second employee who should review the destruction list",
+    "description": "second reviewer helptext",
+    "originalDefault": "Choose the second employee who should review the destruction list"
+  },
+  "S38Nt/": {
+    "defaultMessage": "The cases in this table have the archive nomination 'delete' and their archiving date is before today",
+    "description": "Describe which cases are shown",
+    "originalDefault": "The cases in this table have the archive nomination 'delete' and their archiving date is before today"
+  },
+  "T7zShQ": {
+    "defaultMessage": "Cases",
+    "description": "Zaakdossiers",
+    "originalDefault": "Cases"
+  },
+  "b+xYJn": {
+    "defaultMessage": "Case types",
+    "description": "Case types",
+    "originalDefault": "Case types"
+  },
+  "bN9DoH": {
+    "defaultMessage": "Give the destruction list a recognisable name",
+    "description": "destruction list 'Name' field help text",
+    "originalDefault": "Give the destruction list a recognisable name"
+  },
+  "brRL0t": {
+    "defaultMessage": "Second reviewer",
+    "description": "second reviewer",
+    "originalDefault": "Second reviewer"
+  },
+  "pA4VEm": {
+    "defaultMessage": "Create destruction list",
+    "description": "Title create destruction list page",
+    "originalDefault": "Create destruction list"
+  },
+  "qurWp8": {
+    "defaultMessage": "Confirm",
+    "description": "Button 'confirm",
+    "originalDefault": "Confirm"
+  }
+}

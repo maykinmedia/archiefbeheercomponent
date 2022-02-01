@@ -1,5 +1,6 @@
 import React from 'react';
 import { useImmerReducer } from 'use-immer';
+import {FormattedMessage} from 'react-intl';
 import useAsync from 'react-use/esm/useAsync';
 
 import { ZakenTable } from './zaken-table';
@@ -124,22 +125,39 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, currentDate, csr
     return (
         <>
             <header className="destruction-create__header">
-                <h1 className="title destruction-create__title">Vernietigingslijst opstellen</h1>
+                <h1 className="title destruction-create__title">
+                    <FormattedMessage
+                        defaultMessage="Create destruction list"
+                        description="Title create destruction list page"
+                    />
+                </h1>
                 <nav className="destruction-create__nav">
                     <button
                         type="button"
                         className="btn"
                         onClick={() => dispatch({type: 'TOGGLE_MODAL', payload: true})}
                         disabled={!selectedCount}
-                    >Aanmaken</button>
-                    <div>{selectedCount} zaken geselecteerd</div>
+                    >
+                        <FormattedMessage defaultMessage="Create" description="Button 'create'" />
+                    </button>
+                    <div>
+                        <FormattedMessage
+                            description="How many cases selected"
+                            defaultMessage="{numSelectedZaken, plural,
+                                =0 {No cases selected}
+                                one {1 case selected}
+                                other {{numSelectedZaken} cases selected}
+                            }"
+                            values={{numSelectedZaken: selectedCount}}
+                        />
+                    </div>
                 </nav>
             </header>
             <div className="destruction-create__content">
                 <aside className="destruction-create__filters filter-group">
                     <h2 className="section-title section-title--highlight">Filters</h2>
                     <div className="filter-group__item">
-                        <label htmlFor={"id_zaaktypen"}>Zaaktypen</label>
+                        <label htmlFor={"id_zaaktypen"}><FormattedMessage defaultMessage="Case types" description="Case types" /></label>
                         <ZaaktypeSelect
                             zaaktypen={zaaktypen}
                             selectedZaaktypen={state.filters.zaaktypen}
@@ -149,7 +167,7 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, currentDate, csr
                         />
                     </div>
                     <div className="filter-group__item">
-                        <label htmlFor={"id_bronorganisaties"}>Bronorganisatie</label>
+                        <label htmlFor={"id_bronorganisaties"}><FormattedMessage defaultMessage="Source organisation" description="Source organisation" /></label>
                         <BronorganisatieSelect
                             bronorganisaties={state.bronorganisaties}
                             selectedBronorganisaties={state.filters.bronorganisaties}
@@ -163,10 +181,12 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, currentDate, csr
                 </aside>
 
                 <section className="destruction-create__zaken">
-                    <h2 className="section-title section-title--highlight">Zaakdossiers</h2>
+                    <h2 className="section-title section-title--highlight"><FormattedMessage defaultMessage="Cases" description="Zaakdossiers" /></h2>
                     <div className="destruction-create__explanation">
-                        De zaken in deze tabel hebben de archiefnominatie 'vernietigen' en
-                        de archiefactiedatum is voor vandaag.
+                        <FormattedMessage
+                            defaultMessage="The cases in this table have the archive nomination 'delete' and their archiving date is before today"
+                            description="Describe which cases are shown"
+                        />
                     </div>
                     <ZakenTable
                         zaken={state.zaken}

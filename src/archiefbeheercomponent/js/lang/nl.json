@@ -1,0 +1,82 @@
+{
+  "6t7pHh": {
+    "defaultMessage": "Vernietigingslijst aanmaken {numSelectedZaken, plural, one {(1 zaak geselecteerd)} other {({numSelectedZaken} zaken geselecteerd)} }",
+    "description": "Header modal create destruction list",
+    "originalDefault": "Create destruction list {numSelectedZaken, plural, one {(1 case selected)} other {({numSelectedZaken} cases selected)} }"
+  },
+  "B/qKYa": {
+    "defaultMessage": "Bronorganisatie",
+    "description": "Source organisation",
+    "originalDefault": "Source organisation"
+  },
+  "CPeeyp": {
+    "defaultMessage": "{numSelectedZaken, plural, =0 {Geen zaken geselecteerd} one {1 zaak geselecteerd} other {{numSelectedZaken} zaken geselecteerd} }",
+    "description": "How many cases selected",
+    "originalDefault": "{numSelectedZaken, plural, =0 {No cases selected} one {1 case selected} other {{numSelectedZaken} cases selected} }"
+  },
+  "DKXNIo": {
+    "defaultMessage": "Eerste reviewer",
+    "description": "first reviewer",
+    "originalDefault": "First reviewer"
+  },
+  "JaFqiP": {
+    "defaultMessage": "Bevat gevoelige gegevens",
+    "description": "Label checkbox",
+    "originalDefault": "Contains sensitive information"
+  },
+  "LfHRE5": {
+    "defaultMessage": "Kies de eerste medewerker om de lijst te beoordelen",
+    "description": "first reviewer helptext",
+    "originalDefault": "Choose the first employee who should review the destruction list"
+  },
+  "MApOE3": {
+    "defaultMessage": "Aanmaken",
+    "description": "Button 'create'",
+    "originalDefault": "Create"
+  },
+  "Mweqrj": {
+    "defaultMessage": "Naam",
+    "description": "destruction list 'Name' field label",
+    "originalDefault": "Name"
+  },
+  "PWRvgb": {
+    "defaultMessage": "Kies de tweede medewerker om de lijst te beoordelen",
+    "description": "second reviewer helptext",
+    "originalDefault": "Choose the second employee who should review the destruction list"
+  },
+  "S38Nt/": {
+    "defaultMessage": "De zaken in deze tabel hebben de archiefnominatie 'vernietigen' en de archiefactiedatum is voor vandaag.",
+    "description": "Describe which cases are shown",
+    "originalDefault": "The cases in this table have the archive nomination 'delete' and their archiving date is before today"
+  },
+  "T7zShQ": {
+    "defaultMessage": "Zaakdossiers",
+    "description": "Zaakdossiers",
+    "originalDefault": "Cases"
+  },
+  "b+xYJn": {
+    "defaultMessage": "Zaaktypen",
+    "description": "Case types",
+    "originalDefault": "Case types"
+  },
+  "bN9DoH": {
+    "defaultMessage": "Geef de vernietigingslijst een herkenbare naam",
+    "description": "destruction list 'Name' field help text",
+    "originalDefault": "Give the destruction list a recognisable name"
+  },
+  "brRL0t": {
+    "defaultMessage": "Tweede reviewer",
+    "description": "second reviewer",
+    "originalDefault": "Second reviewer"
+  },
+  "pA4VEm": {
+    "defaultMessage": "Vernietigingslijst opstellen",
+    "description": "Title create destruction list page",
+    "originalDefault": "Create destruction list"
+  },
+  "qurWp8": {
+    "defaultMessage": "Bevestig",
+    "description": "Button 'confirm",
+    "originalDefault": "Confirm"
+  }
+}

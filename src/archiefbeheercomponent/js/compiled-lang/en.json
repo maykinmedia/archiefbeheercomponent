@@ -1,0 +1,162 @@
+{
+  "6t7pHh": [
+    {
+      "type": 0,
+      "value": "Create destruction list "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "(1 case selected)"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "("
+            },
+            {
+              "type": 1,
+              "value": "numSelectedZaken"
+            },
+            {
+              "type": 0,
+              "value": " cases selected)"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "numSelectedZaken"
+    }
+  ],
+  "B/qKYa": [
+    {
+      "type": 0,
+      "value": "Source organisation"
+    }
+  ],
+  "CPeeyp": [
+    {
+      "offset": 0,
+      "options": {
+        "=0": {
+          "value": [
+            {
+              "type": 0,
+              "value": "No cases selected"
+            }
+          ]
+        },
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "1 case selected"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 1,
+              "value": "numSelectedZaken"
+            },
+            {
+              "type": 0,
+              "value": " cases selected"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "numSelectedZaken"
+    }
+  ],
+  "DKXNIo": [
+    {
+      "type": 0,
+      "value": "First reviewer"
+    }
+  ],
+  "JaFqiP": [
+    {
+      "type": 0,
+      "value": "Contains sensitive information"
+    }
+  ],
+  "LfHRE5": [
+    {
+      "type": 0,
+      "value": "Choose the first employee who should review the destruction list"
+    }
+  ],
+  "MApOE3": [
+    {
+      "type": 0,
+      "value": "Create"
+    }
+  ],
+  "Mweqrj": [
+    {
+      "type": 0,
+      "value": "Name"
+    }
+  ],
+  "PWRvgb": [
+    {
+      "type": 0,
+      "value": "Choose the second employee who should review the destruction list"
+    }
+  ],
+  "S38Nt/": [
+    {
+      "type": 0,
+      "value": "The cases in this table have the archive nomination 'delete' and their archiving date is before today"
+    }
+  ],
+  "T7zShQ": [
+    {
+      "type": 0,
+      "value": "Cases"
+    }
+  ],
+  "b+xYJn": [
+    {
+      "type": 0,
+      "value": "Case types"
+    }
+  ],
+  "bN9DoH": [
+    {
+      "type": 0,
+      "value": "Give the destruction list a recognisable name"
+    }
+  ],
+  "brRL0t": [
+    {
+      "type": 0,
+      "value": "Second reviewer"
+    }
+  ],
+  "pA4VEm": [
+    {
+      "type": 0,
+      "value": "Create destruction list"
+    }
+  ],
+  "qurWp8": [
+    {
+      "type": 0,
+      "value": "Confirm"
+    }
+  ]
+}
