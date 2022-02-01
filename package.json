@@ -9,7 +9,11 @@
   "scripts": {
     "test": "gulp test",
     "build": "gulp build",
-    "watch": "gulp watch"
+    "watch": "gulp watch",
+    "makemessages-en": "formatjs extract 'src/archiefbeheercomponent/js/**/*.js' --format src/archiefbeheercomponent/js/i18n-formatter.js --out-file src/archiefbeheercomponent/js/lang/en.json --id-interpolation-pattern '[sha512:contenthash:base64:6]'",
+    "makemessages-nl": "formatjs extract 'src/archiefbeheercomponent/js/**/*.js' --format src/archiefbeheercomponent/js/i18n-formatter.js --out-file src/archiefbeheercomponent/js/lang/nl.json --id-interpolation-pattern '[sha512:contenthash:base64:6]'",
+    "makemessages": "npm run makemessages-nl && npm run makemessages-en",
+    "compilemessages": "formatjs compile-folder --ast src/archiefbeheercomponent/js/lang src/archiefbeheercomponent/js/compiled-lang"
   },
   "repository": {
     "type": "git",
@@ -24,6 +28,7 @@
     "react": "^16.13.1",
     "react-collapse": "^5.0.1",
     "react-dom": "^16.13.1",
+    "react-intl": "^5.24.4",
     "react-modal": "^3.11.2",
     "react-use": "^17.3.1",
     "use-immer": "^0.6.0"
@@ -33,8 +38,10 @@
     "@babel/polyfill": "latest",
     "@babel/preset-env": "latest",
     "@babel/preset-react": "^7.10.1",
+    "@formatjs/cli": "^4.8.1",
     "autoprefixer": "^10.4.0",
     "babel-loader": "latest",
+    "babel-plugin-formatjs": "^10.3.17",
     "chai": "latest",
     "cssnano": "latest",
     "eyeglass": "latest",
