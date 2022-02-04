@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: archiefvernietigingscomponent\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-01 12:29+0100\n"
+"POT-Creation-Date: 2022-02-04 13:18+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -317,6 +317,7 @@ msgid ""
 msgstr ""
 
 #: archiefbeheercomponent/destruction/forms.py:177
+#, python-format
 msgid ""
 "If '%(create_zaak_label)s' is checked, all the other destruction case "
 "settings need to be configured."
@@ -332,6 +333,10 @@ msgstr ""
 "Als er geen zaak wordt aangemaakt na het vernietigen van een "
 "vernietigingslijst, dan kan de verklaring van vernietiging via de app kunnen "
 "worden gedownload."
+
+#: archiefbeheercomponent/destruction/forms.py:237
+msgid "Comment"
+msgstr "Opmerking"
 
 #: archiefbeheercomponent/destruction/models.py:35
 #: archiefbeheercomponent/destruction/models.py:276
@@ -658,12 +663,13 @@ msgid "standard review answers"
 msgstr "standaard review antwoorden"
 
 #: archiefbeheercomponent/destruction/tasks.py:191
-#: archiefbeheercomponent/destruction/tests/test_tasks.py:479
+#: archiefbeheercomponent/destruction/tests/test_tasks.py:480
 msgid "Processing of the destruction list is complete."
 msgstr "De vernietigingslijst is helemaal verwerkt."
 
 #: archiefbeheercomponent/destruction/tasks.py:202
-#: archiefbeheercomponent/destruction/tests/test_tasks.py:512
+#: archiefbeheercomponent/destruction/tests/test_tasks.py:514
+#, python-format
 msgid ""
 "Destruction list %(list)s has been processed. You can download the report of "
 "destruction here: %(url)s"
@@ -672,10 +678,12 @@ msgstr ""
 "vernietiging here downloaden: %(url)s"
 
 #: archiefbeheercomponent/destruction/tasks.py:314
+#, python-format
 msgid "Destruction List: %(list_name)s"
 msgstr "Vernietigingslijst: %(list_name)s"
 
 #: archiefbeheercomponent/destruction/tasks.py:334
+#, python-format
 msgid "Destruction Report: %(list_name)s"
 msgstr "Verklaringen van vernietiging: %(list_name)s"
 
@@ -702,6 +710,7 @@ msgid "Cancel"
 msgstr "Annuleren"
 
 #: archiefbeheercomponent/destruction/templates/destruction/destructionlist_detail.html:19
+#, python-format
 msgid "Destruction list \"%(list_name)s\""
 msgstr "Vernietigingslijst \"%(list_name)s\""
 

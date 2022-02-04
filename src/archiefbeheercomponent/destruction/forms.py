@@ -234,7 +234,9 @@ class ZaakArchiveDetailsForm(forms.Form):
         choices=Archiefstatus.choices, widget=forms.RadioSelect, required=False,
     )
     comment = forms.CharField(
-        widget=forms.Textarea(attrs={"cols": "50", "rows": "5"}), required=False
+        label=_("Comment"),
+        widget=forms.Textarea(attrs={"cols": "50", "rows": "5"}),
+        required=False,
     )
 
     class Meta:
