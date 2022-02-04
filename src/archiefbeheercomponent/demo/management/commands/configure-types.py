@@ -57,7 +57,7 @@ class Command(BaseCommand):
                 ),
             },
         )
-        self.stdout.write(self.style.SUCCESS("Created zaak %s." % zaaktype["url"]))
+        self.stdout.write(self.style.SUCCESS("Created zaaktype %s." % zaaktype["url"]))
 
         informatieobjecttype = ztc_client.create(
             resource="informatieobjecttype",

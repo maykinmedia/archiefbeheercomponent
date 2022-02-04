@@ -1,7 +1,7 @@
 from base64 import b64encode
-from datetime import datetime
 
 from django.core.management.base import BaseCommand
+from django.utils.crypto import get_random_string as _get_random_string
 
 from zgw_consumers.constants import APITypes
 from zgw_consumers.models import Service
@@ -10,12 +10,16 @@ from ..constants import DEFAULT_CATALOGUS
 from ..utils import get_or_create_catalogus, uuid_from_url
 
 
+def get_random_string(number: int = 6) -> str:
+    allowed_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    return _get_random_string(length=number, allowed_chars=allowed_chars)
+
+
 class Command(BaseCommand):
     help = "Create demo data in Open-Zaak"
 
     def handle(self, *args, **options):
         # Get the Clients for the Catalogi, Zaken and Documenten APIs.
-        date = datetime.now()
         ztc_service = Service.objects.filter(api_type=APITypes.ztc).first()
         assert ztc_service, "No service defined for the Catalogi API"
         ztc_client = ztc_service.build_client()
@@ -33,7 +37,7 @@ class Command(BaseCommand):
         zaaktype_1 = ztc_client.create(
             resource="zaaktype",
             data={
-                "omschrijving": f"Zaaktype 1 {date}",
+                "omschrijving": f"Zaaktype {get_random_string()}",
                 "vertrouwelijkheidaanduiding": "openbaar",
                 "doel": "Zaaktype doel 1",
                 "aanleiding": "aanleiding 1",
@@ -57,7 +61,7 @@ class Command(BaseCommand):
         zaaktype_2 = ztc_client.create(
             resource="zaaktype",
             data={
-                "omschrijving": f"Zaaktype 2 {date}",
+                "omschrijving": f"Zaaktype {get_random_string()}",
                 "vertrouwelijkheidaanduiding": "openbaar",
                 "doel": "Zaaktype doel 2",
                 "aanleiding": "aanleiding 2",
@@ -83,7 +87,7 @@ class Command(BaseCommand):
             resource="informatieobjecttype",
             data={
                 "catalogus": catalogus["url"],
-                "omschrijving": f"IOT type 1 {date}",
+                "omschrijving": f"IOT {get_random_string()}",
                 "vertrouwelijkheidaanduiding": "openbaar",
                 "beginGeldigheid": "2021-01-01",
             },
@@ -92,7 +96,7 @@ class Command(BaseCommand):
             resource="informatieobjecttype",
             data={
                 "catalogus": catalogus["url"],
-                "omschrijving": f"IOT type 2 {date}",
+                "omschrijving": f"IOT {get_random_string()}",
                 "vertrouwelijkheidaanduiding": "openbaar",
                 "beginGeldigheid": "2021-01-01",
             },
@@ -101,7 +105,7 @@ class Command(BaseCommand):
             resource="informatieobjecttype",
             data={
                 "catalogus": catalogus["url"],
-                "omschrijving": f"IOT type 3 {date}",
+                "omschrijving": f"IOT {get_random_string()}",
                 "vertrouwelijkheidaanduiding": "openbaar",
                 "beginGeldigheid": "2021-01-01",
             },
@@ -110,7 +114,7 @@ class Command(BaseCommand):
             resource="informatieobjecttype",
             data={
                 "catalogus": catalogus["url"],
-                "omschrijving": f"IOT type 4 {date}",
+                "omschrijving": f"IOT {get_random_string()}",
                 "vertrouwelijkheidaanduiding": "openbaar",
                 "beginGeldigheid": "2021-01-01",
             },
@@ -184,7 +188,7 @@ class Command(BaseCommand):
             resource="zaak",
             data={
                 "bronorganisatie": "095847261",
-                "omschrijving": f"Test zaak 1 {date}",
+                "omschrijving": f"Test zaak {get_random_string()}",
                 "zaaktype": zaaktype_1["url"],
                 "vertrouwelijkheidaanduiding": "openbaar",
                 "startdatum": "2021-05-01",
@@ -198,7 +202,7 @@ class Command(BaseCommand):
             resource="zaak",
             data={
                 "bronorganisatie": "517439943",
-                "omschrijving": f"Test zaak 2 {date}",
+                "omschrijving": f"Test zaak {get_random_string()}",
                 "zaaktype": zaaktype_1["url"],
                 "vertrouwelijkheidaanduiding": "geheim",
                 "startdatum": "2021-02-01",
@@ -215,7 +219,7 @@ class Command(BaseCommand):
             data={
                 "bronorganisatie": "517439943",
                 "creatiedatum": "2021-01-01",
-                "titel": "Test document 1",
+                "titel": f"Test document {get_random_string()}",
                 "auteur": "John Doe",
                 "taal": "nld",
                 "formaat": "txt",
@@ -228,7 +232,7 @@ class Command(BaseCommand):
             data={
                 "bronorganisatie": "517439943",
                 "creatiedatum": "2021-07-01",
-                "titel": "Test document 2",
+                "titel": f"Test document {get_random_string()}",
                 "auteur": "John Doe",
                 "taal": "nld",
                 "formaat": "txt",
@@ -252,7 +256,7 @@ class Command(BaseCommand):
             resource="zaak",
             data={
                 "bronorganisatie": "517439943",
-                "omschrijving": f"Test zaak 3 {date}",
+                "omschrijving": f"Test zaak {get_random_string()}",
                 "zaaktype": zaaktype_2["url"],
                 "vertrouwelijkheidaanduiding": "openbaar",
                 "startdatum": "2019-01-01",
@@ -266,7 +270,7 @@ class Command(BaseCommand):
             resource="zaak",
             data={
                 "bronorganisatie": "376924512",
-                "omschrijving": f"Test zaak 4 {date}",
+                "omschrijving": f"Test zaak {get_random_string()}",
                 "zaaktype": zaaktype_2["url"],
                 "vertrouwelijkheidaanduiding": "geheim",
                 "startdatum": "2021-01-01",
@@ -283,7 +287,7 @@ class Command(BaseCommand):
             data={
                 "bronorganisatie": "517439943",
                 "creatiedatum": "2021-01-01",
-                "titel": "Test document 3",
+                "titel": f"Test document {get_random_string()}",
                 "auteur": "John Doe",
                 "taal": "nld",
                 "formaat": "txt",
@@ -296,7 +300,7 @@ class Command(BaseCommand):
             data={
                 "bronorganisatie": "517439943",
                 "creatiedatum": "2021-07-01",
-                "titel": "Test document 4",
+                "titel": f"Test document {get_random_string()}",
                 "auteur": "John Doe",
                 "taal": "nld",
                 "formaat": "txt",
