@@ -27,6 +27,11 @@ const ZaakRecord = ({zaak, isChecked, onCheckboxUpdate}) => {
         return currentLocation.href;
     };
 
+    let bewaartermijn = '-';
+    if ( zaak.resultaat && zaak.resultaat?.resultaattype?.archiefactietermijn) {
+        bewaartermijn = zaak.resultaat.resultaattype.archiefactietermijn;
+    }
+
     return (
         <>
             <tr
@@ -57,7 +62,7 @@ const ZaakRecord = ({zaak, isChecked, onCheckboxUpdate}) => {
                 <td>{ zaak.looptijd }</td>
                 <td>{ zaak.verantwoordelijkeOrganisatie }</td>
                 <td>{ zaak.resultaat ? zaak.resultaat.resultaattype.omschrijving : '-' }</td>
-                <td>{ zaak.resultaat ? zaak.resultaat.resultaattype.archiefactietermijn : '-'}</td>
+                <td>{ bewaartermijn }</td>
                 <td>{ zaak.zaaktype.processtype ? zaak.zaaktype.processtype.nummer : '-' }</td>
                 <td>{ zaak.relevanteAndereZaken.length > 0 ? 'Ja' : 'Nee' }</td>
             </tr>
