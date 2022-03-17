@@ -29,7 +29,7 @@ The ArchiefBeheerComponent must be connected to an instance of Open Zaak.
       - **Type**: Select the option: ``ZRC (Zaken)``
       - **API root url**: *For example:* ``http://example.com/zaken/api/v1/``
 
-      - **Client ID**: *For example:* ``avc-demo``
+      - **Client ID**: *For example:* ``abc-demo``
       - **Secret**: *Some random string. You will need this later on!*
       - **Authorization type**: Select the option: ``ZGW client_id + secret``
       - **OAS**: URL that points to the OAS, same URL as the *API root url* with ``/schema/openapi.yaml`` added to it
