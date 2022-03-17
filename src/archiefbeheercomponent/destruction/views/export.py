@@ -8,10 +8,13 @@ from django.utils.translation import gettext as _
 from django.views import View
 
 import xlsxwriter
+from zgw_consumers.concurrent import parallel
 
 from ...accounts.models import User
+from ...report.utils import get_looptijd
 from ..forms import ZakenUrlsForm
 from ..service import fetch_zaken
+from ..utils import get_additional_zaak_info
 
 
 class ExportZakenWithoutArchiveDateView(UserPassesTestMixin, View):
@@ -50,6 +53,9 @@ class ExportZakenWithoutArchiveDateView(UserPassesTestMixin, View):
     def get_data(self, zaken_urls: List[str], user: User):
         zaken = fetch_zaken(zaken_urls)
 
+        with parallel() as executor:
+            zaken_with_extra_info = list(executor.map(get_additional_zaak_info, zaken))
+
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {"in_memory": True})
         worksheet = workbook.add_worksheet(name=_("Cases without archive date"))
@@ -64,11 +70,21 @@ class ExportZakenWithoutArchiveDateView(UserPassesTestMixin, View):
                 _("Case identification"),
                 _("Case type"),
                 _("Case description"),
+                _("Duration"),
+                _("Organisation responsible"),
+                _("Result type"),
+                _("Retention period"),
+                _("Destruction category selection list"),
+                _("Relations"),
                 _("Requesting user"),
             ],
         )
 
-        for row_count, zaak in enumerate(zaken):
+        for row_count, zaak in enumerate(zaken_with_extra_info):
+            relations = _("No")
+            if len(zaak.get("relevanteAndereZaken", [])):
+                relations = _("Yes")
+
             worksheet.write_row(
                 row_count + 1,
                 0,
@@ -76,6 +92,18 @@ class ExportZakenWithoutArchiveDateView(UserPassesTestMixin, View):
                     zaak.get("identificatie"),
                     zaak["zaaktype"]["omschrijving"],
                     zaak.get("omschrijving"),
+                    _("%(duration)s days") % {"duration": get_looptijd(zaak)},
+                    zaak["verantwoordelijkeOrganisatie"],
+                    zaak.get("resultaat", {})
+                    .get("resultaattype", {})
+                    .get("omschrijving")
+                    or "",
+                    zaak.get("resultaat", {})
+                    .get("resultaattype", {})
+                    .get("archiefactietermijn")
+                    or "",
+                    zaak["zaaktype"].get("processtype", {}).get("nummer") or "",
+                    relations,
                     user_representation,
                 ],
             )
