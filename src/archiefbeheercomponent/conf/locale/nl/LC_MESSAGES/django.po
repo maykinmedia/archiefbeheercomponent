@@ -941,7 +941,7 @@ msgstr "{author} heeft de vernietigingslijst beoordeeld."
 #: archiefbeheercomponent/destruction/utils.py:30
 #, python-format
 msgid "%(duration)s days"
-msgstr "%(duration)s dagen geleden"
+msgstr "%(duration)s dagen"
 
 #: archiefbeheercomponent/destruction/views/export.py:36
 msgid "Invalid cases URLs"
