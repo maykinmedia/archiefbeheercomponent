@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: archiefvernietigingscomponent\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-21 15:35+0100\n"
+"POT-Creation-Date: 2022-03-21 16:41+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -78,7 +78,7 @@ msgid "role"
 msgstr "rol"
 
 #: archiefbeheercomponent/accounts/models.py:56
-#: archiefbeheercomponent/emails/models.py:131
+#: archiefbeheercomponent/emails/models.py:137
 #: archiefbeheercomponent/notifications/models.py:10
 msgid "user"
 msgstr "gebruiker"
@@ -102,7 +102,7 @@ msgid "Name of the role"
 msgstr "Naam van de rol"
 
 #: archiefbeheercomponent/accounts/models.py:80
-#: archiefbeheercomponent/emails/models.py:54
+#: archiefbeheercomponent/emails/models.py:56
 msgid "type"
 msgstr "type"
 
@@ -662,27 +662,26 @@ msgstr ""
 msgid "standard review answers"
 msgstr "standaard review antwoorden"
 
-#: archiefbeheercomponent/destruction/tasks.py:193
-#: archiefbeheercomponent/destruction/tests/test_tasks.py:480
+#: archiefbeheercomponent/destruction/tasks.py:195
+#: archiefbeheercomponent/destruction/tests/test_tasks.py:482
 msgid "Processing of the destruction list is complete."
 msgstr "De vernietigingslijst is helemaal verwerkt."
 
-#: archiefbeheercomponent/destruction/tasks.py:204
-#: archiefbeheercomponent/destruction/tests/test_tasks.py:514
-#, python-format
+#: archiefbeheercomponent/destruction/tasks.py:215
+#: archiefbeheercomponent/destruction/tests/test_tasks.py:524
 msgid ""
 "Destruction list %(list)s has been processed. You can download the report of "
-"destruction here: %(url)s"
+"destruction as a PDF here: %(url_pdf)s and as a CSV here: %(url_csv)s"
 msgstr ""
 "Vernietigingslijst %(list)s is verwerkt. U kunt de verklaring van "
-"vernietiging here downloaden: %(url)s"
+"vernietiging als PDF hier downloaden: %(url_pdf)s en hier als CSV: %(url_csv)s"
 
-#: archiefbeheercomponent/destruction/tasks.py:316
+#: archiefbeheercomponent/destruction/tasks.py:327
 #, python-format
 msgid "Destruction List: %(list_name)s"
 msgstr "Vernietigingslijst: %(list_name)s"
 
-#: archiefbeheercomponent/destruction/tasks.py:336
+#: archiefbeheercomponent/destruction/tasks.py:347
 #, python-format
 msgid "Destruction Report: %(list_name)s"
 msgstr "Verklaringen van vernietiging: %(list_name)s"
@@ -890,7 +889,7 @@ msgstr "%(since)s geleden aangemaakt"
 
 #: archiefbeheercomponent/destruction/templates/destruction/recordmanager_list.html:91
 #: archiefbeheercomponent/destruction/templates/destruction/reviewer_list.html:76
-#: archiefbeheercomponent/emails/models.py:143
+#: archiefbeheercomponent/emails/models.py:149
 msgid "Email preferences"
 msgstr "E-mail voorkeuren"
 
@@ -1062,59 +1061,59 @@ msgstr ""
 "De gemeente naam moet geconfigureerd zijn om de 'municipality' variabele te "
 "gebruiken."
 
-#: archiefbeheercomponent/emails/models.py:38
+#: archiefbeheercomponent/emails/models.py:40
 msgid "municipality"
 msgstr "gemeente"
 
-#: archiefbeheercomponent/emails/models.py:40
+#: archiefbeheercomponent/emails/models.py:42
 msgid "The municipality on behalf of which the emails are sent."
 msgstr "De gemeente namens wie de email is gestuurd."
 
-#: archiefbeheercomponent/emails/models.py:43
+#: archiefbeheercomponent/emails/models.py:45
 msgid "from email"
 msgstr "van email"
 
-#: archiefbeheercomponent/emails/models.py:44
+#: archiefbeheercomponent/emails/models.py:46
 msgid "The email address to use to send the automatic emails"
 msgstr "De email adres gebruikt om automatische emails te sturen"
 
-#: archiefbeheercomponent/emails/models.py:49
+#: archiefbeheercomponent/emails/models.py:51
 msgid "email configuration"
 msgstr "email configuratie"
 
-#: archiefbeheercomponent/emails/models.py:56
+#: archiefbeheercomponent/emails/models.py:58
 msgid "The type of email"
 msgstr "Het type van email"
 
-#: archiefbeheercomponent/emails/models.py:60
+#: archiefbeheercomponent/emails/models.py:62
 msgid "body"
 msgstr "inhoud"
 
-#: archiefbeheercomponent/emails/models.py:60
+#: archiefbeheercomponent/emails/models.py:62
 msgid "The text sent in the email body"
 msgstr "De tekst gestuurd in de email inhoud"
 
-#: archiefbeheercomponent/emails/models.py:62
+#: archiefbeheercomponent/emails/models.py:64
 msgid "subject"
 msgstr "onderwerp"
 
-#: archiefbeheercomponent/emails/models.py:62
+#: archiefbeheercomponent/emails/models.py:64
 msgid "The text sent in the email subject"
 msgstr "De tekst gestuurd in de email onderwerp"
 
-#: archiefbeheercomponent/emails/models.py:66
+#: archiefbeheercomponent/emails/models.py:68
 msgid "Automatic email"
 msgstr "Automatische email"
 
-#: archiefbeheercomponent/emails/models.py:67
+#: archiefbeheercomponent/emails/models.py:69
 msgid "Automatic emails"
 msgstr "Automatische emails"
 
-#: archiefbeheercomponent/emails/models.py:132
+#: archiefbeheercomponent/emails/models.py:138
 msgid "User associated with the preferences"
 msgstr "User geassocieerd met de email voorkeuren"
 
-#: archiefbeheercomponent/emails/models.py:142
+#: archiefbeheercomponent/emails/models.py:148
 msgid "Email preference"
 msgstr "Email voorkeur"
 
@@ -1146,6 +1145,14 @@ msgstr "%(duration)s geleden"
 #: archiefbeheercomponent/notifications/templates/notifications/includes/notifications.html:16
 msgid "View destruction list"
 msgstr "Bekijk vernietigingslijst"
+
+#: archiefbeheercomponent/report/constants.py:7
+msgid "PDF"
+msgstr "PDF"
+
+#: archiefbeheercomponent/report/constants.py:8
+msgid "CSV"
+msgstr "CSV"
 
 #: archiefbeheercomponent/report/models.py:15
 msgid "title"
