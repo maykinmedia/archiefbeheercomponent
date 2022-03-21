@@ -160,6 +160,9 @@ In addition, the PDF of the destruction report contains the audit trail of the d
 It shows in chronological order which actions have been performed and the role of the user who performed
 the action.
 
+The PDF also contains the amount of data that was deleted when processing the destruction list. This is calculated
+through adding the size of each document related to a zaak which was deleted.
+
 Audit trails, logs and notifications
 ====================================
 
