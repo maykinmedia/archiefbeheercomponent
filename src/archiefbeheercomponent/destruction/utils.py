@@ -3,7 +3,7 @@ import re
 from typing import Optional
 
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 from zds_client import ClientError
 
@@ -92,6 +92,34 @@ def set_zaken_availability(zaken):
 
     for zaak in zaken:
         zaak["available"] = zaak["url"] not in selected_zaken
+
+
+def format_zaak_record(zaak, user):
+    relations = _("No")
+    if len(zaak.get("relevanteAndereZaken", [])):
+        relations = _("Yes")
+
+    user_representation = f"{user.first_name} {user.last_name}"
+    resultaattype = (
+        zaak.get("resultaat", {}).get("resultaattype", {}).get("omschrijving") or ""
+    )
+    archiefactietermijn = (
+        zaak.get("resultaat", {}).get("resultaattype", {}).get("archiefactietermijn")
+        or ""
+    )
+
+    return [
+        zaak.get("identificatie"),
+        zaak["zaaktype"]["omschrijving"],
+        zaak.get("omschrijving"),
+        _("%(duration)s days") % {"duration": get_looptijd(zaak)},
+        zaak["verantwoordelijkeOrganisatie"],
+        resultaattype,
+        archiefactietermijn,
+        zaak["zaaktype"].get("processtype", {}).get("nummer") or "",
+        relations,
+        user_representation,
+    ]
 
 
 class ServiceNotConfiguredError(Exception):

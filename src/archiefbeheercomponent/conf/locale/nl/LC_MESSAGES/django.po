@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: archiefvernietigingscomponent\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-04 13:18+0100\n"
+"POT-Creation-Date: 2022-03-21 10:39+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -939,33 +939,78 @@ msgid "{author} has reviewed the destruction list."
 msgstr "{author} heeft de vernietigingslijst beoordeeld."
 
 #: archiefbeheercomponent/destruction/utils.py:30
+#: archiefbeheercomponent/destruction/utils.py:115
 #, python-format
 msgid "%(duration)s days"
-msgstr "%(duration)s dagen geleden"
+msgstr "%(duration)s dagen"
 
-#: archiefbeheercomponent/destruction/views/export.py:36
+#: archiefbeheercomponent/destruction/utils.py:98
+#: archiefbeheercomponent/report/utils.py:143
+msgid "No"
+msgstr "Nee"
+
+#: archiefbeheercomponent/destruction/utils.py:100
+#: archiefbeheercomponent/report/utils.py:141
+msgid "Yes"
+msgstr "Ja"
+
+#: archiefbeheercomponent/destruction/views/export.py:38
 msgid "Invalid cases URLs"
 msgstr "Ongeldige zaken URLs"
 
-#: archiefbeheercomponent/destruction/views/export.py:55
+#: archiefbeheercomponent/destruction/views/export.py:60
 msgid "Cases without archive date"
 msgstr "Zaken zonder archiefactiedatum"
 
-#: archiefbeheercomponent/destruction/views/export.py:64
+#: archiefbeheercomponent/destruction/views/export.py:67
 msgid "Case identification"
 msgstr "Zaak identificatie"
 
-#: archiefbeheercomponent/destruction/views/export.py:65
+#: archiefbeheercomponent/destruction/views/export.py:68
 #: archiefbeheercomponent/report/templates/report/vernietigings_rapport.html:43
 #: archiefbeheercomponent/report/utils.py:174
 msgid "Case type"
 msgstr "Zaaktype"
 
-#: archiefbeheercomponent/destruction/views/export.py:66
+#: archiefbeheercomponent/destruction/views/export.py:69
 msgid "Case description"
 msgstr "Zaak omschrijving"
 
-#: archiefbeheercomponent/destruction/views/export.py:67
+#: archiefbeheercomponent/destruction/views/export.py:70
+#: archiefbeheercomponent/report/templates/report/vernietigings_rapport.html:36
+#: archiefbeheercomponent/report/utils.py:169
+msgid "Duration"
+msgstr "Looptijd"
+
+#: archiefbeheercomponent/destruction/views/export.py:71
+#: archiefbeheercomponent/report/templates/report/vernietigings_rapport.html:46
+#: archiefbeheercomponent/report/utils.py:177
+msgid "Organisation responsible"
+msgstr "Verantwoordelijke organisatie"
+
+#: archiefbeheercomponent/destruction/views/export.py:72
+#: archiefbeheercomponent/report/templates/report/vernietigings_rapport.html:45
+#: archiefbeheercomponent/report/utils.py:176
+msgid "Result type"
+msgstr "Resultaattype"
+
+#: archiefbeheercomponent/destruction/views/export.py:73
+#| msgid "Archive action period"
+msgid "Retention period"
+msgstr "Archiefactietermijn"
+
+#: archiefbeheercomponent/destruction/views/export.py:74
+#| msgid "Destruction category Selectielijst"
+msgid "Destruction category selection list"
+msgstr "Vernietigings-Categorie Selectielijst"
+
+#: archiefbeheercomponent/destruction/views/export.py:75
+#: archiefbeheercomponent/report/templates/report/vernietigings_rapport.html:47
+#: archiefbeheercomponent/report/utils.py:178
+msgid "Relations"
+msgstr "Relaties"
+
+#: archiefbeheercomponent/destruction/views/export.py:76
 msgid "Requesting user"
 msgstr "Aanvragende gebruiker"
 
@@ -1167,11 +1212,6 @@ msgstr "Uniek kenmerk"
 msgid "Description"
 msgstr "Beschrijving"
 
-#: archiefbeheercomponent/report/templates/report/vernietigings_rapport.html:36
-#: archiefbeheercomponent/report/utils.py:169
-msgid "Duration"
-msgstr "Looptijd"
-
 #: archiefbeheercomponent/report/templates/report/vernietigings_rapport.html:37
 #: archiefbeheercomponent/report/utils.py:170
 msgid "Destruction category Selectielijst"
@@ -1197,33 +1237,10 @@ msgstr "Reactie zorgdrager"
 msgid "Archive action period"
 msgstr "Archiefactietermijn"
 
-#: archiefbeheercomponent/report/templates/report/vernietigings_rapport.html:45
-#: archiefbeheercomponent/report/utils.py:176
-msgid "Result type"
-msgstr "Resultaattype"
-
-#: archiefbeheercomponent/report/templates/report/vernietigings_rapport.html:46
-#: archiefbeheercomponent/report/utils.py:177
-msgid "Organisation responsible"
-msgstr "Verantwoordelijke organisatie"
-
-#: archiefbeheercomponent/report/templates/report/vernietigings_rapport.html:47
-#: archiefbeheercomponent/report/utils.py:178
-msgid "Relations"
-msgstr "Relaties"
-
 #: archiefbeheercomponent/report/utils.py:119
 #, python-format
 msgid "%(looptijd)s days"
 msgstr "%(looptijd)s dagen"
-
-#: archiefbeheercomponent/report/utils.py:141
-msgid "Yes"
-msgstr "Ja"
-
-#: archiefbeheercomponent/report/utils.py:143
-msgid "No"
-msgstr "Nee"
 
 #: archiefbeheercomponent/report/utils.py:208
 #, python-format

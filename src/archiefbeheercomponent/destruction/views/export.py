@@ -8,10 +8,12 @@ from django.utils.translation import gettext as _
 from django.views import View
 
 import xlsxwriter
+from zgw_consumers.concurrent import parallel
 
 from ...accounts.models import User
 from ..forms import ZakenUrlsForm
 from ..service import fetch_zaken
+from ..utils import format_zaak_record, get_additional_zaak_info
 
 
 class ExportZakenWithoutArchiveDateView(UserPassesTestMixin, View):
@@ -50,11 +52,12 @@ class ExportZakenWithoutArchiveDateView(UserPassesTestMixin, View):
     def get_data(self, zaken_urls: List[str], user: User):
         zaken = fetch_zaken(zaken_urls)
 
+        with parallel() as executor:
+            zaken_with_extra_info = list(executor.map(get_additional_zaak_info, zaken))
+
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {"in_memory": True})
         worksheet = workbook.add_worksheet(name=_("Cases without archive date"))
-
-        user_representation = f"{user.first_name} {user.last_name}"
 
         # Header
         worksheet.write_row(
@@ -64,20 +67,19 @@ class ExportZakenWithoutArchiveDateView(UserPassesTestMixin, View):
                 _("Case identification"),
                 _("Case type"),
                 _("Case description"),
+                _("Duration"),
+                _("Organisation responsible"),
+                _("Result type"),
+                _("Retention period"),
+                _("Destruction category selection list"),
+                _("Relations"),
                 _("Requesting user"),
             ],
         )
 
-        for row_count, zaak in enumerate(zaken):
+        for row_count, zaak in enumerate(zaken_with_extra_info):
             worksheet.write_row(
-                row_count + 1,
-                0,
-                [
-                    zaak.get("identificatie"),
-                    zaak["zaaktype"]["omschrijving"],
-                    zaak.get("omschrijving"),
-                    user_representation,
-                ],
+                row_count + 1, 0, format_zaak_record(zaak, user),
             )
 
         workbook.close()

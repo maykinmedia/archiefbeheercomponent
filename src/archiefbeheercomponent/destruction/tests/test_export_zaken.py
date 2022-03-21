@@ -25,11 +25,17 @@ class ExportZakenWithoutArchiveDateTests(TestCase):
                 "identificatie": "ZAAK-01",
                 "omschrijving": "Test zaak 1",
                 "zaaktype": {"omschrijving": "Zaaktype-1"},
+                "startdatum": "2020-01-01",
+                "einddatum": "2021-01-01",
+                "verantwoordelijkeOrganisatie": "Test organisatie",
             },
             {
                 "identificatie": "ZAAK-02",
                 "omschrijving": "Test zaak 2",
                 "zaaktype": {"omschrijving": "Zaaktype-2"},
+                "startdatum": "2020-01-01",
+                "einddatum": "2021-01-01",
+                "verantwoordelijkeOrganisatie": "Test organisatie",
             },
         ],
     )
