@@ -11,10 +11,9 @@ import xlsxwriter
 from zgw_consumers.concurrent import parallel
 
 from ...accounts.models import User
-from ...report.utils import get_looptijd
 from ..forms import ZakenUrlsForm
 from ..service import fetch_zaken
-from ..utils import get_additional_zaak_info
+from ..utils import format_zaak_record, get_additional_zaak_info
 
 
 class ExportZakenWithoutArchiveDateView(UserPassesTestMixin, View):
@@ -60,8 +59,6 @@ class ExportZakenWithoutArchiveDateView(UserPassesTestMixin, View):
         workbook = xlsxwriter.Workbook(output, {"in_memory": True})
         worksheet = workbook.add_worksheet(name=_("Cases without archive date"))
 
-        user_representation = f"{user.first_name} {user.last_name}"
-
         # Header
         worksheet.write_row(
             0,
@@ -81,31 +78,8 @@ class ExportZakenWithoutArchiveDateView(UserPassesTestMixin, View):
         )
 
         for row_count, zaak in enumerate(zaken_with_extra_info):
-            relations = _("No")
-            if len(zaak.get("relevanteAndereZaken", [])):
-                relations = _("Yes")
-
             worksheet.write_row(
-                row_count + 1,
-                0,
-                [
-                    zaak.get("identificatie"),
-                    zaak["zaaktype"]["omschrijving"],
-                    zaak.get("omschrijving"),
-                    _("%(duration)s days") % {"duration": get_looptijd(zaak)},
-                    zaak["verantwoordelijkeOrganisatie"],
-                    zaak.get("resultaat", {})
-                    .get("resultaattype", {})
-                    .get("omschrijving")
-                    or "",
-                    zaak.get("resultaat", {})
-                    .get("resultaattype", {})
-                    .get("archiefactietermijn")
-                    or "",
-                    zaak["zaaktype"].get("processtype", {}).get("nummer") or "",
-                    relations,
-                    user_representation,
-                ],
+                row_count + 1, 0, format_zaak_record(zaak, user),
             )
 
         workbook.close()
