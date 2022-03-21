@@ -457,6 +457,7 @@ class DestructionReportUtilsTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [{"url": "http://some.zaak"}],
+                "bytes_removed_documents": 10,
             },
         )
         archivaris = UserFactory.create(
@@ -472,7 +473,7 @@ class DestructionReportUtilsTests(TestCase):
             text="What a magnificent list!",
         )
 
-        report_data = get_destruction_report_data(destruction_list)
+        report_data, deleted_bytes = get_destruction_report_data(destruction_list)
 
         self.assertEqual(1, len(report_data))
 
@@ -514,6 +515,7 @@ class DestructionReportUtilsTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [{"url": "http://some.zaak"}],
+                "bytes_removed_documents": 10,
             },
         )
         DestructionListItemFactory.create(
@@ -534,6 +536,7 @@ class DestructionReportUtilsTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [],
+                "bytes_removed_documents": 10,
             },
         )
         archivaris = UserFactory.create(
@@ -549,7 +552,7 @@ class DestructionReportUtilsTests(TestCase):
             text="What a magnificent list!",
         )
 
-        report_data = get_destruction_report_data(destruction_list)
+        report_data, deleted_bytes = get_destruction_report_data(destruction_list)
 
         self.assertEqual(2, len(report_data))
 
@@ -623,10 +626,11 @@ class DestructionReportUtilsTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [{"url": "http://some.zaak"}],
+                "bytes_removed_documents": 10,
             },
         )
 
-        report_data = get_destruction_report_data(destruction_list)
+        report_data, deleted_bytes = get_destruction_report_data(destruction_list)
 
         self.assertEqual(1, len(report_data))
 
@@ -683,6 +687,7 @@ class DestructionReportUtilsTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [{"url": "http://some.zaak"}],
+                "bytes_removed_documents": 10,
             },
         )
         DestructionListItemFactory.create(
@@ -703,10 +708,11 @@ class DestructionReportUtilsTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [],
+                "bytes_removed_documents": 10,
             },
         )
 
-        report_data = get_destruction_report_data(destruction_list)
+        report_data, deleted_bytes = get_destruction_report_data(destruction_list)
 
         self.assertEqual(1, len(report_data))
 
@@ -861,3 +867,64 @@ class DestructionReportUtilsTests(TestCase):
         self.assertIn("This is a comment for the author.", report)
         self.assertEqual(1, len(html_report.find_class("log-item__author-comment")))
         self.assertIn("This is a comment for the reviewer.", report)
+
+    def test_number_of_deleted_bytes(self):
+        destruction_list = DestructionListFactory.create()
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.destroyed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-1",
+                "omschrijving": "Een zaak",
+                "toelichting": "Bah",
+                "startdatum": "2020-01-01",
+                "einddatum": "2021-01-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+                "verantwoordelijke_organisatie": "Nicer organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nicer result type",
+                        "archiefactietermijn": "40 days",
+                    }
+                },
+                "relevante_andere_zaken": [{"url": "http://some.zaak"}],
+                "bytes_removed_documents": 10,
+            },
+        )
+        DestructionListItemFactory.create(
+            destruction_list=destruction_list,
+            status=ListItemStatus.destroyed,
+            extra_zaak_data={
+                "identificatie": "ZAAK-2",
+                "omschrijving": "Een andere zaak",
+                "toelichting": "Boh",
+                "startdatum": "2020-02-01",
+                "einddatum": "2021-03-01",
+                "zaaktype": "https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
+                "verantwoordelijke_organisatie": "Nice organisation",
+                "resultaat": {
+                    "resultaattype": {
+                        "omschrijving": "Nice result type",
+                        "archiefactietermijn": "20 days",
+                    }
+                },
+                "relevante_andere_zaken": [],
+                "bytes_removed_documents": 20,
+            },
+        )
+        archivaris = UserFactory.create(
+            role__type=RoleTypeChoices.archivist,
+            role__can_start_destruction=False,
+            role__can_review_destruction=True,
+            role__can_view_case_details=False,
+        )
+        DestructionListReviewFactory.create(
+            destruction_list=destruction_list,
+            status=ReviewStatus.approved,
+            author=archivaris,
+            text="What a magnificent list!",
+        )
+
+        report_data, deleted_bytes = get_destruction_report_data(destruction_list)
+
+        self.assertEqual(deleted_bytes, 30)

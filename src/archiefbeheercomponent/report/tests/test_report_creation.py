@@ -66,6 +66,7 @@ class CreateReportTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [],
+                "bytes_removed_documents": 10,
             },
         )
         DestructionListItemFactory.create(
@@ -86,6 +87,7 @@ class CreateReportTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [],
+                "bytes_removed_documents": 10,
             },
         )
         DestructionListReviewFactory.create(
@@ -137,6 +139,7 @@ class CreateReportTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [],
+                "bytes_removed_documents": 10,
             },
         )
         DestructionListItemFactory.create(
@@ -157,6 +160,7 @@ class CreateReportTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [],
+                "bytes_removed_documents": 10,
             },
         )
         DestructionListReviewFactory.create(
@@ -204,6 +208,7 @@ class CreateReportTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [],
+                "bytes_removed_documents": 10,
             },
         )
         DestructionListItemFactory.create(
@@ -224,6 +229,7 @@ class CreateReportTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [],
+                "bytes_removed_documents": 20,
             },
         )
         DestructionListReviewFactory.create(
@@ -263,6 +269,7 @@ class CreateReportTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [],
+                "bytes_removed_documents": 10,
             },
         )
         DestructionListItemFactory.create(
@@ -283,6 +290,7 @@ class CreateReportTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [],
+                "bytes_removed_documents": 10,
             },
         )
 
@@ -316,6 +324,7 @@ class CreateReportTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [],
+                "bytes_removed_documents": 10,
             },
         )
         DestructionListItemFactory.create(
@@ -336,6 +345,7 @@ class CreateReportTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [],
+                "bytes_removed_documents": 10,
             },
         )
         DestructionListReviewFactory.create(
@@ -375,6 +385,7 @@ class CreateReportTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [],
+                "bytes_removed_documents": 10,
             },
         )
         DestructionListItemFactory.create(
@@ -395,6 +406,7 @@ class CreateReportTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [],
+                "bytes_removed_documents": 10,
             },
         )
         DestructionListReviewFactory.create(
@@ -447,6 +459,7 @@ class ContentReportTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [{"url": "http://some.zaak"}],
+                "bytes_removed_documents": 10,
             },
         )
         archivaris = UserFactory.create(
@@ -462,9 +475,9 @@ class ContentReportTests(TestCase):
             text="What a magnificent list!",
         )
 
-        zaken_data = get_destruction_report_data(destruction_list)
+        zaken_data, bytes_deleted = get_destruction_report_data(destruction_list)
         html_content = create_html_report_content(
-            zaken_data, destruction_list.contains_sensitive_info
+            zaken_data, bytes_deleted, destruction_list.contains_sensitive_info
         )
 
         expected_html_nodes = [
@@ -488,10 +501,11 @@ class ContentReportTests(TestCase):
             "<td>Nicer result type</td>",
             "<td>Nicer organisation</td>",
             "<td>Yes</td>",
+            "10 bytes of documents were deleted.",
         ]
 
         for node in expected_html_nodes:
-            self.assertIn(node, html_content)
+            self.assertInHTML(node, html_content)
 
         # Check sensitive info
         self.assertNotIn("<th>Description</th>", html_content)
@@ -521,6 +535,7 @@ class ContentReportTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [{"url": "http://some.zaak"}],
+                "bytes_removed_documents": 10,
             },
         )
         archivaris = UserFactory.create(
@@ -536,9 +551,9 @@ class ContentReportTests(TestCase):
             text="What a magnificent list!",
         )
 
-        zaken_data = get_destruction_report_data(destruction_list)
+        zaken_data, bytes_deleted = get_destruction_report_data(destruction_list)
         html_content = create_html_report_content(
-            zaken_data, destruction_list.contains_sensitive_info
+            zaken_data, bytes_deleted, destruction_list.contains_sensitive_info
         )
 
         expected_html_nodes = [
@@ -569,7 +584,7 @@ class ContentReportTests(TestCase):
         ]
 
         for node in expected_html_nodes:
-            self.assertIn(node, html_content)
+            self.assertInHTML(node, html_content)
 
     def test_create_csv_content_with_sensitive_info(self, m_vcs, m_zaaktype):
         destruction_list = DestructionListFactory.create(
@@ -593,6 +608,7 @@ class ContentReportTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [{"url": "http://some.zaak"}],
+                "bytes_removed_documents": 10,
             },
         )
         archivaris = UserFactory.create(
@@ -608,7 +624,7 @@ class ContentReportTests(TestCase):
             text="What a magnificent list!",
         )
 
-        zaken_data = get_destruction_report_data(destruction_list)
+        zaken_data, bytes_deleted = get_destruction_report_data(destruction_list)
         html_content = create_csv_report_content(
             zaken_data, destruction_list.contains_sensitive_info
         )
@@ -676,6 +692,7 @@ class ContentReportTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [{"url": "http://some.zaak"}],
+                "bytes_removed_documents": 10,
             },
         )
         archivaris = UserFactory.create(
@@ -691,7 +708,7 @@ class ContentReportTests(TestCase):
             text="What a magnificent list!",
         )
 
-        zaken_data = get_destruction_report_data(destruction_list)
+        zaken_data, bytes_deleted = get_destruction_report_data(destruction_list)
         html_content = create_csv_report_content(
             zaken_data, destruction_list.contains_sensitive_info
         )

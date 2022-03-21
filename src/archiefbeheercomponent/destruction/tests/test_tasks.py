@@ -132,7 +132,7 @@ class ProcessListTests(TestCase):
 
 
 class ProcessListItemTests(TestCase):
-    @patch("archiefbeheercomponent.destruction.tasks.remove_zaak")
+    @patch("archiefbeheercomponent.destruction.tasks.remove_zaak", return_value=10)
     @patch(
         "archiefbeheercomponent.destruction.tasks.fetch_zaak",
         return_value={
@@ -211,7 +211,7 @@ class ProcessListItemTests(TestCase):
 
         mock_remove_zaken.assert_called_once_with(list_item.zaak)
 
-    @patch("archiefbeheercomponent.destruction.tasks.remove_zaak")
+    @patch("archiefbeheercomponent.destruction.tasks.remove_zaak", return_value=10)
     @patch(
         "archiefbeheercomponent.destruction.tasks.fetch_zaak",
         return_value={
@@ -577,6 +577,7 @@ class NotifyTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [],
+                "bytes_removed_documents": 10,
             },
         )
         DestructionListItemFactory.create(
@@ -597,6 +598,7 @@ class NotifyTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [{"url": "http://some.zaak"}],
+                "bytes_removed_documents": 20,
             },
         )
         DestructionListReviewFactory.create(
@@ -663,6 +665,7 @@ class NotifyTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [{"url": "http://some.zaak"}],
+                "bytes_removed_documents": 10,
             },
         )
         DestructionListItemFactory.create(
@@ -683,6 +686,7 @@ class NotifyTests(TestCase):
                     }
                 },
                 "relevante_andere_zaken": [{"url": "http://some.zaak"}],
+                "bytes_removed_documents": 20,
             },
         )
         mock_service_oas_get(
