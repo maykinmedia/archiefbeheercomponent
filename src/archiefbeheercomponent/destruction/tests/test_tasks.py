@@ -10,6 +10,7 @@ from django.utils.translation import gettext as _
 
 import requests_mock
 from freezegun import freeze_time
+from furl import furl
 from privates.test import temp_private_root
 from timeline_logger.models import TimelineLog
 from zds_client.client import ClientError
@@ -21,6 +22,7 @@ from archiefbeheercomponent.emails.constants import EmailTypeChoices
 from archiefbeheercomponent.emails.models import AutomaticEmail, EmailConfig
 from archiefbeheercomponent.emails.tests.factories import AutomaticEmailFactory
 from archiefbeheercomponent.notifications.models import Notification
+from archiefbeheercomponent.report.constants import ReportTypeChoices
 from archiefbeheercomponent.report.models import DestructionReport
 from archiefbeheercomponent.report.tests.factories import DestructionReportFactory
 
@@ -508,28 +510,32 @@ class NotifyTests(TestCase):
 
         report = DestructionReport.objects.get()
 
+        expected_url = furl(
+            "http://example.com" + reverse("report:download-report", args=[report.pk])
+        )
+        expected_url.args["type"] = ReportTypeChoices.pdf
+        expected_pdf_url = expected_url.url
+        expected_url.args["type"] = ReportTypeChoices.csv
+        expected_csv_url = expected_url.url
+
         self.assertEqual(
             notification.message,
             _(
                 "Destruction list %(list)s has been processed. "
-                "You can download the report of destruction here: %(url)s"
+                "You can download the report of destruction as a PDF here: %(url_pdf)s "
+                "and as a CSV here: %(url_csv)s"
             )
             % {
                 "list": "Summer List",
-                "url": "http://example.com{}".format(
-                    reverse("report:download-report", args=[report.pk])
-                ),
+                "url_pdf": expected_pdf_url,
+                "url_csv": expected_csv_url,
             },
         )
 
         self.client.force_login(process_owner)
 
-        response_pdf = self.client.get(
-            reverse("report:download-report", args=[report.pk]), data={"type": "pdf"}
-        )
-        response_csv = self.client.get(
-            reverse("report:download-report", args=[report.pk]), data={"type": "csv"}
-        )
+        response_pdf = self.client.get(expected_pdf_url)
+        response_csv = self.client.get(expected_csv_url)
 
         self.assertEqual(200, response_pdf.status_code)
         self.assertGreater(len(response_pdf.content), 0)
