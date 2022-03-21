@@ -2,6 +2,7 @@ from django.core import mail
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
+from furl import furl
 from privates.test import temp_private_root
 
 from archiefbeheercomponent.accounts.tests.factories import UserFactory
@@ -9,6 +10,7 @@ from archiefbeheercomponent.destruction.tests.factories import DestructionListFa
 from archiefbeheercomponent.emails.constants import EmailTypeChoices
 from archiefbeheercomponent.emails.models import EmailConfig
 from archiefbeheercomponent.emails.tests.factories import AutomaticEmailFactory
+from archiefbeheercomponent.report.constants import ReportTypeChoices
 from archiefbeheercomponent.report.tests.factories import DestructionReportFactory
 from archiefbeheercomponent.report.utils import get_absolute_url
 
@@ -81,9 +83,10 @@ class AutomaticEmailTest(TestCase):
 
         sent_mail = mail.outbox[0]
 
-        report_link = get_absolute_url(
-            reverse("report:download-report", args=[report.pk]),
+        pdf_report_url = furl(
+            get_absolute_url(reverse("report:download-report", args=[report.pk]))
         )
-        expected_body = f"This is a link to the report: {report_link}"
+        pdf_report_url.args["type"] = ReportTypeChoices.pdf
+        expected_body = f"This is a link to the report: {pdf_report_url.url}"
 
         self.assertEqual(expected_body, sent_mail.body)
