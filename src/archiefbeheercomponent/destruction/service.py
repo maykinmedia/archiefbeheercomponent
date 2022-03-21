@@ -101,7 +101,7 @@ def update_zaak(url: str, data: dict, audit_comment: Optional[str]) -> dict:
     return response
 
 
-def remove_zaak(url: str) -> None:
+def remove_zaak(url: str) -> int:
     """
     Destroy the Zaak and related objects identified by the zaak URL.
     """
@@ -121,6 +121,7 @@ def remove_zaak(url: str) -> None:
     zrc_client.delete("zaak", url=url)
 
     # find and destroy related documenten
+    bytes_deleted_documents = 0
     for zio in zios:
         io_url = zio["informatieobject"]
 
@@ -130,7 +131,13 @@ def remove_zaak(url: str) -> None:
             "objectinformatieobject", query_params={"informatieobject": io_url}
         )
         if not oios:
+            document = drc_client.retrieve("enkelvoudiginformatieobject", url=io_url)
+            document_size = document.get("bestandsomvang")
             drc_client.delete("enkelvoudiginformatieobject", url=io_url)
+            if document_size:
+                bytes_deleted_documents += document_size
+
+    return bytes_deleted_documents
 
 
 def get_resultaat(zaak_url: str) -> Optional[dict]:

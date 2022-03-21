@@ -128,12 +128,13 @@ def process_list_item(list_item_id):
 
     try:
         if settings.ABC_DEMO_MODE:
+            bytes_removed_documents = 0
             logger.warning(
                 "[DEMO MODE] Zaak %r and related resources will not be deleted.",
                 zaak.get("identificatie"),
             )
         else:
-            remove_zaak(list_item.zaak)
+            bytes_removed_documents = remove_zaak(list_item.zaak)
     except ClientError as exc:
         logger.warning(
             "Destruction list item %r has failed during execution with error: %r",
@@ -169,6 +170,7 @@ def process_list_item(list_item_id):
             "verantwoordelijke_organisatie": zaak["verantwoordelijkeOrganisatie"],
             "resultaat": resultaat,
             "relevante_andere_zaken": zaak.get("relevanteAndereZaken", []),
+            "bytes_removed_documents": bytes_removed_documents,
         }
         list_item.save()
 

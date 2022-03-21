@@ -2,13 +2,14 @@ import csv
 import io
 from datetime import date, datetime
 from itertools import chain
-from typing import ByteString, List, Optional
+from typing import ByteString, List, Optional, Tuple
 
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.files.base import ContentFile
 from django.http import HttpRequest
 from django.shortcuts import render
+from django.template.defaultfilters import filesizeformat
 from django.utils.translation import gettext as _
 
 from weasyprint import HTML
@@ -95,14 +96,18 @@ def get_process_owner_comments(destruction_list: DestructionList) -> str:
     return review.text
 
 
-def get_destruction_report_data(destruction_list: DestructionList) -> List[dict]:
+def get_destruction_report_data(
+    destruction_list: DestructionList,
+) -> Tuple[List[dict], int]:
     destroyed_items = destruction_list.items.filter(
         status=ListItemStatus.destroyed
     ).order_by("id")
 
     zaken_data = []
+    bytes_deleted = 0
     for destroyed_item in destroyed_items:
         zaak_data = destroyed_item.extra_zaak_data
+        bytes_deleted += zaak_data["bytes_removed_documents"]
 
         zaaktype = get_zaaktype(zaak_data["zaaktype"])
 
@@ -144,18 +149,20 @@ def get_destruction_report_data(destruction_list: DestructionList) -> List[dict]
 
         zaken_data.append(zaak_data)
 
-    return zaken_data
+    return zaken_data, bytes_deleted
 
 
 def create_html_report_content(
-    zaken_data: List[dict], contains_sensitive_info: bool
+    zaken_data: List[dict], bytes_deleted: int, contains_sensitive_info: bool
 ) -> str:
+
     return render(
         request=None,
         template_name="report/vernietigings_rapport.html",
         context={
             "destroyed_zaken": zaken_data,
             "contains_sensitive_info": contains_sensitive_info,
+            "bytes_deleted": filesizeformat(bytes_deleted),
         },
     ).content.decode("utf8")
 
@@ -218,10 +225,10 @@ def convert_to_pdf(html_content: str) -> ByteString:
 
 
 def create_destruction_report(destruction_list: DestructionList) -> DestructionReport:
-    zaken_data_for_report = get_destruction_report_data(destruction_list)
+    zaken_data_for_report, bytes_deleted = get_destruction_report_data(destruction_list)
 
     report_content_html = create_html_report_content(
-        zaken_data_for_report, destruction_list.contains_sensitive_info
+        zaken_data_for_report, bytes_deleted, destruction_list.contains_sensitive_info
     )
     audittrail_html = create_audittrail_report(destruction_list)
     report_content_csv = create_csv_report_content(
