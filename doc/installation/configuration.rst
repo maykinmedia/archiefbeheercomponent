@@ -335,6 +335,7 @@ whether a case should be created in Open-Zaak once a destruction list is process
 In order to turn this feature on, the checkbox "create zaak" should be ticked.
 The RSIN of the bronorganisatie should be configured, as well as an URL for the desired zaaktype,
 informatieobjecttype, statustype and resultaattype.
+An informatieobjecttype for any documents uploaded by the reviewers during the review process should also be specified.
 
 When this feature is NOT turned on, the destruction report can be downloaded from the application.
 If this feature IS turned on, it is possible to disable downloading the destruction report from the application. To do
