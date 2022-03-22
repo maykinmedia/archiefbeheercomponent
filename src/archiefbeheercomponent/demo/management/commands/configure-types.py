@@ -57,7 +57,7 @@ class Command(BaseCommand):
                 ),
             },
         )
-        self.stdout.write(self.style.SUCCESS("Created zaaktype %s." % zaaktype["url"]))
+        self.stdout.write(self.style.SUCCESS("Created zaaktype: %s" % zaaktype["url"]))
 
         informatieobjecttype = ztc_client.create(
             resource="informatieobjecttype",
@@ -70,7 +70,23 @@ class Command(BaseCommand):
         )
         self.stdout.write(
             self.style.SUCCESS(
-                "Created informatieobjecttype %s." % informatieobjecttype["url"]
+                "Created informatieobjecttype: %s" % informatieobjecttype["url"]
+            )
+        )
+
+        informatieobjecttype_additional_docs = ztc_client.create(
+            resource="informatieobjecttype",
+            data={
+                "catalogus": catalogus["url"],
+                "omschrijving": "Reviewers documents",
+                "vertrouwelijkheidaanduiding": "intern",
+                "beginGeldigheid": "2012-10-04",
+            },
+        )
+        self.stdout.write(
+            self.style.SUCCESS(
+                "Created informatieobjecttype for reviewer docs: %s"
+                % informatieobjecttype_additional_docs["url"]
             )
         )
 
@@ -80,6 +96,15 @@ class Command(BaseCommand):
                 "zaaktype": zaaktype["url"],
                 "informatieobjecttype": informatieobjecttype["url"],
                 "volgnummer": 1,
+                "richting": "intern",
+            },
+        )
+        ztc_client.create(
+            resource="zaakinformatieobjecttype",
+            data={
+                "zaaktype": zaaktype["url"],
+                "informatieobjecttype": informatieobjecttype_additional_docs["url"],
+                "volgnummer": 2,
                 "richting": "intern",
             },
         )
@@ -93,7 +118,7 @@ class Command(BaseCommand):
             },
         )
         self.stdout.write(
-            self.style.SUCCESS("Created statustype %s." % statustype["url"])
+            self.style.SUCCESS("Created statustype: %s" % statustype["url"])
         )
         resultaattype = ztc_client.create(
             resource="resultaattype",
@@ -112,13 +137,18 @@ class Command(BaseCommand):
             },
         )
         self.stdout.write(
-            self.style.SUCCESS("Created resultaattype %s." % resultaattype["url"])
+            self.style.SUCCESS("Created resultaattype: %s" % resultaattype["url"])
         )
 
         ztc_client.operation(
             operation_id="informatieobjecttype_publish",
             data={},
             uuid=uuid_from_url(informatieobjecttype["url"]),
+        )
+        ztc_client.operation(
+            operation_id="informatieobjecttype_publish",
+            data={},
+            uuid=uuid_from_url(informatieobjecttype_additional_docs["url"]),
         )
         ztc_client.operation(
             operation_id="zaaktype_publish",
