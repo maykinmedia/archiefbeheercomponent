@@ -109,7 +109,7 @@ class DestructionListForm(forms.ModelForm):
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = DestructionListReview
-        fields = ("text", "status")
+        fields = ("text", "status", "additional_document")
 
 
 class ReviewCommentForm(forms.ModelForm):

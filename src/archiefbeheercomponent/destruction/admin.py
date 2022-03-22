@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 from fsm_admin.mixins import FSMTransitionMixin
 from ordered_model.admin import OrderedModelAdmin
+from privates.admin import PrivateMediaMixin
 from solo.admin import SingletonModelAdmin
 
 from .forms import ArchiveConfigForm, get_zaaktype_choices
@@ -70,11 +71,13 @@ class DestructionListItemReviewInline(admin.TabularInline):
 
 
 @admin.register(DestructionListReview)
-class DestructionListReviewAdmin(admin.ModelAdmin):
+class DestructionListReviewAdmin(PrivateMediaMixin, admin.ModelAdmin):
     list_display = ("destruction_list", "author")
     raw_id_fields = ("destruction_list", "author")
     date_hierarchy = "created"
     inlines = (DestructionListItemReviewInline,)
+    private_media_fields = ("additional_document",)
+    # readonly_fields = ("additional_document",)
 
 
 @admin.register(DestructionListReviewComment)
