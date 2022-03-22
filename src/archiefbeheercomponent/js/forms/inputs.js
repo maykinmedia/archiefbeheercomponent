@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 import { Help } from './help';
 import { Label } from './label';
@@ -103,5 +103,18 @@ const HiddenInput = ({name, value}) => {
     return <input type="hidden" name={name} defaultValue={value} />
 }
 
+const FileInput = (props) => {
+    const {label, name, required, id, helpText, ...extra} = props;
 
-export {Input, TextInput, TextArea, DateInput, CheckboxInput, RadioInput, HiddenInput};
+    return (
+        <Wrapper>
+            <Label label={label} required={required} idForLabel={id} />
+            <ErrorList />
+            <Input id={id} name={name} type="file" {...extra} />
+            <Help helpText={helpText} idForLabel={id} />
+        </Wrapper>
+    );
+}
+
+
+export {Input, TextInput, TextArea, DateInput, CheckboxInput, RadioInput, HiddenInput, FileInput};

@@ -17,7 +17,7 @@
     {{ comment_to_review|json_script:"review-comment" }}
     {{ standard_review_choices|json_script:"standard-review-choices" }}
 
-    <form action="" method="post">
+    <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
         <div

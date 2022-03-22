@@ -2,7 +2,7 @@ import React, {useState, useEffect, useContext} from 'react';
 import useAsync from 'react-use/esm/useAsync';
 import PropTypes from 'prop-types';
 
-import {HiddenInput} from '../../forms/inputs';
+import {FileInput, HiddenInput} from '../../forms/inputs';
 import {ReviewItemFormset} from './review-item-formset';
 import {ConstantsContext, SuggestionContext} from './context';
 import {SelectWithCustomOption} from '../../forms/select';
@@ -119,6 +119,13 @@ const ReviewForm = ({ itemsUrl, destructionList, reviewComment, reviewChoices })
             <HiddenInput
                 name="status"
                 value={reviewStatus}
+            />
+
+            <FileInput
+                label="Additional document"
+                id="id_additional_document"
+                name="additional_document"
+                helpText="An additional document relevant for this destruction list. It will be related to the case created after the destruction list is processed."
             />
 
             <section className="list-items">
