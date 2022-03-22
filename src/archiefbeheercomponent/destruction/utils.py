@@ -1,8 +1,11 @@
 import logging
+import os
 import re
-from typing import Optional
+from base64 import b64encode
+from typing import TYPE_CHECKING, Dict, Optional
 
 from django.conf import settings
+from django.utils import timezone
 from django.utils.translation import ugettext as _
 
 from zds_client import ClientError
@@ -18,6 +21,11 @@ from .models import (
     DestructionListItem,
 )
 from .service import fetch_process_type, fetch_resultaat
+
+if TYPE_CHECKING:
+    from zgw_consumers.client import ZGWClient
+
+    from .models import ArchiveConfig, DestructionList
 
 logger = logging.getLogger(__name__)
 
@@ -124,3 +132,41 @@ def format_zaak_record(zaak, user):
 
 class ServiceNotConfiguredError(Exception):
     pass
+
+
+def add_additional_review_documents(
+    destruction_list: "DestructionList",
+    zaak: Dict,
+    config: "ArchiveConfig",
+    drc_client: "ZGWClient",
+    zrc_client: "ZGWClient",
+) -> None:
+    """
+    Add any additional documents that were uploaded during the review process
+    """
+    for review in destruction_list.reviews.all():
+        if not review.additional_document:
+            continue
+
+        with review.additional_document.open("rb") as f:
+            additional_document = drc_client.create(
+                resource="enkelvoudiginformatieobject",
+                data={
+                    "bronorganisatie": config.source_organisation,
+                    "creatiedatum": timezone.now().date().isoformat(),
+                    "titel": os.path.basename(review.additional_document.name),
+                    "auteur": "Archiefbeheercomponent",
+                    "taal": "nld",
+                    "inhoud": b64encode(f.read()).decode("utf-8"),
+                    "informatieobjecttype": config.additional_review_document_type,
+                    "indicatie_gebruiksrecht": False,
+                },
+            )
+
+            zrc_client.create(
+                resource="zaakinformatieobject",
+                data={
+                    "zaak": zaak["url"],
+                    "informatieobject": additional_document["url"],
+                },
+            )
