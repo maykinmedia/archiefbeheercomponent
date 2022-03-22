@@ -1,10 +1,11 @@
 @import "../../lib/bem";
 @import "../../lib/colors";
+@import "../../settings";
 @import "./select";
 
 .input {
   border: 0;
-  margin-bottom: 1em;
+  margin-bottom: $grid-margin-3;
   padding: 0;
   position: relative;
 
@@ -13,7 +14,6 @@
     box-shadow: none;
     display: inline-block;
     font-size: 1.1rem;
-    margin-right: 2rem;
     min-width: 0;
     width: 100%;
 
@@ -48,12 +48,8 @@
     @include modifier('file') {
       border: 0;
       clip: rect(0, 0, 0, 0);
-      height: 1px;
       overflow: hidden;
-      padding: 0;
-      position: absolute !important;
       white-space: nowrap;
-      width: 1px;
 
       & + label {
         display: inline-block;

@@ -14,7 +14,6 @@
   }
 
   @include element("comment") {
-    padding: 0 1em;
     .input__control--select {
         max-width: max-content;
     }

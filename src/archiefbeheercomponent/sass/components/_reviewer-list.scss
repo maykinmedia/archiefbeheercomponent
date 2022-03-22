@@ -4,11 +4,9 @@
 .reviewer-list {
   display: flex;
   justify-content: space-between;
-  padding: 0 1em;
 
   @include element("filters") {
     width: 15%;
-    padding-left: 1em;
 
     ul {
       padding-inline-start: 0;
