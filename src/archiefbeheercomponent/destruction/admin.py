@@ -77,7 +77,6 @@ class DestructionListReviewAdmin(PrivateMediaMixin, admin.ModelAdmin):
     date_hierarchy = "created"
     inlines = (DestructionListItemReviewInline,)
     private_media_fields = ("additional_document",)
-    # readonly_fields = ("additional_document",)
 
 
 @admin.register(DestructionListReviewComment)
@@ -130,6 +129,7 @@ class ArchiveConfigAdmin(SingletonModelAdmin):
                     "status_type",
                     "result_type",
                     "document_type",
+                    "additional_review_document_type",
                     "destruction_report_downloadable",
                 ),
             },

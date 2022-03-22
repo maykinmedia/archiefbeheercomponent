@@ -167,6 +167,7 @@ class ArchiveConfigForm(forms.ModelForm):
             "status_type",
             "result_type",
             "document_type",
+            "additional_review_document_type",
         )
 
     def clean(self):
@@ -187,6 +188,7 @@ class ArchiveConfigForm(forms.ModelForm):
                 "status_type",
                 "result_type",
                 "document_type",
+                "additional_review_document_type",
             ]
             for required_field in required_fields:
                 if not self.cleaned_data.get(required_field):

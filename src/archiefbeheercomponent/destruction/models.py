@@ -480,6 +480,14 @@ class ArchiveConfig(SingletonModel):
             "Should the destruction report be downloadable through the application?"
         ),
     )
+    additional_review_document_type = models.URLField(
+        _("Additional review document type"),
+        blank=True,
+        help_text=_(
+            "The document type URL to use for documents which were uploaded by the "
+            "reviewers during the review process."
+        ),
+    )
 
     class Meta:
         verbose_name = _("archive configuration")
