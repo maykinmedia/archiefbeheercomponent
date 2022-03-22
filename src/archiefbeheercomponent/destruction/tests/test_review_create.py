@@ -1,3 +1,4 @@
+from io import StringIO
 from unittest.mock import patch
 
 from django.test import TestCase
@@ -5,6 +6,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 
 from django_capture_on_commit_callbacks import capture_on_commit_callbacks
+from privates.test import temp_private_root
 from timeline_logger.models import TimelineLog
 
 from archiefbeheercomponent.accounts.tests.factories import UserFactory
@@ -46,6 +48,7 @@ class DLMixin:
         return destruction_list
 
 
+@temp_private_root()
 class ReviewCreateTests(DLMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -435,6 +438,41 @@ class ReviewCreateTests(DLMixin, TestCase):
 
         self.assertIn(b"Important comment for process owner", response.content)
         self.assertNotIn(b"Important comment for user", response.content)
+
+    def test_create_review_with_additional_document(self):
+        destruction_list = self._create_destruction_list()
+        DestructionListAssigneeFactory.create(destruction_list=destruction_list)
+
+        url = reverse("destruction:reviewer-create", args=[destruction_list.id])
+
+        data = {
+            "author": self.user.id,
+            "destruction_list": destruction_list.id,
+            "status": ReviewStatus.approved,
+            "text": "some comment",
+            "additional_document": StringIO("Some test content"),
+        }
+        data.update(MANAGEMENT_FORM_DATA)
+        for i, item in enumerate(destruction_list.items.all()):
+            data.update(
+                {
+                    f"item_reviews-{i}-destruction_list_item": item.id,
+                    f"item_reviews-{i}-suggestion": "",
+                    f"item_reviews-{i}-text": "",
+                    f"item_reviews-{i}-identificatie": f"ZAAK-{i}",
+                }
+            )
+
+        response = self.client.post(url, data=data)
+
+        self.assertRedirects(response, reverse("destruction:reviewer-list"))
+
+        review = DestructionListReview.objects.get()
+        additional_document = review.additional_document
+
+        self.assertEqual(
+            "Some test content", additional_document.read().decode("utf-8")
+        )
 
 
 class SendTaskReviewCreateTests(DLMixin, TestCase):
