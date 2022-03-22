@@ -10,19 +10,24 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from celery import chain
+from furl import furl
 from timeline_logger.models import TimelineLog
 from zds_client.client import ClientError
 from zgw_consumers.constants import APITypes
 from zgw_consumers.models import Service
 
+from archiefbeheercomponent.emails.constants import EmailTypeChoices
+from archiefbeheercomponent.emails.models import AutomaticEmail
 from archiefbeheercomponent.notifications.models import Notification
+from archiefbeheercomponent.report.constants import ReportTypeChoices
+from archiefbeheercomponent.report.models import DestructionReport
+from archiefbeheercomponent.report.utils import (
+    create_destruction_report,
+    get_absolute_url,
+)
 
 from ..celery import app
 from ..constants import RoleTypeChoices
-from ..emails.constants import EmailTypeChoices
-from ..emails.models import AutomaticEmail
-from ..report.models import DestructionReport
-from ..report.utils import create_destruction_report, get_absolute_url
 from .constants import ListItemStatus, ListStatus, ReviewStatus
 from .models import (
     ArchiveConfig,
@@ -197,18 +202,27 @@ def complete_and_notify(list_id):
     report = create_destruction_report(destruction_list)
 
     if report.process_owner:
+        base_report_url = get_absolute_url(
+            reverse("report:download-report", args=[report.pk])
+        )
+        pdf_report_url = furl(base_report_url)
+        pdf_report_url.args["type"] = ReportTypeChoices.pdf
+
+        csv_report_url = furl(base_report_url)
+        csv_report_url.args["type"] = ReportTypeChoices.csv
+
         Notification.objects.create(
             destruction_list=destruction_list,
             user=report.process_owner,
             message=_(
                 "Destruction list %(list)s has been processed. "
-                "You can download the report of destruction here: %(url)s"
+                "You can download the report of destruction as a PDF here: %(url_pdf)s "
+                "and as a CSV here: %(url_csv)s"
             )
             % {
                 "list": destruction_list.name,
-                "url": get_absolute_url(
-                    reverse("report:download-report", args=[report.pk])
-                ),
+                "url_pdf": pdf_report_url.url,
+                "url_csv": csv_report_url.url,
             },
         )
 

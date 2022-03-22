@@ -7,6 +7,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
+from furl import furl
 from solo.models import SingletonModel
 
 from archiefbeheercomponent.accounts.models import User
@@ -14,6 +15,7 @@ from archiefbeheercomponent.emails.constants import (
     EmailPreferenceChoices,
     EmailTypeChoices,
 )
+from archiefbeheercomponent.report.constants import ReportTypeChoices
 
 logger = logging.getLogger(__name__)
 
@@ -116,9 +118,13 @@ class AutomaticEmail(models.Model):
                         reverse("destruction:dl-redirect", args=[destruction_list.pk])
                     )
                 elif pattern == LINK_REPORT_TEMPLATE_ELEMENT:
-                    value = get_absolute_url(
-                        reverse("report:download-report", args=[report.pk]),
+                    pdf_report_url = furl(
+                        get_absolute_url(
+                            reverse("report:download-report", args=[report.pk])
+                        )
                     )
+                    pdf_report_url.args["type"] = ReportTypeChoices.pdf
+                    value = pdf_report_url.url
 
                 filled_body = re.sub(re_pattern, value, filled_body)
 
