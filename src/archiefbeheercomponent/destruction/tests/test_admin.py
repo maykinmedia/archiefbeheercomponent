@@ -33,6 +33,9 @@ class ArchiefConfiguratieTest(WebTest):
         form["status_type"] = "http://openzaak.nl/statustype/1"
         form["result_type"] = "http://openzaak.nl/resultaattype/1"
         form["document_type"] = "http://openzaak.nl/informatieobjecttype/1"
+        form[
+            "additional_review_document_type"
+        ] = "http://openzaak.nl/informatieobjecttype/2"
 
         response = form.submit().follow()
 
@@ -47,6 +50,10 @@ class ArchiefConfiguratieTest(WebTest):
         self.assertEqual(conf.status_type, "http://openzaak.nl/statustype/1")
         self.assertEqual(
             conf.document_type, "http://openzaak.nl/informatieobjecttype/1"
+        )
+        self.assertEqual(
+            conf.additional_review_document_type,
+            "http://openzaak.nl/informatieobjecttype/2",
         )
 
     def test_no_zaak_created_no_report_downloadable(self):
