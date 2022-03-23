@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 
 import { jsonScriptToVar } from '../../utils';
 import { DestructionForm } from './destruction-form';
-import { ShortReviewZaaktypesContext } from './context';
+import { ShortReviewZaaktypesContext, ReviewersContext } from './context';
 import { UrlsContext } from '../context';
 import ErrorBoundary from '../ErrorBoundary';
 
@@ -23,18 +23,19 @@ const mount = () => {
 
     ReactDOM.render(
         <ShortReviewZaaktypesContext.Provider value={shortReviewZaaktypes}>
-            <UrlsContext.Provider value={{archiveUpdateUrl: archiveUpdateUrl}}>
-                <ErrorBoundary>
-                    <DestructionForm
-                        zaaktypen={zaaktypen}
-                        reviewers={reviewers}
-                        zakenUrl={zakenUrl}
-                        url={url}
-                        currentDate={currentDate}
-                        csrftoken={csrftoken}
-                    />
-                </ErrorBoundary>
-            </UrlsContext.Provider>
+            <ReviewersContext.Provider value={reviewers}>
+                <UrlsContext.Provider value={{archiveUpdateUrl: archiveUpdateUrl}}>
+                    <ErrorBoundary>
+                        <DestructionForm
+                            zaaktypen={zaaktypen}
+                            zakenUrl={zakenUrl}
+                            url={url}
+                            currentDate={currentDate}
+                            csrftoken={csrftoken}
+                        />
+                    </ErrorBoundary>
+                </UrlsContext.Provider>
+            </ReviewersContext.Provider>
         </ShortReviewZaaktypesContext.Provider>,
         node
     );

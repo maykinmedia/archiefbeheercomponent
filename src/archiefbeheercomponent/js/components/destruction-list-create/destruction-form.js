@@ -82,7 +82,7 @@ const reducer = (draft, action) => {
 };
 
 
-const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, currentDate, csrftoken }) => {
+const DestructionForm = ({ zaaktypen, zakenUrl, url, currentDate, csrftoken }) => {
     const [state, dispatch] = useImmerReducer(reducer, INITIAL_STATE);
 
     const queryParams = {
@@ -183,7 +183,6 @@ const DestructionForm = ({ zaaktypen, reviewers, zakenUrl, url, currentDate, csr
                 checkboxes={state.checkboxes}
                 modalIsOpen={state.modalIsOpen}
                 setIsOpen={(isOpen) => dispatch({type: 'TOGGLE_MODAL', payload: isOpen})}
-                reviewers={reviewers}
                 url={url}
                 csrftoken={csrftoken}
             />
