@@ -122,10 +122,13 @@ const ReviewForm = ({ itemsUrl, destructionList, reviewComment, reviewChoices })
             />
 
             <FileInput
-                label="Additional document"
+                label="Extra document"
                 id="id_additional_document"
                 name="additional_document"
-                helpText="An additional document relevant for this destruction list. It will be related to the case created after the destruction list is processed."
+                helpText={(
+                    'Een aanvullend document relevant voor deze vernietigingslijst. ' +
+                    'Het zal gerelateerd worden aan de zaak die is aangemaakt nadat de vernietigingslijst is verwerkt.'
+                )}
             />
 
             <section className="list-items">

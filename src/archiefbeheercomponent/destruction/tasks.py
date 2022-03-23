@@ -305,9 +305,7 @@ def update_zaak_from_list_item(list_item_id: str, archive_data: dict):
 
 @app.task
 def create_destruction_zaak(list_id):
-    destruction_list = DestructionList.objects.prefetch_related("reviews").get(
-        id=list_id
-    )
+    destruction_list = DestructionList.objects.get(id=list_id)
     destruction_report = DestructionReport.objects.get(
         destruction_list=destruction_list
     )

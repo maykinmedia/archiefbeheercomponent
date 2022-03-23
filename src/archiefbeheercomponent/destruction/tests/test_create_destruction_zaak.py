@@ -4,6 +4,7 @@ from django.core.files import File
 from django.test import TestCase
 
 import requests_mock
+from privates.test import temp_private_root
 from zgw_consumers.constants import APITypes
 from zgw_consumers.models import Service
 
@@ -15,6 +16,7 @@ from ..tasks import create_destruction_zaak
 from .factories import DestructionListFactory, DestructionListReviewFactory
 
 
+@temp_private_root()
 @requests_mock.Mocker()
 class CreateZaakTaskTests(TestCase):
     @classmethod
