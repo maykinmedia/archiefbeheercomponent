@@ -114,6 +114,11 @@ original list author is assigned. The author can then decide whether to abort th
 make changes to the existing list, or simply add a comment for the archivist explaining why they
 disagree with their review.
 
+All reviewers have the option to upload a document to their review along with any comments they may have.
+If at the end of the review process a case is created with the destruction report (see the
+:ref:`configuration section<optional destruction case settings>` for more details), these documents will be related
+to the case.
+
 After the last reviewer has given their approval, the list is submitted for actual
 destruction to the background worker queue.
 

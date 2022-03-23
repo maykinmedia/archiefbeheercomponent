@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_fsm import FSMField, transition
 from ordered_model.models import OrderedModel
+from privates.fields import PrivateMediaFileField
 from solo.models import SingletonModel
 from timeline_logger.models import TimelineLog
 
@@ -286,6 +287,16 @@ class DestructionListReview(models.Model):
     status = models.CharField(
         _("status"), blank=True, choices=ReviewStatus.choices, max_length=80
     )
+    additional_document = PrivateMediaFileField(
+        verbose_name=_("additional document"),
+        upload_to="reviews/%Y/%m/%d",
+        help_text=_(
+            "An additional document relevant for this destruction list. It will be related to the "
+            "case created after the destruction list is processed."
+        ),
+        blank=True,
+        null=True,
+    )
 
     logs = GenericRelation(TimelineLog)
 
@@ -467,6 +478,14 @@ class ArchiveConfig(SingletonModel):
         default=True,
         help_text=_(
             "Should the destruction report be downloadable through the application?"
+        ),
+    )
+    additional_review_document_type = models.URLField(
+        _("Additional review document type"),
+        blank=True,
+        help_text=_(
+            "The document type URL to use for documents which were uploaded by the "
+            "reviewers during the review process."
         ),
     )
 

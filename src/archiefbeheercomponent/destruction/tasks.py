@@ -37,7 +37,7 @@ from .models import (
     DestructionListReview,
 )
 from .service import fetch_resultaat, fetch_zaak, remove_zaak, update_zaak
-from .utils import ServiceNotConfiguredError
+from .utils import ServiceNotConfiguredError, add_additional_review_documents
 
 logger = logging.getLogger(__name__)
 
@@ -370,6 +370,11 @@ def create_destruction_zaak(list_id):
             "informatieobject": destruction_document["url"],
         },
     )
+
+    add_additional_review_documents(
+        destruction_list, destruction_zaak, config, drc_client, zrc_client,
+    )
+
     zrc_client.create(
         resource="resultaat",
         data={"zaak": destruction_zaak["url"], "resultaattype": config.result_type},
