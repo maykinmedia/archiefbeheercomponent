@@ -37,7 +37,11 @@ from .models import (
     DestructionListReview,
 )
 from .service import fetch_resultaat, fetch_zaak, remove_zaak, update_zaak
-from .utils import ServiceNotConfiguredError, add_additional_review_documents
+from .utils import (
+    ServiceNotConfiguredError,
+    add_additional_review_documents,
+    notify_users_about_zaak,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -336,6 +340,9 @@ def create_destruction_zaak(list_id):
             "archiefnominatie": "blijvend_bewaren",
         },
     )
+
+    notify_users_about_zaak(destruction_list, destruction_zaak)
+
     logger.info(
         "Created zaak %s for destruction list %r",
         destruction_zaak["url"],

@@ -10,6 +10,7 @@ from django.utils.translation import ugettext as _
 
 from zds_client import ClientError
 
+from archiefbeheercomponent.notifications.models import Notification
 from archiefbeheercomponent.report.utils import get_looptijd
 
 from .constants import ListItemStatus
@@ -18,6 +19,7 @@ from .models import (
     IDENTIFICATIE_TEMPLATE_ELEMENT,
     UUID_TEMPLATE_ELEMENT,
     ZAC_TEMPLATE_ELEMENTS,
+    DestructionListAssignee,
     DestructionListItem,
 )
 from .service import fetch_process_type, fetch_resultaat
@@ -170,3 +172,26 @@ def add_additional_review_documents(
                     "informatieobject": additional_document["url"],
                 },
             )
+
+
+def notify_users_about_zaak(destruction_list: "DestructionList", zaak: Dict) -> None:
+    """Notify the reviewers and the list author that the destruction zaak is created"""
+
+    assignees = DestructionListAssignee.objects.select_related("assignee").filter(
+        destruction_list=destruction_list
+    )
+
+    message = _(
+        'Destruction list "%(list_name)s" is processed and the destruction report is available in case %(zaak_id)s'
+    ) % {"list_name": destruction_list.name, "zaak_id": zaak["identificatie"]}
+
+    for assignee in assignees:
+        Notification.objects.create(
+            destruction_list=destruction_list, user=assignee.assignee, message=message,
+        )
+
+    Notification.objects.create(
+        destruction_list=destruction_list,
+        user=destruction_list.author,
+        message=message,
+    )
