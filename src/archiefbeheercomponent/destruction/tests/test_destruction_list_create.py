@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
@@ -29,8 +29,7 @@ class CreateDestructionListTests(TestCase):
         data = {
             "name": "test list",
             "zaken": ",".join(zaken),
-            "reviewer_1": reviewers[0].id,
-            "reviewer_2": reviewers[1].id,
+            "reviewers": [str(reviewer.id) for reviewer in reviewers],
             "zaken_identificaties": ",".join(zaken_identificaties),
         }
 
@@ -103,8 +102,7 @@ class CreateDestructionListTests(TestCase):
         data = {
             "name": "test list",
             "zaken": ",".join(zaken),
-            "reviewer_1": reviewers[0].id,
-            "reviewer_2": reviewers[1].id,
+            "reviewers": [str(reviewer.id) for reviewer in reviewers],
             "zaken_identificaties": ",".join(zaken_identificaties),
         }
 
@@ -117,3 +115,68 @@ class CreateDestructionListTests(TestCase):
 
         self.assertIsNotNone(assignees.first().assigned_on)
         self.assertIsNone(assignees.last().assigned_on)
+
+    def test_can_have_more_than_2_assignees(self):
+        reviewers = UserFactory.create_batch(3, role__can_review_destruction=True)
+        zaken = [f"http://some.zaken.nl/api/v1/zaken/{i}" for i in range(1, 3)]
+        zaken_identificaties = ["ZAAK-1", "ZAAK-2", "ZAAK-3"]
+
+        url = reverse("destruction:record-manager-create")
+        data = {
+            "name": "test list",
+            "zaken": ",".join(zaken),
+            "reviewers": [str(reviewer.id) for reviewer in reviewers],
+            "zaken_identificaties": ",".join(zaken_identificaties),
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertRedirects(response, reverse("destruction:record-manager-list"))
+
+        destruction_list = DestructionList.objects.get()
+        assignees = destruction_list.assignees.order_by("id")
+
+        self.assertEqual(3, assignees.count())
+
+    def test_assignees_are_deduplicated(self):
+        reviewer = UserFactory.create(role__can_review_destruction=True)
+        zaken = [f"http://some.zaken.nl/api/v1/zaken/{i}" for i in range(1, 3)]
+        zaken_identificaties = ["ZAAK-1", "ZAAK-2", "ZAAK-3"]
+
+        url = reverse("destruction:record-manager-create")
+        data = {
+            "name": "test list",
+            "zaken": ",".join(zaken),
+            "reviewers": [reviewer.id, reviewer.id],
+            "zaken_identificaties": ",".join(zaken_identificaties),
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertRedirects(response, reverse("destruction:record-manager-list"))
+
+        destruction_list = DestructionList.objects.get()
+        assignees = destruction_list.assignees.order_by("id")
+
+        self.assertEqual(1, assignees.count())
+
+    @override_settings(LANGUAGE_CODE="en")
+    def test_list_must_have_at_least_one_assignee(self):
+        zaken = [f"http://some.zaken.nl/api/v1/zaken/{i}" for i in range(1, 3)]
+        zaken_identificaties = ["ZAAK-1", "ZAAK-2", "ZAAK-3"]
+
+        url = reverse("destruction:record-manager-create")
+        data = {
+            "name": "test list",
+            "zaken": ",".join(zaken),
+            "reviewers": [],
+            "zaken_identificaties": ",".join(zaken_identificaties),
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertEqual(200, response.status_code)
+        self.assertInHTML(
+            '<li>reviewers<ul class="errorlist"><li>This field is required.</li></ul></li>',
+            response.content.decode("utf-8"),
+        )
