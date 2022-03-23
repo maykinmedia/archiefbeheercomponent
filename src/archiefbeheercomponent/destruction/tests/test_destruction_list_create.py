@@ -180,3 +180,27 @@ class CreateDestructionListTests(TestCase):
             '<li>reviewers<ul class="errorlist"><li>This field is required.</li></ul></li>',
             response.content.decode("utf-8"),
         )
+
+    def test_reviewers_order_is_not_changed(self):
+        # TODO: https://stackoverflow.com/questions/10296333/django-multiplechoicefield-does-not-preserve-order-of-selected-values
+        reviewer = UserFactory.create_batch(3, role__can_review_destruction=True)
+        zaken = [f"http://some.zaken.nl/api/v1/zaken/{i}" for i in range(1, 3)]
+        zaken_identificaties = ["ZAAK-1", "ZAAK-2", "ZAAK-3"]
+
+        url = reverse("destruction:record-manager-create")
+        data = {
+            "name": "test list",
+            "zaken": ",".join(zaken),
+            "reviewers": [reviewer[2].id, reviewer[1].id, reviewer[0].id],
+            "zaken_identificaties": ",".join(zaken_identificaties),
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertRedirects(response, reverse("destruction:record-manager-list"))
+
+        destruction_list = DestructionList.objects.get()
+        order_reviewers = destruction_list.assignees.order_by("order").values_list("assignee__id", flat=True)
+
+
+        self.assertListEqual([reviewer[2].id, reviewer[1].id, reviewer[0].id], list(order_reviewers))
