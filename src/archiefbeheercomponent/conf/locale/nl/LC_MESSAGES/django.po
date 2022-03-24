@@ -740,7 +740,7 @@ msgstr "De vernietigingslijst is nog niet beoordeeld."
 
 #: archiefbeheercomponent/destruction/templates/destruction/download_report.html:5
 msgid "Download destruction report: "
-msgstr "Download verklaring van vernietiging"
+msgstr "Download verklaring van vernietiging:"
 
 #: archiefbeheercomponent/destruction/templates/destruction/logs/aborted.html:7
 #, python-format
