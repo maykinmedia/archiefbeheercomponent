@@ -8,8 +8,14 @@
     {{ reviewers|json_script:"reviewer-choices" }}
     {{ short_review_zaaktypes|json_script:"short-review-zaaktypes" }}
 
-    {{ form.errors }}
-    {{ form.non_field_errors }}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="error-message">
+                <span class="material-icons">error_outline</span>{{ field.label }}: {{ error }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% if form.non_field_errors %}<div class="error-message">{{ form.non_field_errors }}</div>{% endif %}
 
         <div class="destruction-create"
              id="react-destruction-list"
