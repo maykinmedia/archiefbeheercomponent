@@ -1,19 +1,25 @@
 from io import StringIO
 
 from django.core.files import File
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 import requests_mock
 from privates.test import temp_private_root
 from zgw_consumers.constants import APITypes
 from zgw_consumers.models import Service
 
+from archiefbeheercomponent.accounts.tests.factories import UserFactory
+from archiefbeheercomponent.notifications.models import Notification
 from archiefbeheercomponent.report.tests.factories import DestructionReportFactory
 from archiefbeheercomponent.tests.utils import mock_service_oas_get
 
 from ..models import DestructionList
 from ..tasks import create_destruction_zaak
-from .factories import DestructionListFactory, DestructionListReviewFactory
+from .factories import (
+    DestructionListAssigneeFactory,
+    DestructionListFactory,
+    DestructionListReviewFactory,
+)
 
 
 @temp_private_root()
@@ -49,7 +55,10 @@ class CreateZaakTaskTests(TestCase):
         )
         m.post(
             "https://oz.nl/zaken/api/v1/zaken",
-            json={"url": "https://oz.nl/zaken/api/v1/zaken/123"},
+            json={
+                "url": "https://oz.nl/zaken/api/v1/zaken/123",
+                "identificatie": "ZAAK-0001",
+            },
             status_code=201,
         )
         m.post(
@@ -123,3 +132,36 @@ class CreateZaakTaskTests(TestCase):
 
         self.assertEqual(2, eio_post_calls)
         self.assertEqual(2, zio_post_calls)
+
+    @override_settings(LANGUAGE_CODE="en")
+    def test_create_zaak_notifies_users(self, m):
+        self._set_up_mocks(m)
+
+        user1, user2, user3 = UserFactory.create_batch(3)
+
+        destruction_list = DestructionListFactory.create(
+            author=user1, name="Test Notifications"
+        )
+        DestructionListAssigneeFactory.create(
+            destruction_list=destruction_list, assignee=user2
+        )
+        DestructionListAssigneeFactory.create(
+            destruction_list=destruction_list, assignee=user3
+        )
+        DestructionReportFactory.create(destruction_list=destruction_list)
+
+        create_destruction_zaak(destruction_list.id)
+
+        notifications = Notification.objects.filter(destruction_list=destruction_list)
+
+        self.assertEqual(3, notifications.count())
+        self.assertEqual(1, notifications.filter(user=user1).count())
+        self.assertEqual(1, notifications.filter(user=user2).count())
+        self.assertEqual(1, notifications.filter(user=user3).count())
+
+        for notification in notifications:
+            self.assertEqual(
+                'Destruction list "Test Notifications" is processed and '
+                "the destruction report is available in case ZAAK-0001",
+                notification.message,
+            )
