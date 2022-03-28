@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: archiefvernietigingscomponent\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-21 16:41+0100\n"
+"POT-Creation-Date: 2022-03-28 11:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -93,7 +93,7 @@ msgid "{name} ({role})"
 msgstr "{name} ({role})"
 
 #: archiefbeheercomponent/accounts/models.py:77
-#: archiefbeheercomponent/destruction/models.py:30
+#: archiefbeheercomponent/destruction/models.py:31
 msgid "name"
 msgstr "naam"
 
@@ -203,7 +203,7 @@ msgstr "Functioneel beheerder"
 msgid "Other"
 msgstr "Overige"
 
-#: archiefbeheercomponent/destruction/admin.py:121
+#: archiefbeheercomponent/destruction/admin.py:123
 msgid "Settings for creating a case after processing a destruction list"
 msgstr ""
 "Instellingen voor het aanmaken van een zaak na het verwerken van een "
@@ -316,7 +316,7 @@ msgid ""
 "De zaak cq. het zaakdossier is overgebracht naar een archiefbewaarplaats."
 msgstr ""
 
-#: archiefbeheercomponent/destruction/forms.py:177
+#: archiefbeheercomponent/destruction/forms.py:178
 #, python-format
 msgid ""
 "If '%(create_zaak_label)s' is checked, all the other destruction case "
@@ -325,7 +325,7 @@ msgstr ""
 "Als '%(create_zaak_label)s' aangevinkt is, moeten alle andere zaak "
 "instellingen geconfigureerd worden."
 
-#: archiefbeheercomponent/destruction/forms.py:204
+#: archiefbeheercomponent/destruction/forms.py:206
 msgid ""
 "If no zaak is created after processing a destruction list, the destruction "
 "report should be downloadable through the app."
@@ -334,50 +334,50 @@ msgstr ""
 "vernietigingslijst, dan kan de verklaring van vernietiging via de app kunnen "
 "worden gedownload."
 
-#: archiefbeheercomponent/destruction/forms.py:237
+#: archiefbeheercomponent/destruction/forms.py:239
 msgid "Comment"
 msgstr "Opmerking"
 
-#: archiefbeheercomponent/destruction/models.py:35
-#: archiefbeheercomponent/destruction/models.py:276
+#: archiefbeheercomponent/destruction/models.py:36
+#: archiefbeheercomponent/destruction/models.py:277
 msgid "author"
 msgstr "auteur"
 
-#: archiefbeheercomponent/destruction/models.py:36
+#: archiefbeheercomponent/destruction/models.py:37
 msgid "Creator of destruction list."
 msgstr "Auteur van de vernietigingslijst."
 
-#: archiefbeheercomponent/destruction/models.py:38
-#: archiefbeheercomponent/destruction/models.py:279
-#: archiefbeheercomponent/destruction/models.py:313
+#: archiefbeheercomponent/destruction/models.py:39
+#: archiefbeheercomponent/destruction/models.py:280
+#: archiefbeheercomponent/destruction/models.py:324
 #: archiefbeheercomponent/notifications/models.py:19
 msgid "created"
 msgstr "aangemaakt"
 
-#: archiefbeheercomponent/destruction/models.py:39
+#: archiefbeheercomponent/destruction/models.py:40
 msgid "end"
 msgstr "einde"
 
-#: archiefbeheercomponent/destruction/models.py:46
-#: archiefbeheercomponent/destruction/models.py:363
+#: archiefbeheercomponent/destruction/models.py:47
+#: archiefbeheercomponent/destruction/models.py:374
 msgid "assignee"
 msgstr "huidige verantwoordelijke"
 
-#: archiefbeheercomponent/destruction/models.py:47
+#: archiefbeheercomponent/destruction/models.py:48
 msgid "Currently assigned user."
 msgstr "Gebruiker die momenteel toegekend is als verantwoordelijke."
 
-#: archiefbeheercomponent/destruction/models.py:50
-#: archiefbeheercomponent/destruction/models.py:219
-#: archiefbeheercomponent/destruction/models.py:287
+#: archiefbeheercomponent/destruction/models.py:51
+#: archiefbeheercomponent/destruction/models.py:220
+#: archiefbeheercomponent/destruction/models.py:288
 msgid "status"
 msgstr "status"
 
-#: archiefbeheercomponent/destruction/models.py:58
+#: archiefbeheercomponent/destruction/models.py:59
 msgid "contains sensitive information"
 msgstr "bevat gevoelige gegevens"
 
-#: archiefbeheercomponent/destruction/models.py:60
+#: archiefbeheercomponent/destruction/models.py:61
 msgid ""
 "Specify whether this destruction list contains privacy sensitive data. If "
 "set to true, the report of destruction will NOT contain case descriptions or "
@@ -387,11 +387,11 @@ msgstr ""
 "geval is, zullen de zaak omschrijving en de SAD opmerkingen  NIET in de "
 "verklaring van vernietiging verschijnen."
 
-#: archiefbeheercomponent/destruction/models.py:67
+#: archiefbeheercomponent/destruction/models.py:68
 msgid "zaak URL"
 msgstr "zaak URL"
 
-#: archiefbeheercomponent/destruction/models.py:69
+#: archiefbeheercomponent/destruction/models.py:70
 msgid ""
 "The URL of the case containing the destruction report for this destruction "
 "list."
@@ -399,136 +399,149 @@ msgstr ""
 "De URL van de zaak met de verklaring van vernietiging van deze "
 "vernietigingslijst."
 
-#: archiefbeheercomponent/destruction/models.py:75
-#: archiefbeheercomponent/destruction/models.py:209
-#: archiefbeheercomponent/destruction/models.py:270
-#: archiefbeheercomponent/destruction/models.py:360
+#: archiefbeheercomponent/destruction/models.py:76
+#: archiefbeheercomponent/destruction/models.py:210
+#: archiefbeheercomponent/destruction/models.py:271
+#: archiefbeheercomponent/destruction/models.py:371
 #: archiefbeheercomponent/notifications/models.py:16
 #: archiefbeheercomponent/report/models.py:47
 msgid "destruction list"
 msgstr "vernietigingslijst"
 
-#: archiefbeheercomponent/destruction/models.py:76
+#: archiefbeheercomponent/destruction/models.py:77
 msgid "destruction lists"
 msgstr "vernietigingslijsten"
 
-#: archiefbeheercomponent/destruction/models.py:123
+#: archiefbeheercomponent/destruction/models.py:124
 #: archiefbeheercomponent/destruction/tests/test_destruction_list_create.py:71
 #: archiefbeheercomponent/destruction/tests/test_destruction_list_detail.py:113
-#: archiefbeheercomponent/destruction/tests/test_review_create.py:127
+#: archiefbeheercomponent/destruction/tests/test_review_create.py:130
 msgid "You are assigned for review."
 msgstr "Je bent als reviewer aangewezen."
 
-#: archiefbeheercomponent/destruction/models.py:128
-#: archiefbeheercomponent/destruction/tests/test_review_create.py:201
-#: archiefbeheercomponent/destruction/tests/test_review_create.py:270
+#: archiefbeheercomponent/destruction/models.py:129
+#: archiefbeheercomponent/destruction/tests/test_review_create.py:204
+#: archiefbeheercomponent/destruction/tests/test_review_create.py:273
 msgid "There is a review to process."
 msgstr "Er is een te verwerken beoordeling."
 
-#: archiefbeheercomponent/destruction/models.py:212
+#: archiefbeheercomponent/destruction/models.py:213
 msgid "zaak"
 msgstr "zaak"
 
-#: archiefbeheercomponent/destruction/models.py:215
+#: archiefbeheercomponent/destruction/models.py:216
 msgid ""
 "URL-reference to the ZAAK (in Zaken API), which is planned to be destroyed."
 msgstr ""
 "URL-referentie naar de ZAAK (in de Zaken API) die vernietigd zal worden."
 
-#: archiefbeheercomponent/destruction/models.py:226
+#: archiefbeheercomponent/destruction/models.py:227
 msgid "extra zaak data"
 msgstr "extra zaakgegevens"
 
-#: archiefbeheercomponent/destruction/models.py:227
+#: archiefbeheercomponent/destruction/models.py:228
 msgid "Additional information of the zaak"
 msgstr "Additionele informatie van de zaak"
 
-#: archiefbeheercomponent/destruction/models.py:233
-#: archiefbeheercomponent/destruction/models.py:334
+#: archiefbeheercomponent/destruction/models.py:234
+#: archiefbeheercomponent/destruction/models.py:345
 msgid "destruction list item"
 msgstr "vernietigingslijst item"
 
-#: archiefbeheercomponent/destruction/models.py:234
+#: archiefbeheercomponent/destruction/models.py:235
 msgid "destruction list items"
 msgstr "vernietigingslijst items"
 
-#: archiefbeheercomponent/destruction/models.py:277
+#: archiefbeheercomponent/destruction/models.py:278
 msgid "User, who performed review"
 msgstr "Gebruiker die de review uitvoerde"
 
-#: archiefbeheercomponent/destruction/models.py:281
-#: archiefbeheercomponent/destruction/models.py:308
-#: archiefbeheercomponent/destruction/models.py:337
+#: archiefbeheercomponent/destruction/models.py:282
+#: archiefbeheercomponent/destruction/models.py:319
+#: archiefbeheercomponent/destruction/models.py:348
 msgid "text"
 msgstr "tekst"
 
-#: archiefbeheercomponent/destruction/models.py:284
+#: archiefbeheercomponent/destruction/models.py:285
 msgid "Review comments on the destruction list in general"
 msgstr "Algemene opmerkingen op de vernietigingslijst"
 
-#: archiefbeheercomponent/destruction/models.py:293
-#: archiefbeheercomponent/destruction/models.py:305
-#: archiefbeheercomponent/destruction/models.py:328
+#: archiefbeheercomponent/destruction/models.py:291
+msgid "additional document"
+msgstr "aanvullend document"
+
+#: archiefbeheercomponent/destruction/models.py:294
+msgid ""
+"An additional document relevant for this destruction list. It will be "
+"related to the case created after the destruction list is processed."
+msgstr ""
+"Een aanvullend document dat relevant is voor deze vernietigingslijst. Het "
+"zal gerelateerd worden aan de zaak die wordt aangemaakt nadat de "
+"vernietigingslijst is verwerkt."
+
+#: archiefbeheercomponent/destruction/models.py:304
+#: archiefbeheercomponent/destruction/models.py:316
+#: archiefbeheercomponent/destruction/models.py:339
 msgid "destruction list review"
 msgstr "vernietigingslijstreview"
 
-#: archiefbeheercomponent/destruction/models.py:294
+#: archiefbeheercomponent/destruction/models.py:305
 msgid "destruction list reviews"
 msgstr "vernietigingslijstreviews"
 
-#: archiefbeheercomponent/destruction/models.py:311
+#: archiefbeheercomponent/destruction/models.py:322
 msgid "Text of the comment to the review"
 msgstr "Text van de opmerking aan de review"
 
-#: archiefbeheercomponent/destruction/models.py:316
+#: archiefbeheercomponent/destruction/models.py:327
 msgid "destruction list review comment"
 msgstr "vernietigingslijstreview opmerking"
 
-#: archiefbeheercomponent/destruction/models.py:317
+#: archiefbeheercomponent/destruction/models.py:328
 msgid "destruction list review comments"
 msgstr "vernietigingslijstreview opmerkingen"
 
-#: archiefbeheercomponent/destruction/models.py:340
+#: archiefbeheercomponent/destruction/models.py:351
 msgid "Review comments on the destruction list item"
 msgstr "Opmerkingen op de item in de vernietigingslijst"
 
-#: archiefbeheercomponent/destruction/models.py:343
+#: archiefbeheercomponent/destruction/models.py:354
 msgid "suggestion"
 msgstr "suggestie"
 
-#: archiefbeheercomponent/destruction/models.py:347
+#: archiefbeheercomponent/destruction/models.py:358
 msgid "destruction list item review"
-msgstr "vernietingslijst item review"
+msgstr "vernietigingslijst item review"
 
-#: archiefbeheercomponent/destruction/models.py:348
+#: archiefbeheercomponent/destruction/models.py:359
 msgid "destruction list item reviews"
-msgstr "vernietingslijst item reviews"
+msgstr "vernietigingslijst item reviews"
 
-#: archiefbeheercomponent/destruction/models.py:365
+#: archiefbeheercomponent/destruction/models.py:376
 msgid "order"
 msgstr "volgorde"
 
-#: archiefbeheercomponent/destruction/models.py:366
+#: archiefbeheercomponent/destruction/models.py:377
 msgid "assigned on"
 msgstr "toegewezen op"
 
-#: archiefbeheercomponent/destruction/models.py:367
+#: archiefbeheercomponent/destruction/models.py:378
 msgid "reminder sent"
 msgstr "herinnering verstuurd"
 
-#: archiefbeheercomponent/destruction/models.py:370
+#: archiefbeheercomponent/destruction/models.py:381
 msgid "destruction list assignee"
 msgstr "vernietigingslijst reviewer"
 
-#: archiefbeheercomponent/destruction/models.py:371
+#: archiefbeheercomponent/destruction/models.py:382
 msgid "destruction list assignees"
 msgstr "vernietigingslijst reviewers"
 
-#: archiefbeheercomponent/destruction/models.py:391
+#: archiefbeheercomponent/destruction/models.py:402
 msgid "archive date"
 msgstr "archiefdatum"
 
-#: archiefbeheercomponent/destruction/models.py:395
+#: archiefbeheercomponent/destruction/models.py:406
 msgid ""
 "Only zaken with archiefactiedatum less that this date would be displayed for "
 "destruction"
@@ -536,19 +549,19 @@ msgstr ""
 "Enkel de zaken met een archiefactiedatum die voor deze datum ligt komen in "
 "aanmerking voor vernietiging. Standaard wordt de 'huidige datum' gebruikt."
 
-#: archiefbeheercomponent/destruction/models.py:399
+#: archiefbeheercomponent/destruction/models.py:410
 msgid "cases with short review process"
 msgstr "zaken met een kort vernietigingsproces"
 
-#: archiefbeheercomponent/destruction/models.py:403
+#: archiefbeheercomponent/destruction/models.py:414
 msgid "Cases for which a second reviewer of the destruction list is optional"
 msgstr "Zaken waarvoor een tweede reviewer optioneel is"
 
-#: archiefbeheercomponent/destruction/models.py:407
+#: archiefbeheercomponent/destruction/models.py:418
 msgid "Link to zaakafhandelcomponent"
 msgstr "Link naar de zaakafhandelcomponent"
 
-#: archiefbeheercomponent/destruction/models.py:410
+#: archiefbeheercomponent/destruction/models.py:421
 msgid ""
 "External link to view zaak details. Possible variables to use are: "
 "{{ uuid }}, {{ bronorganisatie }} and {{ identificatie }}. For example: "
@@ -558,11 +571,11 @@ msgstr ""
 "{{ uuid }}, {{ bronorganisatie }} en {{ identificatie }}. Bijvoorbeeld: "
 "https://gemeente.lan/mijnzaken/zaak/{{ uuid }}"
 
-#: archiefbeheercomponent/destruction/models.py:416
+#: archiefbeheercomponent/destruction/models.py:427
 msgid "days until reminder"
 msgstr "dagen tot herinnering"
 
-#: archiefbeheercomponent/destruction/models.py:419
+#: archiefbeheercomponent/destruction/models.py:430
 msgid ""
 "Number of days until an email is sent reminding that the destruction list "
 "needs to be dealt with"
@@ -570,28 +583,28 @@ msgstr ""
 "Aantal dagen tot een email wordt verzonden als herinnering dat een actie is "
 "vereist voor een vernietigingslijst"
 
-#: archiefbeheercomponent/destruction/models.py:425
+#: archiefbeheercomponent/destruction/models.py:436
 msgid "create zaak"
 msgstr "zaak aanmaken"
 
-#: archiefbeheercomponent/destruction/models.py:428
+#: archiefbeheercomponent/destruction/models.py:439
 msgid "Should a case be created once a destruction list has been deleted?"
 msgstr ""
 "Moet een zaak aangemaakt worden als een vernietigingslijst wordt verwijderd?"
 
-#: archiefbeheercomponent/destruction/models.py:432
+#: archiefbeheercomponent/destruction/models.py:443
 msgid "source organisation"
 msgstr "bronorganisatie"
 
-#: archiefbeheercomponent/destruction/models.py:435
+#: archiefbeheercomponent/destruction/models.py:446
 msgid "Source organisation RSIN"
 msgstr "Bronorganisatie RSIN"
 
-#: archiefbeheercomponent/destruction/models.py:438
+#: archiefbeheercomponent/destruction/models.py:449
 msgid "case type"
 msgstr "zaaktype"
 
-#: archiefbeheercomponent/destruction/models.py:441
+#: archiefbeheercomponent/destruction/models.py:452
 msgid ""
 "The case type URL to use when creating the case for the destruction list "
 "deletion."
@@ -599,11 +612,11 @@ msgstr ""
 "De zaaktype URL die gebruikt moet worden als een zaak wordt aangemaakt na "
 "het verwijderen van een vernietigingslijst"
 
-#: archiefbeheercomponent/destruction/models.py:445
+#: archiefbeheercomponent/destruction/models.py:456
 msgid "status type"
 msgstr "statustype"
 
-#: archiefbeheercomponent/destruction/models.py:448
+#: archiefbeheercomponent/destruction/models.py:459
 msgid ""
 "The status type URL to use when creating the case for the destruction list "
 "deletion."
@@ -611,11 +624,11 @@ msgstr ""
 "De statustype URL die gebruikt moet worden als een zaak wordt aangemaakt na "
 "het verwijderen van een vernietigingslijst"
 
-#: archiefbeheercomponent/destruction/models.py:452
+#: archiefbeheercomponent/destruction/models.py:463
 msgid "result type"
 msgstr "resultaattype"
 
-#: archiefbeheercomponent/destruction/models.py:455
+#: archiefbeheercomponent/destruction/models.py:466
 msgid ""
 "The result type URL to use when creating the case for the destruction list "
 "deletion."
@@ -623,11 +636,11 @@ msgstr ""
 "De resultaattype URL die gebruikt moet worden als een zaak wordt aangemaakt "
 "na het verwijderen van een vernietigingslijst"
 
-#: archiefbeheercomponent/destruction/models.py:459
+#: archiefbeheercomponent/destruction/models.py:470
 msgid "document type"
 msgstr "informatieobjecttype"
 
-#: archiefbeheercomponent/destruction/models.py:462
+#: archiefbeheercomponent/destruction/models.py:473
 msgid ""
 "The document type URL to use when creating the case for the destruction list "
 "deletion."
@@ -635,53 +648,68 @@ msgstr ""
 "De informatieobjecttype URL die gebruikt moet worden als een zaak wordt "
 "aangemaakt na het verwijderen van een vernietigingslijst"
 
-#: archiefbeheercomponent/destruction/models.py:466
+#: archiefbeheercomponent/destruction/models.py:477
 msgid "destruction report downloadable"
 msgstr "verklaring van vernietiging downloadbaar"
 
-#: archiefbeheercomponent/destruction/models.py:469
+#: archiefbeheercomponent/destruction/models.py:480
 msgid "Should the destruction report be downloadable through the application?"
 msgstr ""
 "Zou de verklaring van vernietigen kunnen gedownload worden via de applicatie?"
 
-#: archiefbeheercomponent/destruction/models.py:474
+#: archiefbeheercomponent/destruction/models.py:484
+msgid "Additional review document type"
+msgstr "Informatieobjecttype van aanvullende documenten"
+
+#: archiefbeheercomponent/destruction/models.py:487
+msgid ""
+"The document type URL to use for documents which were uploaded by the "
+"reviewers during the review process."
+msgstr ""
+"Het URL van het informatieobjecttype die gebruikt moet worden voor "
+"aanvullende documenten die door de reviewers worden geüpload tijdens het "
+"review proces."
+
+#: archiefbeheercomponent/destruction/models.py:493
 msgid "archive configuration"
 msgstr "archief configuratie"
 
-#: archiefbeheercomponent/destruction/models.py:479
+#: archiefbeheercomponent/destruction/models.py:498
 msgid "reason"
 msgstr "reden"
 
-#: archiefbeheercomponent/destruction/models.py:482
+#: archiefbeheercomponent/destruction/models.py:501
 msgid "Reason for the reviewer to request changes to a destruction list."
 msgstr ""
 "Reden voor de reviewer om wijzigingen in een vernietigingslijst te vereisen."
 
-#: archiefbeheercomponent/destruction/models.py:487
-#: archiefbeheercomponent/destruction/models.py:488
+#: archiefbeheercomponent/destruction/models.py:506
+#: archiefbeheercomponent/destruction/models.py:507
 msgid "standard review answers"
 msgstr "standaard review antwoorden"
 
-#: archiefbeheercomponent/destruction/tasks.py:195
-#: archiefbeheercomponent/destruction/tests/test_tasks.py:482
+#: archiefbeheercomponent/destruction/tasks.py:202
+#: archiefbeheercomponent/destruction/tests/test_tasks.py:480
 msgid "Processing of the destruction list is complete."
 msgstr "De vernietigingslijst is helemaal verwerkt."
 
-#: archiefbeheercomponent/destruction/tasks.py:215
-#: archiefbeheercomponent/destruction/tests/test_tasks.py:524
+#: archiefbeheercomponent/destruction/tasks.py:222
+#: archiefbeheercomponent/destruction/tests/test_tasks.py:522
+#, python-format
 msgid ""
 "Destruction list %(list)s has been processed. You can download the report of "
 "destruction as a PDF here: %(url_pdf)s and as a CSV here: %(url_csv)s"
 msgstr ""
 "Vernietigingslijst %(list)s is verwerkt. U kunt de verklaring van "
-"vernietiging als PDF hier downloaden: %(url_pdf)s en hier als CSV: %(url_csv)s"
+"vernietiging als PDF hier downloaden: %(url_pdf)s en hier als CSV: "
+"%(url_csv)s"
 
-#: archiefbeheercomponent/destruction/tasks.py:327
+#: archiefbeheercomponent/destruction/tasks.py:334
 #, python-format
 msgid "Destruction List: %(list_name)s"
 msgstr "Vernietigingslijst: %(list_name)s"
 
-#: archiefbeheercomponent/destruction/tasks.py:347
+#: archiefbeheercomponent/destruction/tasks.py:357
 #, python-format
 msgid "Destruction Report: %(list_name)s"
 msgstr "Verklaringen van vernietiging: %(list_name)s"
@@ -738,9 +766,21 @@ msgstr "Opmerkingen"
 msgid "The destruction list hasn't been reviewed."
 msgstr "De vernietigingslijst is nog niet beoordeeld."
 
-#: archiefbeheercomponent/destruction/templates/destruction/download_report.html:5
+#: archiefbeheercomponent/destruction/templates/destruction/download_report.html:6
 msgid "Download destruction report: "
 msgstr "Download verklaring van vernietiging:"
+
+#: archiefbeheercomponent/destruction/templates/destruction/download_report.html:14
+msgid "Download additional documents: "
+msgstr "Download aanvullende documenten: "
+
+#: archiefbeheercomponent/destruction/templates/destruction/download_report.html:18
+msgid ""
+"Download documents (as zip) uploaded by the reviewers during the review "
+"process"
+msgstr ""
+"Download documenten (als zip) die door de reviewers zijn geüpload tijdens "
+"het review proces"
 
 #: archiefbeheercomponent/destruction/templates/destruction/logs/aborted.html:7
 #, python-format
@@ -928,86 +968,95 @@ msgstr ""
 "De vernietiging van deze vernietigingslijst kan niet geannuleerd worden want "
 "deze is al uitgevoerd."
 
-#: archiefbeheercomponent/destruction/tests/test_review_create.py:124
-#: archiefbeheercomponent/destruction/tests/test_review_create.py:198
-#: archiefbeheercomponent/destruction/tests/test_review_create.py:267
-#: archiefbeheercomponent/destruction/tests/test_review_create.py:309
+#: archiefbeheercomponent/destruction/tests/test_review_create.py:127
+#: archiefbeheercomponent/destruction/tests/test_review_create.py:201
+#: archiefbeheercomponent/destruction/tests/test_review_create.py:270
+#: archiefbeheercomponent/destruction/tests/test_review_create.py:312
 #: archiefbeheercomponent/destruction/views/reviewer.py:168
 #, python-brace-format
 msgid "{author} has reviewed the destruction list."
 msgstr "{author} heeft de vernietigingslijst beoordeeld."
 
-#: archiefbeheercomponent/destruction/utils.py:30
-#: archiefbeheercomponent/destruction/utils.py:115
+#: archiefbeheercomponent/destruction/utils.py:40
+#: archiefbeheercomponent/destruction/utils.py:125
 #, python-format
 msgid "%(duration)s days"
 msgstr "%(duration)s dagen"
 
-#: archiefbeheercomponent/destruction/utils.py:98
+#: archiefbeheercomponent/destruction/utils.py:108
 #: archiefbeheercomponent/report/utils.py:148
 msgid "No"
 msgstr "Nee"
 
-#: archiefbeheercomponent/destruction/utils.py:100
+#: archiefbeheercomponent/destruction/utils.py:110
 #: archiefbeheercomponent/report/utils.py:146
 msgid "Yes"
 msgstr "Ja"
 
-#: archiefbeheercomponent/destruction/views/export.py:38
+#: archiefbeheercomponent/destruction/utils.py:185
+#, python-format
+msgid ""
+"Destruction list \"%(list_name)s\" is processed and the destruction report "
+"is available in case %(zaak_id)s"
+msgstr ""
+"Vernietigingslijst \"%(list_name)s\" is verwerkt en de verklaring van "
+"vernietiging wordt in zaak %(zaak_id)s beschikbaar gemaakt"
+
+#: archiefbeheercomponent/destruction/views/export.py:52
 msgid "Invalid cases URLs"
 msgstr "Ongeldige zaken URLs"
 
-#: archiefbeheercomponent/destruction/views/export.py:60
+#: archiefbeheercomponent/destruction/views/export.py:74
 msgid "Cases without archive date"
 msgstr "Zaken zonder archiefactiedatum"
 
-#: archiefbeheercomponent/destruction/views/export.py:67
+#: archiefbeheercomponent/destruction/views/export.py:81
 msgid "Case identification"
 msgstr "Zaak identificatie"
 
-#: archiefbeheercomponent/destruction/views/export.py:68
+#: archiefbeheercomponent/destruction/views/export.py:82
 #: archiefbeheercomponent/report/templates/report/vernietigings_rapport.html:47
 #: archiefbeheercomponent/report/utils.py:181
 msgid "Case type"
 msgstr "Zaaktype"
 
-#: archiefbeheercomponent/destruction/views/export.py:69
+#: archiefbeheercomponent/destruction/views/export.py:83
 msgid "Case description"
 msgstr "Zaak omschrijving"
 
-#: archiefbeheercomponent/destruction/views/export.py:70
+#: archiefbeheercomponent/destruction/views/export.py:84
 #: archiefbeheercomponent/report/templates/report/vernietigings_rapport.html:40
 #: archiefbeheercomponent/report/utils.py:176
 msgid "Duration"
 msgstr "Looptijd"
 
-#: archiefbeheercomponent/destruction/views/export.py:71
+#: archiefbeheercomponent/destruction/views/export.py:85
 #: archiefbeheercomponent/report/templates/report/vernietigings_rapport.html:50
 #: archiefbeheercomponent/report/utils.py:184
 msgid "Organisation responsible"
 msgstr "Verantwoordelijke organisatie"
 
-#: archiefbeheercomponent/destruction/views/export.py:72
+#: archiefbeheercomponent/destruction/views/export.py:86
 #: archiefbeheercomponent/report/templates/report/vernietigings_rapport.html:49
 #: archiefbeheercomponent/report/utils.py:183
 msgid "Result type"
 msgstr "Resultaattype"
 
-#: archiefbeheercomponent/destruction/views/export.py:73
+#: archiefbeheercomponent/destruction/views/export.py:87
 msgid "Retention period"
 msgstr "Archiefactietermijn"
 
-#: archiefbeheercomponent/destruction/views/export.py:74
+#: archiefbeheercomponent/destruction/views/export.py:88
 msgid "Destruction category selection list"
 msgstr "Vernietigings-Categorie Selectielijst"
 
-#: archiefbeheercomponent/destruction/views/export.py:75
+#: archiefbeheercomponent/destruction/views/export.py:89
 #: archiefbeheercomponent/report/templates/report/vernietigings_rapport.html:51
 #: archiefbeheercomponent/report/utils.py:185
 msgid "Relations"
 msgstr "Relaties"
 
-#: archiefbeheercomponent/destruction/views/export.py:76
+#: archiefbeheercomponent/destruction/views/export.py:90
 msgid "Requesting user"
 msgstr "Aanvragende gebruiker"
 
