@@ -1,15 +1,25 @@
 {% load i18n %}
 
 {% if can_download  %}
-    <span class="destruction-list-preview__download-report">
-        {% trans "Download destruction report: " %}&nbsp;
-        pdf
-        <a href="{{ url_pdf }}" title="Download verklaring van vernietiging">
-                <i class="material-icons">file_download</i>
-        </a>&nbsp;
-        csv
-        <a href="{{ url_csv }}" title="Download verklaring van vernietiging">
-                <i class="material-icons">file_download</i>
-        </a>
-    </span>
+    <div class="destruction-list-preview__downloads">
+        <div class="destruction-list-preview__download-item">
+            {% trans "Download destruction report: " %}&nbsp;
+            pdf
+            <a class="destruction-list-preview__link" href="{{ url_pdf }}" title="Download verklaring van vernietiging"><i class="material-icons">file_download</i></a>
+            csv
+            <a class="destruction-list-preview__link" href="{{ url_csv }}" title="Download verklaring van vernietiging"><i class="material-icons">file_download</i></a>
+        </div>
+        {% if additional_documents %}
+            <div class="destruction-list-preview__download-item">
+                {% trans "Download additional documents: " %}
+                <a
+                    class="destruction-list-preview__link"
+                    href="{{ additional_documents }}"
+                    title="{% trans "Download documents (as zip) uploaded by the reviewers during the review process" %}"
+                >
+                    <i class="material-icons">file_download</i>
+                </a>
+            </div>
+        {% endif %}
+    </div>
 {% endif %}

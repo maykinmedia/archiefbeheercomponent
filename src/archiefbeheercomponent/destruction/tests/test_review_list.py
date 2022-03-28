@@ -55,7 +55,5 @@ class DownloadButtonInReviewerViewTests(WebTest):
         )
 
         self.assertEqual(200, response.status_code)
-        download_nodes = response.html.find_all(
-            class_="destruction-list-preview__download-report"
-        )
-        self.assertEqual(1, len(download_nodes))
+        download_nodes = response.html.find_all(class_="destruction-list-preview__link")
+        self.assertEqual(2, len(download_nodes))

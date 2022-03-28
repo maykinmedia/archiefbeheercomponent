@@ -73,12 +73,26 @@
     margin-left: 0.5em;
   }
 
-  @include element("download-report") {
-    display: inline-flex;
-    opacity: 0.75;
+  @include element("downloads") {
+    @include body-meta;
+
+    padding-top: $grid-margin-1;
+  }
+
+  @include element("link") {
+    display: flex;
+    align-items: center;
+    padding-right: $grid-margin-1;
+    text-decoration: none;
+
     .material-icons {
-      color: black;
-      opacity: 0.8;
+      color: $color-gray-darker;
+      font-size: $typography-font-size-text;
     }
+  }
+
+  @include element("download-item") {
+    display: flex;
+    align-items: center;
   }
 }
