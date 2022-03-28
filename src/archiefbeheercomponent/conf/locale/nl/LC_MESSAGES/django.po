@@ -666,7 +666,7 @@ msgid ""
 "The document type URL to use for documents which were uploaded by the "
 "reviewers during the review process."
 msgstr ""
-"Het URL van het informatieobjecttype die gebruikt moet worden voor "
+"De URL van het informatieobjecttype die gebruikt moet worden voor "
 "aanvullende documenten die door de reviewers worden geüpload tijdens het "
 "review proces."
 
