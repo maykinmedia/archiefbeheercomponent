@@ -36,7 +36,10 @@ def get_zaaktype_choices() -> List[Tuple[str, list]]:
 
 def get_reviewer_choices(author=None) -> List[Tuple[str, str]]:
     reviewers = User.objects.reviewers().order_by(
-        "role__order", "last_name", "first_name", "username",
+        "role__order",
+        "last_name",
+        "first_name",
+        "username",
     )
     if author:
         reviewers.exclude(id=author.id)
@@ -87,7 +90,9 @@ class DestructionListForm(forms.ModelForm):
             if reviewer:
                 assignees.append(
                     DestructionListAssignee(
-                        destruction_list=destruction_list, order=i, assignee=reviewer,
+                        destruction_list=destruction_list,
+                        order=i,
+                        assignee=reviewer,
                     )
                 )
         destruction_list_assignees = DestructionListAssignee.objects.bulk_create(
@@ -229,11 +234,15 @@ class ArchiveConfigForm(forms.ModelForm):
 class ZaakArchiveDetailsForm(forms.Form):
     url = forms.URLField(required=True, widget=forms.HiddenInput)
     archiefnominatie = forms.ChoiceField(
-        choices=Archiefnominatie.choices, widget=forms.RadioSelect, required=False,
+        choices=Archiefnominatie.choices,
+        widget=forms.RadioSelect,
+        required=False,
     )
     archiefactiedatum = forms.DateField(widget=forms.SelectDateWidget, required=False)
     archiefstatus = forms.ChoiceField(
-        choices=Archiefstatus.choices, widget=forms.RadioSelect, required=False,
+        choices=Archiefstatus.choices,
+        widget=forms.RadioSelect,
+        required=False,
     )
     comment = forms.CharField(
         label=_("Comment"),

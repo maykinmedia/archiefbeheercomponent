@@ -126,7 +126,10 @@ def process_list_item(list_item_id):
         TimelineLog.objects.create(
             content_object=list_item,
             template="destruction/logs/item_destruction_failed.html",
-            extra_data={"zaak": None, "error": traceback.format_exc(),},
+            extra_data={
+                "zaak": None,
+                "error": traceback.format_exc(),
+            },
         )
         return
 
@@ -379,7 +382,11 @@ def create_destruction_zaak(list_id):
     )
 
     add_additional_review_documents(
-        destruction_list, destruction_zaak, config, drc_client, zrc_client,
+        destruction_list,
+        destruction_zaak,
+        config,
+        drc_client,
+        zrc_client,
     )
 
     zrc_client.create(

@@ -103,7 +103,8 @@ class ProcessListTests(TestCase):
             mock_notify.si(destruction_list.id),
         )
         mock_chain.assert_any_call(
-            first_chain_part, mock_zaak.si(destruction_list.id),
+            first_chain_part,
+            mock_zaak.si(destruction_list.id),
         )
         self.assertEqual(2, mock_chain.call_count)
 
@@ -486,7 +487,9 @@ class NotifyTests(TestCase):
             role__can_review_destruction=True,
             role__can_view_case_details=True,
         )
-        destruction_list = DestructionListFactory.create(name="Summer List",)
+        destruction_list = DestructionListFactory.create(
+            name="Summer List",
+        )
         DestructionListReviewFactory.create(
             author=process_owner,
             status=ReviewStatus.approved,
@@ -617,10 +620,12 @@ class NotifyTests(TestCase):
             oas_url="https://oz.nl/catalogi/api/v1/schema/openapi.json",
         )
         m.get(
-            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1", json={},
+            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+            json={},
         )
         m.get(
-            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2", json={},
+            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
+            json={},
         )
 
         complete_and_notify(destruction_list.id)
@@ -633,16 +638,19 @@ class NotifyTests(TestCase):
         self.assertEqual("email@test.abc", sent_mail.from_email)
         self.assertIn(archivaris.email, sent_mail.to)
         self.assertEqual(
-            "Report is available!", sent_mail.body,
+            "Report is available!",
+            sent_mail.body,
         )
 
     def test_no_email_sent_if_no_cases_deleted(self, m):
         destruction_list = DestructionListFactory.create(status=ListStatus.processing)
         DestructionListItemFactory.create(
-            destruction_list=destruction_list, status=ListItemStatus.failed,
+            destruction_list=destruction_list,
+            status=ListItemStatus.failed,
         )
         DestructionListItemFactory.create(
-            destruction_list=destruction_list, status=ListItemStatus.failed,
+            destruction_list=destruction_list,
+            status=ListItemStatus.failed,
         )
 
         complete_and_notify(destruction_list.id)
@@ -700,10 +708,12 @@ class NotifyTests(TestCase):
             oas_url="https://oz.nl/catalogi/api/v1/schema/openapi.json",
         )
         m.get(
-            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1", json={},
+            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-1",
+            json={},
         )
         m.get(
-            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2", json={},
+            url="https://oz.nl/catalogi/api/v1/zaaktypen/uuid-2",
+            json={},
         )
 
         complete_and_notify(destruction_list.id)

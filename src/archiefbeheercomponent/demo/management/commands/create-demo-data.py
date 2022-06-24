@@ -244,11 +244,17 @@ class Command(BaseCommand):
         # Relate the documents to the zaken
         zrc_client.create(
             resource="zaakinformatieobject",
-            data={"zaak": zaak_1["url"], "informatieobject": document_1["url"],},
+            data={
+                "zaak": zaak_1["url"],
+                "informatieobject": document_1["url"],
+            },
         )
         zrc_client.create(
             resource="zaakinformatieobject",
-            data={"zaak": zaak_2["url"], "informatieobject": document_2["url"],},
+            data={
+                "zaak": zaak_2["url"],
+                "informatieobject": document_2["url"],
+            },
         )
 
         # Create 2 zaken for the second zaaktype
@@ -312,11 +318,17 @@ class Command(BaseCommand):
         # Relate the documents to the zaken
         zrc_client.create(
             resource="zaakinformatieobject",
-            data={"zaak": zaak_3["url"], "informatieobject": document_3["url"],},
+            data={
+                "zaak": zaak_3["url"],
+                "informatieobject": document_3["url"],
+            },
         )
         zrc_client.create(
             resource="zaakinformatieobject",
-            data={"zaak": zaak_4["url"], "informatieobject": document_4["url"],},
+            data={
+                "zaak": zaak_4["url"],
+                "informatieobject": document_4["url"],
+            },
         )
 
         self.stdout.write(self.style.SUCCESS("Successfully created demo data."))

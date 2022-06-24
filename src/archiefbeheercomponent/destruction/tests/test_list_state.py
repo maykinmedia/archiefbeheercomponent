@@ -144,7 +144,9 @@ class ListStateTest(TestCase):
             role__can_review_destruction=True,
             role__can_view_case_details=True,
         )
-        destruction_list = DestructionListFactory.create(name="Summer List",)
+        destruction_list = DestructionListFactory.create(
+            name="Summer List",
+        )
         DestructionListReviewFactory.create(
             author=process_owner,
             status=ReviewStatus.approved,

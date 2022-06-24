@@ -25,10 +25,16 @@ class DestructionReportAdmin(PrivateMediaMixin, admin.ModelAdmin):
     exclude = ("content_pdf", "content_csv")
 
     def get_report_html_link(self, instance, extension) -> str:
-        url = reverse("report:download-report", args=[instance.pk],)
+        url = reverse(
+            "report:download-report",
+            args=[instance.pk],
+        )
         url += f"?type={extension}"
         filename = getattr(instance, f"content_{extension}").name.split("/")[-1]
-        return '<a href="%s">%s</a>' % (url, filename,)
+        return '<a href="%s">%s</a>' % (
+            url,
+            filename,
+        )
 
     def file_content_pdf(self, instance):
         html_snippet = self.get_report_html_link(instance=instance, extension="pdf")

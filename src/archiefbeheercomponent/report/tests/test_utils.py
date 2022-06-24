@@ -437,7 +437,8 @@ class DestructionReportUtilsTests(TestCase):
 
     def test_destruction_report_data_with_sensitive_info(self):
         destruction_list = DestructionListFactory.create(
-            name="Winter cases", contains_sensitive_info=True,
+            name="Winter cases",
+            contains_sensitive_info=True,
         )
         DestructionListItemFactory.create(
             destruction_list=destruction_list,
@@ -495,7 +496,8 @@ class DestructionReportUtilsTests(TestCase):
     )
     def test_destruction_report_data_without_sensitive_info(self, m_vcs, m_zaaktype):
         destruction_list = DestructionListFactory.create(
-            name="Winter cases", contains_sensitive_info=False,
+            name="Winter cases",
+            contains_sensitive_info=False,
         )
         DestructionListItemFactory.create(
             destruction_list=destruction_list,
@@ -667,7 +669,8 @@ class DestructionReportUtilsTests(TestCase):
     )
     def test_failed_destruction_not_in_report_content(self, m_vcs, m_zaaktype):
         destruction_list = DestructionListFactory.create(
-            status=ListStatus.processing, contains_sensitive_info=False,
+            status=ListStatus.processing,
+            contains_sensitive_info=False,
         )
         DestructionListItemFactory.create(
             destruction_list=destruction_list,

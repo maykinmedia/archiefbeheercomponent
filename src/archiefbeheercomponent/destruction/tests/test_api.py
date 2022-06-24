@@ -99,7 +99,10 @@ class FetchListItemsTests(TransactionTestCase):
             oas_url="https://oz.nl/catalogi/api/v1/schema/openapi.json",
         )
         mock_service_oas_get(
-            m, ZAKEN_ROOT, "zrc", oas_url=f"{ZAKEN_ROOT}schema/openapi.json",
+            m,
+            ZAKEN_ROOT,
+            "zrc",
+            oas_url=f"{ZAKEN_ROOT}schema/openapi.json",
         )
         mock_service_oas_get(
             m,
@@ -112,19 +115,24 @@ class FetchListItemsTests(TransactionTestCase):
             json=paginated_response([ZAAKTYPE_1, ZAAKTYPE_2]),
         )
         m.get(
-            url=f"{CATALOGI_ROOT}zaaktypen/uuid-1", json=ZAAKTYPE_1,
+            url=f"{CATALOGI_ROOT}zaaktypen/uuid-1",
+            json=ZAAKTYPE_1,
         )
         m.get(
-            url=f"{CATALOGI_ROOT}zaaktypen/uuid-2", json=ZAAKTYPE_2,
+            url=f"{CATALOGI_ROOT}zaaktypen/uuid-2",
+            json=ZAAKTYPE_2,
         )
         m.get(
-            url=f"{ZAKEN_ROOT}zaken/uuid-1", json=ZAAK_1,
+            url=f"{ZAKEN_ROOT}zaken/uuid-1",
+            json=ZAAK_1,
         )
         m.get(
-            url=f"{ZAKEN_ROOT}zaken/uuid-2", json=ZAAK_2,
+            url=f"{ZAKEN_ROOT}zaken/uuid-2",
+            json=ZAAK_2,
         )
         m.get(
-            url=f"{SELECTIELIJST_ROOT}procestypen/uuid-1", json=SELECTIELIJST,
+            url=f"{SELECTIELIJST_ROOT}procestypen/uuid-1",
+            json=SELECTIELIJST,
         )
 
     def test_user_unauthenticated_cant_access(self, m):
@@ -189,14 +197,18 @@ class FetchListItemsTests(TransactionTestCase):
         self._set_up_services()
 
         record_manager = UserFactory.create(
-            role__can_start_destruction=True, role__type=RoleTypeChoices.record_manager,
+            role__can_start_destruction=True,
+            role__type=RoleTypeChoices.record_manager,
         )
         process_owner = UserFactory.create(
-            role__can_review_destruction=True, role__type=RoleTypeChoices.process_owner,
+            role__can_review_destruction=True,
+            role__type=RoleTypeChoices.process_owner,
         )
 
         destruction_list = DestructionListFactory.create(
-            author=record_manager, assignee=process_owner, contains_sensitive_info=True,
+            author=record_manager,
+            assignee=process_owner,
+            contains_sensitive_info=True,
         )
         DestructionListItemFactory.create(
             destruction_list=destruction_list, zaak=ZAAK_1["url"]
@@ -234,10 +246,12 @@ class FetchListItemsTests(TransactionTestCase):
         self._set_up_services()
 
         record_manager = UserFactory.create(
-            role__can_start_destruction=True, role__type=RoleTypeChoices.record_manager,
+            role__can_start_destruction=True,
+            role__type=RoleTypeChoices.record_manager,
         )
         process_owner = UserFactory.create(
-            role__can_review_destruction=True, role__type=RoleTypeChoices.process_owner,
+            role__can_review_destruction=True,
+            role__type=RoleTypeChoices.process_owner,
         )
 
         destruction_list = DestructionListFactory.create(
@@ -281,14 +295,18 @@ class FetchListItemsTests(TransactionTestCase):
         self._set_up_services()
 
         record_manager = UserFactory.create(
-            role__can_start_destruction=True, role__type=RoleTypeChoices.record_manager,
+            role__can_start_destruction=True,
+            role__type=RoleTypeChoices.record_manager,
         )
         archivist = UserFactory.create(
-            role__can_review_destruction=True, role__type=RoleTypeChoices.archivist,
+            role__can_review_destruction=True,
+            role__type=RoleTypeChoices.archivist,
         )
 
         destruction_list = DestructionListFactory.create(
-            author=record_manager, assignee=archivist, contains_sensitive_info=True,
+            author=record_manager,
+            assignee=archivist,
+            contains_sensitive_info=True,
         )
         DestructionListItemFactory.create(
             destruction_list=destruction_list, zaak=ZAAK_1["url"]
@@ -326,14 +344,18 @@ class FetchListItemsTests(TransactionTestCase):
         self._set_up_services()
 
         record_manager = UserFactory.create(
-            role__can_start_destruction=True, role__type=RoleTypeChoices.record_manager,
+            role__can_start_destruction=True,
+            role__type=RoleTypeChoices.record_manager,
         )
         archivist = UserFactory.create(
-            role__can_review_destruction=True, role__type=RoleTypeChoices.archivist,
+            role__can_review_destruction=True,
+            role__type=RoleTypeChoices.archivist,
         )
 
         destruction_list = DestructionListFactory.create(
-            author=record_manager, assignee=archivist, contains_sensitive_info=False,
+            author=record_manager,
+            assignee=archivist,
+            contains_sensitive_info=False,
         )
         DestructionListItemFactory.create(
             destruction_list=destruction_list, zaak=ZAAK_1["url"]

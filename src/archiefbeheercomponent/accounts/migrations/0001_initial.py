@@ -118,9 +118,15 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"verbose_name": "user", "verbose_name_plural": "users",},
+            options={
+                "verbose_name": "user",
+                "verbose_name_plural": "users",
+            },
             managers=[
-                ("objects", archiefbeheercomponent.accounts.managers.UserManager(),),
+                (
+                    "objects",
+                    archiefbeheercomponent.accounts.managers.UserManager(),
+                ),
             ],
         ),
     ]

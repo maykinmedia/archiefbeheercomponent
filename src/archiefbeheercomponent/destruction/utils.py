@@ -187,7 +187,9 @@ def notify_users_about_zaak(destruction_list: "DestructionList", zaak: Dict) -> 
 
     for assignee in assignees:
         Notification.objects.create(
-            destruction_list=destruction_list, user=assignee.assignee, message=message,
+            destruction_list=destruction_list,
+            user=assignee.assignee,
+            message=message,
         )
 
     Notification.objects.create(

@@ -11,6 +11,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterModelOptions(
-            name="emailconfig", options={"verbose_name": "email configuration"},
+            name="emailconfig",
+            options={"verbose_name": "email configuration"},
         ),
     ]

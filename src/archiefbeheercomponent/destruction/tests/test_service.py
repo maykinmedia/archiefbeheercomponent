@@ -58,7 +58,11 @@ class ServiceTests(TestCase):
         Service.objects.create(api_type=APITypes.zrc, api_root=ZAKEN_ROOT)
 
     def _setUpMock(self, m):
-        zaak = generate_oas_component("zrc", "schemas/Zaak", url=f"{ZAKEN_ROOT}5",)
+        zaak = generate_oas_component(
+            "zrc",
+            "schemas/Zaak",
+            url=f"{ZAKEN_ROOT}5",
+        )
 
         mock_service_oas_get(m, ZAKEN_ROOT, "zrc")
         m.patch(f"{ZAKEN_ROOT}5", json=zaak)
@@ -125,10 +129,16 @@ class ServiceGetZakenTest(TestCase):
 
     def _set_up_mocks(self, m):
         mock_service_oas_get(
-            m, CATALOGI_ROOT, "ztc", oas_url=f"{CATALOGI_ROOT}schema/openapi.json",
+            m,
+            CATALOGI_ROOT,
+            "ztc",
+            oas_url=f"{CATALOGI_ROOT}schema/openapi.json",
         )
         mock_service_oas_get(
-            m, ZAKEN_ROOT, "zrc", oas_url=f"{ZAKEN_ROOT}schema/openapi.json",
+            m,
+            ZAKEN_ROOT,
+            "zrc",
+            oas_url=f"{ZAKEN_ROOT}schema/openapi.json",
         )
         mock_service_oas_get(
             m,
@@ -140,7 +150,8 @@ class ServiceGetZakenTest(TestCase):
     def test_retrieve_ordered_zaken(self, m):
         self._set_up_mocks(m)
         m.get(
-            f"{ZAKEN_ROOT}zaken", json=paginated_response(ZAKEN),
+            f"{ZAKEN_ROOT}zaken",
+            json=paginated_response(ZAKEN),
         )
         m.get(
             url=f"{CATALOGI_ROOT}zaaktypen",
@@ -161,7 +172,8 @@ class ServiceGetZakenTest(TestCase):
     def test_retrieve_unordered_zaken(self, m):
         self._set_up_mocks(m)
         m.get(
-            f"{ZAKEN_ROOT}zaken", json=paginated_response(ZAKEN),
+            f"{ZAKEN_ROOT}zaken",
+            json=paginated_response(ZAKEN),
         )
         m.get(
             url=f"{CATALOGI_ROOT}zaaktypen",

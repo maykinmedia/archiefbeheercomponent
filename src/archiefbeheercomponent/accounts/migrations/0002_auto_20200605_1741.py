@@ -61,7 +61,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"verbose_name": "role", "verbose_name_plural": "roles",},
+            options={
+                "verbose_name": "role",
+                "verbose_name_plural": "roles",
+            },
         ),
         migrations.AddField(
             model_name="user",

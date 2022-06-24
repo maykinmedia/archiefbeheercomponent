@@ -11,6 +11,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RemoveField(
-            model_name="destructionlistreviewcomment", name="author",
+            model_name="destructionlistreviewcomment",
+            name="author",
         ),
     ]

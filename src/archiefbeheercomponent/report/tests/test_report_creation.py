@@ -439,7 +439,8 @@ class CreateReportTests(TestCase):
 class ContentReportTests(TestCase):
     def test_create_html_content_with_sensitive_info(self, m_vcs, m_zaaktype):
         destruction_list = DestructionListFactory.create(
-            name="Winter cases", contains_sensitive_info=True,
+            name="Winter cases",
+            contains_sensitive_info=True,
         )
         DestructionListItemFactory.create(
             destruction_list=destruction_list,
@@ -501,7 +502,7 @@ class ContentReportTests(TestCase):
             "<td>Nicer result type</td>",
             "<td>Nicer organisation</td>",
             "<td>Yes</td>",
-            "10 bytes of documents were deleted.",
+            "10\xa0bytes of documents were deleted.",
         ]
 
         for node in expected_html_nodes:
@@ -515,7 +516,8 @@ class ContentReportTests(TestCase):
 
     def test_create_html_content_without_sensitive_info(self, m_vcs, m_zaaktype):
         destruction_list = DestructionListFactory.create(
-            name="Winter cases", contains_sensitive_info=False,
+            name="Winter cases",
+            contains_sensitive_info=False,
         )
         DestructionListItemFactory.create(
             destruction_list=destruction_list,
@@ -588,7 +590,8 @@ class ContentReportTests(TestCase):
 
     def test_create_csv_content_with_sensitive_info(self, m_vcs, m_zaaktype):
         destruction_list = DestructionListFactory.create(
-            name="Winter cases", contains_sensitive_info=True,
+            name="Winter cases",
+            contains_sensitive_info=True,
         )
         DestructionListItemFactory.create(
             destruction_list=destruction_list,
@@ -672,7 +675,8 @@ class ContentReportTests(TestCase):
 
     def test_create_csv_content_without_sensitive_info(self, m_vcs, m_zaaktype):
         destruction_list = DestructionListFactory.create(
-            name="Winter cases", contains_sensitive_info=False,
+            name="Winter cases",
+            contains_sensitive_info=False,
         )
         DestructionListItemFactory.create(
             destruction_list=destruction_list,

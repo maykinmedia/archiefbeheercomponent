@@ -93,7 +93,9 @@ class ExportZakenWithoutArchiveDateView(UserPassesTestMixin, View):
 
         for row_count, zaak in enumerate(zaken_with_extra_info):
             worksheet.write_row(
-                row_count + 1, 0, format_zaak_record(zaak, user),
+                row_count + 1,
+                0,
+                format_zaak_record(zaak, user),
             )
 
         workbook.close()
@@ -148,7 +150,8 @@ class DownloadAdditionalReviewersDocumentsView(UserPassesTestMixin, DetailView):
         temp_file.seek(0)
 
         response = StreamingHttpResponse(
-            FileWrapper(temp_file), content_type="application/zip",
+            FileWrapper(temp_file),
+            content_type="application/zip",
         )
 
         response["Content-Disposition"] = "attachment;filename=reviewersDocuments.zip"

@@ -9,7 +9,10 @@ from faker import Faker
 from requests_mock import Mocker
 
 fake = Faker()
-MOCK_FILES_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), "schemas",)
+MOCK_FILES_DIR = os.path.join(
+    os.path.abspath(os.path.dirname(__file__)),
+    "schemas",
+)
 
 _cache = {}
 
@@ -32,7 +35,9 @@ def mock_service_oas_get(m: Mocker, url: str, service: str, oas_url: str = "") -
 
 
 def generate_oas_component(
-    service: str, component: str, **properties,
+    service: str,
+    component: str,
+    **properties,
 ) -> Dict[str, Any]:
     """
     Generate an object conforming to the OAS schema definition.

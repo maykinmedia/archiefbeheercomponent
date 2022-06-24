@@ -64,7 +64,11 @@ urlpatterns = [
         "_",
         include(
             [
-                path("fetch-zaken", FetchZakenView.as_view(), name="fetch-zaken",),
+                path(
+                    "fetch-zaken",
+                    FetchZakenView.as_view(),
+                    name="fetch-zaken",
+                ),
                 path(
                     "fetch-list-items/<int:list_id>",
                     FetchListItemsView.as_view(),
