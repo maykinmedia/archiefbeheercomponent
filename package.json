@@ -52,7 +52,7 @@
     "jsdom-global": "latest",
     "jshint": "^2.13.4",
     "jshint-stylish": "latest",
-    "karma": "latest",
+    "karma": "^6.4.0",
     "karma-chrome-launcher": "latest",
     "karma-coverage": "latest",
     "karma-firefox-launcher": "latest",
