@@ -7,7 +7,7 @@ python-decouple  # processing of envvar configs
 furl
 
 # Framework libraries
-django < 3.0
+django
 django-auth-adfs-db
 django-admin-index
 django-axes

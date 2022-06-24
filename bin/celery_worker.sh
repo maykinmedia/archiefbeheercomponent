@@ -5,8 +5,6 @@ set -e
 LOGLEVEL=${CELERY_LOGLEVEL:-INFO}
 
 echo "Starting celery worker"
-celery worker \
-    --app archiefbeheercomponent \
+celery --workdir src --app archiefbeheercomponent.celery worker \
     -l $LOGLEVEL \
-    --workdir src \
     -O fair \
