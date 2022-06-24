@@ -53,11 +53,11 @@ class ExportZakenWithoutArchiveDateTests(TestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            response._headers["content-disposition"][1],
+            response.headers.get("content-disposition"),
             'attachment; filename="zaken-lijst-d0702e2c-1af4-4cb4-87d4-16632e21052e.xlsx"',
         )
         self.assertEqual(
-            response._headers["content-type"][1],
+            response.headers.get("content-type"),
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
         self.assertNotEqual(0, len(response.content))

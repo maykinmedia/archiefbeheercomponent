@@ -502,7 +502,7 @@ class ContentReportTests(TestCase):
             "<td>Nicer result type</td>",
             "<td>Nicer organisation</td>",
             "<td>Yes</td>",
-            "10 bytes of documents were deleted.",
+            "10\xa0bytes of documents were deleted.",
         ]
 
         for node in expected_html_nodes:
