@@ -133,7 +133,9 @@ class DestructionList(models.Model):
 
             # TODO: this should only go through if the object is saved!
             Notification.objects.create(
-                destruction_list=self, user=assigned_user, message=message,
+                destruction_list=self,
+                user=assigned_user,
+                message=message,
             )
 
             if email:
@@ -251,13 +253,17 @@ class DestructionListItem(models.Model):
         pass
 
     @transition(
-        field=status, source=ListItemStatus.processing, target=ListItemStatus.destroyed,
+        field=status,
+        source=ListItemStatus.processing,
+        target=ListItemStatus.destroyed,
     )
     def complete(self):
         pass
 
     @transition(
-        field=status, source=ListItemStatus.processing, target=ListItemStatus.failed,
+        field=status,
+        source=ListItemStatus.processing,
+        target=ListItemStatus.failed,
     )
     def fail(self):
         pass
@@ -371,7 +377,9 @@ class DestructionListAssignee(models.Model):
         verbose_name=_("destruction list"),
     )
     assignee = models.ForeignKey(
-        "accounts.User", on_delete=models.PROTECT, verbose_name=_("assignee"),
+        "accounts.User",
+        on_delete=models.PROTECT,
+        verbose_name=_("assignee"),
     )
     order = models.PositiveSmallIntegerField(_("order"))
     assigned_on = models.DateTimeField(_("assigned on"), blank=True, null=True)

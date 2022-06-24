@@ -142,7 +142,8 @@ class DownloadReviewersDocumentsTests(WebTest):
         )
 
         DestructionListReviewFactory.create(
-            destruction_list=destruction_list, author=process_owner,
+            destruction_list=destruction_list,
+            author=process_owner,
         )
 
         DestructionReportFactory.create(
@@ -199,13 +200,15 @@ class DownloadReviewersDocumentsTests(WebTest):
             destruction_list=destruction_list, assignee=process_owner
         )
         DestructionListReviewFactory.create(
-            destruction_list=destruction_list, author=process_owner,
+            destruction_list=destruction_list,
+            author=process_owner,
         )
 
         self.client.force_login(process_owner)
         response = self.client.get(
             reverse(
-                "destruction:download-reviewer-documents", args=[destruction_list.pk],
+                "destruction:download-reviewer-documents",
+                args=[destruction_list.pk],
             )
         )
 

@@ -46,14 +46,16 @@ class RoleTests(TestCase):
 
     def test_create_archivist_with_correct_permissions(self):
         role = RoleFactory.create(
-            type=RoleTypeChoices.archivist, can_review_destruction=True,
+            type=RoleTypeChoices.archivist,
+            can_review_destruction=True,
         )
 
         role.clean()  # Shouldn't raise exceptions
 
     def test_create_archivist_with_insufficient_permissions(self):
         role = RoleFactory.create(
-            type=RoleTypeChoices.record_manager, can_review_destruction=False,
+            type=RoleTypeChoices.record_manager,
+            can_review_destruction=False,
         )
 
         with self.assertRaises(ValidationError):

@@ -40,7 +40,8 @@ SELECTIELIJST = {
     return_value=copy.deepcopy(SELECTIELIJST),
 )
 @patch(
-    "archiefbeheercomponent.destruction.utils.get_looptijd", return_value=10,
+    "archiefbeheercomponent.destruction.utils.get_looptijd",
+    return_value=10,
 )
 @patch(
     "archiefbeheercomponent.destruction.utils.fetch_resultaat",

@@ -34,7 +34,9 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"verbose_name": "archive configuration",},
+            options={
+                "verbose_name": "archive configuration",
+            },
         ),
         migrations.AlterField(
             model_name="destructionlistassignee",

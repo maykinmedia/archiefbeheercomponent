@@ -75,7 +75,9 @@ class UpdateZaakArchiveDetailsTests(WebTest):
         "archiefbeheercomponent.destruction.views.record_manager.fetch_zaak",
         return_value={"url": "http://openzaak.nl/some/zaak"},
     )
-    @patch("archiefbeheercomponent.destruction.views.record_manager.update_zaak",)
+    @patch(
+        "archiefbeheercomponent.destruction.views.record_manager.update_zaak",
+    )
     def test_submit_successful_form_redirects(self, m_update_zaak, m_fetch_zaak):
         user = UserFactory(role__can_start_destruction=True)
         view_url = furl(reverse("destruction:update-zaak-archive-details"))
@@ -153,14 +155,17 @@ class UpdateZaakArchiveDetailsTests(WebTest):
             response, "An error has occurred. The case could not be updated."
         )
         self.assertContains(
-            response, "Some error message",
+            response,
+            "Some error message",
         )
 
     @patch(
         "archiefbeheercomponent.destruction.views.record_manager.fetch_zaak",
         return_value={"url": "http://openzaak.nl/some/zaak"},
     )
-    @patch("archiefbeheercomponent.destruction.views.record_manager.update_zaak",)
+    @patch(
+        "archiefbeheercomponent.destruction.views.record_manager.update_zaak",
+    )
     def test_empty_archiefactiedatum(self, m_update_zaak, m_fetch_zaak):
         user = UserFactory(role__can_start_destruction=True)
         view_url = furl(reverse("destruction:update-zaak-archive-details"))

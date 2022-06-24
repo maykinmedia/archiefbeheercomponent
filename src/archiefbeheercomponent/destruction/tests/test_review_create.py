@@ -510,7 +510,8 @@ class CreateReviewViewContextTest(TestCase):
     def test_sensitive_info_process_owner(self):
         destruction_list = DestructionListFactory.create(contains_sensitive_info=True)
         process_owner = UserFactory.create(
-            role__can_review_destruction=True, role__type=RoleTypeChoices.process_owner,
+            role__can_review_destruction=True,
+            role__type=RoleTypeChoices.process_owner,
         )
         DestructionListAssigneeFactory.create(
             destruction_list=destruction_list, assignee=process_owner
@@ -527,7 +528,8 @@ class CreateReviewViewContextTest(TestCase):
     def test_sensitive_info_archivist(self):
         destruction_list = DestructionListFactory.create(contains_sensitive_info=True)
         archivist = UserFactory.create(
-            role__can_review_destruction=True, role__type=RoleTypeChoices.archivist,
+            role__can_review_destruction=True,
+            role__type=RoleTypeChoices.archivist,
         )
         DestructionListAssigneeFactory.create(
             destruction_list=destruction_list, assignee=archivist
@@ -544,7 +546,8 @@ class CreateReviewViewContextTest(TestCase):
     def test_no_sensitive_info_archivist(self):
         destruction_list = DestructionListFactory.create(contains_sensitive_info=False)
         archivist = UserFactory.create(
-            role__can_review_destruction=True, role__type=RoleTypeChoices.archivist,
+            role__can_review_destruction=True,
+            role__type=RoleTypeChoices.archivist,
         )
         DestructionListAssigneeFactory.create(
             destruction_list=destruction_list, assignee=archivist
@@ -564,7 +567,8 @@ class CreateReviewViewContextTest(TestCase):
 
         destruction_list = DestructionListFactory.create()
         process_owner = UserFactory.create(
-            role__can_review_destruction=True, role__type=RoleTypeChoices.process_owner,
+            role__can_review_destruction=True,
+            role__type=RoleTypeChoices.process_owner,
         )
         DestructionListAssigneeFactory.create(
             destruction_list=destruction_list, assignee=process_owner

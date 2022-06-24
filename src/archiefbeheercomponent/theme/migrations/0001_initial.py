@@ -147,6 +147,8 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"verbose_name": "Theme configuration",},
+            options={
+                "verbose_name": "Theme configuration",
+            },
         ),
     ]

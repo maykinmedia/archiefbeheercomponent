@@ -72,7 +72,10 @@ class AutomaticEmail(models.Model):
         return f"Automatic email ({self.type})"
 
     def send(
-        self, recipient, destruction_list, report=None,
+        self,
+        recipient,
+        destruction_list,
+        report=None,
     ):
         """
         :param recipient: type User

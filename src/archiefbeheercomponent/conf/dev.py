@@ -31,13 +31,21 @@ LOGGING["loggers"].update(
             "level": "DEBUG",
             "propagate": True,
         },
-        "django": {"handlers": ["console"], "level": "DEBUG", "propagate": True,},
+        "django": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
         "django.db.backends": {
             "handlers": ["django"],
             "level": "DEBUG",
             "propagate": False,
         },
-        "performance": {"handlers": ["console"], "level": "INFO", "propagate": True,},
+        "performance": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": True,
+        },
         #
         # See: https://code.djangoproject.com/ticket/30554
         # Autoreload logs excessively, turn it down a bit.

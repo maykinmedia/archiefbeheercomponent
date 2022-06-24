@@ -50,7 +50,7 @@ logger = logging.getLogger(__name__)
 
 
 class RecordManagerDestructionListView(RoleRequiredMixin, FilterView):
-    """ data for user who can start destruction lists"""
+    """data for user who can start destruction lists"""
 
     role_permission = "can_start_destruction"
     template_name = "destruction/recordmanager_list.html"
@@ -178,7 +178,9 @@ class DestructionListDetailView(AuthorOrAssigneeRequiredMixin, UpdateWithInlines
                 "%(author)s has aborted the destruction list. No further action is required."
             ) % {"author": destruction_list.author}
             Notification.objects.create(
-                destruction_list=destruction_list, user=assignee, message=message,
+                destruction_list=destruction_list,
+                user=assignee,
+                message=message,
             )
 
     @transaction.atomic
@@ -348,7 +350,8 @@ class UpdateZaakArchiveDetailsView(SuccessMessageMixin, RoleRequiredMixin, FormV
                     field_name = None
 
                 form.add_error(
-                    field=field_name, error=param["reason"],
+                    field=field_name,
+                    error=param["reason"],
                 )
         except KeyError as err:
             logger.error("Encountered missing key %s in ClientError: %s", err, exc)

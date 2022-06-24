@@ -31,7 +31,7 @@ from ..tasks import process_destruction_list
 
 
 class ReviewerDestructionListView(RoleRequiredMixin, FilterView):
-    """ data for user who can reviewer destruction lists"""
+    """data for user who can reviewer destruction lists"""
 
     role_permission = "can_review_destruction"
     template_name = "destruction/reviewer_list.html"

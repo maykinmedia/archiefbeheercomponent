@@ -24,7 +24,14 @@ class ThemeConfigAdmin(SingletonModelAdmin):
         (None, {"fields": ("logo",)}),
         (
             _("Text"),
-            {"fields": ("organization_name", "tagline", "phone_number", "address",)},
+            {
+                "fields": (
+                    "organization_name",
+                    "tagline",
+                    "phone_number",
+                    "address",
+                )
+            },
         ),
         (
             _("Colors"),
