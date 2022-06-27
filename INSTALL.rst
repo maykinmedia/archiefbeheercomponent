@@ -63,9 +63,8 @@ development machine.
 
    .. code-block:: bash
 
-       $ npm install -g gulp
-       $ npm install
-       $ gulp sass
+       $ npm ci
+       $ npm run build
 
 5. Activate your virtual environment and create the statics and database:
 
@@ -123,8 +122,8 @@ When updating an existing installation:
 
        $ git pull
        $ pip install -r requirements/dev.txt
-       $ npm install
-       $ gulp sass
+       $ npm ci
+       $ npm urn build
 
 3. Update the statics and database:
 
