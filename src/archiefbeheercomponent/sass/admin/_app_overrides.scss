@@ -3,7 +3,7 @@
 
  Generic overrides should go in _admin_theme.scss
  */
-//@import '~microscope-sass/lib/responsive';
+@import '~microscope-sass/lib/responsive';
 
 @import '../vars';
 
@@ -45,12 +45,8 @@ $djai-border-width: 8px;
     // by default, the header has 40px padding on both sides. To make the border stretch
   // full width, set negative margins and positive paddings. On mobile and tablet these
   // values are 15px and 30px respectively.
-  margin-left: -$djai-padding;
-  margin-right: -$djai-padding;
-  padding-right: $djai-padding;
-  padding-left: $djai-padding;
-  //@include responsive((margin-left, margin-right), -$djai-padding--mobile, -$djai-padding--tablet, -$djai-padding);
-  //@include responsive((padding-left, padding-right), $djai-padding--mobile, $djai-padding--tablet, $djai-padding);
+  @include responsive((margin-left, margin-right), -$djai-padding--mobile, -$djai-padding--tablet, -$djai-padding);
+  @include responsive((padding-left, padding-right), $djai-padding--mobile, $djai-padding--tablet, $djai-padding);
 
   // use full width on mobile & tablet
   width: 100%;

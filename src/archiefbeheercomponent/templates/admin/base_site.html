@@ -1,11 +1,10 @@
 {% extends "admin/base.html" %}
-{% load i18n static hijack %}
+{% load i18n static %}
 
 {% block title %}{{ title }} | {{ settings.PROJECT_NAME }}{% endblock %}
 
 {% block extrastyle %}
     {{ block.super }}
-    <link rel="stylesheet" type="text/css" href="{% static 'hijack/hijack-styles.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'bundles/admin_overrides.css' %}">
 {% endblock %}
 
