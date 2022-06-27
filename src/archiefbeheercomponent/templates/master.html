@@ -11,8 +11,9 @@
         <link href="https://fonts.googleapis.com/css?family=Fira+Sans:300,400,600|Material+Icons|Material+Icons+Outlined" rel="stylesheet">
         {% block extra_style %}{% endblock %}
 
-        <link href="{% static 'css/screen.css' %}" media="screen" rel="stylesheet" type="text/css" />
-        <link href="{% static 'hijack/hijack-styles.css' %}" rel="stylesheet" type="text/css" />
+        <link href="{% static 'bundles/archiefbeheercomponent-css.css' %}" media="all" rel="stylesheet"/>
+        <link href="{% static 'bundles/core-css.css' %}" media="all" rel="stylesheet"/>
+{#        <link href="{% static 'hijack/hijack-styles.css' %}" rel="stylesheet" type="text/css" />#}
         {% block extra_css %}{% endblock %}
 
         {% theme_stylesheet %}
