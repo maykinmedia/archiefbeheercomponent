@@ -2,15 +2,15 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext_lazy as _
 
-from hijack_admin.admin import HijackUserAdminMixin
+from hijack.contrib.admin import HijackUserAdminMixin
 from ordered_model.admin import OrderedModelAdmin
 
 from .models import Role, User
 
 
 @admin.register(User)
-class _UserAdmin(UserAdmin, HijackUserAdminMixin):
-    list_display = UserAdmin.list_display + ("hijack_field", "role")
+class _UserAdmin(HijackUserAdminMixin, UserAdmin):
+    list_display = UserAdmin.list_display + ("role",)
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = super().get_fieldsets(request, obj)

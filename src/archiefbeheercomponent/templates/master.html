@@ -1,4 +1,4 @@
-{% load static i18n hijack_tags demo_tutorial theme %}<!DOCTYPE html>
+{% load static i18n hijack demo_tutorial theme %}<!DOCTYPE html>
 {% get_current_language as lang %}
 <html lang="{{ lang|slice:':2' }}">
     <head>
@@ -28,7 +28,9 @@
                 {% demo_tutorial user %}
             {% endif %}
 
-            {% hijack_notification %}
+            {# Needed to position the django hijack notification bar. It gets placed above this div #}
+            <div class="hijack-notification"></div>
+
             <header>
                 {% theme_header %}
             </header>
