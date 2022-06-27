@@ -12,38 +12,36 @@ asgiref==3.5.2
     # via
     #   -r requirements/base.txt
     #   django
-beautifulsoup4==4.9.1
+async-timeout==4.0.2
+    # via
+    #   -r requirements/base.txt
+    #   redis
+beautifulsoup4==4.11.1
     # via webtest
 billiard==3.6.4.0
     # via
     #   -r requirements/base.txt
     #   celery
-cairocffi==1.2.0
+brotli==1.0.9
     # via
     #   -r requirements/base.txt
-    #   cairosvg
-    #   weasyprint
-cairosvg==2.5.1
-    # via
-    #   -r requirements/base.txt
-    #   weasyprint
+    #   fonttools
 celery==5.2.7
     # via
     #   -r requirements/base.txt
     #   flower
-certifi==2020.4.5.1
+certifi==2022.6.15
     # via
     #   -r requirements/base.txt
     #   elastic-apm
     #   requests
     #   sentry-sdk
-cffi==1.14.0
+cffi==1.15.0
     # via
     #   -r requirements/base.txt
-    #   cairocffi
     #   cryptography
     #   weasyprint
-charset-normalizer==2.0.7
+charset-normalizer==2.0.12
     # via
     #   -r requirements/base.txt
     #   requests
@@ -68,90 +66,90 @@ click==8.1.3
     #   click-repl
 coverage==4.5.4
     # via -r requirements/test-tools.in
-cryptography==3.3.2
+cryptography==37.0.2
     # via
     #   -r requirements/base.txt
     #   django-auth-adfs
-cssselect2==0.4.1
+    #   pyopenssl
+cssselect2==0.6.0
     # via
     #   -r requirements/base.txt
-    #   cairosvg
     #   weasyprint
 cssselect==1.1.0
     # via pyquery
-defusedxml==0.6.0
+deprecated==1.2.13
     # via
     #   -r requirements/base.txt
-    #   cairosvg
-django-admin-index==1.4.0
+    #   redis
+django-admin-index==2.0.2
     # via -r requirements/base.txt
-django-appconf==1.0.4
+django-appconf==1.0.5
     # via
     #   -r requirements/base.txt
-    #   django-axes
     #   django-timeline-logger
 django-auth-adfs-db==0.3.0
     # via -r requirements/base.txt
-django-auth-adfs==1.6.1
+django-auth-adfs==1.10.0
     # via
     #   -r requirements/base.txt
     #   django-auth-adfs-db
-django-axes==5.3.2
+django-axes==5.35.0
     # via -r requirements/base.txt
-django-capture-on-commit-callbacks==1.1.0
+django-capture-on-commit-callbacks==1.11.0
     # via -r requirements/test-tools.in
-django-choices==1.7.1
+django-choices==1.7.2
     # via
     #   -r requirements/base.txt
     #   zgw-consumers
 django-compat==1.0.15
     # via
     #   -r requirements/base.txt
-    #   django-hijack
     #   django-hijack-admin
-django-extra-views==0.13.0
+django-extra-views==0.14.0
     # via -r requirements/base.txt
-django-filter==2.4.0
+django-filter==22.1
     # via -r requirements/base.txt
-django-fsm-admin==1.2.4
+django-fsm-admin==1.2.5
     # via -r requirements/base.txt
-django-fsm==2.7.0
+django-fsm==2.8.0
     # via
     #   -r requirements/base.txt
     #   django-fsm-admin
 django-hijack-admin==2.1.10
     # via -r requirements/base.txt
-django-hijack==2.1.10
+django-hijack==3.2.1
     # via
     #   -r requirements/base.txt
     #   django-hijack-admin
-django-ipware==2.1.0
+django-ipware==4.0.2
     # via
     #   -r requirements/base.txt
     #   django-axes
 django-jenkins==0.110.0
     # via -r requirements/test-tools.in
-django-ordered-model==3.4.1
+django-ordered-model==3.6
     # via
     #   -r requirements/base.txt
     #   django-admin-index
-django-privates==1.2.1
-    # via -r requirements/base.txt
-django-redis==4.12.1
-    # via -r requirements/base.txt
-django-relativedelta==1.1.1
+django-privates==1.3.0
     # via
     #   -r requirements/base.txt
     #   zgw-consumers
-django-rosetta==0.9.4
+django-redis==5.2.0
     # via -r requirements/base.txt
-django-sendfile2==0.6.0
+django-relativedelta==1.1.2
+    # via
+    #   -r requirements/base.txt
+    #   zgw-consumers
+django-rosetta==0.9.8
+    # via -r requirements/base.txt
+django-sendfile2==0.6.1
     # via
     #   -r requirements/base.txt
     #   django-privates
 django-sniplates==0.7.0
     # via -r requirements/base.txt
-django-solo==1.1.3
+django-solo==2.0.0
     # via
     #   -r requirements/base.txt
     #   django-auth-adfs-db
@@ -163,6 +161,7 @@ django-webtest==1.9.10
 django==3.2.13
     # via
     #   -r requirements/base.txt
+    #   django-admin-index
     #   django-appconf
     #   django-auth-adfs
     #   django-auth-adfs-db
@@ -172,6 +171,7 @@ django==3.2.13
     #   django-extra-views
     #   django-filter
     #   django-fsm-admin
+    #   django-hijack
     #   django-jenkins
     #   django-privates
     #   django-redis
@@ -179,21 +179,29 @@ django==3.2.13
     #   django-rosetta
     #   django-sendfile2
     #   django-sniplates
+    #   django-solo
     #   django-timeline-logger
     #   zgw-consumers
-elastic-apm==5.6.0
+elastic-apm==6.10.0
     # via -r requirements/base.txt
-factory-boy==2.12.0
+factory-boy==3.2.1
     # via -r requirements/test-tools.in
-faker==4.1.0
-    # via factory-boy
+faker==13.14.0
+    # via
+    #   -r requirements/base.txt
+    #   factory-boy
+    #   zgw-consumers
 flower==1.0.0
     # via -r requirements/base.txt
-freezegun==0.3.15
+fonttools[woff]==4.33.3
+    # via
+    #   -r requirements/base.txt
+    #   weasyprint
+freezegun==1.2.1
     # via -r requirements/test-tools.in
 furl==2.1.3
     # via -r requirements/base.txt
-gemma-zds-client==0.14.0
+gemma-zds-client==1.0.1
     # via
     #   -r requirements/base.txt
     #   zgw-consumers
@@ -201,11 +209,11 @@ html5lib==1.1
     # via
     #   -r requirements/base.txt
     #   weasyprint
-humanize==0.5.1
+humanize==4.2.1
     # via
     #   -r requirements/base.txt
     #   flower
-idna==2.9
+idna==3.3
     # via
     #   -r requirements/base.txt
     #   requests
@@ -213,18 +221,21 @@ kombu==5.2.4
     # via
     #   -r requirements/base.txt
     #   celery
-lxml==4.6.5
+lxml==4.9.0
     # via pyquery
 orderedmultidict==1.0.1
     # via
     #   -r requirements/base.txt
     #   furl
+packaging==21.3
+    # via
+    #   -r requirements/base.txt
+    #   redis
 pillow==9.1.1
     # via
     #   -r requirements/base.txt
-    #   cairosvg
     #   weasyprint
-polib==1.1.0
+polib==1.1.1
     # via
     #   -r requirements/base.txt
     #   django-rosetta
@@ -236,32 +247,44 @@ prompt-toolkit==3.0.29
     # via
     #   -r requirements/base.txt
     #   click-repl
-psycopg2==2.8.5
+psycopg2==2.9.3
     # via -r requirements/base.txt
-pycparser==2.20
+pycparser==2.21
     # via
     #   -r requirements/base.txt
     #   cffi
-pyjwt==1.7.1
+pydyf==0.2.0
+    # via
+    #   -r requirements/base.txt
+    #   weasyprint
+pyjwt==2.4.0
     # via
     #   -r requirements/base.txt
     #   django-auth-adfs
     #   gemma-zds-client
-pyphen==0.10.0
+pyopenssl==22.0.0
+    # via
+    #   -r requirements/base.txt
+    #   zgw-consumers
+pyparsing==3.0.9
+    # via
+    #   -r requirements/base.txt
+    #   packaging
+pyphen==0.12.0
     # via
     #   -r requirements/base.txt
     #   weasyprint
-pyquery==1.4.1
+pyquery==1.4.3
     # via -r requirements/test-tools.in
-python-dateutil==2.8.1
+python-dateutil==2.8.2
     # via
     #   -r requirements/base.txt
     #   django-relativedelta
     #   faker
     #   freezegun
-python-decouple==3.3
+python-decouple==3.6
     # via -r requirements/base.txt
-python-dotenv==0.13.0
+python-dotenv==0.20.0
     # via -r requirements/base.txt
 pytz==2022.1
     # via
@@ -269,68 +292,65 @@ pytz==2022.1
     #   celery
     #   django
     #   flower
-pyyaml==5.4
+pyyaml==6.0
     # via
     #   -r requirements/base.txt
     #   gemma-zds-client
-redis==3.5.3
+redis==4.3.3
     # via
     #   -r requirements/base.txt
     #   django-redis
-requests-mock==1.8.0
-    # via -r requirements/test-tools.in
-requests==2.26.0
+requests-mock==1.9.3
+    # via
+    #   -r requirements/base.txt
+    #   -r requirements/test-tools.in
+    #   zgw-consumers
+requests==2.28.0
     # via
     #   -r requirements/base.txt
     #   django-auth-adfs
     #   django-rosetta
     #   gemma-zds-client
     #   requests-mock
-sentry-sdk==0.14.4
+    #   zgw-consumers
+sentry-sdk==1.6.0
     # via -r requirements/base.txt
-six==1.15.0
+six==1.16.0
     # via
     #   -r requirements/base.txt
     #   click-repl
-    #   cryptography
     #   django-choices
     #   django-compat
-    #   django-extra-views
-    #   django-rosetta
-    #   freezegun
     #   furl
     #   html5lib
     #   orderedmultidict
     #   python-dateutil
     #   requests-mock
-    #   webtest
-soupsieve==2.0.1
+soupsieve==2.3.2.post1
     # via beautifulsoup4
-sqlparse==0.3.1
+sqlparse==0.4.2
     # via
     #   -r requirements/base.txt
     #   django
-tblib==1.6.0
+tblib==1.7.0
     # via -r requirements/test-tools.in
-text-unidecode==1.3
-    # via faker
-tinycss2==1.1.0
+tinycss2==1.1.1
     # via
     #   -r requirements/base.txt
-    #   cairosvg
     #   cssselect2
     #   weasyprint
-tornado==6.0.4
+tornado==6.1
     # via
     #   -r requirements/base.txt
     #   flower
-urllib3==1.26.5
+urllib3==1.26.9
     # via
     #   -r requirements/base.txt
+    #   django-auth-adfs
     #   elastic-apm
     #   requests
     #   sentry-sdk
-uwsgi==2.0.18
+uwsgi==2.0.20
     # via -r requirements/base.txt
 vine==5.0.0
     # via
@@ -338,13 +358,13 @@ vine==5.0.0
     #   amqp
     #   celery
     #   kombu
-waitress==1.4.4
+waitress==2.1.2
     # via webtest
 wcwidth==0.2.5
     # via
     #   -r requirements/base.txt
     #   prompt-toolkit
-weasyprint==52.2
+weasyprint==55.0
     # via -r requirements/base.txt
 webencodings==0.5.1
     # via
@@ -352,14 +372,22 @@ webencodings==0.5.1
     #   cssselect2
     #   html5lib
     #   tinycss2
-webob==1.8.6
+webob==1.8.7
     # via webtest
-webtest==2.0.35
+webtest==3.0.0
     # via django-webtest
-xlsxwriter==3.0.2
+wrapt==1.14.1
+    # via
+    #   -r requirements/base.txt
+    #   deprecated
+xlsxwriter==3.0.3
     # via -r requirements/base.txt
-zgw-consumers==0.10.2
+zgw-consumers==0.18.2
     # via -r requirements/base.txt
+zopfli==0.2.1
+    # via
+    #   -r requirements/base.txt
+    #   fonttools
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

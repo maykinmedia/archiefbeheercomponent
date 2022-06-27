@@ -19,14 +19,23 @@ module.exports = {
     // Parsed package.json
     package: pkg,
 
+    // Src dir
+    sourcesRoot: sourcesRoot,
+
+    // "Main" static dir
+    staticRoot: staticRoot,
+
     // Path to the sass (sources) directory
     sassSrcDir: sourcesRoot + 'sass/',
+
+    // Path to the scss entry point
+    scssEntry: sourcesRoot + 'sass/screen.scss',
 
     // Path to the sass (sources) entry point
     sassSrc: sourcesRoot + 'sass/**/*.scss',
 
     // Path to the (transpiled) css directory
-    cssDir: staticRoot + 'css/',
+    cssDir: staticRoot + 'bundles/',
 
     // Path to the fonts directory
     fontsDir: staticRoot + 'fonts/',
@@ -41,7 +50,7 @@ module.exports = {
     jsSrcDir: sourcesRoot + 'js/',
 
     // Path to the (transpiled) js directory
-    jsDir: staticRoot + 'js/',
+    jsDir: staticRoot + 'bundles/',
 
     // Path to js spec (test) files
     jsSpec: sourcesRoot + 'jstests/**/*.spec.js',

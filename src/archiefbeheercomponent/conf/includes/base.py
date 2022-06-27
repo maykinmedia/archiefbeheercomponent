@@ -117,7 +117,7 @@ INSTALLED_APPS = [
     "extra_views",
     "fsm_admin",
     "hijack",
-    "hijack_admin",
+    "hijack.contrib.admin",
     "sniplates",
     "solo",
     "timeline_logger",
@@ -144,6 +144,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "hijack.middleware.HijackUserMiddleware",
 ]
 
 ROOT_URLCONF = "archiefbeheercomponent.urls"
@@ -388,6 +389,7 @@ HIJACK_REGISTER_ADMIN = False
 HIJACK_ALLOW_GET_REQUESTS = True
 HIJACK_AUTHORIZE_STAFF = True
 HIJACK_AUTHORIZE_STAFF_TO_HIJACK_STAFF = True
+HIJACK_INSERT_BEFORE = '<div class="hijack-notification">'
 
 #
 # DJANGO AUTH ADFS

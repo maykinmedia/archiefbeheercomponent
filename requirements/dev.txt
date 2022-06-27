@@ -14,9 +14,13 @@ asgiref==3.5.2
     # via
     #   -r requirements/ci.txt
     #   django
-babel==2.9.1
+async-timeout==4.0.2
+    # via
+    #   -r requirements/ci.txt
+    #   redis
+babel==2.10.3
     # via sphinx
-beautifulsoup4==4.9.1
+beautifulsoup4==4.11.1
     # via
     #   -r requirements/ci.txt
     #   webtest
@@ -26,36 +30,30 @@ billiard==3.6.4.0
     #   celery
 black==22.3.0
     # via -r requirements/dev.in
+brotli==1.0.9
+    # via
+    #   -r requirements/ci.txt
+    #   fonttools
 bump2version==1.0.1
     # via bumpversion
 bumpversion==0.6.0
     # via -r requirements/dev.in
-cairocffi==1.2.0
-    # via
-    #   -r requirements/ci.txt
-    #   cairosvg
-    #   weasyprint
-cairosvg==2.5.1
-    # via
-    #   -r requirements/ci.txt
-    #   weasyprint
 celery==5.2.7
     # via
     #   -r requirements/ci.txt
     #   flower
-certifi==2020.4.5.1
+certifi==2022.6.15
     # via
     #   -r requirements/ci.txt
     #   elastic-apm
     #   requests
     #   sentry-sdk
-cffi==1.14.0
+cffi==1.15.0
     # via
     #   -r requirements/ci.txt
-    #   cairocffi
     #   cryptography
     #   weasyprint
-charset-normalizer==2.0.7
+charset-normalizer==2.0.12
     # via
     #   -r requirements/ci.txt
     #   requests
@@ -82,96 +80,96 @@ click==8.1.3
     #   pip-tools
 coverage==4.5.4
     # via -r requirements/ci.txt
-cryptography==3.3.2
+cryptography==37.0.2
     # via
     #   -r requirements/ci.txt
     #   django-auth-adfs
-cssselect2==0.4.1
+    #   pyopenssl
+cssselect2==0.6.0
     # via
     #   -r requirements/ci.txt
-    #   cairosvg
     #   weasyprint
 cssselect==1.1.0
     # via
     #   -r requirements/ci.txt
     #   pyquery
-defusedxml==0.6.0
+deprecated==1.2.13
     # via
     #   -r requirements/ci.txt
-    #   cairosvg
-django-admin-index==1.4.0
+    #   redis
+django-admin-index==2.0.2
     # via -r requirements/ci.txt
-django-appconf==1.0.4
+django-appconf==1.0.5
     # via
     #   -r requirements/ci.txt
-    #   django-axes
     #   django-timeline-logger
 django-auth-adfs-db==0.3.0
     # via -r requirements/ci.txt
-django-auth-adfs==1.6.1
+django-auth-adfs==1.10.0
     # via
     #   -r requirements/ci.txt
     #   django-auth-adfs-db
-django-axes==5.3.2
+django-axes==5.35.0
     # via -r requirements/ci.txt
-django-capture-on-commit-callbacks==1.1.0
+django-capture-on-commit-callbacks==1.11.0
     # via -r requirements/ci.txt
-django-choices==1.7.1
+django-choices==1.7.2
     # via
     #   -r requirements/ci.txt
     #   zgw-consumers
 django-compat==1.0.15
     # via
     #   -r requirements/ci.txt
-    #   django-hijack
     #   django-hijack-admin
-django-debug-toolbar==3.2.1
+django-debug-toolbar==3.5.0
     # via -r requirements/dev.in
-django-extensions==2.2.9
+django-extensions==3.1.5
     # via -r requirements/dev.in
-django-extra-views==0.13.0
+django-extra-views==0.14.0
     # via -r requirements/ci.txt
-django-filter==2.4.0
+django-filter==22.1
     # via -r requirements/ci.txt
-django-fsm-admin==1.2.4
+django-fsm-admin==1.2.5
     # via -r requirements/ci.txt
-django-fsm==2.7.0
+django-fsm==2.8.0
     # via
     #   -r requirements/ci.txt
     #   django-fsm-admin
 django-hijack-admin==2.1.10
     # via -r requirements/ci.txt
-django-hijack==2.1.10
+django-hijack==3.2.1
     # via
     #   -r requirements/ci.txt
     #   django-hijack-admin
-django-ipware==2.1.0
+django-ipware==4.0.2
     # via
     #   -r requirements/ci.txt
     #   django-axes
 django-jenkins==0.110.0
     # via -r requirements/ci.txt
-django-ordered-model==3.4.1
+django-ordered-model==3.6
     # via
     #   -r requirements/ci.txt
     #   django-admin-index
-django-privates==1.2.1
-    # via -r requirements/ci.txt
-django-redis==4.12.1
-    # via -r requirements/ci.txt
-django-relativedelta==1.1.1
+django-privates==1.3.0
     # via
     #   -r requirements/ci.txt
     #   zgw-consumers
-django-rosetta==0.9.4
+django-redis==5.2.0
     # via -r requirements/ci.txt
-django-sendfile2==0.6.0
+django-relativedelta==1.1.2
+    # via
+    #   -r requirements/ci.txt
+    #   zgw-consumers
+django-rosetta==0.9.8
+    # via -r requirements/ci.txt
+django-sendfile2==0.6.1
     # via
     #   -r requirements/ci.txt
     #   django-privates
 django-sniplates==0.7.0
     # via -r requirements/ci.txt
-django-solo==1.1.3
+django-solo==2.0.0
     # via
     #   -r requirements/ci.txt
     #   django-auth-adfs-db
@@ -183,6 +181,7 @@ django-webtest==1.9.10
 django==3.2.13
     # via
     #   -r requirements/ci.txt
+    #   django-admin-index
     #   django-appconf
     #   django-auth-adfs
     #   django-auth-adfs-db
@@ -190,9 +189,11 @@ django==3.2.13
     #   django-capture-on-commit-callbacks
     #   django-choices
     #   django-debug-toolbar
+    #   django-extensions
     #   django-extra-views
     #   django-filter
     #   django-fsm-admin
+    #   django-hijack
     #   django-jenkins
     #   django-privates
     #   django-redis
@@ -200,27 +201,36 @@ django==3.2.13
     #   django-rosetta
     #   django-sendfile2
     #   django-sniplates
+    #   django-solo
     #   django-timeline-logger
     #   zgw-consumers
-docutils==0.16
-    # via sphinx
-elastic-apm==5.6.0
+docutils==0.17.1
+    # via
+    #   sphinx
+    #   sphinx-rtd-theme
+    #   sphinx-tabs
+elastic-apm==6.10.0
     # via -r requirements/ci.txt
-factory-boy==2.12.0
+factory-boy==3.2.1
     # via -r requirements/ci.txt
-faker==4.1.0
+faker==13.14.0
     # via
     #   -r requirements/ci.txt
     #   factory-boy
-flake8==3.8.2
+    #   zgw-consumers
+flake8==4.0.1
     # via -r requirements/dev.in
 flower==1.0.0
     # via -r requirements/ci.txt
-freezegun==0.3.15
+fonttools[woff]==4.33.3
+    # via
+    #   -r requirements/ci.txt
+    #   weasyprint
+freezegun==1.2.1
     # via -r requirements/ci.txt
 furl==2.1.3
     # via -r requirements/ci.txt
-gemma-zds-client==0.14.0
+gemma-zds-client==1.0.1
     # via
     #   -r requirements/ci.txt
     #   zgw-consumers
@@ -228,29 +238,31 @@ html5lib==1.1
     # via
     #   -r requirements/ci.txt
     #   weasyprint
-humanize==0.5.1
+humanize==4.2.1
     # via
     #   -r requirements/ci.txt
     #   flower
-idna==2.9
+idna==3.3
     # via
     #   -r requirements/ci.txt
     #   requests
-imagesize==1.2.0
+imagesize==1.3.0
     # via sphinx
-isort==5.0.3
+importlib-metadata==4.11.4
+    # via sphinx
+isort==5.10.1
     # via -r requirements/dev.in
-jinja2==2.11.3
+jinja2==3.1.2
     # via sphinx
 kombu==5.2.4
     # via
     #   -r requirements/ci.txt
     #   celery
-lxml==4.6.5
+lxml==4.9.0
     # via
     #   -r requirements/ci.txt
     #   pyquery
-markupsafe==1.1.1
+markupsafe==2.1.1
     # via jinja2
 mccabe==0.6.1
     # via flake8
@@ -260,22 +272,24 @@ orderedmultidict==1.0.1
     # via
     #   -r requirements/ci.txt
     #   furl
-packaging==20.4
-    # via sphinx
+packaging==21.3
+    # via
+    #   -r requirements/ci.txt
+    #   redis
+    #   sphinx
 pathspec==0.9.0
     # via black
-pep517==0.10.0
+pep517==0.12.0
     # via pip-tools
 pillow==9.1.1
     # via
     #   -r requirements/ci.txt
-    #   cairosvg
     #   weasyprint
-pip-tools==6.1.0
+pip-tools==6.6.2
     # via -r requirements/dev.in
 platformdirs==2.5.2
     # via black
-polib==1.1.0
+polib==1.1.1
     # via
     #   -r requirements/ci.txt
     #   django-rosetta
@@ -287,42 +301,52 @@ prompt-toolkit==3.0.29
     # via
     #   -r requirements/ci.txt
     #   click-repl
-psycopg2==2.8.5
+psycopg2==2.9.3
     # via -r requirements/ci.txt
-pycodestyle==2.6.0
+pycodestyle==2.8.0
     # via flake8
-pycparser==2.20
+pycparser==2.21
     # via
     #   -r requirements/ci.txt
     #   cffi
-pyflakes==2.2.0
+pydyf==0.2.0
+    # via
+    #   -r requirements/ci.txt
+    #   weasyprint
+pyflakes==2.4.0
     # via flake8
-pygments==2.7.4
+pygments==2.12.0
     # via
     #   sphinx
     #   sphinx-tabs
-pyjwt==1.7.1
+pyjwt==2.4.0
     # via
     #   -r requirements/ci.txt
     #   django-auth-adfs
     #   gemma-zds-client
-pyparsing==2.4.7
-    # via packaging
-pyphen==0.10.0
+pyopenssl==22.0.0
+    # via
+    #   -r requirements/ci.txt
+    #   zgw-consumers
+pyparsing==3.0.9
+    # via
+    #   -r requirements/ci.txt
+    #   packaging
+pyphen==0.12.0
     # via
     #   -r requirements/ci.txt
     #   weasyprint
-pyquery==1.4.1
+pyquery==1.4.3
     # via -r requirements/ci.txt
-python-dateutil==2.8.1
+python-dateutil==2.8.2
     # via
     #   -r requirements/ci.txt
     #   django-relativedelta
     #   faker
     #   freezegun
-python-decouple==3.3
+python-decouple==3.6
     # via -r requirements/ci.txt
-python-dotenv==0.13.0
+python-dotenv==0.20.0
     # via -r requirements/ci.txt
 pytz==2022.1
     # via
@@ -331,17 +355,19 @@ pytz==2022.1
     #   celery
     #   django
     #   flower
-pyyaml==5.4
+pyyaml==6.0
     # via
     #   -r requirements/ci.txt
     #   gemma-zds-client
-redis==3.5.3
+redis==4.3.3
     # via
     #   -r requirements/ci.txt
     #   django-redis
-requests-mock==1.8.0
-    # via -r requirements/ci.txt
-requests==2.26.0
+requests-mock==1.9.3
+    # via
+    #   -r requirements/ci.txt
+    #   zgw-consumers
+requests==2.28.0
     # via
     #   -r requirements/ci.txt
     #   django-auth-adfs
@@ -349,37 +375,31 @@ requests==2.26.0
     #   gemma-zds-client
     #   requests-mock
     #   sphinx
-sentry-sdk==0.14.4
+    #   zgw-consumers
+sentry-sdk==1.6.0
     # via -r requirements/ci.txt
-six==1.15.0
+six==1.16.0
     # via
     #   -r requirements/ci.txt
     #   click-repl
-    #   cryptography
     #   django-choices
     #   django-compat
-    #   django-extensions
-    #   django-extra-views
-    #   django-rosetta
-    #   freezegun
     #   furl
     #   html5lib
     #   orderedmultidict
-    #   packaging
     #   python-dateutil
     #   requests-mock
-    #   webtest
-snowballstemmer==2.0.0
+snowballstemmer==2.2.0
     # via sphinx
-soupsieve==2.0.1
+soupsieve==2.3.2.post1
     # via
     #   -r requirements/ci.txt
     #   beautifulsoup4
-sphinx-rtd-theme==0.4.3
+sphinx-rtd-theme==1.0.0
     # via -r requirements/dev.in
-sphinx-tabs==2.1.0
+sphinx-tabs==3.3.1
     # via -r requirements/dev.in
-sphinx==3.0.4
+sphinx==4.5.0
     # via
     #   -r requirements/dev.in
     #   sphinx-rtd-theme
@@ -388,48 +408,44 @@ sphinxcontrib-applehelp==1.0.2
     # via sphinx
 sphinxcontrib-devhelp==1.0.2
     # via sphinx
-sphinxcontrib-htmlhelp==1.0.3
+sphinxcontrib-htmlhelp==2.0.0
     # via sphinx
 sphinxcontrib-jsmath==1.0.1
     # via sphinx
 sphinxcontrib-qthelp==1.0.3
     # via sphinx
-sphinxcontrib-serializinghtml==1.1.4
+sphinxcontrib-serializinghtml==1.1.5
     # via sphinx
-sqlparse==0.3.1
+sqlparse==0.4.2
     # via
     #   -r requirements/ci.txt
     #   django
     #   django-debug-toolbar
-tblib==1.6.0
+tblib==1.7.0
     # via -r requirements/ci.txt
-text-unidecode==1.3
+tinycss2==1.1.1
     # via
     #   -r requirements/ci.txt
-    #   faker
-tinycss2==1.1.0
-    # via
-    #   -r requirements/ci.txt
-    #   cairosvg
     #   cssselect2
     #   weasyprint
-toml==0.10.1
-    # via pep517
 tomli==2.0.1
-    # via black
-tornado==6.0.4
+    # via
+    #   black
+    #   pep517
+tornado==6.1
     # via
     #   -r requirements/ci.txt
     #   flower
 typing-extensions==4.2.0
     # via black
-urllib3==1.26.5
+urllib3==1.26.9
     # via
     #   -r requirements/ci.txt
+    #   django-auth-adfs
     #   elastic-apm
     #   requests
     #   sentry-sdk
-uwsgi==2.0.18
+uwsgi==2.0.20
     # via -r requirements/ci.txt
 vine==5.0.0
     # via
@@ -437,7 +453,7 @@ vine==5.0.0
     #   amqp
     #   celery
     #   kombu
-waitress==1.4.4
+waitress==2.1.2
     # via
     #   -r requirements/ci.txt
     #   webtest
@@ -445,7 +461,7 @@ wcwidth==0.2.5
     # via
     #   -r requirements/ci.txt
     #   prompt-toolkit
-weasyprint==52.2
+weasyprint==55.0
     # via -r requirements/ci.txt
 webencodings==0.5.1
     # via
@@ -453,18 +469,30 @@ webencodings==0.5.1
     #   cssselect2
     #   html5lib
     #   tinycss2
-webob==1.8.6
+webob==1.8.7
     # via
     #   -r requirements/ci.txt
     #   webtest
-webtest==2.0.35
+webtest==3.0.0
     # via
     #   -r requirements/ci.txt
     #   django-webtest
-xlsxwriter==3.0.2
+wheel==0.37.1
+    # via pip-tools
+wrapt==1.14.1
+    # via
+    #   -r requirements/ci.txt
+    #   deprecated
+xlsxwriter==3.0.3
     # via -r requirements/ci.txt
-zgw-consumers==0.10.2
+zgw-consumers==0.18.2
     # via -r requirements/ci.txt
+zipp==3.8.0
+    # via importlib-metadata
+zopfli==0.2.1
+    # via
+    #   -r requirements/ci.txt
+    #   fonttools
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
