@@ -25,6 +25,7 @@ django-solo
 django-sniplates
 django-timeline-logger
 django-privates
+mozilla-django-oidc-db
 
 # API libraries
 # djangorestframework
@@ -48,3 +49,6 @@ WeasyPrint
 
 # Excel files
 xlsxwriter
+
+# Admin and UI libraries
+django-better-admin-arrayfield
