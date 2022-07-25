@@ -90,6 +90,14 @@ CACHES = {
             "IGNORE_EXCEPTIONS": True,
         },
     },
+    "oidc": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{config('CACHE_OIDC', 'localhost:6379/0')}",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "IGNORE_EXCEPTIONS": True,
+        },
+    },
 }
 
 # Application definition
@@ -123,6 +131,9 @@ INSTALLED_APPS = [
     "timeline_logger",
     "zgw_consumers",
     "privates",
+    "django_better_admin_arrayfield",
+    "mozilla_django_oidc",
+    "mozilla_django_oidc_db",
     # Project applications.
     "archiefbeheercomponent.accounts",
     "archiefbeheercomponent.destruction",
@@ -142,6 +153,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "mozilla_django_oidc_db.middleware.SessionRefresh",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "hijack.middleware.HijackUserMiddleware",
@@ -296,6 +308,10 @@ LOGGING = {
             "level": "INFO",
             "propagate": True,
         },
+        "mozilla_django_oidc": {
+            "handlers": ["project"],
+            "level": "DEBUG",
+        },
     },
 }
 
@@ -319,6 +335,7 @@ AUTHENTICATION_BACKENDS = [
     "archiefbeheercomponent.accounts.backends.UserModelEmailBackend",
     "django.contrib.auth.backends.ModelBackend",
     "django_auth_adfs_db.backends.AdfsAuthCodeBackend",
+    "mozilla_django_oidc_db.backends.OIDCAuthenticationBackend",
 ]
 
 SESSION_COOKIE_NAME = "archiefbeheercomponent_sessionid"
@@ -447,6 +464,12 @@ ZAKEN_PER_QUERY = 1_000_000
 
 # DJANGO-ADMIN-INDEX
 ADMIN_INDEX_SHOW_REMAINING_APPS_TO_SUPERUSERS = False
+
+# Mozilla Django OIDC DB settings
+OIDC_AUTHENTICATE_CLASS = "mozilla_django_oidc_db.views.OIDCAuthenticationRequestView"
+OIDC_CALLBACK_CLASS = "mozilla_django_oidc_db.views.OIDCCallbackView"
+MOZILLA_DJANGO_OIDC_DB_CACHE = "oidc"
+MOZILLA_DJANGO_OIDC_DB_CACHE_TIMEOUT = 1
 
 # ARCHIEFBEHEERCOMPONENT specific settings
 ABC_DEMO_MODE = config("ABC_DEMO_MODE", default=False)
