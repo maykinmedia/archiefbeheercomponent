@@ -2,7 +2,7 @@ from datetime import timedelta
 from typing import Optional
 
 from django.contrib.contenttypes.fields import GenericRelation
-from django.contrib.postgres.fields import ArrayField, JSONField
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -225,7 +225,7 @@ class DestructionListItem(models.Model):
         protected=True,
         max_length=80,
     )
-    extra_zaak_data = JSONField(
+    extra_zaak_data = models.JSONField(
         verbose_name=_("extra zaak data"),
         help_text=_("Additional information of the zaak"),
         null=True,
