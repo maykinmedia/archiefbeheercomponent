@@ -6,6 +6,8 @@ from django.contrib.auth import views as auth_views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import include, path
 
+from mozilla_django_oidc_db.views import AdminLoginFailure
+
 from archiefbeheercomponent.accounts.views import StartPageView
 from archiefbeheercomponent.demo.views import DemoLoginView
 from archiefbeheercomponent.destruction.views.redirect import EnterView
@@ -26,6 +28,7 @@ urlpatterns = [
         auth_views.PasswordResetDoneView.as_view(),
         name="password_reset_done",
     ),
+    path("admin/login/failure/", AdminLoginFailure.as_view(), name="admin-oidc-error"),
     path("admin/hijack/", include("hijack.urls")),
     path("admin/", admin.site.urls),
     path(
@@ -40,6 +43,7 @@ urlpatterns = [
     ),
     # auth backends
     path("adfs/", include("django_auth_adfs.urls")),
+    path("oidc/", include("mozilla_django_oidc.urls")),
     # Simply show the master template.
     path("", EnterView.as_view(), name="entry"),
     path("vernietigen/", include("archiefbeheercomponent.destruction.urls")),
