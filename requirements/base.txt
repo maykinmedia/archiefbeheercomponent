@@ -57,7 +57,7 @@ cssselect2==0.6.0
     # via weasyprint
 deprecated==1.2.13
     # via redis
-django==3.2.14
+django==3.2.15
     # via
     #   -r requirements/base.in
     #   django-admin-index
@@ -133,7 +133,7 @@ django-relativedelta==1.1.2
     # via zgw-consumers
 django-rosetta==0.9.8
     # via -r requirements/base.in
-django-sendfile2==0.6.1
+django-sendfile2==0.7.0
     # via django-privates
 django-sniplates==0.7.0
     # via -r requirements/base.in
