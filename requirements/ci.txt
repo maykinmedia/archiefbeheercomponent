@@ -92,7 +92,7 @@ deprecated==1.2.13
     # via
     #   -r requirements/base.txt
     #   redis
-django==3.2.14
+django==3.2.15
     # via
     #   -r requirements/base.txt
     #   django-admin-index
@@ -184,7 +184,7 @@ django-relativedelta==1.1.2
     #   zgw-consumers
 django-rosetta==0.9.8
     # via -r requirements/base.txt
-django-sendfile2==0.6.1
+django-sendfile2==0.7.0
     # via
     #   -r requirements/base.txt
     #   django-privates
