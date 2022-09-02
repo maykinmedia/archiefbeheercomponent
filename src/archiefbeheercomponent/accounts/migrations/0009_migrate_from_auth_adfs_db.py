@@ -9,6 +9,9 @@ from mozilla_django_oidc_db.forms import OpenIDConnectConfigForm
 
 
 def from_auth_adfs_to_mozilla_oidc(apps, schema_editor):
+    # Patch a missing setting in newer versions of django-auth-adfs > 1.6.1
+    auth_adfs_settings.VERSION = "v2.0"
+
     ADFSConfig = apps.get_model("django_auth_adfs_db", "ADFSConfig")
     OpenIDConnectConfig = apps.get_model(
         "mozilla_django_oidc_db", "OpenIDConnectConfig"
