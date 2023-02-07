@@ -2,6 +2,13 @@
 Change history
 ==============
 
+1.1.1
+=====
+
+*February 7th, 2023*
+
+* Upgrade Python / JavaScript dependencies reported by dependabot alerts
+
 1.1.0
 =====
 
