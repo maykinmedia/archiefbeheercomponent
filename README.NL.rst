@@ -2,7 +2,7 @@
 ArchiefBeheerComponent
 ======================
 
-:Version: 1.1.0
+:Version: 1.1.1
 :Source: https://github.com/maykinmedia/archiefbeheercomponent
 :Keywords: Common Ground, Record Management, Archiveren
 
