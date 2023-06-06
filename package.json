@@ -1,6 +1,6 @@
 {
   "name": "archiefbeheercomponent",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "ArchiefBeheerComponent project",
   "main": "src/static/archiefbeheercomponent/js/archiefbeheercomponent.js",
   "directories": {
