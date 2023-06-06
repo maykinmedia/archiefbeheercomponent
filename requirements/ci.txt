@@ -75,7 +75,7 @@ click-repl==0.2.0
     #   celery
 coverage==4.5.4
     # via -r requirements/test-tools.in
-cryptography==38.0.4
+cryptography==41.0.1
     # via
     #   -r requirements/base.txt
     #   django-auth-adfs
@@ -120,7 +120,7 @@ django-appconf==1.0.5
     # via
     #   -r requirements/base.txt
     #   django-timeline-logger
-django-auth-adfs==1.10.0
+django-auth-adfs==1.11.6
     # via
     #   -r requirements/base.txt
     #   django-auth-adfs-db
@@ -168,7 +168,7 @@ django-ordered-model==3.6
     # via
     #   -r requirements/base.txt
     #   django-admin-index
-django-privates==1.3.0
+django-privates==2.0.0.post0
     # via
     #   -r requirements/base.txt
     #   zgw-consumers
@@ -290,7 +290,7 @@ pyjwt==2.4.0
     #   -r requirements/base.txt
     #   django-auth-adfs
     #   gemma-zds-client
-pyopenssl==22.0.0
+pyopenssl==23.2.0
     # via
     #   -r requirements/base.txt
     #   josepy
