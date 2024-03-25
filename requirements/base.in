@@ -25,6 +25,7 @@ django-solo
 django-sniplates
 django-timeline-logger
 django-privates
+mozilla-django-oidc==3.0.0
 mozilla-django-oidc-db
 
 # API libraries
