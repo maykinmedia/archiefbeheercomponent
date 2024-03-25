@@ -1,4 +1,5 @@
 # Developers
+.DS_STORE
 .hg
 .git
 .svn
