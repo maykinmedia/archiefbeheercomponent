@@ -3,8 +3,8 @@ from typing import List, Optional, Union
 from zds_client.client import ClientError
 from zgw_consumers.concurrent import parallel
 from zgw_consumers.constants import APITypes
+from zgw_consumers.legacy.service import get_paginated_results
 from zgw_consumers.models import Service
-from zgw_consumers.service import get_paginated_results
 
 
 def _client_from_url(url: str):
