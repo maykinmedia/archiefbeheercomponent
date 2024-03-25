@@ -33,6 +33,8 @@ class Command(BaseCommand):
 
         catalogus = get_or_create_catalogus(DEFAULT_CATALOGUS, ztc_client)
 
+        procestype_1 = "https://selectielijst.openzaak.nl/api/v1/procestypen/e1b73b12-b2f6-4c4e-8929-94f84dd2a57d"
+
         # Create zaaktypes and informatie objecttypes
         zaaktype_1 = ztc_client.create(
             resource="zaaktype",
@@ -56,6 +58,8 @@ class Command(BaseCommand):
                 "beginGeldigheid": "2021-01-01",
                 "versiedatum": "2021-01-01",
                 "referentieproces": {"naam": "Proces naam 1", "link": ""},
+                "verantwoordelijke": "Chef Kok",
+                "selectielijstProcestype": procestype_1,
             },
         )
         zaaktype_2 = ztc_client.create(
@@ -80,6 +84,8 @@ class Command(BaseCommand):
                 "beginGeldigheid": "2021-01-01",
                 "versiedatum": "2021-01-01",
                 "referentieproces": {"naam": "Proces naam 1", "link": ""},
+                "verantwoordelijke": "Chef Kok",
+                "selectielijstProcestype": procestype_1,
             },
         )
 
@@ -90,6 +96,7 @@ class Command(BaseCommand):
                 "omschrijving": f"IOT {get_random_string()}",
                 "vertrouwelijkheidaanduiding": "openbaar",
                 "beginGeldigheid": "2021-01-01",
+                "informatieobjectcategorie": "Voorbeeld",
             },
         )
         informatieobjecttype_2 = ztc_client.create(
@@ -99,6 +106,7 @@ class Command(BaseCommand):
                 "omschrijving": f"IOT {get_random_string()}",
                 "vertrouwelijkheidaanduiding": "openbaar",
                 "beginGeldigheid": "2021-01-01",
+                "informatieobjectcategorie": "Voorbeeld",
             },
         )
         informatieobjecttype_3 = ztc_client.create(
@@ -108,6 +116,7 @@ class Command(BaseCommand):
                 "omschrijving": f"IOT {get_random_string()}",
                 "vertrouwelijkheidaanduiding": "openbaar",
                 "beginGeldigheid": "2021-01-01",
+                "informatieobjectcategorie": "Voorbeeld",
             },
         )
         informatieobjecttype_4 = ztc_client.create(
@@ -117,6 +126,7 @@ class Command(BaseCommand):
                 "omschrijving": f"IOT {get_random_string()}",
                 "vertrouwelijkheidaanduiding": "openbaar",
                 "beginGeldigheid": "2021-01-01",
+                "informatieobjectcategorie": "Voorbeeld",
             },
         )
 
@@ -155,6 +165,99 @@ class Command(BaseCommand):
                 "informatieobjecttype": informatieobjecttype_4["url"],
                 "volgnummer": 2,
                 "richting": "inkomend",
+            },
+        )
+
+        ztc_client.create(
+            resource="roltype",
+            data={
+                "zaaktype": zaaktype_1["url"],
+                "omschrijving": f"Roltype: {get_random_string()}",
+                "omschrijvingGeneriek": "behandelaar",
+            },
+        )
+
+        ztc_client.create(
+            resource="roltype",
+            data={
+                "zaaktype": zaaktype_2["url"],
+                "omschrijving": f"Roltype: {get_random_string()}",
+                "omschrijvingGeneriek": "behandelaar",
+            },
+        )
+
+        resultaattypeomschrijving_1 = "https://selectielijst.openzaak.nl/api/v1/resultaattypeomschrijvingen/ce8cf476-0b59-496f-8eee-957a7c6e2506"  # noqa: E501
+        selectielijstklasse_1 = "https://selectielijst.openzaak.nl/api/v1/resultaten/cc5ae4e3-a9e6-4386-bcee-46be4986a829"  # noqa: E501
+
+        ztc_client.create(
+            resource="resultaattype",
+            data={
+                "zaaktype": zaaktype_1["url"],
+                "omschrijving": f"Resultaattype: {get_random_string()}",
+                "resultaattypeomschrijving": resultaattypeomschrijving_1,
+                "selectielijstklasse": selectielijstklasse_1,
+                "brondatumArchiefprocedure": {
+                    "afleidingswijze": "afgehandeld",
+                    "datumkenmerk": "",
+                    "einddatumBekend": False,
+                    "objecttype": "",
+                    "registratie": "",
+                    "procestermijn": None,
+                },
+            },
+        )
+
+        ztc_client.create(
+            resource="resultaattype",
+            data={
+                "zaaktype": zaaktype_2["url"],
+                "omschrijving": f"Resultaattype: {get_random_string()}",
+                "resultaattypeomschrijving": resultaattypeomschrijving_1,
+                "selectielijstklasse": selectielijstklasse_1,
+                "brondatumArchiefprocedure": {
+                    "afleidingswijze": "afgehandeld",
+                    "datumkenmerk": "",
+                    "einddatumBekend": False,
+                    "objecttype": "",
+                    "registratie": "",
+                    "procestermijn": None,
+                },
+            },
+        )
+
+        ztc_client.create(
+            resource="statustype",
+            data={
+                "omschrijving": f"Statustype: {get_random_string()}",
+                "zaaktype": zaaktype_1["url"],
+                "volgnummer": 1,
+            },
+        )
+
+        ztc_client.create(
+            resource="statustype",
+            data={
+                "omschrijving": f"Statustype: {get_random_string()}",
+                "zaaktype": zaaktype_1["url"],
+                "volgnummer": 2,
+            },
+        )
+
+        ztc_client.create(
+            resource="statustype",
+            data={
+                "omschrijving": f"Statustype: {get_random_string()}",
+                "zaaktype": zaaktype_2["url"],
+                "volgnummer": 1,
+            },
+        )
+
+        ztc_client.create(
+            resource="statustype",
+            data={
+                "omschrijving": f"Statustype: {get_random_string()}",
+                "zaaktype": zaaktype_2["url"],
+                "volgnummer": 2,
             },
         )
 
@@ -197,6 +300,7 @@ class Command(BaseCommand):
                 "archiefstatus": "nog_te_archiveren",
                 "archiefactiedatum": "2021-02-01",
             },
+            request_kwargs={"headers": {"Accept-Crs": "EPSG:4326"}},
         )
         zaak_2 = zrc_client.create(
             resource="zaak",
@@ -211,6 +315,7 @@ class Command(BaseCommand):
                 "archiefstatus": "nog_te_archiveren",
                 "archiefactiedatum": "2021-01-01",
             },
+            request_kwargs={"headers": {"Accept-Crs": "EPSG:4326"}},
         )
 
         # Create a document for each zaak of the first zaaktype
@@ -271,6 +376,7 @@ class Command(BaseCommand):
                 "archiefstatus": "nog_te_archiveren",
                 "archiefactiedatum": "2021-01-01",
             },
+            request_kwargs={"headers": {"Accept-Crs": "EPSG:4326"}},
         )
         zaak_4 = zrc_client.create(
             resource="zaak",
@@ -285,6 +391,7 @@ class Command(BaseCommand):
                 "archiefstatus": "nog_te_archiveren",
                 "archiefactiedatum": "2021-01-01",
             },
+            request_kwargs={"headers": {"Accept-Crs": "EPSG:4326"}},
         )
 
         # Create a document for each zaak of the second zaaktype
