@@ -24,7 +24,9 @@ def get_types_generic(type_name, dict_response=False) -> Union[list, dict]:
 
     for ztc in Service.objects.filter(api_type=APITypes.ztc):
         client = ztc.build_client()
-        typen += get_paginated_results(client, type_name)
+        typen += get_paginated_results(
+            client, type_name, request_kwargs={"headers": {"Accept-Crs": "EPSG:4326"}}
+        )
 
     if not dict_response:
         return typen
@@ -61,7 +63,11 @@ def get_zaken(query_params=None) -> list:
     for zrc in Service.objects.filter(api_type=APITypes.zrc):
         client = zrc.build_client()
         zaken += get_paginated_results(
-            client, "zaak", minimum=25, query_params=query_params
+            client,
+            "zaak",
+            minimum=25,
+            query_params=query_params,
+            request_kwargs={"headers": {"Accept-Crs": "EPSG:4326"}},
         )
 
     # Resolve zaaktype url
@@ -77,7 +83,9 @@ def get_zaken(query_params=None) -> list:
 
 def fetch_zaak(url: str) -> dict:
     client = _client_from_url(url)
-    response = client.retrieve("zaak", url=url)
+    response = client.retrieve(
+        "zaak", url=url, request_kwargs={"headers": {"Accept-Crs": "EPSG:4326"}}
+    )
     return response
 
 
