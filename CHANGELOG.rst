@@ -2,6 +2,14 @@
 Change history
 ==============
 
+1.1.4
+=====
+
+*March 27th, 2024*
+
+* Fixed the `DEFAULT_FROM_EMAIL` setting not using the environment variable.
+* Fixed incompatibilities with Open Zaak in the `create-demo-data` management command
+
 1.1.1
 =====
 
