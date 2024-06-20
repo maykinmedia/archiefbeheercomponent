@@ -323,7 +323,7 @@ def create_destruction_zaak(list_id):
         raise ServiceNotConfiguredError("No service defined for the Zaken API")
 
     drc_service = Service.objects.filter(api_type=APITypes.drc).first()
-    if not zrc_service:
+    if not drc_service:
         raise ServiceNotConfiguredError("No service defined for the Documenten API")
 
     zrc_client = zrc_service.build_client()
@@ -342,6 +342,7 @@ def create_destruction_zaak(list_id):
             "verantwoordelijkeOrganisatie": config.source_organisation,
             "archiefnominatie": "blijvend_bewaren",
         },
+        headers={"Accept-Crs": "EPSG:4326", "Content-Crs": "EPSG:4326"},
     )
 
     notify_users_about_zaak(destruction_list, destruction_zaak)
