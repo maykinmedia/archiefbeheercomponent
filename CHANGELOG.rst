@@ -2,6 +2,17 @@
 Change history
 ==============
 
+1.1.5
+=====
+
+*July 4th, 2024*
+
+* Upgrade zgw-consumers, because the syntax used in a dependency was no longer supported by the latest pip version.
+* [#349] Added ``Accept-Crs`` and ``Content-Crs`` for when creating a zaak after processing a destruction list.
+   These headers should have been added automatically by the ZGW client (by looking at the OAS uploaded). 
+   They were added explicitly just to make sure that they are present.
+* [#350] Added USE_X_FORWARDED_HOST setting
+
 1.1.4
 =====
 
