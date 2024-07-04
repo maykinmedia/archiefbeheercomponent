@@ -131,6 +131,7 @@ INSTALLED_APPS = [
     "solo",
     "timeline_logger",
     "zgw_consumers",
+    "simple_certmanager",
     "privates",
     "django_better_admin_arrayfield",
     "mozilla_django_oidc",
